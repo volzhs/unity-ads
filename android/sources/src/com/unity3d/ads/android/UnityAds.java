@@ -2,13 +2,11 @@ package com.unity3d.ads.android;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.cache.UnityAdsCacheManifest;
 import com.unity3d.ads.android.cache.UnityAdsWebData;
 import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 import com.unity3d.ads.android.view.UnityAdsVideoCompletedView;
 import com.unity3d.ads.android.view.UnityAdsVideoPlayView;
@@ -27,10 +25,9 @@ public class UnityAds {
 	public static UnityAds instance = null;
 	public static UnityAdsCacheManifest cachemanifest = null;
 	public static UnityAdsCacheManager cachemanager = null;
+	public static UnityAdsWebData webdata = null;
 	
 	// Temporary data
-	private UnityAdsWebData _webdata = null;
-	private ArrayList<JSONObject> _CurrentAd = null;
 	private Activity _currentActivity = null;
 	
 	// Views
@@ -68,6 +65,30 @@ public class UnityAds {
 		if (_initialized) return; 
 		
 		cachemanager = new UnityAdsCacheManager();
+		cachemanifest = new UnityAdsCacheManifest();
+		webdata = new UnityAdsWebData();
+		
+		if (webdata.initVideoPlan(cachemanifest.getCachedCampaignIds())) {
+			ArrayList<UnityAdsCampaign> cachedCampaigns = cachemanifest.getCachedCampaigns();
+			ArrayList<UnityAdsCampaign> videoPlanCampaigns = webdata.getVideoPlanCampaigns();
+			ArrayList<UnityAdsCampaign> pruneList = UnityAdsUtils.createPruneList(cachedCampaigns, videoPlanCampaigns);
+			
+			if (cachedCampaigns != null)
+				Log.d(UnityAdsProperties.LOG_NAME, "Cached campaigns: " + cachedCampaigns.toString());
+			
+			if (videoPlanCampaigns != null)
+				Log.d(UnityAdsProperties.LOG_NAME, "Campaigns in videoPlan: " + videoPlanCampaigns.toString());
+			
+			if (pruneList != null)
+				Log.d(UnityAdsProperties.LOG_NAME, "Campaigns to prune: " + pruneList.toString());
+			
+			cachemanager.updateCache(videoPlanCampaigns, pruneList);
+			cachemanifest.setCachedCampaigns(webdata.getVideoPlanCampaigns());
+		}
+		
+		
+		/*
+		cachemanager = new UnityAdsCacheManager();
 		cachemanager.setCacheListener(new IUnityAdsCacheListener() {			
 			@Override
 			public void onCachedCampaignsAvailable() {
@@ -88,9 +109,10 @@ public class UnityAds {
 			Log.d(UnityAdsProperties.LOG_NAME, mergedCampaigns.toString());
 		else
 			Log.d(UnityAdsProperties.LOG_NAME, "Jenkem");
-
 		
 		setupViews();
+		*/
+		
 		_initialized = true;
 	}
 		
@@ -99,6 +121,7 @@ public class UnityAds {
 	}
 	
 	public boolean show () {
+		/*
 		_CurrentAd = new ArrayList<JSONObject>();
 		ArrayList<String> _cachedCampaigns = cachemanifest.getCachedCampaignIds();
 		
@@ -109,7 +132,7 @@ public class UnityAds {
 				break;
 		}
 		
-		/*
+		
 		if (_CurrentAd.size() < 3) {
 			int left = 3 - _CurrentAd.size();
 			JSONObject plan = _webdata.getVideoPlan();
@@ -130,7 +153,7 @@ public class UnityAds {
 					return false;
 				}
 			}
-		}*/
+		}
 				
 		Log.d(UnityAdsProperties.LOG_NAME, _CurrentAd.toString());
 		
@@ -139,8 +162,8 @@ public class UnityAds {
 		
 		if (_adsListener != null)
 			_adsListener.onShow();
-		
-		return true;
+		*/
+		return false;
 	}
 	
 	public void closeAdsView (View view, boolean reportClosed) {
@@ -156,8 +179,8 @@ public class UnityAds {
 	}
 	
 	public boolean hasCampaigns () {
-		if (_webdata != null && cachemanifest != null) {
-			if (_webdata.getCampaignAmount() + cachemanifest.getCampaignAmount() > 2)
+		if (webdata != null && cachemanifest != null) {
+			if (webdata.getCampaignAmount() + cachemanifest.getCachedCampaignAmount() > 2)
 				return true;
 		}
 		
@@ -167,64 +190,7 @@ public class UnityAds {
 	
 	/* PRIVATE METHODS */
 	
-	private ArrayList<UnityAdsCampaign> createCampaignsFromJson (JSONObject json) {
-		if (json != null && json.has("va")) {
-			ArrayList<UnityAdsCampaign> campaignData = new ArrayList<UnityAdsCampaign>();
-			JSONArray va = null;
-			JSONObject currentCampaign = null;
-			
-			try {
-				va = json.getJSONArray("va");
-			}
-			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "Malformed JSON");
-			}
-			
-			for (int i = 0; i < va.length(); i++) {
-				try {
-					currentCampaign = va.getJSONObject(i);
-					campaignData.add(new UnityAdsCampaign(currentCampaign));
-				}
-				catch (Exception e) {
-					Log.d(UnityAdsProperties.LOG_NAME, "Malformed JSON");
-				}				
-			}
-			
-			return campaignData;
-		}
-		
-		return null;
-	}
-	
-	private ArrayList<UnityAdsCampaign> mergeCampaignLists (ArrayList<UnityAdsCampaign> list1, ArrayList<UnityAdsCampaign> list2) {
-		ArrayList<UnityAdsCampaign> mergedData = new ArrayList<UnityAdsCampaign>();
-		
-		if (list1 == null || list1.size() == 0) return list2;
-		if (list2 == null || list2.size() == 0) return list1;
-		
-		if (list1 != null && list2 != null) {
-			mergedData.addAll(list1);
-			for (UnityAdsCampaign list1Campaign : list1) {
-				UnityAdsCampaign inputCampaign = null;
-				boolean match = false;
-				for (UnityAdsCampaign list2Campaign : list2) {
-					inputCampaign = list2Campaign;
-					if (list1Campaign.getCampaignId().equals(list2Campaign.getCampaignId())) {
-						match = true;
-						break;
-					}
-				}
-				
-				if (!match)
-					mergedData.add(inputCampaign);
-			}
-			
-			return mergedData;
-		}
-		
-		return null;
-	}
-	
+
 	private void focusToView (View view) {
 		view.setFocusable(true);
 		view.setFocusableInTouchMode(true);

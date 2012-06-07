@@ -7,41 +7,31 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsProperties;
+import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 
 public class UnityAdsWebData {
 	private JSONObject _videoPlan = null;
+	private ArrayList<UnityAdsCampaign> _videoPlanCampaigns = null;
 	
 	public UnityAdsWebData () {
 		
 	}
 	
-	public JSONObject getVideoPlan () {
-		return _videoPlan;
+	public ArrayList<UnityAdsCampaign> getVideoPlanCampaigns () {
+		return _videoPlanCampaigns;
 	}
+	
 	
 	public int getCampaignAmount () {
-		if (_videoPlan == null) return 0;
-		
-		if (_videoPlan.has("va")) {
-			try {
-				return _videoPlan.getJSONArray("va").length();
-			}
-			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "Couldn't resolve video amount");
-				return 0;
-			}
-		}
-		
-		return 0;
+		if (_videoPlanCampaigns == null) return 0;
+		return _videoPlanCampaigns.size();
 	}
 	
-	public boolean initVideoPlan (JSONObject cacheManifest) {		
+	public boolean initVideoPlan (ArrayList<String> cachedCampaignIds) {		
 		JSONObject data = new JSONObject();
 		JSONArray campaignIds = null;
-		ArrayList<String> cachedCampaignIds = UnityAds.cachemanifest.getCachedCampaignIds();
-		//Log.d(UnityAdsProperties.LOG_NAME, cachedCampaignIds.toString());
 		
 		if (cachedCampaignIds != null && cachedCampaignIds.size() > 0) {
 			campaignIds = new JSONArray();
@@ -81,8 +71,6 @@ public class UnityAdsWebData {
 
 		in.close();*/
 		
-		JSONArray campaignstatus = new JSONArray();
-		
 		JSONArray videos = new JSONArray();
 		JSONObject tmpvideo = null;
 		
@@ -110,16 +98,9 @@ public class UnityAdsWebData {
 			_videoPlan = new JSONObject();
 			_videoPlan.put("va", videos);
 			
-			/*
-			tmpvideo = new JSONObject();
-			tmpvideo.put("v", "http://quake.everyplay.fi/~bluesun/testvideos/video1.mp4");
-			tmpvideo.put("s", "update");
-			tmpvideo.put("id", "a1");
-			campaignstatus.put(tmpvideo);
-			_videoPlan.put("cs", campaignstatus);
-			*/
-			
 			Log.d(UnityAdsProperties.LOG_NAME, _videoPlan.toString(4));
+			
+			_videoPlanCampaigns = UnityAdsUtils.createCampaignsFromJson(_videoPlan);
 		}
 		catch (Exception e) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Great error!");
