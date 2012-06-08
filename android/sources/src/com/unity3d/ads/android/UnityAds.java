@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.cache.UnityAdsCacheManifest;
 import com.unity3d.ads.android.cache.UnityAdsWebData;
-import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
+import com.unity3d.ads.android.cache.IUnityAdsDownloadListener;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
+import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
+import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
 import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 import com.unity3d.ads.android.view.UnityAdsVideoCompletedView;
 import com.unity3d.ads.android.view.UnityAdsVideoPlayView;
@@ -19,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-public class UnityAds {
+public class UnityAds implements IUnityAdsDownloadListener {
 	
 	// Unity Ads components
 	public static UnityAds instance = null;
@@ -37,7 +39,7 @@ public class UnityAds {
 	
 	// Listeners
 	private IUnityAdsListener _adsListener = null;
-	private IUnityAdsCacheListener _cacheListener = null;
+	private IUnityAdsCampaignListener _campaignListener = null;
 	private IUnityAdsVideoListener _videoListener = null;
 	
 	private boolean _initialized = false;
@@ -53,8 +55,8 @@ public class UnityAds {
 		_adsListener = listener;
 	}
 	
-	public void setCacheListener (IUnityAdsCacheListener listener) {
-		_cacheListener = listener;
+	public void setCampaignListener (IUnityAdsCampaignListener listener) {
+		_campaignListener = listener;
 	}
 	
 	public void setVideoListener (IUnityAdsVideoListener listener) {
@@ -65,13 +67,14 @@ public class UnityAds {
 		if (_initialized) return; 
 		
 		cachemanager = new UnityAdsCacheManager();
+		cachemanager.setDownloadListener(this);
 		cachemanifest = new UnityAdsCacheManifest();
 		webdata = new UnityAdsWebData();
 		
 		if (webdata.initVideoPlan(cachemanifest.getCachedCampaignIds())) {
 			ArrayList<UnityAdsCampaign> cachedCampaigns = cachemanifest.getCachedCampaigns();
 			ArrayList<UnityAdsCampaign> videoPlanCampaigns = webdata.getVideoPlanCampaigns();
-			ArrayList<UnityAdsCampaign> pruneList = UnityAdsUtils.createPruneList(cachedCampaigns, videoPlanCampaigns);
+			ArrayList<UnityAdsCampaign> pruneList = UnityAdsUtils.substractFromCampaignList(cachedCampaigns, videoPlanCampaigns);
 			
 			if (cachedCampaigns != null)
 				Log.d(UnityAdsProperties.LOG_NAME, "Cached campaigns: " + cachedCampaigns.toString());
@@ -79,41 +82,55 @@ public class UnityAds {
 			if (videoPlanCampaigns != null)
 				Log.d(UnityAdsProperties.LOG_NAME, "Campaigns in videoPlan: " + videoPlanCampaigns.toString());
 			
-			if (pruneList != null)
+			if (pruneList != null) {
 				Log.d(UnityAdsProperties.LOG_NAME, "Campaigns to prune: " + pruneList.toString());
-			
-			cachemanager.updateCache(videoPlanCampaigns, pruneList);
-			cachemanifest.setCachedCampaigns(webdata.getVideoPlanCampaigns());
-		}
-		
-		
-		/*
-		cachemanager = new UnityAdsCacheManager();
-		cachemanager.setCacheListener(new IUnityAdsCacheListener() {			
-			@Override
-			public void onCachedCampaignsAvailable() {
-				if (_cacheListener != null)
-					_cacheListener.onCachedCampaignsAvailable();
 			}
-		});
-		cachemanifest = new UnityAdsCacheManifest(cachemanager.getCacheDir());
-		_webdata = new UnityAdsWebData();
+			
+			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading
+			cachemanager.updateCache(videoPlanCampaigns, pruneList);			
+			// Get downloading campaigns
+			ArrayList<UnityAdsCampaign> downloadingCampaigns = cachemanager.getDownloadingCampaigns();
+			
+			if (downloadingCampaigns != null)
+				videoPlanCampaigns = UnityAdsUtils.substractFromCampaignList(videoPlanCampaigns, downloadingCampaigns);
+			
+			// Set the leftover campaigns to cache (videoPlanCampaigns can be null)
+			cachemanifest.setCachedCampaigns(videoPlanCampaigns);
 		
-		if (_webdata.initVideoPlan(cachemanifest.getCacheManifest())) {
-			cachemanager.initCache(cachemanifest.getCacheManifest(), _webdata.getVideoPlan());
+			// If updateCache did not start any downloads and videoPlanCampaigns after all substractions still holds campaigns we can be sure that there are campaigns available
+			if ((!cachemanager.isDownloading() || (videoPlanCampaigns != null && videoPlanCampaigns.size() > 0)) && _campaignListener != null) {
+				Log.d(UnityAdsProperties.LOG_NAME, "Reporting cached campaigns available");
+				_campaignListener.onFetchCompleted();
+			}
+			
+			setupViews();
 		}
-		
-		ArrayList<UnityAdsCampaign> mergedCampaigns = mergeCampaignLists(createCampaignsFromJson(_webdata.getVideoPlan()), createCampaignsFromJson(cachemanifest.getCacheManifest()));
-		
-		if (mergedCampaigns != null)
-			Log.d(UnityAdsProperties.LOG_NAME, mergedCampaigns.toString());
-		else
-			Log.d(UnityAdsProperties.LOG_NAME, "Jenkem");
-		
-		setupViews();
-		*/
-		
+
 		_initialized = true;
+	}
+	
+	@Override
+	public void onDownloadsStarted () {	
+		Log.d(UnityAdsProperties.LOG_NAME, "Downloads started.");
+	}
+	
+	@Override
+	public void onCampaignFilesDownloaded (UnityAdsCampaignHandler campaignHandler) {
+		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
+		
+		Log.d(UnityAdsProperties.LOG_NAME, "Downloads complete for: " + campaignHandler.getCampaign().toString());
+		cachemanifest.addCampaignToManifest(campaignHandler.getCampaign());
+		
+		if (_campaignListener != null && cachemanifest.getCachedCampaignAmount() > 0) {
+			// TODO: Double onFetchCompleted event: when cached available in the beginning and when download completes 
+			Log.d(UnityAdsProperties.LOG_NAME, "Reporting cached campaigns available");
+			_campaignListener.onFetchCompleted();
+		}
+	}
+	
+	@Override
+	public void onAllDownloadsCompleted () {
+		Log.d(UnityAdsProperties.LOG_NAME, "Listener got \"All downloads completed.\"");
 	}
 		
 	public void changeActivity (Activity activity) {
@@ -121,48 +138,12 @@ public class UnityAds {
 	}
 	
 	public boolean show () {
-		/*
-		_CurrentAd = new ArrayList<JSONObject>();
-		ArrayList<String> _cachedCampaigns = cachemanifest.getCachedCampaignIds();
-		
-		for (String id : _cachedCampaigns) {
-			_CurrentAd.add(cachemanifest.getCampaign(id));
-			
-			if (_CurrentAd.size() > 2)
-				break;
-		}
-		
-		
-		if (_CurrentAd.size() < 3) {
-			int left = 3 - _CurrentAd.size();
-			JSONObject plan = _webdata.getVideoPlan();
-			JSONArray va = null;
-			
-			try {
-				va = plan.getJSONArray("va");
-			}
-			catch (Exception e) {
-				return false;
-			}
-			
-			for (int i = 0; i < left; i++) {
-				try {
-					_CurrentAd.add(va.getJSONObject(i));
-				}
-				catch (Exception e) {
-					return false;
-				}
-			}
-		}
-				
-		Log.d(UnityAdsProperties.LOG_NAME, _CurrentAd.toString());
-		
 		_currentActivity.addContentView(_vs, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_vs);
 		
 		if (_adsListener != null)
 			_adsListener.onShow();
-		*/
+
 		return false;
 	}
 	

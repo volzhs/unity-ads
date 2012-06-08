@@ -52,7 +52,7 @@ public class UnityAdsCacheManifest {
 		return _cachedCampaigns;
 	}
 	
-	public UnityAdsCampaign getCachedCampaign (String id) {
+	public UnityAdsCampaign getCachedCampaignById (String id) {
 		if (id == null || _cachedCampaigns == null) 
 			return null;
 		else {
@@ -147,8 +147,9 @@ public class UnityAdsCacheManifest {
 		if (manifestToWrite != null) {
 			return UnityAdsUtils.writeFile(getFileForManifest(), manifestToWrite.toString());
 		}
-		
-		return false;
+		else {
+			return UnityAdsUtils.writeFile(getFileForManifest(), "");
+		}
 	}
 	
 	private File getFileForManifest () {

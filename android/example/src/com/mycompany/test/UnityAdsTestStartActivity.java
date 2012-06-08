@@ -2,7 +2,7 @@ package com.mycompany.test;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsProperties;
-import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
+import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
 
 import com.mycompany.test.R;
 
@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCacheListener {
+public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCampaignListener {
 	private UnityAds ai = null;
 	
 	/** Called when the activity is first created. */
@@ -29,7 +29,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCach
 
 		Log.d(UnityAdsProperties.LOG_NAME, "Init Unity Ads");
 		ai = new UnityAds(this, "892347239");
-		ai.setCacheListener(this);
+		ai.setCampaignListener(this);
 		ai.init();
     }
     
@@ -64,7 +64,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCach
 		android.os.Process.killProcess(android.os.Process.myPid());
 	}
 	
-	public void onCachedCampaignsAvailable () {
+    @Override
+	public void onFetchCompleted () {
     	((ImageView)findViewById(R.id.playbtn)).setAlpha(255);
     	((ImageView)findViewById(R.id.playbtn)).setOnClickListener(new View.OnClickListener() {			
 			@Override

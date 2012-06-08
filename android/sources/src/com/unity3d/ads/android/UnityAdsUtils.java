@@ -45,6 +45,7 @@ public class UnityAdsUtils {
 		return null;
 	}
 	
+	/*
 	public static ArrayList<UnityAdsCampaign> mergeCampaignLists (ArrayList<UnityAdsCampaign> list1, ArrayList<UnityAdsCampaign> list2) {
 		ArrayList<UnityAdsCampaign> mergedData = new ArrayList<UnityAdsCampaign>();
 		
@@ -72,7 +73,7 @@ public class UnityAdsUtils {
 		}
 		
 		return null;
-	}
+	}*/
 	
 	public static String readFile (File fileToRead) {
 		String fileContent = "";
@@ -127,6 +128,18 @@ public class UnityAdsUtils {
 		return true;
 	}
 	
+	public static void removeFile (String fileName) {
+		File removeFile = new File (fileName);
+		File cachedVideoFile = new File (UnityAdsUtils.getCacheDirectory() + "/" + removeFile.getName());
+		
+		if (cachedVideoFile.exists()) {
+			if (!cachedVideoFile.delete())
+				Log.d(UnityAdsProperties.LOG_NAME, "Could not delete: " + cachedVideoFile.getAbsolutePath());
+			else
+				Log.d(UnityAdsProperties.LOG_NAME, "Deleted: " + cachedVideoFile.getAbsolutePath());
+		}
+	}
+		
 	public static JSONObject createJsonFromCampaigns (ArrayList<UnityAdsCampaign> campaignList) {
 		JSONObject retJson = new JSONObject();
 		JSONArray campaigns = new JSONArray();
@@ -144,19 +157,15 @@ public class UnityAdsUtils {
 		}
 		catch (Exception e) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Error while creating JSON from Campaigns");
+			return null;
 		}
-		
-		// TODO: Malformed JSON possibility to f*** up stuff
 		
 		return retJson;
 	}
-	
-	public static String getCacheDirectory () {
-		return Environment.getExternalStorageDirectory().toString() + "/" + UnityAdsProperties.CACHE_DIR_NAME;
-	}
-	
-	public static ArrayList<UnityAdsCampaign> createPruneList (ArrayList<UnityAdsCampaign> fromList, ArrayList<UnityAdsCampaign> substractionList) {
-		if (fromList == null || substractionList == null) return null;
+		
+	public static ArrayList<UnityAdsCampaign> substractFromCampaignList (ArrayList<UnityAdsCampaign> fromList, ArrayList<UnityAdsCampaign> substractionList) {
+		if (fromList == null) return null;
+		if (substractionList == null) return fromList;
 		
 		ArrayList<UnityAdsCampaign> pruneList = null;
 		
@@ -180,5 +189,26 @@ public class UnityAdsUtils {
 		}
 		
 		return pruneList;
+	}
+	
+	public static String getCacheDirectory () {
+		return Environment.getExternalStorageDirectory().toString() + "/" + UnityAdsProperties.CACHE_DIR_NAME;
+	}
+	
+	public static File createCacheDir () {
+		File tdir = new File (getCacheDirectory());
+		tdir.mkdirs();
+		return tdir;
+	}
+	
+	public static boolean isFileRequiredByCampaigns (String fileName, ArrayList<UnityAdsCampaign> campaigns) {
+		if (fileName == null) return false;
+		
+		for (UnityAdsCampaign campaign : campaigns) {
+			if (campaign.getVideoUrl().equals(fileName))
+				return true;
+		}
+		
+		return false;
 	}
 }
