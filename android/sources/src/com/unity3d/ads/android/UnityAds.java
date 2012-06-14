@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.cache.UnityAdsCacheManifest;
 import com.unity3d.ads.android.cache.UnityAdsWebData;
-import com.unity3d.ads.android.cache.IUnityAdsDownloadListener;
+import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-public class UnityAds implements IUnityAdsDownloadListener {
+public class UnityAds implements IUnityAdsCacheListener {
 	
 	// Unity Ads components
 	public static UnityAds instance = null;
@@ -72,8 +72,12 @@ public class UnityAds implements IUnityAdsDownloadListener {
 		webdata = new UnityAdsWebData();
 		
 		if (webdata.initVideoPlan(cachemanifest.getCachedCampaignIds())) {
+			
+			// Campaigns that are currently cached
 			ArrayList<UnityAdsCampaign> cachedCampaigns = cachemanifest.getCachedCampaigns();
+			// Campaigns that were received in the videoPlan
 			ArrayList<UnityAdsCampaign> videoPlanCampaigns = webdata.getVideoPlanCampaigns();
+			// Campaigns that were in cache but were not returned in the videoPlan (old or not current)
 			ArrayList<UnityAdsCampaign> pruneList = UnityAdsUtils.substractFromCampaignList(cachedCampaigns, videoPlanCampaigns);
 			
 			if (cachedCampaigns != null)
@@ -86,22 +90,24 @@ public class UnityAds implements IUnityAdsDownloadListener {
 				Log.d(UnityAdsProperties.LOG_NAME, "Campaigns to prune: " + pruneList.toString());
 			}
 			
-			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading
+			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloads.
 			cachemanager.updateCache(videoPlanCampaigns, pruneList);			
 			// Get downloading campaigns
-			ArrayList<UnityAdsCampaign> downloadingCampaigns = cachemanager.getDownloadingCampaigns();
+			//ArrayList<UnityAdsCampaign> downloadingCampaigns = cachemanager.getDownloadingCampaigns();
 			
+			/*
 			if (downloadingCampaigns != null)
 				videoPlanCampaigns = UnityAdsUtils.substractFromCampaignList(videoPlanCampaigns, downloadingCampaigns);
-			
+			*/
 			// Set the leftover campaigns to cache (videoPlanCampaigns can be null)
-			cachemanifest.setCachedCampaigns(videoPlanCampaigns);
+			//cachemanifest.setCachedCampaigns(videoPlanCampaigns);
 		
 			// If updateCache did not start any downloads and videoPlanCampaigns after all substractions still holds campaigns we can be sure that there are campaigns available
+			/*
 			if ((!cachemanager.isDownloading() || (videoPlanCampaigns != null && videoPlanCampaigns.size() > 0)) && _campaignListener != null) {
 				Log.d(UnityAdsProperties.LOG_NAME, "Reporting cached campaigns available");
 				_campaignListener.onFetchCompleted();
-			}
+			}*/
 			
 			setupViews();
 		}
@@ -110,15 +116,15 @@ public class UnityAds implements IUnityAdsDownloadListener {
 	}
 	
 	@Override
-	public void onDownloadsStarted () {	
-		Log.d(UnityAdsProperties.LOG_NAME, "Downloads started.");
+	public void onCampaignUpdateStarted () {	
+		Log.d(UnityAdsProperties.LOG_NAME, "Campaign updates started.");
 	}
 	
 	@Override
-	public void onCampaignFilesDownloaded (UnityAdsCampaignHandler campaignHandler) {
+	public void onCampaignReady (UnityAdsCampaignHandler campaignHandler) {
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 		
-		Log.d(UnityAdsProperties.LOG_NAME, "Downloads complete for: " + campaignHandler.getCampaign().toString());
+		Log.d(UnityAdsProperties.LOG_NAME, "Got onCampaignReady: " + campaignHandler.getCampaign().toString());
 		cachemanifest.addCampaignToManifest(campaignHandler.getCampaign());
 		
 		if (_campaignListener != null && cachemanifest.getCachedCampaignAmount() > 0) {
@@ -129,8 +135,8 @@ public class UnityAds implements IUnityAdsDownloadListener {
 	}
 	
 	@Override
-	public void onAllDownloadsCompleted () {
-		Log.d(UnityAdsProperties.LOG_NAME, "Listener got \"All downloads completed.\"");
+	public void onAllCampaignsReady () {
+		Log.d(UnityAdsProperties.LOG_NAME, "Listener got \"All campaigns ready.\"");
 	}
 		
 	public void changeActivity (Activity activity) {
