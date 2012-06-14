@@ -71,8 +71,7 @@ public class UnityAds implements IUnityAdsCacheListener {
 		cachemanifest = new UnityAdsCacheManifest();
 		webdata = new UnityAdsWebData();
 		
-		if (webdata.initVideoPlan(cachemanifest.getCachedCampaignIds())) {
-			
+		if (webdata.initVideoPlan(cachemanifest.getCachedCampaignIds())) {			
 			// Campaigns that are currently cached
 			ArrayList<UnityAdsCampaign> cachedCampaigns = cachemanifest.getCachedCampaigns();
 			// Campaigns that were received in the videoPlan
@@ -92,23 +91,6 @@ public class UnityAds implements IUnityAdsCacheListener {
 			
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloads.
 			cachemanager.updateCache(videoPlanCampaigns, pruneList);			
-			// Get downloading campaigns
-			//ArrayList<UnityAdsCampaign> downloadingCampaigns = cachemanager.getDownloadingCampaigns();
-			
-			/*
-			if (downloadingCampaigns != null)
-				videoPlanCampaigns = UnityAdsUtils.substractFromCampaignList(videoPlanCampaigns, downloadingCampaigns);
-			*/
-			// Set the leftover campaigns to cache (videoPlanCampaigns can be null)
-			//cachemanifest.setCachedCampaigns(videoPlanCampaigns);
-		
-			// If updateCache did not start any downloads and videoPlanCampaigns after all substractions still holds campaigns we can be sure that there are campaigns available
-			/*
-			if ((!cachemanager.isDownloading() || (videoPlanCampaigns != null && videoPlanCampaigns.size() > 0)) && _campaignListener != null) {
-				Log.d(UnityAdsProperties.LOG_NAME, "Reporting cached campaigns available");
-				_campaignListener.onFetchCompleted();
-			}*/
-			
 			setupViews();
 		}
 
@@ -128,7 +110,6 @@ public class UnityAds implements IUnityAdsCacheListener {
 		cachemanifest.addCampaignToManifest(campaignHandler.getCampaign());
 		
 		if (_campaignListener != null && cachemanifest.getCachedCampaignAmount() > 0) {
-			// TODO: Double onFetchCompleted event: when cached available in the beginning and when download completes 
 			Log.d(UnityAdsProperties.LOG_NAME, "Reporting cached campaigns available");
 			_campaignListener.onFetchCompleted();
 		}

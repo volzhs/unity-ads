@@ -22,8 +22,6 @@ public class UnityAdsDownloader {
 	private static enum UnityAdsDownloadEventType { DownloadCompleted };
 	
 	public static void addDownload (String downloadUrl) {
-		Log.d(UnityAdsProperties.LOG_NAME, "Got download: " + downloadUrl);
-		
 		if (_downloadList == null) _downloadList = new ArrayList<String>();
 		
 		if (!isInDownloads(downloadUrl)) {
@@ -37,9 +35,7 @@ public class UnityAdsDownloader {
 	}
 	
 	public static void addListener (IUnityAdsDownloadListener listener) {
-		Log.d(UnityAdsProperties.LOG_NAME, "Got listener: ");
-		if (_downloadListeners == null) _downloadListeners = new ArrayList<IUnityAdsDownloadListener>();
-		
+		if (_downloadListeners == null) _downloadListeners = new ArrayList<IUnityAdsDownloadListener>();		
 		if (!_downloadListeners.contains(listener))
 			_downloadListeners.add(listener);
 	}
@@ -48,9 +44,7 @@ public class UnityAdsDownloader {
 		if (_downloadListeners == null) return;		
 		if (_downloadListeners.contains(listener)) {
 			_downloadListeners.remove(listener);
-			Log.d(UnityAdsProperties.LOG_NAME, "Removing listener");
 		}
-			
 	}
 	
 	private static void removeDownload (String downloadUrl) {

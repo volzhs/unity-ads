@@ -20,7 +20,6 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	public UnityAdsCampaignHandler (UnityAdsCampaign campaign, ArrayList<UnityAdsCampaign> activeList) {
 		_campaign = campaign;
 		_activeCampaigns = activeList;
-		checkCampaign();
 	}
 	
 	public boolean hasDownloads () {
@@ -57,7 +56,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		UnityAdsDownloader.addDownload(fileUrl);
 	}
 	
-	private void checkCampaign () {
+	public void initCampaign () {
 		// Check video
 		if (!isFileCached(_campaign.getVideoFilename())) {
 			if (!hasDownloads())

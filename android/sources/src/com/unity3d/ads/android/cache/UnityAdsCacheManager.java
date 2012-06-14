@@ -2,6 +2,7 @@ package com.unity3d.ads.android.cache;
 
 import java.util.ArrayList;
 
+import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
@@ -12,17 +13,20 @@ import android.util.Log;
 
 public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	private IUnityAdsCacheListener _downloadListener = null;	
-	private ArrayList<UnityAdsCampaign> _downloadingCampaigns = null;
+	//private ArrayList<UnityAdsCampaign> _downloadingCampaigns = null;
 	private ArrayList<UnityAdsCampaignHandler> _downloadingHandlers = null;
+	private ArrayList<UnityAdsCampaignHandler> _handlers = null;	
+	private int amountPrepared = 0;
+	private int totalCampaigns = 0;
 	
 	public UnityAdsCacheManager () {
 		UnityAdsUtils.createCacheDir();
 		Log.d(UnityAdsProperties.LOG_NAME, "External storagedir: " + UnityAdsUtils.getCacheDirectory());
 	}
-	
+	/*
 	public ArrayList<UnityAdsCampaign> getDownloadingCampaigns () {
 		return _downloadingCampaigns;
-	}
+	}*/
 	
 	public void setDownloadListener (IUnityAdsCacheListener listener) {
 		_downloadListener = listener;
@@ -42,31 +46,33 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		
 		// Active -list contains campaigns that came with the videoPlan
 		if (activeList != null) {
+			totalCampaigns = activeList.size();
 			Log.d(UnityAdsProperties.LOG_NAME, "Updating cache: Going through active campaigns");			
 			for (UnityAdsCampaign campaign : activeList) {
 				UnityAdsCampaignHandler campaignHandler = new UnityAdsCampaignHandler(campaign, activeList);
+				addToUpdatingHandlers(campaignHandler);
+				campaignHandler.setListener(this);
+				campaignHandler.initCampaign();
 				
 				if (campaignHandler.hasDownloads()) {
-					campaignHandler.setListener(this);
+					//Log.d(UnityAdsProperties.LOG_NAME, "Adding to downloading handlers");
 					addToDownloadingHandlers(campaignHandler);
-				}
+				}					
 			}
 		}
 		
 		// Prune -list contains campaigns that were still in cache but not in the received videoPlan.
-		// There for they will not be put into cache. Check that the existing videos for those
+		// Therefore they will not be put into cache. Check that the existing videos for those
 		// campaigns are not needed by current active ones and remove them if needed.
 		if (pruneList != null) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Updating cache: Pruning old campaigns");
 			for (UnityAdsCampaign campaign : pruneList) {
+				UnityAds.cachemanifest.removeCampaignFromManifest(campaign.getCampaignId());
 				if (!UnityAdsUtils.isFileRequiredByCampaigns(campaign.getVideoUrl(), activeList)) {
 					UnityAdsUtils.removeFile(campaign.getVideoUrl());
 				}
 			}
 		}
-		
-		if (!hasDownloadingHandlers() && _downloadListener != null)
-			_downloadListener.onAllCampaignsReady();
 	}
 
 	
@@ -74,22 +80,37 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	
 	@Override
 	public void onCampaignHandled(UnityAdsCampaignHandler campaignHandler) {
+		amountPrepared++;
 		removeFromDownloadingHandlers(campaignHandler);
+		removeFromUpdatingHandlers(campaignHandler);
 		_downloadListener.onCampaignReady(campaignHandler);
 		
-		if (!hasDownloadingHandlers() && _downloadListener != null)
+		if (amountPrepared == totalCampaigns)
 			_downloadListener.onAllCampaignsReady();
 	}	
 	
 	
 	// INTERNAL METHODS
 	
+	private void removeFromUpdatingHandlers (UnityAdsCampaignHandler campaignHandler) {
+		if (_handlers != null)
+			_handlers.remove(campaignHandler);
+	}
+	
+	private void addToUpdatingHandlers (UnityAdsCampaignHandler campaignHandler) {
+		if (_handlers == null)
+			_handlers = new ArrayList<UnityAdsCampaignHandler>();
+		
+		_handlers.add(campaignHandler);
+	}
+	
 	private void removeFromDownloadingHandlers (UnityAdsCampaignHandler campaignHandler) {
 		if (_downloadingHandlers != null)
 			_downloadingHandlers.remove(campaignHandler);
-		
+		/*
 		if (_downloadingCampaigns != null)
 			_downloadingCampaigns.remove(campaignHandler.getCampaign());
+		*/
 	}
 	
 	private void addToDownloadingHandlers (UnityAdsCampaignHandler campaignHandler) {
@@ -98,9 +119,11 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		
 		_downloadingHandlers.add(campaignHandler);
 		
+		/*
 		if (_downloadingCampaigns == null)
 			_downloadingCampaigns = new ArrayList<UnityAdsCampaign>();
 		
 		_downloadingCampaigns.add(campaignHandler.getCampaign());
+		*/
 	}
 }

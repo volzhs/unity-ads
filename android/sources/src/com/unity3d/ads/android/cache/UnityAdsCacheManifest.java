@@ -94,8 +94,10 @@ public class UnityAdsCacheManifest {
 		if (_cachedCampaigns == null)
 			_cachedCampaigns = new ArrayList<UnityAdsCampaign>();
 		
-		_cachedCampaigns.add(campaign);
-		writeCurrentCacheManifest();
+		if (getCachedCampaignById(campaign.getCampaignId()) == null) {
+			_cachedCampaigns.add(campaign);
+			writeCurrentCacheManifest();
+		}
 		
 		return true;
 	}
