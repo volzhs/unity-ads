@@ -25,8 +25,6 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         ((ImageView)findViewById(R.id.playbtn)).setAlpha(80);
-
-
 		Log.d(UnityAdsProperties.LOG_NAME, "Init Unity Ads");
 		ai = new UnityAds(this, "892347239");
 		ai.setCampaignListener(this);
@@ -59,6 +57,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
 	
     @Override
 	protected void onDestroy() {
+    	ai.stopAll();
     	System.runFinalizersOnExit(true);		
     	super.onDestroy();		
 		android.os.Process.killProcess(android.os.Process.myPid());

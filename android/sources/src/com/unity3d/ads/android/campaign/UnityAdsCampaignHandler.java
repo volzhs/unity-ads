@@ -12,10 +12,12 @@ import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsDownloadListener;
 
 public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
+	
 	private ArrayList<String> _downloadList = null;
 	private UnityAdsCampaign _campaign = null;
 	private ArrayList<UnityAdsCampaign> _activeCampaigns = null;
 	private IUnityAdsCampaignHandlerListener _handlerListener = null;
+	
 	
 	public UnityAdsCampaignHandler (UnityAdsCampaign campaign, ArrayList<UnityAdsCampaign> activeList) {
 		_campaign = campaign;
@@ -43,28 +45,15 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 			UnityAdsDownloader.removeListener(this);
 			_handlerListener.onCampaignHandled(this);
 		}
-	}	
+	}
 	
-	
-	/* INTERNAL METHODS */
-	
-	private void addToFileDownloads (String fileUrl) {
-		if (fileUrl == null) return;
-		if (_downloadList == null) _downloadList = new ArrayList<String>();
-		
-		_downloadList.add(fileUrl);
-		UnityAdsDownloader.addDownload(fileUrl);
+	@Override
+	public void onFileDownloadCancelled (String downloadUrl) {		
 	}
 	
 	public void initCampaign () {
 		// Check video
-		if (!isFileCached(_campaign.getVideoFilename())) {
-			if (!hasDownloads())
-				UnityAdsDownloader.addListener(this);
-			
-			addToFileDownloads(_campaign.getVideoUrl());
-		}
-		
+		checkFileAndDownloadIfNeeded(_campaign.getVideoUrl());
 		UnityAdsCampaign possiblyCachedCampaign = UnityAds.cachemanifest.getCachedCampaignById(_campaign.getCampaignId());
 		
 		// If manifest has this campaign and their files are not the same, remove the cached file if not needed anymore.
@@ -75,6 +64,36 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		// No downloads, report campaign done
 		if (!hasDownloads() && _handlerListener != null)
 			_handlerListener.onCampaignHandled(this);
+	}
+	
+	
+	/* INTERNAL METHODS */
+	
+	private void checkFileAndDownloadIfNeeded (String fileUrl) {
+		if (!isFileCached(fileUrl)) {
+			if (!hasDownloads())
+				UnityAdsDownloader.addListener(this);
+			
+			addToFileDownloads(fileUrl);
+		}
+		else if (!isFileOk(fileUrl)) {
+			UnityAdsUtils.removeFile(fileUrl);
+			UnityAdsDownloader.addListener(this);
+			addToFileDownloads(fileUrl);
+		}		
+	}
+	
+	private boolean isFileOk (String fileUrl) {
+		// TODO: Implement isFileOk
+		return true;
+	}
+	
+	private void addToFileDownloads (String fileUrl) {
+		if (fileUrl == null) return;
+		if (_downloadList == null) _downloadList = new ArrayList<String>();
+		
+		_downloadList.add(fileUrl);
+		UnityAdsDownloader.addDownload(fileUrl);
 	}
 	
 	private boolean isFileCached (String fileName) {

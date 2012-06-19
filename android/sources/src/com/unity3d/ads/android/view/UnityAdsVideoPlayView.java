@@ -35,7 +35,8 @@ public class UnityAdsVideoPlayView extends FrameLayout {
 		createView();
 	}
 	
-	public void playVideo () {
+	public void playVideo (String fileName) {
+		((VideoView)findViewById(R.id.videoplayer)).setVideoPath(UnityAdsUtils.getCacheDirectory() + "/" + fileName);
 		((VideoView)findViewById(R.id.videoplayer)).start();
 	}
 
@@ -43,7 +44,6 @@ public class UnityAdsVideoPlayView extends FrameLayout {
 		Log.d(UnityAdsProperties.LOG_NAME, "Creating custom view");
 		setBackgroundColor(0xBA000000);
 		inflate(getContext(), R.layout.applifier_showvideo, this);
-		((VideoView)findViewById(R.id.videoplayer)).setVideoPath(UnityAdsUtils.getCacheDirectory() + "/video5.mp4");
 		((VideoView)findViewById(R.id.videoplayer)).setOnCompletionListener(_listener);
 	}
 	

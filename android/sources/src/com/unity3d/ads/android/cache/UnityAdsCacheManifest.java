@@ -12,9 +12,11 @@ import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 
 public class UnityAdsCacheManifest {
+	
 	private JSONObject _manifestJson = null;
 	private String _manifestContent = "";
 	private ArrayList<UnityAdsCampaign> _cachedCampaigns = null;
+	
 	
 	public UnityAdsCacheManifest () {
 		readCacheManifest();
@@ -50,6 +52,21 @@ public class UnityAdsCacheManifest {
 	
 	public ArrayList<UnityAdsCampaign> getCachedCampaigns () {
 		return _cachedCampaigns;
+	}
+	
+	public ArrayList<UnityAdsCampaign> getViewableCachedCampaigns () {
+		ArrayList<UnityAdsCampaign> retList = new ArrayList<UnityAdsCampaign>();
+		
+		if (_cachedCampaigns != null) {
+			for (UnityAdsCampaign campaign : _cachedCampaigns) {
+				if (!campaign.getCampaignStatus().equals("viewed"))
+					retList.add(campaign);
+			}
+			
+			return retList;
+		}
+		
+		return null;
 	}
 	
 	public UnityAdsCampaign getCachedCampaignById (String id) {
@@ -115,6 +132,17 @@ public class UnityAdsCacheManifest {
 		return false;
 	}
 	
+	public boolean writeCurrentCacheManifest () {
+		JSONObject manifestToWrite = UnityAdsUtils.createJsonFromCampaigns(_cachedCampaigns);
+		
+		if (manifestToWrite != null) {
+			return UnityAdsUtils.writeFile(getFileForManifest(), manifestToWrite.toString());
+		}
+		else {
+			return UnityAdsUtils.writeFile(getFileForManifest(), "");
+		}
+	}
+	
 	
 	/* INTERNAL METHODS */
 	
@@ -141,17 +169,6 @@ public class UnityAdsCacheManifest {
 		}
 		
 		return false;
-	}
-	
-	private boolean writeCurrentCacheManifest () {
-		JSONObject manifestToWrite = UnityAdsUtils.createJsonFromCampaigns(_cachedCampaigns);
-		
-		if (manifestToWrite != null) {
-			return UnityAdsUtils.writeFile(getFileForManifest(), manifestToWrite.toString());
-		}
-		else {
-			return UnityAdsUtils.writeFile(getFileForManifest(), "");
-		}
 	}
 	
 	private File getFileForManifest () {

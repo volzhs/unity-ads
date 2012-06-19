@@ -45,36 +45,6 @@ public class UnityAdsUtils {
 		return null;
 	}
 	
-	/*
-	public static ArrayList<UnityAdsCampaign> mergeCampaignLists (ArrayList<UnityAdsCampaign> list1, ArrayList<UnityAdsCampaign> list2) {
-		ArrayList<UnityAdsCampaign> mergedData = new ArrayList<UnityAdsCampaign>();
-		
-		if (list1 == null || list1.size() == 0) return list2;
-		if (list2 == null || list2.size() == 0) return list1;
-		
-		if (list1 != null && list2 != null) {
-			mergedData.addAll(list1);
-			for (UnityAdsCampaign list1Campaign : list1) {
-				UnityAdsCampaign inputCampaign = null;
-				boolean match = false;
-				for (UnityAdsCampaign list2Campaign : list2) {
-					inputCampaign = list2Campaign;
-					if (list1Campaign.getCampaignId().equals(list2Campaign.getCampaignId())) {
-						match = true;
-						break;
-					}
-				}
-				
-				if (!match)
-					mergedData.add(inputCampaign);
-			}
-			
-			return mergedData;
-		}
-		
-		return null;
-	}*/
-	
 	public static String readFile (File fileToRead) {
 		String fileContent = "";
 		BufferedReader br = null;
@@ -137,6 +107,9 @@ public class UnityAdsUtils {
 				Log.d(UnityAdsProperties.LOG_NAME, "Could not delete: " + cachedVideoFile.getAbsolutePath());
 			else
 				Log.d(UnityAdsProperties.LOG_NAME, "Deleted: " + cachedVideoFile.getAbsolutePath());
+		}
+		else {
+			Log.d(UnityAdsProperties.LOG_NAME, "File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.");
 		}
 	}
 		
@@ -202,10 +175,13 @@ public class UnityAdsUtils {
 	}
 	
 	public static boolean isFileRequiredByCampaigns (String fileName, ArrayList<UnityAdsCampaign> campaigns) {
-		if (fileName == null) return false;
+		if (fileName == null || campaigns == null) return false;
+		
+		File seekFile = new File(fileName);
 		
 		for (UnityAdsCampaign campaign : campaigns) {
-			if (campaign.getVideoUrl().equals(fileName))
+			File matchFile = new File(campaign.getVideoUrl());
+			if (seekFile.getName().equals(matchFile.getName()))
 				return true;
 		}
 		
