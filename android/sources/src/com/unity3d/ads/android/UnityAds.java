@@ -33,6 +33,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	
 	// Temporary data
 	private Activity _currentActivity = null;
+	private boolean _initialized = false;
 	
 	// Views
 	private UnityAdsVideoSelectView _vs = null;
@@ -45,9 +46,8 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	private IUnityAdsVideoListener _videoListener = null;
 	
 	// Currently Selected Campaign (for view)
-	private UnityAdsCampaign _selectedCampaign = null;
+	private UnityAdsCampaign _selectedCampaign = null;	
 	
-	private boolean _initialized = false;
 	
 	public UnityAds (Activity activity, String gameId) {
 		instance = this;
@@ -116,7 +116,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	public void onCampaignReady (UnityAdsCampaignHandler campaignHandler) {
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 				
-		// TODO: Campaign with only changed data won't get updated
 		Log.d(UnityAdsProperties.LOG_NAME, "Got onCampaignReady: " + campaignHandler.getCampaign().toString());
 		if (!cachemanifest.addCampaignToManifest(campaignHandler.getCampaign()))
 			cachemanifest.updateCampaignInManifest(campaignHandler.getCampaign());
@@ -192,7 +191,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		
 		if (viewableCampaigns != null && viewableCampaigns.size() > 0) {
 			int campaignIndex = (int)Math.round(Math.random() * (viewableCampaigns.size() - 1));
-			Log.d(UnityAdsProperties.LOG_NAME, "Selected campaign index " + campaignIndex + ", out of " + viewableCampaigns.size());
+			Log.d(UnityAdsProperties.LOG_NAME, "Selected campaign " + (campaignIndex + 1) + ", out of " + viewableCampaigns.size());
 			_selectedCampaign = viewableCampaigns.get(campaignIndex);		
 		}
 	}

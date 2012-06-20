@@ -122,15 +122,7 @@ public class UnityAdsCacheManifest {
 	
 	public boolean updateCampaignInManifest (UnityAdsCampaign campaign) {
 		if (campaign == null || _cachedCampaigns == null) return false;
-		
-		/*
-		if (removeCampaignFromManifest(campaign.getCampaignId())) {
-			if (addCampaignToManifest(campaign)) {
-				writeCurrentCacheManifest();
-				return true;
-			}
-		}*/
-		
+
 		int updateIndex = -1;
 		UnityAdsCampaign cacheCampaign = getCachedCampaignById(campaign.getCampaignId());
 		if (cacheCampaign != null)
