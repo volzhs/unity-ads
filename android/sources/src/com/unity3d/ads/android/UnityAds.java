@@ -79,7 +79,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		webdata = new UnityAdsWebData();
 		webdata.setWebDataListener(this);
 		
-		if (webdata.initVideoPlan(cachemanifest.getCachedCampaignIds())) {			
+		if (webdata.initVideoPlan(cachemanifest.getCachedCampaignIds())) {
 			_initialized = true;
 		}
 	}
@@ -234,7 +234,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 					_videoListener.onVideoStarted();
 			}
 		});
-		
+				
 		_vp = new UnityAdsVideoPlayView(_currentActivity.getBaseContext(), new MediaPlayer.OnCompletionListener() {			
 			@Override
 			public void onCompletion(MediaPlayer mp) {				
@@ -249,12 +249,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 				_currentActivity.addContentView(_vc, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 				focusToView(_vc);				
 			}
-		});
-		
-		_vp.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-			}
-		});		
+		});	
 	}
 }
