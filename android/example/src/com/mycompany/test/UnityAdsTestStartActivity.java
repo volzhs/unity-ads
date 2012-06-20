@@ -59,8 +59,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
 	protected void onDestroy() {
     	ai.stopAll();
     	System.runFinalizersOnExit(true);		
-    	super.onDestroy();		
 		android.os.Process.killProcess(android.os.Process.myPid());
+    	super.onDestroy();		
 	}
 	
     @Override

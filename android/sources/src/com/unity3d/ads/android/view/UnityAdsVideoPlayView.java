@@ -14,6 +14,9 @@ import android.widget.VideoView;
 
 import com.unity3d.ads.android.R;
 
+// TODO: Keep screen on
+// TODO: Pause playback on screen lock.
+// TODO: Generally, force the user to actually watch the video.
 public class UnityAdsVideoPlayView extends FrameLayout {
 
 	private MediaPlayer.OnCompletionListener _listener;

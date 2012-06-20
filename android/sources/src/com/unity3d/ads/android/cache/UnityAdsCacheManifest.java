@@ -10,6 +10,7 @@ import android.util.Log;
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 
 public class UnityAdsCacheManifest {
 	
@@ -59,7 +60,7 @@ public class UnityAdsCacheManifest {
 		
 		if (_cachedCampaigns != null) {
 			for (UnityAdsCampaign campaign : _cachedCampaigns) {
-				if (!campaign.getCampaignStatus().equals("viewed"))
+				if (campaign.getCampaignStatus() != UnityAdsCampaignStatus.VIEWED && campaign.getCampaignStatus() != UnityAdsCampaignStatus.PANIC)
 					retList.add(campaign);
 			}
 			

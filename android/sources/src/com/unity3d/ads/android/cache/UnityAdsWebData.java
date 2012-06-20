@@ -61,6 +61,10 @@ public class UnityAdsWebData {
 		return true;
 	}
 	
+	public void stopAllRequests () {
+		_videoPlanLoader.cancel(true);
+	}
+	
 	
 	/* INTERNAL METHODS */
 	
