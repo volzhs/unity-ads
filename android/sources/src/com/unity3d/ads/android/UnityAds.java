@@ -34,6 +34,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	// Temporary data
 	private Activity _currentActivity = null;
 	private boolean _initialized = false;
+	private boolean _showingAds = false;
 	
 	// Views
 	private UnityAdsVideoSelectView _vs = null;
@@ -143,20 +144,21 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	public boolean show () {
 		selectCampaign();
 		
-		if (_selectedCampaign != null) {
+		if (!_showingAds && _selectedCampaign != null) {
 			_currentActivity.addContentView(_vs, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 			focusToView(_vs);
+			_showingAds = true;	
 			
 			if (_adsListener != null)
 				_adsListener.onShow();
 			
-			return true;
+			return _showingAds;
 		}
 		
 		return false;
 	}
 	
-	public void closeAdsView (View view, boolean reportClosed) {
+	public void closeAdsView (View view, boolean freeView) {
 		view.setFocusable(false);
 		view.setFocusableInTouchMode(false);
 		
@@ -164,14 +166,16 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		if (vg != null)
 			vg.removeView(view);
 		
-		if (_adsListener != null && reportClosed)
+		if (_adsListener != null && freeView) {
+			_selectedCampaign = null;
+			_showingAds = false;
 			_adsListener.onHide();
+		}
 	}
 	
 	public boolean hasCampaigns () {
-		if (webdata != null && cachemanifest != null) {
-			if (webdata.getCampaignAmount() + cachemanifest.getCachedCampaignAmount() > 2)
-				return true;
+		if (cachemanifest != null) {
+			return cachemanifest.getCachedCampaignAmount() > 0;
 		}
 		
 		return false;
@@ -235,7 +239,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 				
 				_selectedCampaign.setCampaignStatus("viewed");
 				cachemanifest.writeCurrentCacheManifest();
-				_selectedCampaign = null;
+				
 				
 				closeAdsView(_vp, false);
 				_currentActivity.addContentView(_vc, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
