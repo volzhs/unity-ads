@@ -19,8 +19,6 @@ import android.widget.VideoView;
 
 import com.unity3d.ads.android.R;
 
-// TODO: Keep screen on
-// TODO: Pause playback on screen lock.
 // TODO: Generally, force the user to actually watch the video.
 public class UnityAdsVideoPlayView extends FrameLayout {
 
@@ -30,7 +28,7 @@ public class UnityAdsVideoPlayView extends FrameLayout {
 	public UnityAdsVideoPlayView(Context context, MediaPlayer.OnCompletionListener listener) {
 		super(context);
 		_listener = listener;
-		createView();		
+		createView();
 	}
 
 	public UnityAdsVideoPlayView(Context context, AttributeSet attrs) {
@@ -49,10 +47,12 @@ public class UnityAdsVideoPlayView extends FrameLayout {
 		startVideo();
 	}
 	
+	
 	/* INTERNAL METHODS */
 	
 	private void startVideo () {
 		((VideoView)findViewById(R.id.videoplayer)).start();
+		setKeepScreenOn(true);
 		
 		if (_videoPausedTimer == null) {
 			_videoPausedTimer = new Timer();
@@ -63,6 +63,7 @@ public class UnityAdsVideoPlayView extends FrameLayout {
 	private void pauseVideo () {
 		purgeVideoPausedTimer();
 		((VideoView)findViewById(R.id.videoplayer)).pause();
+		setKeepScreenOn(false);
 	}
 	
 	private void purgeVideoPausedTimer () {
@@ -95,18 +96,19 @@ public class UnityAdsVideoPlayView extends FrameLayout {
 		});
 	}
 	
-	
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
 		    	((VideoView)findViewById(R.id.videoplayer)).stopPlayback();
+				setKeepScreenOn(false);
 		    	UnityAds.instance.closeAdsView(this, true);
 		    	return true;
 		}
     	
     	return false;
     } 
+    
     
     /* INTERNAL CLASSES */
     
