@@ -162,7 +162,7 @@ public class UnityAdsCacheManifest {
 	
 	private boolean readCacheManifest () {		
 		File manifest = getFileForManifest();
-		_manifestContent = UnityAdsUtils.readFile(manifest);
+		_manifestContent = UnityAdsUtils.readFile(manifest, false);
 		
 		if (_manifestContent != null) {
 			try {
