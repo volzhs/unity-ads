@@ -75,6 +75,7 @@ public class UnityAdsWebData {
 	public boolean sendCampaignViewed (UnityAdsCampaign campaign) {
 		if (campaign == null) return false;
 		
+		//UnityAdsUrlLoader loader = new UnityAdsUrlLoader("http://ads-dev.local/mania?viewed=" + campaign.getCampaignId(), UnityAdsRequestType.VideoViewed);
 		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(UnityAdsProperties.WEBDATA_URL + "?viewed=" + campaign.getCampaignId(), UnityAdsRequestType.VideoViewed);
 		addLoader(loader);
 		startNextLoader();		
