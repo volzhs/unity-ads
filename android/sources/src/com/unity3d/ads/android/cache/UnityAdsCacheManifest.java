@@ -12,6 +12,7 @@ import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 
+// TODO: Ensure that no failures happen when 2 games are using the same data at the same time.
 public class UnityAdsCacheManifest {
 	
 	private JSONObject _manifestJson = null;
@@ -29,6 +30,11 @@ public class UnityAdsCacheManifest {
 			return 0;
 		else
 			return _cachedCampaigns.size();
+	}
+	
+	public int getViewableCachedCampaignAmount () {
+		if (getViewableCachedCampaigns() == null) return 0;
+		return getViewableCachedCampaigns().size();
 	}
 	
 	public ArrayList<String> getCachedCampaignIds () {
@@ -60,7 +66,7 @@ public class UnityAdsCacheManifest {
 		
 		if (_cachedCampaigns != null) {
 			for (UnityAdsCampaign campaign : _cachedCampaigns) {
-				if (campaign.getCampaignStatus() != UnityAdsCampaignStatus.VIEWED && campaign.getCampaignStatus() != UnityAdsCampaignStatus.PANIC)
+				if (campaign != null && campaign.getCampaignStatus() != UnityAdsCampaignStatus.VIEWED && campaign.getCampaignStatus() != UnityAdsCampaignStatus.PANIC)
 					retList.add(campaign);
 			}
 			
