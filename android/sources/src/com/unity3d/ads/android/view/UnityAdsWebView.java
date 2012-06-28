@@ -2,9 +2,8 @@ package com.unity3d.ads.android.view;
 
 import java.lang.reflect.Method;
 
-import org.json.JSONObject;
-
 import com.unity3d.ads.android.UnityAdsProperties;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -21,9 +20,9 @@ import android.webkit.WebViewClient;
 public class UnityAdsWebView extends WebView {
 
 	private String _url = "http://ads-dev.local/webapp.html";	
-	private JSONObject _videoPlan = null;
-	private Activity _currentActivity = null;
 	private IUnityAdsWebViewListener _listener = null;
+	private boolean _webAppLoaded = false;
+	private UnityAdsWebView _self = null;
 	
 	private static enum UnityAdsUrl { UnityAds;
 		@Override		
@@ -40,24 +39,36 @@ public class UnityAdsWebView extends WebView {
 	}; 
 	
 	
-	public UnityAdsWebView(Activity activity, JSONObject videoPlan, IUnityAdsWebViewListener listener) {
+	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener) {
 		super(activity);
-		init(activity, _url, videoPlan, listener);
+		init(activity, _url, listener);
 	}
 
-	public UnityAdsWebView(Activity activity, String url, JSONObject videoPlan, IUnityAdsWebViewListener listener) {
+	public UnityAdsWebView(Activity activity, String url, IUnityAdsWebViewListener listener) {
 		super(activity);
-		init(activity, url, videoPlan, listener);
+		init(activity, url, listener);
 	}
 	
+	public boolean isWebAppLoaded () {
+		return _webAppLoaded;
+	}
+	
+	public void setView (String view) {
+		if (isWebAppLoaded())
+			loadUrl("javascript:setView('" + view + "');");
+	}
+	
+	public void setSelectedCampaign (UnityAdsCampaign campaign) {
+		if (isWebAppLoaded())
+			loadUrl("javascript:selectCampaign('" + campaign.toJson().toString() + "');");
+	}
 	
 	/* INTENRAL METHODS */
 	
-	private void init (Activity activity, String url, JSONObject videoPlan, IUnityAdsWebViewListener listener) {
+	private void init (Activity activity, String url, IUnityAdsWebViewListener listener) {
+		_self = this;
 		_listener = listener;
 		_url = url;
-		_videoPlan = videoPlan;
-		_currentActivity = activity;
 		setupUnityAdsView();
 		loadUrl(_url);
 	}
@@ -131,7 +142,7 @@ public class UnityAdsWebView extends WebView {
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
 		    	if (_listener != null)
-		    		_listener.onBackButtonClicked();
+		    		_listener.onBackButtonClicked(this);
 		    	return true;
 		}
     	
@@ -142,8 +153,7 @@ public class UnityAdsWebView extends WebView {
 	
 	private class UnityAdsViewChromeClient extends WebChromeClient {
 		public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-			//webapp.addLogMessage(message, lineNumber, sourceID);
-			// TODO: Log console messages
+			Log.d(UnityAdsProperties.LOG_NAME, "JAVASCRIPT(" + lineNumber + "): " + message);
 		}
 		
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
@@ -156,14 +166,7 @@ public class UnityAdsWebView extends WebView {
 		public void onPageFinished (WebView webview, String url) {
 			super.onPageFinished(webview, url);
 			Log.d(UnityAdsProperties.LOG_NAME, "Finished url: "  + url);
-			
-			// TODO: Webview ready, init
-			
-			/*
-			if (webapp.getWebState() != ApplifierWebState.Ready && webview != null) {
-				webapp.initWebApp((UnityAdsView)webview);				
-				webapp.processJavascriptCommandLog();
-			}*/
+			_webAppLoaded = true;
 		}
 		
 		@Override
@@ -185,7 +188,7 @@ public class UnityAdsWebView extends WebView {
 				}
 				else if (url.endsWith("close")) {
 					if (_listener != null)
-						_listener.onCloseButtonClicked();
+						_listener.onCloseButtonClicked(_self);
 				}
 				
 				shouldOverride = true;

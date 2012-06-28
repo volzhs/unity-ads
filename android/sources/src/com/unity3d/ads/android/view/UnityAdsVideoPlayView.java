@@ -3,13 +3,11 @@ package com.unity3d.ads.android.view;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,14 +17,16 @@ import android.widget.FrameLayout;
 import android.widget.VideoView;
 
 import com.unity3d.ads.android.R;
+import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 
+// TODO: Do not use XML layout, generate it on the fly
 public class UnityAdsVideoPlayView extends FrameLayout {
 
-	private MediaPlayer.OnCompletionListener _listener;
+	private IUnityAdsVideoPlayerListener _listener;
 	private Timer _videoPausedTimer = null;
 	private Activity _currentActivity = null;
 	
-	public UnityAdsVideoPlayView(Context context, MediaPlayer.OnCompletionListener listener, Activity activity) {
+	public UnityAdsVideoPlayView(Context context, IUnityAdsVideoPlayerListener listener, Activity activity) {
 		super(context);
 		_currentActivity = activity;
 		_listener = listener;
@@ -123,7 +123,10 @@ public class UnityAdsVideoPlayView extends FrameLayout {
 			case KeyEvent.KEYCODE_BACK:
 		    	((VideoView)findViewById(R.id.videoplayer)).stopPlayback();
 				setKeepScreenOn(false);
-		    	UnityAds.instance.closeAdsView(this, true);
+				
+				if (_listener != null)
+					_listener.onBackButtonClicked(this);
+				
 		    	return true;
 		}
     	

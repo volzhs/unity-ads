@@ -140,8 +140,4 @@ public class UnityAdsCampaign {
 		}
 		return false;
 	}
-	
-	private UnityAdsCampaignStatus getCampaignStatusFromString (String status) {
-		return null;
-	}
 }
