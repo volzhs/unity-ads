@@ -163,6 +163,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	
 	@Override
 	public void onWebAppLoaded () {
+		
 	}
 	
 	@Override
