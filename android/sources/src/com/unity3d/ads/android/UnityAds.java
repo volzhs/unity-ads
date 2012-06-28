@@ -13,10 +13,10 @@ import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
 import com.unity3d.ads.android.video.IUnityAdsVideoListener;
-import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 import com.unity3d.ads.android.view.UnityAdsWebView;
 import com.unity3d.ads.android.view.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.view.IUnityAdsWebViewListener;
+import com.unity3d.ads.android.view.IUnityAdsVideoPlayerListener;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
@@ -37,6 +37,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	private Activity _currentActivity = null;
 	private boolean _initialized = false;
 	private boolean _showingAds = false;
+	private boolean _adsReadySent = false;
 	
 	// Views
 	private UnityAdsVideoPlayView _vp = null;
@@ -137,13 +138,12 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 				
 		Log.d(UnityAdsProperties.LOG_NAME, "Got onCampaignReady: " + campaignHandler.getCampaign().toString());
+		
 		if (!cachemanifest.addCampaignToManifest(campaignHandler.getCampaign()))
 			cachemanifest.updateCampaignInManifest(campaignHandler.getCampaign());
 		
-		if (_campaignListener != null && cachemanifest.getViewableCachedCampaignAmount() > 0) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Reporting cached campaigns available");
-			_campaignListener.onFetchCompleted();
-		}
+		if (canShowAds())
+			sendAdsReadyEvent();
 	}
 	
 	@Override
@@ -163,7 +163,13 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	
 	@Override
 	public void onWebAppLoaded () {
+		ArrayList<UnityAdsCampaign> campaignList = solveCurrentCampaigns();
 		
+		if (campaignList != null)
+			_webView.setAvailableCampaigns(UnityAdsUtils.createJsonFromCampaigns(campaignList).toString());
+		
+		if (canShowAds())
+			sendAdsReadyEvent();
 	}
 	
 	@Override
@@ -182,9 +188,8 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		_currentActivity.addContentView(_vp, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_vp);
 		
-		if (_selectedCampaign != null) {
+		if (_selectedCampaign != null)
 			_vp.playVideo(_selectedCampaign.getVideoFilename());
-		}
 		else
 			Log.d(UnityAdsProperties.LOG_NAME, "Campaign is null");
 					
@@ -218,35 +223,42 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	private void initCache () {
 		if (_initialized) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Init cache");
-			// Campaigns that are currently cached
-			ArrayList<UnityAdsCampaign> cachedCampaigns = cachemanifest.getCachedCampaigns();
 			// Campaigns that were received in the videoPlan
-			ArrayList<UnityAdsCampaign> videoPlanCampaigns = webdata.getVideoPlanCampaigns();
+			ArrayList<UnityAdsCampaign> videoPlanCampaigns = solveCurrentCampaigns();
 			// Campaigns that were in cache but were not returned in the videoPlan (old or not current)
-			ArrayList<UnityAdsCampaign> pruneList = UnityAdsUtils.substractFromCampaignList(cachedCampaigns, videoPlanCampaigns);
-			
-			// If campaigns from web-data is null something has probably gone wrong, try to maintain something viewable by setting
-			// the videoPlan campaigns from current cache and running them through.
-			if (videoPlanCampaigns == null) {
-				videoPlanCampaigns = cachemanifest.getCachedCampaigns();
-				pruneList = null;
-			}
+			ArrayList<UnityAdsCampaign> pruneList = solvePruneList();
 				
-			// If current videoPlan is still null (nothing in the cache either), just forget going any further.
+			// If current videoPlan is null (nothing in the cache either), just forget going any further.
 			if (videoPlanCampaigns == null || videoPlanCampaigns.size() == 0) return;
-			
-			if (cachedCampaigns != null)
-				Log.d(UnityAdsProperties.LOG_NAME, "Cached campaigns: " + cachedCampaigns.toString());
-			
-			if (videoPlanCampaigns != null)
-				Log.d(UnityAdsProperties.LOG_NAME, "Campaigns in videoPlan: " + videoPlanCampaigns.toString());
-			
-			if (pruneList != null)
-				Log.d(UnityAdsProperties.LOG_NAME, "Campaigns to prune: " + pruneList.toString());
 			
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
 			cachemanager.updateCache(videoPlanCampaigns, pruneList);			
 			setupViews();		
+		}
+	}
+	
+	private ArrayList<UnityAdsCampaign> solveCurrentCampaigns () {
+		ArrayList<UnityAdsCampaign> campaigns = webdata.getVideoPlanCampaigns();
+		if (campaigns == null)
+			campaigns = cachemanifest.getCachedCampaigns();
+		
+		return campaigns;
+	}
+	
+	private ArrayList<UnityAdsCampaign> solvePruneList () {
+		if (webdata.getVideoPlanCampaigns() == null) return null;		
+		return UnityAdsUtils.substractFromCampaignList(cachemanifest.getCachedCampaigns(), webdata.getVideoPlanCampaigns());		
+	}
+	
+	private boolean canShowAds () {
+		return _webView != null && _webView.isWebAppLoaded() && cachemanifest.getViewableCachedCampaignAmount() > 0;
+	}
+	
+	private void sendAdsReadyEvent () {
+		if (!_adsReadySent && _campaignListener != null) {
+			Log.d(UnityAdsProperties.LOG_NAME, "Reporting cached campaigns available");
+			_adsReadySent = true;
+			_campaignListener.onFetchCompleted();
 		}
 	}
 	

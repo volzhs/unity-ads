@@ -37,20 +37,20 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
     }
     
     public void onHide () {
-    	Log.d(UnityAdsProperties.LOG_NAME, "Unity Ads close");
+    	Log.d(UnityAdsProperties.LOG_NAME, "HOST: Unity Ads close");
     }
     
     public void onShow () {   	
-    	Log.d(UnityAdsProperties.LOG_NAME, "Unity Ads open");
+    	Log.d(UnityAdsProperties.LOG_NAME, "HOST: Unity Ads open");
     }
     
 	public void onVideoStarted () {
-		Log.d(UnityAdsProperties.LOG_NAME, "Video started!");
+		Log.d(UnityAdsProperties.LOG_NAME, "HOST: Video started!");
 	}
 	
 	public void onVideoCompleted () {
     	((ImageView)findViewById(R.id.plissken)).setAlpha(255);
     	((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
-    	Log.d(UnityAdsProperties.LOG_NAME, "Video completed!");
+    	Log.d(UnityAdsProperties.LOG_NAME, "HOST: Video completed!");
 	}
 }

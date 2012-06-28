@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.VideoView;
 
 import com.unity3d.ads.android.R;
-import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 
 // TODO: Do not use XML layout, generate it on the fly
 public class UnityAdsVideoPlayView extends FrameLayout {

@@ -60,7 +60,12 @@ public class UnityAdsWebView extends WebView {
 	
 	public void setSelectedCampaign (UnityAdsCampaign campaign) {
 		if (isWebAppLoaded())
-			loadUrl("javascript:selectCampaign('" + campaign.toJson().toString() + "');");
+			loadUrl("javascript:selectCampaign('" + campaign.getCampaignId() + "');");
+	}
+	
+	public void setAvailableCampaigns (String videoPlan) {
+		if (isWebAppLoaded())
+			loadUrl("javascript:setAvailableCampaigns('" + videoPlan + "');");
 	}
 	
 	/* INTENRAL METHODS */
@@ -166,7 +171,10 @@ public class UnityAdsWebView extends WebView {
 		public void onPageFinished (WebView webview, String url) {
 			super.onPageFinished(webview, url);
 			Log.d(UnityAdsProperties.LOG_NAME, "Finished url: "  + url);
-			_webAppLoaded = true;
+			if (_listener != null && !_webAppLoaded) {
+				_webAppLoaded = true;
+				_listener.onWebAppLoaded();
+			}
 		}
 		
 		@Override
@@ -176,8 +184,6 @@ public class UnityAdsWebView extends WebView {
 			if (view == null || url == null) return true;
 			
 			if (url.startsWith(UnityAdsUrl.UnityAds.toString())) {
-				Log.d(UnityAdsProperties.LOG_NAME, "Applifier URL!!");
-				
 				if (url.endsWith("playVideo")) {
 					if (_listener != null)
 						_listener.onPlayVideoClicked();
