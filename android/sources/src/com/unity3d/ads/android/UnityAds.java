@@ -34,7 +34,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	public static UnityAdsWebData webdata = null;
 	
 	// Temporary data
-	private Activity _currentActivity = null;
+	//private Activity _currentActivity = null;
 	private boolean _initialized = false;
 	private boolean _showingAds = false;
 	private boolean _adsReadySent = false;
@@ -55,8 +55,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	public UnityAds (Activity activity, String gameId) {
 		instance = this;
 		UnityAdsProperties.UNITY_ADS_APP_ID = gameId;
-		UnityAdsProperties.ROOT_ACTIVITY = activity;
-		_currentActivity = activity;
+		UnityAdsProperties.CURRENT_ACTIVITY = activity;
 	}
 		
 	public void setListener (IUnityAdsListener listener) {
@@ -86,17 +85,19 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	}
 		
 	public void changeActivity (Activity activity) {
-		_currentActivity = activity;
+		if (activity == null) return;
+		
+		UnityAdsProperties.CURRENT_ACTIVITY = activity;
 		
 		if (_vp != null)
-			_vp.setActivity(_currentActivity);
+			_vp.setActivity(UnityAdsProperties.CURRENT_ACTIVITY);
 	}
 	
 	public boolean show () {
 		selectCampaign();
 		
 		if (!_showingAds && _selectedCampaign != null && _webView != null && _webView.isWebAppLoaded()) {
-			_currentActivity.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+			UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 			focusToView(_webView);
 			_webView.setView("videoStart");
 			_webView.setSelectedCampaign(_selectedCampaign);
@@ -185,7 +186,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	@Override
 	public void onPlayVideoClicked () {
 		closeView(_webView, false);
-		_currentActivity.addContentView(_vp, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_vp, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_vp);
 		
 		if (_selectedCampaign != null)
@@ -214,7 +215,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		closeView(_vp, false);
 		
 		_webView.setView("videoCompleted");
-		_currentActivity.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_webView);
 	}
 	
@@ -293,7 +294,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	}
 	
 	private void setupViews () {
-		_webView = new UnityAdsWebView(_currentActivity, this);	
-		_vp = new UnityAdsVideoPlayView(_currentActivity.getBaseContext(), this, _currentActivity);	
+		_webView = new UnityAdsWebView(UnityAdsProperties.CURRENT_ACTIVITY, this);	
+		_vp = new UnityAdsVideoPlayView(UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext(), this, UnityAdsProperties.CURRENT_ACTIVITY);	
 	}
 }
