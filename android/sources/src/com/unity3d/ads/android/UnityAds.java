@@ -25,8 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-
-// TODO: Streaming when nothing in cache?
 public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListener, IUnityAdsWebViewListener, IUnityAdsVideoPlayerListener {
 	
 	// Unity Ads components
@@ -190,8 +188,13 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_vp, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_vp);
 		
-		if (_selectedCampaign != null)
-			_vp.playVideo(_selectedCampaign.getVideoFilename());
+		if (_selectedCampaign != null) {
+			String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + _selectedCampaign.getVideoFilename();
+			if (!UnityAdsUtils.isFileInCache(_selectedCampaign.getVideoFilename()))
+				playUrl = _selectedCampaign.getVideoStreamUrl(); 
+
+			_vp.playVideo(playUrl);
+		}			
 		else
 			Log.d(UnityAdsProperties.LOG_NAME, "Campaign is null");
 					
@@ -218,6 +221,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		_webView.setView("videoCompleted");
 		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_webView);
+		_selectedCampaign = null;
 	}
 	
 	/* PRIVATE METHODS */
@@ -258,7 +262,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	
 	private void sendAdsReadyEvent () {
 		if (!_adsReadySent && _campaignListener != null) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Reporting cached campaigns available");
+			Log.d(UnityAdsProperties.LOG_NAME, "Unity Ads ready!");
 			_adsReadySent = true;
 			_campaignListener.onFetchCompleted();
 		}

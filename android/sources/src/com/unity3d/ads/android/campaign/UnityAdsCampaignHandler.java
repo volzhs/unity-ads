@@ -1,6 +1,5 @@
 package com.unity3d.ads.android.campaign;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import android.util.Log;
@@ -17,6 +16,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	private UnityAdsCampaign _campaign = null;
 	private ArrayList<UnityAdsCampaign> _activeCampaigns = null;
 	private IUnityAdsCampaignHandlerListener _handlerListener = null;
+	private boolean _cancelledDownloads = false;
 	
 	
 	public UnityAdsCampaignHandler (UnityAdsCampaign campaign, ArrayList<UnityAdsCampaign> activeList) {
@@ -38,17 +38,17 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	
 	@Override
 	public void onFileDownloadCompleted (String downloadUrl) {
-		removeDownload(downloadUrl);
-		
-		if (_downloadList != null && _downloadList.size() == 0 && _handlerListener != null) {
+		if (finishDownload(downloadUrl))
 			Log.d(UnityAdsProperties.LOG_NAME, "Reporting campaign download completion: " + _campaign.getCampaignId());
-			UnityAdsDownloader.removeListener(this);
-			_handlerListener.onCampaignHandled(this);
-		}
+		
 	}
 	
 	@Override
-	public void onFileDownloadCancelled (String downloadUrl) {		
+	public void onFileDownloadCancelled (String downloadUrl) {	
+		if (finishDownload(downloadUrl)) {
+			Log.d(UnityAdsProperties.LOG_NAME, "Download cancelled: " + _campaign.getCampaignId());
+			_cancelledDownloads = true;
+		}
 	}
 	
 	public void initCampaign () {
@@ -62,15 +62,28 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 			UnityAdsUtils.removeFile(possiblyCachedCampaign.getVideoUrl());
 		
 		// No downloads, report campaign done
-		if (!hasDownloads() && _handlerListener != null)
+		if (!hasDownloads() && _handlerListener != null && !_cancelledDownloads) {
 			_handlerListener.onCampaignHandled(this);
+		}
 	}
 	
 	
 	/* INTERNAL METHODS */
 	
+	private boolean finishDownload (String downloadUrl) {
+		removeDownload(downloadUrl);
+		
+		if (_downloadList != null && _downloadList.size() == 0 && _handlerListener != null) {
+			UnityAdsDownloader.removeListener(this);
+			_handlerListener.onCampaignHandled(this);
+			return true;
+		}
+		
+		return false;
+	}
+	
 	private void checkFileAndDownloadIfNeeded (String fileUrl) {
-		if (!isFileCached(fileUrl)) {
+		if (!UnityAdsUtils.isFileInCache(fileUrl)) {
 			if (!hasDownloads())
 				UnityAdsDownloader.addListener(this);
 			
@@ -95,14 +108,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		_downloadList.add(fileUrl);
 		UnityAdsDownloader.addDownload(fileUrl);
 	}
-	
-	private boolean isFileCached (String fileName) {
-		File targetFile = new File (fileName);
-		File cachedFile = new File (UnityAdsUtils.getCacheDirectory() + "/" + targetFile.getName());
-		
-		return cachedFile.exists();
-	}
-	
+
 	private void removeDownload (String downloadUrl) {
 		if (_downloadList == null) return;
 		

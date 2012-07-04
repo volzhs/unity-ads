@@ -17,8 +17,8 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	private IUnityAdsCacheListener _downloadListener = null;	
 	private ArrayList<UnityAdsCampaignHandler> _downloadingHandlers = null;
 	private ArrayList<UnityAdsCampaignHandler> _handlers = null;	
-	private int amountPrepared = 0;
-	private int totalCampaigns = 0;
+	private int _amountPrepared = 0;
+	private int _totalCampaigns = 0;
 	
 	
 	public UnityAdsCacheManager () {
@@ -42,7 +42,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		if (_downloadListener != null)
 			_downloadListener.onCampaignUpdateStarted();
 		
-		amountPrepared = 0;
+		_amountPrepared = 0;
 		
 		// Check cache directory and delete all files that don't match the current files in campaigns
 		if (UnityAdsUtils.getCacheDirectory() != null) {
@@ -76,7 +76,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		
 		// Active -list contains campaigns that came with the videoPlan
 		if (activeList != null) {
-			totalCampaigns = activeList.size();
+			_totalCampaigns = activeList.size();
 			Log.d(UnityAdsProperties.LOG_NAME, "Updating cache: Going through active campaigns");			
 			for (UnityAdsCampaign campaign : activeList) {
 				UnityAdsCampaignHandler campaignHandler = new UnityAdsCampaignHandler(campaign, activeList);
@@ -96,12 +96,12 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	
 	@Override
 	public void onCampaignHandled(UnityAdsCampaignHandler campaignHandler) {
-		amountPrepared++;
+		_amountPrepared++;
 		removeFromDownloadingHandlers(campaignHandler);
 		removeFromUpdatingHandlers(campaignHandler);
 		_downloadListener.onCampaignReady(campaignHandler);
 		
-		if (amountPrepared == totalCampaigns)
+		if (_amountPrepared == _totalCampaigns)
 			_downloadListener.onAllCampaignsReady();
 	}	
 	

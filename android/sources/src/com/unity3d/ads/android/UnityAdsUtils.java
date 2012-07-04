@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 
 import android.os.Environment;
 import android.util.Log;
@@ -188,5 +189,26 @@ public class UnityAdsUtils {
 		}
 		
 		return false;
+	}
+	
+	public static ArrayList<UnityAdsCampaign> getViewableCampaignsFromCampaignList (ArrayList<UnityAdsCampaign> campaignList) {
+		ArrayList<UnityAdsCampaign> retList = new ArrayList<UnityAdsCampaign>();
+		
+		if (campaignList != null) {
+			for (UnityAdsCampaign campaign : campaignList) {
+				if (campaign != null && campaign.getCampaignStatus() != UnityAdsCampaignStatus.VIEWED && campaign.getCampaignStatus() != UnityAdsCampaignStatus.PANIC)
+					retList.add(campaign);
+			}
+			
+			return retList;
+		}
+		
+		return null;		
+	}
+	
+	public static boolean isFileInCache (String fileName) {
+		File targetFile = new File (fileName);
+		File testFile = new File(getCacheDirectory() + "/" + targetFile.getName());
+		return testFile.exists();
 	}
 }

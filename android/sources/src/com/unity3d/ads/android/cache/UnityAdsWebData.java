@@ -56,6 +56,10 @@ public class UnityAdsWebData {
 	public ArrayList<UnityAdsCampaign> getVideoPlanCampaigns () {
 		return _videoPlanCampaigns;
 	}
+	
+	public ArrayList<UnityAdsCampaign> getViewableVideoPlanCampaigns () {
+		return UnityAdsUtils.getViewableCampaignsFromCampaignList(_videoPlanCampaigns);
+	}
 
 	public boolean initVideoPlan (ArrayList<String> cachedCampaignIds) {		
 		JSONObject data = getCachedCampaignIdsArray(cachedCampaignIds);

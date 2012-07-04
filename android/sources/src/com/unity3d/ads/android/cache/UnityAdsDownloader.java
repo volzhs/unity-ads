@@ -121,6 +121,9 @@ public class UnityAdsDownloader {
 	    }
 		else {
 			Log.d(UnityAdsProperties.LOG_NAME, "No WIFI detected, not downloading: " + url);
+			removeDownload(url.toString());
+			sendToListeners(UnityAdsDownloadEventType.DownloadCancelled, url);
+			cacheNextFile(); 
 		}
 	}
 	

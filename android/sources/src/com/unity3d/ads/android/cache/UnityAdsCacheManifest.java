@@ -10,7 +10,6 @@ import android.util.Log;
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
-import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 
 // TODO: Ensure that no failures happen when 2 games are using the same data at the same time.
 public class UnityAdsCacheManifest {
@@ -26,15 +25,11 @@ public class UnityAdsCacheManifest {
 	}
 	
 	public int getCachedCampaignAmount () {
-		if (_cachedCampaigns == null) 
-			return 0;
-		else
-			return _cachedCampaigns.size();
+		return _cachedCampaigns == null ? 0 : _cachedCampaigns.size();
 	}
 	
 	public int getViewableCachedCampaignAmount () {
-		if (getViewableCachedCampaigns() == null) return 0;
-		return getViewableCachedCampaigns().size();
+		return getViewableCachedCampaigns() == null ? 0 : getViewableCachedCampaigns().size();
 	}
 	
 	public ArrayList<String> getCachedCampaignIds () {
@@ -62,18 +57,7 @@ public class UnityAdsCacheManifest {
 	}
 	
 	public ArrayList<UnityAdsCampaign> getViewableCachedCampaigns () {
-		ArrayList<UnityAdsCampaign> retList = new ArrayList<UnityAdsCampaign>();
-		
-		if (_cachedCampaigns != null) {
-			for (UnityAdsCampaign campaign : _cachedCampaigns) {
-				if (campaign != null && campaign.getCampaignStatus() != UnityAdsCampaignStatus.VIEWED && campaign.getCampaignStatus() != UnityAdsCampaignStatus.PANIC)
-					retList.add(campaign);
-			}
-			
-			return retList;
-		}
-		
-		return null;
+		return UnityAdsUtils.getViewableCampaignsFromCampaignList(_cachedCampaigns);
 	}
 	
 	public UnityAdsCampaign getCachedCampaignById (String id) {
