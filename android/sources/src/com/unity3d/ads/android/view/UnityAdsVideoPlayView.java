@@ -5,7 +5,6 @@ import java.util.TimerTask;
 
 import com.unity3d.ads.android.UnityAdsProperties;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
@@ -16,21 +15,18 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
-// TODO: Show play icon after paused
 public class UnityAdsVideoPlayView extends RelativeLayout {
 
 	private IUnityAdsVideoPlayerListener _listener;
 	private Timer _videoPausedTimer = null;
-	private Activity _currentActivity = null;
 	private VideoView _videoView = null;
 	private String _videoFileName = null;
 	private UnityAdsBufferingView _bufferingView = null;
 	private UnityAdsVideoPausedView _pausedView = null;
 	private boolean _videoPlayheadPrepared = false;
 	
-	public UnityAdsVideoPlayView(Context context, IUnityAdsVideoPlayerListener listener, Activity activity) {
+	public UnityAdsVideoPlayView(Context context, IUnityAdsVideoPlayerListener listener) {
 		super(context);
-		_currentActivity = activity;
 		_listener = listener;
 		createView();
 	}
@@ -55,17 +51,13 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_videoView.setVideoPath(_videoFileName);
 		startVideo();
 	}
-	
-	public void setActivity (Activity activity) {
-		_currentActivity = activity;
-	}
-	
+
 	
 	/* INTERNAL METHODS */
 	
 	private void startVideo () {
-		if (_currentActivity != null) {
-			_currentActivity.runOnUiThread(new Runnable() {			
+		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {			
 				@Override
 				public void run() {
 					_videoView.start();
@@ -83,8 +75,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private void pauseVideo () {
 		purgeVideoPausedTimer();
 		
-		if (_currentActivity != null) {
-			_currentActivity.runOnUiThread(new Runnable() {			
+		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {			
 				@Override
 				public void run() {
 					_videoView.pause();
@@ -209,16 +201,16 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				pauseVideo();
 			}
 			
-			if (_currentActivity != null && _videoView != null && _videoView.getBufferPercentage() < 15 && _videoView.getParent() == null) {				
-				_currentActivity.runOnUiThread(new Runnable() {					
+			if (UnityAdsProperties.CURRENT_ACTIVITY != null && _videoView != null && _videoView.getBufferPercentage() < 15 && _videoView.getParent() == null) {				
+				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {					
 					@Override
 					public void run() {
 						createAndAddBufferingView();
 					}
 				});				
 			}
-			else if (_currentActivity != null && _videoPlayheadPrepared && _bufferingView != null && _bufferingView.getParent() != null) {
-				_currentActivity.runOnUiThread(new Runnable() {
+			else if (UnityAdsProperties.CURRENT_ACTIVITY != null && _videoPlayheadPrepared && _bufferingView != null && _bufferingView.getParent() != null) {
+				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						hideBufferingView();

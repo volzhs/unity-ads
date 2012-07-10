@@ -85,11 +85,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		
 	public void changeActivity (Activity activity) {
 		if (activity == null) return;
-		
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
-		
-		if (_vp != null)
-			_vp.setActivity(UnityAdsProperties.CURRENT_ACTIVITY);
 	}
 	
 	public boolean show () {
@@ -153,12 +149,12 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	
 	@Override
 	public void onWebDataCompleted () {
-		initCache();
+		setup();
 	}
 	
 	@Override
 	public void onWebDataFailed () {
-		initCache();
+		setup();
 	}
 	
 	@Override
@@ -167,6 +163,8 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		
 		if (campaignList != null)
 			_webView.setAvailableCampaigns(UnityAdsUtils.createJsonFromCampaigns(campaignList).toString());
+		
+		_webView.setDeviceId(UnityAdsUtils.getDeviceId(UnityAdsProperties.CURRENT_ACTIVITY));
 		
 		if (canShowAds())
 			sendAdsReadyEvent();
@@ -226,6 +224,11 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	
 	/* PRIVATE METHODS */
 	
+	private void setup () {
+		initCache();
+		setupViews();
+	}
+	
 	private void initCache () {
 		if (_initialized) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Init cache");
@@ -238,8 +241,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 			if (videoPlanCampaigns == null || videoPlanCampaigns.size() == 0) return;
 			
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
-			cachemanager.updateCache(videoPlanCampaigns, pruneList);			
-			setupViews();		
+			cachemanager.updateCache(videoPlanCampaigns, pruneList);				
 		}
 	}
 	
@@ -300,6 +302,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	
 	private void setupViews () {
 		_webView = new UnityAdsWebView(UnityAdsProperties.CURRENT_ACTIVITY, this);	
-		_vp = new UnityAdsVideoPlayView(UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext(), this, UnityAdsProperties.CURRENT_ACTIVITY);	
+		_vp = new UnityAdsVideoPlayView(UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext(), this);	
 	}
 }

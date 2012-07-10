@@ -17,7 +17,6 @@ import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 
-// TODO: Send deviceId (userId) in videoPlan request
 public class UnityAdsWebData {
 	
 	private JSONObject _videoPlan = null;
@@ -62,14 +61,23 @@ public class UnityAdsWebData {
 		return UnityAdsUtils.getViewableCampaignsFromCampaignList(_videoPlanCampaigns);
 	}
 
-	public boolean initVideoPlan (ArrayList<String> cachedCampaignIds) {		
-		JSONObject data = getCachedCampaignIdsArray(cachedCampaignIds);
-		String cachedCampaignData = "";
+	public boolean initVideoPlan (ArrayList<String> cachedCampaignIds) {
+		JSONObject json = new JSONObject();
+		JSONArray data = getCachedCampaignIdsArray(cachedCampaignIds);
+		
+		try {
+			json.put("c", data);
+			json.put("did", UnityAdsUtils.getDeviceId(UnityAdsProperties.CURRENT_ACTIVITY));
+		}
+		catch (Exception e) {
+		}
+		
+		String dataString = "";
 		
 		if (data != null)
-			cachedCampaignData = data.toString();
+			dataString = json.toString();
 			
-		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(UnityAdsProperties.WEBDATA_URL + "?c=" + cachedCampaignData, UnityAdsRequestType.VideoPlan);
+		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(UnityAdsProperties.WEBDATA_URL + "?d=" + dataString, UnityAdsRequestType.VideoPlan);
 		addLoader(loader);
 		startNextLoader();
 		checkFailedUrls();
@@ -111,8 +119,8 @@ public class UnityAdsWebData {
 		}			
 	}
 	
-	private JSONObject getCachedCampaignIdsArray (ArrayList<String> cachedCampaignIds) {
-		JSONObject data = new JSONObject();
+	private JSONArray getCachedCampaignIdsArray (ArrayList<String> cachedCampaignIds) {
+		//JSONObject data = new JSONObject();
 		JSONArray campaignIds = null;
 		
 		if (cachedCampaignIds != null && cachedCampaignIds.size() > 0) {
@@ -123,15 +131,16 @@ public class UnityAdsWebData {
 			}
 		}
 		
+		/*
 		try {
 			data.put("c", campaignIds);
 		}
 		catch (Exception e) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Malformed JSON");
 			return null;
-		}
+		}*/
 		
-		return data;
+		return campaignIds;
 	}
 	
 	private void urlLoadCompleted (UnityAdsUrlLoader loader) {
