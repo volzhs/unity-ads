@@ -117,7 +117,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 	public boolean hasCampaigns () {
 		if (cachemanifest != null) {
-			return cachemanifest.getCachedCampaignAmount() > 0;
+			return cachemanifest.getViewableCachedCampaigns().size() > 0;
 		}
 		
 		return false;

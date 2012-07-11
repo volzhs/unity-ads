@@ -34,6 +34,10 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
 		UnityAds.instance.changeActivity(this);
 		UnityAds.instance.setListener(this);
 		UnityAds.instance.setVideoListener(this);
+		
+		if (!UnityAds.instance.hasCampaigns()) {
+			((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
+		}
     }
     
     public void onHide () {
