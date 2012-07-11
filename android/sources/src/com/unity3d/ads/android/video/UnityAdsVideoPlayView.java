@@ -1,9 +1,10 @@
-package com.unity3d.ads.android.view;
+package com.unity3d.ads.android.video;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.unity3d.ads.android.UnityAdsProperties;
+import com.unity3d.ads.android.view.UnityAdsBufferingView;
 
 import android.content.Context;
 import android.media.MediaPlayer;

@@ -1,4 +1,4 @@
-package com.unity3d.ads.android.view;
+package com.unity3d.ads.android.video;
 
 import android.content.Context;
 import android.graphics.Bitmap;

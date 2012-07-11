@@ -1,4 +1,4 @@
-package com.unity3d.ads.android.cache;
+package com.unity3d.ads.android.webapp;
 
 public interface IUnityAdsWebDataListener {
 	public void onWebDataCompleted ();

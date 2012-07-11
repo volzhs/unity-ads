@@ -1,4 +1,4 @@
-package com.unity3d.ads.android.view;
+package com.unity3d.ads.android.webapp;
 
 import java.lang.reflect.Method;
 
@@ -22,31 +22,16 @@ public class UnityAdsWebView extends WebView {
 	private String _url = "http://ads-dev.local/webapp.html";	
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
-	private UnityAdsWebView _self = null;
+	private UnityAdsWebBridge _webBridge = null;
 	
-	private static enum UnityAdsUrl { UnityAds;
-		@Override		
-		public String toString () {
-			String retVal = null;
-			
-			switch (this) {
-				case UnityAds:
-					retVal = "applifierimpact://";
-			}
-			
-			return retVal;
-		}
-	}; 
-	
-	
-	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener) {
+	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		super(activity);
-		init(activity, _url, listener);
+		init(activity, _url, listener, webBridge);
 	}
 
-	public UnityAdsWebView(Activity activity, String url, IUnityAdsWebViewListener listener) {
+	public UnityAdsWebView(Activity activity, String url, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		super(activity);
-		init(activity, url, listener);
+		init(activity, url, listener, webBridge);
 	}
 	
 	public boolean isWebAppLoaded () {
@@ -75,10 +60,10 @@ public class UnityAdsWebView extends WebView {
 	
 	/* INTENRAL METHODS */
 	
-	private void init (Activity activity, String url, IUnityAdsWebViewListener listener) {
-		_self = this;
+	private void init (Activity activity, String url, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		_listener = listener;
 		_url = url;
+		_webBridge = webBridge;
 		setupUnityAdsView();
 		loadUrl(_url);
 	}
@@ -141,6 +126,8 @@ public class UnityAdsWebView extends WebView {
 		catch (Exception e) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Could not invoke setLayerType");
 		}
+		
+		addJavascriptInterface(_webBridge, "ApplifierWebBridge");
 	}
 	
 	
@@ -157,6 +144,7 @@ public class UnityAdsWebView extends WebView {
     	
     	return false;
     } 
+	
 	
 	/* SUBCLASSES */
 	
@@ -183,28 +171,7 @@ public class UnityAdsWebView extends WebView {
 		
 		@Override
 		public boolean shouldOverrideUrlLoading (WebView view, String url) {
-			boolean shouldOverride = false;
-			
-			if (view == null || url == null) return true;
-			
-			if (url.startsWith(UnityAdsUrl.UnityAds.toString())) {
-				if (url.endsWith("playVideo")) {
-					if (_listener != null)
-						_listener.onPlayVideoClicked();
-				}
-				else if (url.endsWith("videoCompleted")) {
-					if (_listener != null)
-						_listener.onVideoCompletedClicked();
-				}
-				else if (url.endsWith("close")) {
-					if (_listener != null)
-						_listener.onCloseButtonClicked(_self);
-				}
-				
-				shouldOverride = true;
-			}
-
-			return shouldOverride;
+			return false;
 		}
 		
 		@Override
