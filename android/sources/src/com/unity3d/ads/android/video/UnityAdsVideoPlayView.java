@@ -53,6 +53,21 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		startVideo();
 	}
 
+	public void pauseVideo () {
+		purgeVideoPausedTimer();
+		
+		if (UnityAdsProperties.CURRENT_ACTIVITY != null && _videoView != null && _videoView.isPlaying()) {
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {			
+				@Override
+				public void run() {
+					_videoView.pause();
+					setKeepScreenOn(false);
+					createAndAddPausedView();
+				}
+			});
+		}		
+	}
+	
 	
 	/* INTERNAL METHODS */
 	
@@ -71,21 +86,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_videoPausedTimer = new Timer();
 			_videoPausedTimer.scheduleAtFixedRate(new VideoStateChecker(), 300, 300);
 		}
-	}
-	
-	private void pauseVideo () {
-		purgeVideoPausedTimer();
-		
-		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {			
-				@Override
-				public void run() {
-					_videoView.pause();
-					setKeepScreenOn(false);
-					createAndAddPausedView();
-				}
-			});
-		}		
 	}
 	
 	private void purgeVideoPausedTimer () {

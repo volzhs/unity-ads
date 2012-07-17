@@ -2,6 +2,8 @@ package com.unity3d.ads.android;
 
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.cache.UnityAdsCacheManifest;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
@@ -14,12 +16,7 @@ import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 import com.unity3d.ads.android.view.IUnityAdsViewListener;
-import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
-import com.unity3d.ads.android.webapp.UnityAdsWebData;
-import com.unity3d.ads.android.webapp.UnityAdsWebView;
-import com.unity3d.ads.android.webapp.IUnityAdsWebBrigeListener;
-import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
-import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
+import com.unity3d.ads.android.webapp.*;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
@@ -194,23 +191,25 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	// IUnityAdsWebBrigeListener
 	@Override
-	public void onPlayVideo(String data) {
+	public void onPlayVideo(JSONObject data) {
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsPlayVideoRunner());
 	}
 
 	@Override
-	public void onPauseVideo(String data) {
+	public void onPauseVideo(JSONObject data) {
+		if (_vp != null)
+			_vp.pauseVideo();
 	}
 
 	@Override
-	public void onVideoCompleted(String data) {
+	public void onVideoCompleted(JSONObject data) {
 		UnityAdsCloseViewRunner closeViewRunner = new UnityAdsCloseViewRunner(_webView, true);
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeViewRunner);
 	}
 
 	// IUnityAdsVideoPlayerListener
 	@Override
-	public void onCloseView(String data) {
+	public void onCloseView(JSONObject data) {
 		UnityAdsCloseViewRunner closeViewRunner = new UnityAdsCloseViewRunner(_webView, true);
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeViewRunner);
 	}	
