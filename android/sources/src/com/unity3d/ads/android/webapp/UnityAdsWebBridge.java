@@ -8,7 +8,7 @@ import com.unity3d.ads.android.UnityAdsProperties;
 
 
 public class UnityAdsWebBridge {
-	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, VideoCompleted, CloseView;
+	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView;
 		@Override
 		public String toString () {
 			String retVal = null;
@@ -18,9 +18,6 @@ public class UnityAdsWebBridge {
 					break;
 				case PauseVideo:
 					retVal = "pauseVideo";
-					break;
-				case VideoCompleted:
-					retVal = "videoCompleted";
 					break;
 				case CloseView:
 					retVal = "close";
@@ -72,9 +69,6 @@ public class UnityAdsWebBridge {
 				break;
 			case CloseView:
 				_listener.onCloseView(paramObj);
-				break;
-			case VideoCompleted:
-				_listener.onVideoCompleted(paramObj);
 				break;
 		}
 	}

@@ -113,7 +113,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 		
 	public boolean hasCampaigns () {
-		if (cachemanifest != null) {
+		if (cachemanifest != null && canShowAds()) {
 			return cachemanifest.getViewableCachedCampaigns().size() > 0;
 		}
 		
@@ -202,17 +202,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	@Override
-	public void onVideoCompleted(JSONObject data) {
-		UnityAdsCloseViewRunner closeViewRunner = new UnityAdsCloseViewRunner(_webView, true);
-		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeViewRunner);
-	}
-
-	// IUnityAdsVideoPlayerListener
-	@Override
 	public void onCloseView(JSONObject data) {
 		UnityAdsCloseViewRunner closeViewRunner = new UnityAdsCloseViewRunner(_webView, true);
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeViewRunner);
-	}	
+	}
+	
+	// IUnityAdsVideoPlayerListener
 
 	@Override
 	public void onCompletion(MediaPlayer mp) {				

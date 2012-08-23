@@ -88,7 +88,20 @@ public class UnityAdsWebData {
 	public boolean sendCampaignViewed (UnityAdsCampaign campaign) {
 		if (campaign == null) return false;
 		
-		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(UnityAdsProperties.WEBDATA_URL + "?viewed=" + campaign.getCampaignId(), UnityAdsRequestType.VideoViewed);
+		JSONObject json = new JSONObject();
+		
+		try {
+			json.put("did", UnityAdsUtils.getDeviceId(UnityAdsProperties.CURRENT_ACTIVITY));
+			json.put("c", campaign.getCampaignId());
+			json.put("pos", "end");
+		}
+		catch (Exception e) {			
+		}
+		
+		String dataString = "";
+		dataString = json.toString();
+		
+		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(UnityAdsProperties.WEBDATA_URL + "?v=" + dataString, UnityAdsRequestType.VideoViewed);
 		addLoader(loader);
 		startNextLoader();		
 		
