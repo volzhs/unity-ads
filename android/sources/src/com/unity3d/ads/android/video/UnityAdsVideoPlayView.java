@@ -54,8 +54,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_videoFileName = fileName;
 		Log.d(UnityAdsProperties.LOG_NAME, "Playing video from: " + _videoFileName);
 		_videoView.setVideoPath(_videoFileName);
-		_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
-		_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
 		startVideo();
 	}
 
@@ -83,6 +81,10 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				@Override
 				public void run() {
 					_videoView.start();
+					if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
+						_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
+						_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
+					}
 					setKeepScreenOn(true);
 				}
 			});
