@@ -17,6 +17,7 @@ import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 import com.unity3d.ads.android.view.IUnityAdsViewListener;
 import com.unity3d.ads.android.webapp.*;
+import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
@@ -210,19 +211,24 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsVideoPlayerListener
 
 	@Override
+	public void onEventPositionReached (UnityAdsVideoPosition position) {
+		webdata.sendCampaignViewed(_selectedCampaign, position);
+	}
+	
+	@Override
 	public void onCompletion(MediaPlayer mp) {				
 		if (_videoListener != null)
 			_videoListener.onVideoCompleted();
 		
 		_selectedCampaign.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 		cachemanifest.writeCurrentCacheManifest();
-		webdata.sendCampaignViewed(_selectedCampaign);
-		_vp.setKeepScreenOn(false);
-		closeView(_vp, false);
 		
+		_vp.setKeepScreenOn(false);
+		closeView(_vp, false);	
 		_webView.setView("videoCompleted");
 		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_webView);
+		onEventPositionReached(UnityAdsVideoPosition.End);
 		_selectedCampaign = null;
 	}
 	

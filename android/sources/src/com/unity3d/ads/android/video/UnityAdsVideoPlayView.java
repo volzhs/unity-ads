@@ -1,10 +1,13 @@
 package com.unity3d.ads.android.video;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsBufferingView;
+import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -25,6 +28,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private UnityAdsBufferingView _bufferingView = null;
 	private UnityAdsVideoPausedView _pausedView = null;
 	private boolean _videoPlayheadPrepared = false;
+	private Map<UnityAdsVideoPosition, Boolean> _sentPositionEvents = new HashMap<UnityAdsVideoPosition, Boolean>();
 	
 	public UnityAdsVideoPlayView(Context context, IUnityAdsVideoPlayerListener listener) {
 		super(context);
@@ -50,6 +54,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_videoFileName = fileName;
 		Log.d(UnityAdsProperties.LOG_NAME, "Playing video from: " + _videoFileName);
 		_videoView.setVideoPath(_videoFileName);
+		_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
+		_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
 		startVideo();
 	}
 
@@ -200,6 +206,22 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			PowerManager pm = (PowerManager)getContext().getSystemService(Context.POWER_SERVICE);			
 			if (!pm.isScreenOn()) {
 				pauseVideo();
+			}
+			
+			Float curPos = new Float(_videoView.getCurrentPosition());
+			Float position = curPos / _videoView.getDuration();
+			
+			if (position > 0.25 && !_sentPositionEvents.containsKey(UnityAdsVideoPosition.FirstQuartile)) {
+				_listener.onEventPositionReached(UnityAdsVideoPosition.FirstQuartile);
+				_sentPositionEvents.put(UnityAdsVideoPosition.FirstQuartile, true);
+			}
+			if (position > 0.5 && !_sentPositionEvents.containsKey(UnityAdsVideoPosition.MidPoint)) {
+				_listener.onEventPositionReached(UnityAdsVideoPosition.MidPoint);
+				_sentPositionEvents.put(UnityAdsVideoPosition.MidPoint, true);
+			}
+			if (position > 0.75 && !_sentPositionEvents.containsKey(UnityAdsVideoPosition.ThirdQuartile)) {
+				_listener.onEventPositionReached(UnityAdsVideoPosition.ThirdQuartile);
+				_sentPositionEvents.put(UnityAdsVideoPosition.ThirdQuartile, true);
 			}
 			
 			if (UnityAdsProperties.CURRENT_ACTIVITY != null && _videoView != null && _videoView.getBufferPercentage() < 15 && _videoView.getParent() == null) {				

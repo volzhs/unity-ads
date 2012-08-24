@@ -27,6 +27,29 @@ public class UnityAdsWebData {
 	private UnityAdsUrlLoader _currentLoader = null;
 	private boolean _isLoading = false;
 	
+	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
+		@Override
+		public String toString () {
+			String output = null;
+			switch (this) {
+				case FirstQuartile:
+					output = "first_quartile";
+					break;
+				case MidPoint:
+					output = "mid_point";
+					break;
+				case ThirdQuartile:
+					output = "third_quartile";
+					break;
+				default:
+					output = name().toString().toLowerCase();
+					break;					
+			}
+			
+			return output;
+		}
+	};
+	
 	private static enum UnityAdsRequestType { VideoPlan, VideoViewed, Unsent;
 		@Override
 		public String toString () {
@@ -85,7 +108,7 @@ public class UnityAdsWebData {
 		return true;
 	}
 	
-	public boolean sendCampaignViewed (UnityAdsCampaign campaign) {
+	public boolean sendCampaignViewed (UnityAdsCampaign campaign, UnityAdsVideoPosition position) {
 		if (campaign == null) return false;
 		
 		JSONObject json = new JSONObject();
@@ -93,7 +116,7 @@ public class UnityAdsWebData {
 		try {
 			json.put("did", UnityAdsUtils.getDeviceId(UnityAdsProperties.CURRENT_ACTIVITY));
 			json.put("c", campaign.getCampaignId());
-			json.put("pos", "end");
+			json.put("pos", position.toString());
 		}
 		catch (Exception e) {			
 		}
