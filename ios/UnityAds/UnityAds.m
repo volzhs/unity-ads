@@ -32,16 +32,34 @@ NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
 @synthesize gameId = _gameId;
 @synthesize delegate = _delegate;
 
+#pragma mark - Private
+
+- (id)initAdsInstance
+{
+	if ((self = [super init]))
+	{
+	}
+	
+	return self;
+}
+
 #pragma mark - Public
 
 static UnityAds *sharedAdsInstance = nil;
+
+- (id)init
+{
+	[self doesNotRecognizeSelector:_cmd];
+	
+	return nil;
+}
 
 + (id)sharedInstance
 {
 	@synchronized(self)
 	{
 		if (sharedAdsInstance == nil)
-			sharedAdsInstance = [[self alloc] init];
+			sharedAdsInstance = [[self alloc] initAdsInstance];
 	}
 	
 	return sharedAdsInstance;
