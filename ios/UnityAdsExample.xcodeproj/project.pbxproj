@@ -164,6 +164,7 @@
 			attributes = {
 				CLASSPREFIX = UnityAds;
 				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "Unity Technologies";
 			};
 			buildConfigurationList = 78ED794315C66FC6007C5BD5 /* Build configuration list for PBXProject "UnityAdsExample" */;
 			compatibilityVersion = "Xcode 3.2";
