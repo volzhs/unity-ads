@@ -9,14 +9,44 @@
 #import "UnityAdsAppDelegate.h"
 
 #import "UnityAdsViewController.h"
+#import "UnityAds.h"
+
+@interface UnityAdsAppDelegate () <UnityAdsDelegate>
+@end
 
 @implementation UnityAdsAppDelegate
 
 @synthesize window = _window;
 @synthesize viewController = _viewController;
 
+#pragma mark - UnityAdsDelegate
+
+- (void)unityAdsWillShow:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAdsWillHide:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAdsVideoStarted:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAdsVideoCompleted:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAdsFetchCompleted:(UnityAds *)unityAds
+{
+}
+
+#pragma mark - UIApplicationDelegate
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	[[UnityAds sharedInstance] startWithGameId:nil];
+	
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.viewController = [[UnityAdsViewController alloc] initWithNibName:@"UnityAdsViewController" bundle:nil];
