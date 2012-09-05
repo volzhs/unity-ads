@@ -24,6 +24,7 @@
 		78ED798315C6962C007C5BD5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ED798215C6962C007C5BD5 /* AVFoundation.framework */; };
 		78ED798B15C6B04D007C5BD5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ED798A15C6B04D007C5BD5 /* CoreMedia.framework */; };
 		78ED799215C6B2BB007C5BD5 /* jetiphone.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 78ED799115C6B2BB007C5BD5 /* jetiphone.mp4 */; };
+		9038E59415F73CC3009E17BB /* UnityAdsCampaignManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9038E59315F73CC3009E17BB /* UnityAdsCampaignManager.m */; };
 		F67203E815F6142A00807527 /* UnityAds.m in Sources */ = {isa = PBXBuildFile; fileRef = F67203E715F6142A00807527 /* UnityAds.m */; };
 		F67A4F0815F62EA500653CF2 /* UnityAdsiOS4.m in Sources */ = {isa = PBXBuildFile; fileRef = F67A4F0715F62EA500653CF2 /* UnityAdsiOS4.m */; };
 /* End PBXBuildFile section */
@@ -51,6 +52,8 @@
 		78ED798215C6962C007C5BD5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		78ED798A15C6B04D007C5BD5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		78ED799115C6B2BB007C5BD5 /* jetiphone.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = jetiphone.mp4; sourceTree = "<group>"; };
+		9038E59215F73CC3009E17BB /* UnityAdsCampaignManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsCampaignManager.h; sourceTree = "<group>"; };
+		9038E59315F73CC3009E17BB /* UnityAdsCampaignManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsCampaignManager.m; sourceTree = "<group>"; };
 		F67203E615F6142A00807527 /* UnityAds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAds.h; sourceTree = "<group>"; };
 		F67203E715F6142A00807527 /* UnityAds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAds.m; sourceTree = "<group>"; };
 		F67A4F0615F62EA500653CF2 /* UnityAdsiOS4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsiOS4.h; sourceTree = "<group>"; };
@@ -150,6 +153,8 @@
 				F67203E715F6142A00807527 /* UnityAds.m */,
 				F67A4F0615F62EA500653CF2 /* UnityAdsiOS4.h */,
 				F67A4F0715F62EA500653CF2 /* UnityAdsiOS4.m */,
+				9038E59215F73CC3009E17BB /* UnityAdsCampaignManager.h */,
+				9038E59315F73CC3009E17BB /* UnityAdsCampaignManager.m */,
 			);
 			name = UnityAds;
 			path = ../UnityAds;
@@ -231,6 +236,7 @@
 				78ED796115C66FC6007C5BD5 /* UnityAdsViewController.m in Sources */,
 				F67203E815F6142A00807527 /* UnityAds.m in Sources */,
 				F67A4F0815F62EA500653CF2 /* UnityAdsiOS4.m in Sources */,
+				9038E59415F73CC3009E17BB /* UnityAdsCampaignManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

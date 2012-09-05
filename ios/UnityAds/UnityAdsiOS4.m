@@ -7,35 +7,33 @@
 //
 
 #import "UnityAdsiOS4.h"
-
-NSString * const kUnityAdsTestBackendURL = @"http://ads-dev.local/manifest.json";
-NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
-
-/*
- VideoPlan (for dev / testing purposes)
- The data requested from backend that contains the campaigns that should be used at this time http://ads-dev.local/manifest.json? d={"did":"DEVICE_ID","c":["ARRAY", “OF”, “CACHED”, “CAMPAIGN”, “ID S”]}
- 
- ViewReport (for dev / testing purposes)
- Reporting the current position (view) of video, watch to the Backend
- http://ads-dev.local/manifest.json?
- v={"did":"DEVICE_ID","c":”VIEWED_CAMPAIGN_ID”, “pos”:”POSITION_ OPTION”}
- Position options are: start, first_quartile, mid_point, third_quartile,
- end
- */
+#import "UnityAdsCampaignManager.h"
 
 @interface UnityAds ()
 @property (nonatomic, strong) NSString *gameId;
+@property (nonatomic, strong) UnityAdsCampaignManager *campaignManager;
+@property (nonatomic, strong) UIWindow *adsWindow;
+@property (nonatomic, strong) UIWebView *webView;
 @end
 
 @implementation UnityAdsiOS4
 
 @synthesize gameId = _gameId;
+@synthesize campaignManager = _campaignManager;
+@synthesize adsWindow = _adsWindow;
+@synthesize webView = _webView;
 
 #pragma mark - Public
 
 - (void)startWithGameId:(NSString *)gameId
 {
+	if (self.campaignManager != nil)
+		return;
+	
 	self.gameId = gameId;
+	self.campaignManager = [[UnityAdsCampaignManager alloc] init];
+
+	[self.campaignManager updateCampaigns];
 }
 
 - (BOOL)show
