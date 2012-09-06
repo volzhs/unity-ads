@@ -10,6 +10,7 @@
 #import "UnityAdsSBJSONParser.h"
 #import "UnityAdsCampaign.h"
 #import "UnityAdsRewardItem.h"
+#import "UnityAdsCache.h"
 
 NSString * const kUnityAdsTestBackendURL = @"https://impact.applifier.com/mobile/campaigns";
 NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
@@ -41,11 +42,13 @@ NSString const * kRewardPictureKey = @"picture";
 
 @interface UnityAdsCampaignManager () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
+@property (nonatomic, strong) UnityAdsCache *cache;
 @end
 
 @implementation UnityAdsCampaignManager
 
 @synthesize campaignDownloadData = _campaignDownloadData;
+@synthesize cache = _cache;
 
 #pragma mark - Private
 
@@ -189,17 +192,6 @@ NSString const * kRewardPictureKey = @"picture";
 	}
 }
 
-- (NSString *)_dataFilePath
-{
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	if (paths == nil || [paths count] == 0)
-		return nil;
-	
-	NSString *cachePath = [paths objectAtIndex:0];
-	
-	return [cachePath stringByAppendingString:@"/impact.plist"];
-}
-
 - (void)_processCampaignDownloadData
 {
 	id json = [self _JSONValueFromData:self.campaignDownloadData];
@@ -207,13 +199,28 @@ NSString const * kRewardPictureKey = @"picture";
 	{
 		NSDictionary *jsonDictionary = [(NSDictionary *)json objectForKey:@"data"];
 		NSArray *parsedCampaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
-		UnityAdsRewardItem *parsedItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
+//		UnityAdsRewardItem *parsedItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
+		
+		for (UnityAdsCampaign *campaign in parsedCampaigns)
+		{
+			[self.cache downloadURLToCache:campaign.trailerDownloadableURL];
+		}
 	}
 	else
 		NSLog(@"Unknown data type for JSON: %@", [json class]);
 }
 
 #pragma mark - Public
+
+- (id)init
+{
+	if ((self = [super init]))
+	{
+		_cache = [[UnityAdsCache alloc] init];
+	}
+	
+	return self;
+}
 
 - (void)updateCampaigns
 {
