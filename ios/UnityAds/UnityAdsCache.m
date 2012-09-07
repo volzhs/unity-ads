@@ -51,7 +51,7 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	NSDictionary *downloadDictionary = @{ kUnityAdsCacheCampaignKey : campaign, kUnityAdsCacheConnectionKey : urlConnection, kUnityAdsCacheFilePathKey : filePath };
 	[self.downloadQueue addObject:downloadDictionary];
-	[self _startNextDownloadInQueue];
+	[self _startDownload];
 }
 
 - (BOOL)_startNextDownloadInQueue
@@ -62,7 +62,6 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	if ([self.downloadQueue count] > 0)
 	{
 		self.currentDownload = [self.downloadQueue objectAtIndex:0];
-		[self.downloadQueue removeObjectAtIndex:0];
 		
 		NSString *filePath = [self.currentDownload objectForKey:kUnityAdsCacheFilePathKey];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
@@ -70,12 +69,21 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 			NSLog(@"TODO: file exists"); // e.g., resume or what
 		}
 		else
-			[[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil];
-
+		{
+			if ( ! [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil])
+			{
+				NSLog(@"Unable to create file at %@", filePath);
+				self.currentDownload = nil;
+				return NO;
+			}
+		}
+		
 		self.fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
 
 		NSURLConnection *connection = [self.currentDownload objectForKey:kUnityAdsCacheConnectionKey];
 		[connection start];
+
+		[self.downloadQueue removeObjectAtIndex:0];
 	}
 	else
 		return NO;
@@ -83,6 +91,13 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	NSLog(@"starting download %@", self.currentDownload);
 
 	return YES;
+}
+
+- (void)_startDownload
+{
+	BOOL downloadStarted = [self _startNextDownloadInQueue];
+	if ( ! downloadStarted && self.currentDownload == nil)
+		[self performSelector:@selector(_startDownload) withObject:self afterDelay:3.0];
 }
 
 - (void)_downloadFinishedWithFailure:(BOOL)failure
@@ -100,7 +115,7 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	
 	self.currentDownload = nil;
 	
-	[self _startNextDownloadInQueue];
+	[self _startDownload];
 }
 
 #pragma mark - Public
