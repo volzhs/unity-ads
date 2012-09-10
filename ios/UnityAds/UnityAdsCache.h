@@ -8,7 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
+@class UnityAdsCache;
+@class UnityAdsCampaign;
+
+@protocol UnityAdsCacheDelegate <NSObject>
+
+- (void)cache:(UnityAdsCache *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
+- (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache;
+
+@end
+
 @interface UnityAdsCache : NSObject
+
+@property (nonatomic, assign) id<UnityAdsCacheDelegate> delegate;
 
 - (void)cacheCampaigns:(NSArray *)campaigns;
 

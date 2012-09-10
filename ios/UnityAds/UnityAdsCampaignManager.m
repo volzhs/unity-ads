@@ -40,7 +40,7 @@ NSString const * kRewardPictureKey = @"picture";
  end
  */
 
-@interface UnityAdsCampaignManager () <NSURLConnectionDelegate>
+@interface UnityAdsCampaignManager () <NSURLConnectionDelegate, UnityAdsCacheDelegate>
 @property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
 @property (nonatomic, strong) UnityAdsCache *cache;
@@ -216,6 +216,7 @@ NSString const * kRewardPictureKey = @"picture";
 	if ((self = [super init]))
 	{
 		_cache = [[UnityAdsCache alloc] init];
+		_cache.delegate = self;
 	}
 	
 	return self;
@@ -225,6 +226,11 @@ NSString const * kRewardPictureKey = @"picture";
 {
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:kUnityAdsTestBackendURL]];
 	self.urlConnection = [NSURLConnection connectionWithRequest:request delegate:self];
+}
+
+- (void)dealloc
+{
+	self.cache.delegate = nil;
 }
 
 #pragma mark - NSURLConnectionDelegate
@@ -245,6 +251,16 @@ NSString const * kRewardPictureKey = @"picture";
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
 	NSLog(@"didFailWithError: %@", error);
+}
+
+#pragma mark - UnityAdsCacheDelegate
+
+- (void)cache:(UnityAdsCache *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign
+{
+}
+
+- (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache
+{
 }
 
 @end
