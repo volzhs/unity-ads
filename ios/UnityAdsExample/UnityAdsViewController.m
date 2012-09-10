@@ -9,8 +9,9 @@
 #import "UnityAdsViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
+#import "UnityAds.h"
 
-@interface UnityAdsViewController ()
+@interface UnityAdsViewController () <UnityAdsDelegate>
 @end
 
 @implementation UnityAdsViewController
@@ -26,6 +27,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	
+	[[UnityAds sharedInstance] setDelegate:self];
+	
     [self changePhase:1];
     [buttonView addTarget:self action:@selector(nextPhase) forControlEvents:UIControlEventTouchUpInside];
     [self initVideo];
@@ -52,6 +56,9 @@
 
 - (void)nextPhase
 {
+	[[UnityAds sharedInstance] show];
+	
+	return;
     NSLog(@"nextPhase");
     [self changePhase:currentPhase + 1];
 }
@@ -124,6 +131,35 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationLandscapeRight);
+}
+
+#pragma mark - UnityAdsDelegate
+
+- (void)unityAdsWillShow:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAdsWillHide:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAdsVideoStarted:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAdsVideoCompleted:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAdsFetchCompleted:(UnityAds *)unityAds
+{
+}
+
+- (void)unityAds:(UnityAds *)unityAds wantsToShowAdView:(UIView *)adView
+{
+	adView.frame = self.view.bounds;
+	
+	[self.view addSubview:adView];
 }
 
 @end
