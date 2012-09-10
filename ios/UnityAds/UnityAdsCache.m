@@ -37,6 +37,11 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	return [[paths objectAtIndex:0] stringByAppendingString:@"/applifier/"];
 }
 
+- (NSString *)_videoPathForCampaign:(UnityAdsCampaign *)campaign
+{
+	return [[self _cachePath] stringByAppendingString:[NSString stringWithFormat:@"%@.mp4", campaign.id]];
+}
+
 - (void)_queueCampaignDownload:(UnityAdsCampaign *)campaign;
 {
 	if (campaign == nil)
@@ -47,7 +52,7 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	
 	NSLog(@"Queueing %@, id %@", campaign.trailerDownloadableURL, campaign.id);
 	
-	NSString *filePath = [[self _cachePath] stringByAppendingString:[NSString stringWithFormat:@"%@.mp4", campaign.id]];		
+	NSString *filePath = [self _videoPathForCampaign:campaign];
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:campaign.trailerDownloadableURL];
 	NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	NSDictionary *downloadDictionary = @{ kUnityAdsCacheCampaignKey : campaign, kUnityAdsCacheConnectionKey : urlConnection, kUnityAdsCacheFilePathKey : filePath };
@@ -196,6 +201,13 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	}
 	
 	[self _compareCampaigns:campaigns];
+}
+
+- (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign
+{
+	NSString *path = [self _videoPathForCampaign:campaign];
+	
+	return [NSURL fileURLWithPath:path];
 }
 
 #pragma mark - NSURLConnectionDelegate

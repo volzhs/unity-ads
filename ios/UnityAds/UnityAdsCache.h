@@ -23,5 +23,6 @@
 @property (nonatomic, assign) id<UnityAdsCacheDelegate> delegate;
 
 - (void)cacheCampaigns:(NSArray *)campaigns;
+- (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign;
 
 @end

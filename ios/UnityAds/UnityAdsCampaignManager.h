@@ -10,6 +10,7 @@
 
 @class UnityAdsCampaignManager;
 @class UnityAdsRewardItem;
+@class UnityAdsCampaign;
 
 @protocol UnityAdsCampaignManagerDelegate <NSObject>
 
@@ -22,5 +23,6 @@
 @property (nonatomic, assign) id<UnityAdsCampaignManagerDelegate> delegate;
 
 - (void)updateCampaigns;
+- (NSURL *)videoURLForCampaign:(UnityAdsCampaign *)campaign;
 
 @end
