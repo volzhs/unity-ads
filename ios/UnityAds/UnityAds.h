@@ -23,6 +23,7 @@
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds;
 - (void)unityAdsVideoCompleted:(UnityAds *)unityAds;
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
+- (void)unityAds:(UnityAds *)unityAds wantsToShowAdView:(UIView *)adView;
 
 @end
 
