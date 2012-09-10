@@ -41,12 +41,14 @@ NSString const * kRewardPictureKey = @"picture";
  */
 
 @interface UnityAdsCampaignManager () <NSURLConnectionDelegate>
+@property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
 @property (nonatomic, strong) UnityAdsCache *cache;
 @end
 
 @implementation UnityAdsCampaignManager
 
+@synthesize urlConnection = _urlConnection;
 @synthesize campaignDownloadData = _campaignDownloadData;
 @synthesize cache = _cache;
 
@@ -222,7 +224,7 @@ NSString const * kRewardPictureKey = @"picture";
 - (void)updateCampaigns
 {
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:kUnityAdsTestBackendURL]];
-	[NSURLConnection connectionWithRequest:request delegate:self];
+	self.urlConnection = [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
 #pragma mark - NSURLConnectionDelegate
