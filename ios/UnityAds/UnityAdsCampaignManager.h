@@ -8,7 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+@class UnityAdsCampaignManager;
+@class UnityAdsRewardItem;
+
+@protocol UnityAdsCampaignManagerDelegate <NSObject>
+
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem;
+
+@end
+
 @interface UnityAdsCampaignManager : NSObject
+
+@property (nonatomic, assign) id<UnityAdsCampaignManagerDelegate> delegate;
 
 - (void)updateCampaigns;
 

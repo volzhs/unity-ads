@@ -13,7 +13,6 @@
 #import "UnityAdsCache.h"
 
 NSString * const kUnityAdsTestBackendURL = @"https://impact.applifier.com/mobile/campaigns";
-NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
 
 NSString const * kCampaignAppIconKey = @"appIcon";
 NSString const * kCampaignClickURLKey = @"clickUrl";
@@ -44,13 +43,18 @@ NSString const * kRewardPictureKey = @"picture";
 @property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
 @property (nonatomic, strong) UnityAdsCache *cache;
+@property (nonatomic, strong) NSArray *campaigns;
+@property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
 @end
 
 @implementation UnityAdsCampaignManager
 
+@synthesize delegate = _delegate;
 @synthesize urlConnection = _urlConnection;
 @synthesize campaignDownloadData = _campaignDownloadData;
 @synthesize cache = _cache;
+@synthesize campaigns = _campaigns;
+@synthesize rewardItem = _rewardItem;
 
 #pragma mark - Private
 
@@ -200,10 +204,10 @@ NSString const * kRewardPictureKey = @"picture";
 	if ([json isKindOfClass:[NSDictionary class]])
 	{
 		NSDictionary *jsonDictionary = [(NSDictionary *)json objectForKey:@"data"];
-		NSArray *parsedCampaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
-//		UnityAdsRewardItem *parsedItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
+		self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
+		self.rewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
 		
-		[self.cache cacheCampaigns:parsedCampaigns];
+		[self.cache cacheCampaigns:self.campaigns];
 	}
 	else
 		NSLog(@"Unknown data type for JSON: %@", [json class]);
@@ -261,6 +265,14 @@ NSString const * kRewardPictureKey = @"picture";
 
 - (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache
 {
+	if ([self.delegate respondsToSelector:@selector(campaignManager:updatedWithCampaigns:rewardItem:)])
+	{
+		__block UnityAdsCampaignManager *blockSelf = self;
+		
+		[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+			[blockSelf.delegate campaignManager:blockSelf updatedWithCampaigns:blockSelf.campaigns rewardItem:blockSelf.rewardItem];
+		}];
+	}
 }
 
 @end
