@@ -19,28 +19,6 @@
 @synthesize window = _window;
 @synthesize viewController = _viewController;
 
-#pragma mark - UnityAdsDelegate
-
-- (void)unityAdsWillShow:(UnityAds *)unityAds
-{
-}
-
-- (void)unityAdsWillHide:(UnityAds *)unityAds
-{
-}
-
-- (void)unityAdsVideoStarted:(UnityAds *)unityAds
-{
-}
-
-- (void)unityAdsVideoCompleted:(UnityAds *)unityAds
-{
-}
-
-- (void)unityAdsFetchCompleted:(UnityAds *)unityAds
-{
-}
-
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
