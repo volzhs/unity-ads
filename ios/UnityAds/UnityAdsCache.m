@@ -12,11 +12,12 @@
 NSString const * kUnityAdsCacheCampaignKey = @"kUnityAdsCacheCampaignKey";
 NSString const * kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";
 NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
+NSString const * kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
 
 @interface UnityAdsCache () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSFileHandle *fileHandle;
 @property (nonatomic, strong) NSMutableArray *downloadQueue;
-@property (nonatomic, strong) NSDictionary *currentDownload;
+@property (nonatomic, strong) NSMutableDictionary *currentDownload;
 @end
 
 @implementation UnityAdsCache
@@ -53,9 +54,11 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	NSLog(@"Queueing %@, id %@", campaign.trailerDownloadableURL, campaign.id);
 	
 	NSString *filePath = [self _videoPathForCampaign:campaign];
-	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:campaign.trailerDownloadableURL];
-	NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
-	NSDictionary *downloadDictionary = @{ kUnityAdsCacheCampaignKey : campaign, kUnityAdsCacheConnectionKey : urlConnection, kUnityAdsCacheFilePathKey : filePath };
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:campaign.trailerDownloadableURL];
+	NSMutableDictionary *downloadDictionary = [NSMutableDictionary dictionary];
+	[downloadDictionary setObject:request forKey:kUnityAdsCacheURLRequestKey];
+	[downloadDictionary setObject:campaign forKey:kUnityAdsCacheCampaignKey];
+	[downloadDictionary setObject:filePath forKey:kUnityAdsCacheFilePathKey];
 	[self.downloadQueue addObject:downloadDictionary];
 	[self _startDownload];
 }
@@ -69,10 +72,14 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 	{
 		self.currentDownload = [self.downloadQueue objectAtIndex:0];
 		
+		NSMutableURLRequest *request = [self.currentDownload objectForKey:kUnityAdsCacheURLRequestKey];
 		NSString *filePath = [self.currentDownload objectForKey:kUnityAdsCacheFilePathKey];
+		long long rangeStart = 0;
+		
 		if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
 		{
-			NSLog(@"TODO: file exists"); // e.g., resume or what
+			NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+			rangeStart = [attributes fileSize];
 		}
 		else
 		{
@@ -85,9 +92,15 @@ NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 		}
 		
 		self.fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
-
-		NSURLConnection *connection = [self.currentDownload objectForKey:kUnityAdsCacheConnectionKey];
-		[connection start];
+		if (rangeStart > 0)
+		{
+			[self.fileHandle seekToEndOfFile];
+			[request setValue:[NSString stringWithFormat:@"bytes=%qi-", rangeStart] forHTTPHeaderField:@"Range"];
+		}
+		
+		NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+		[self.currentDownload setObject:urlConnection forKey:kUnityAdsCacheConnectionKey];
+		[urlConnection start];
 
 		[self.downloadQueue removeObjectAtIndex:0];
 	}
