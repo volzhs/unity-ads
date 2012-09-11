@@ -105,6 +105,12 @@ NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
 - (void)_playVideo
 {
 	NSURL *videoURL = [self.campaignManager videoURLForCampaign:self.selectedCampaign];
+	if (videoURL == nil)
+	{
+		NSLog(@"Video not found!");
+		return;
+	}
+	
 	AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:[AVAsset assetWithURL:videoURL]];
 	self.player = [AVPlayer playerWithPlayerItem:item];
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
