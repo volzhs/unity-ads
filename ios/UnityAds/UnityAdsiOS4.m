@@ -111,7 +111,7 @@ NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
 		return;
 	}
 	
-	AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:[AVAsset assetWithURL:videoURL]];
+	AVPlayerItem *item = [AVPlayerItem playerItemWithURL:videoURL];
 	self.player = [AVPlayer playerWithPlayerItem:item];
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
 	self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
