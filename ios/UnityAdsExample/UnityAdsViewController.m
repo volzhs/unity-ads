@@ -48,26 +48,33 @@
 
 - (void)unityAdsWillShow:(UnityAds *)unityAds
 {
+	NSLog(@"unityAdsWillShow");
 }
 
 - (void)unityAdsWillHide:(UnityAds *)unityAds
 {
+	NSLog(@"unityAdsWillHide");
 }
 
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds
 {
+	NSLog(@"unityAdsVideoStarted");
 }
 
 - (void)unityAdsVideoCompleted:(UnityAds *)unityAds
 {
+	NSLog(@"unityAdsVideoCompleted");
 }
 
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds
 {
+	NSLog(@"unityAdsFetchCompleted");
 }
 
 - (void)unityAds:(UnityAds *)unityAds wantsToShowAdView:(UIView *)adView
 {
+	NSLog(@"wantsToShowAdView");
+	
 	adView.frame = self.view.bounds;
 	
 	[self.view addSubview:adView];
