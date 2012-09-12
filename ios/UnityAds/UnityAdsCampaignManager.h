@@ -24,5 +24,6 @@
 
 - (void)updateCampaigns;
 - (NSURL *)videoURLForCampaign:(UnityAdsCampaign *)campaign;
+- (void)cancelAllDownloads;
 
 @end
