@@ -238,6 +238,15 @@ typedef enum
 	[self.webView stringByEvaluatingJavaScriptFromString:@"document.getElementById('videoCompleted').style.display = 'block';"];
 }
 
+- (void)_closeAdView
+{
+	if ([self.delegate respondsToSelector:@selector(unityAdsWillHide:)])
+		[self.delegate unityAdsWillHide:self];
+
+	[self.adsWindow addSubview:self.webView];
+	[self.adView removeFromSuperview];
+}
+
 #pragma mark - Public
 
 - (void)startWithGameId:(NSString *)gameId
