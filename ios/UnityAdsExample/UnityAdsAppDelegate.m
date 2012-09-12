@@ -11,7 +11,7 @@
 #import "UnityAdsViewController.h"
 #import "UnityAds.h"
 
-@interface UnityAdsAppDelegate () <UnityAdsDelegate>
+@interface UnityAdsAppDelegate ()
 @end
 
 @implementation UnityAdsAppDelegate
