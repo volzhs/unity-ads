@@ -6,15 +6,18 @@
 //  Copyright (c) 2012 Unity Technologies. All rights reserved.
 //
 
+#include <sys/socket.h>
+#include <sys/sysctl.h>
+#include <net/if.h>
+#include <net/if_dl.h>
+#include <CommonCrypto/CommonDigest.h>
+
 #import <AVFoundation/AVFoundation.h>
 #import "UnityAdsiOS4.h"
 #import "UnityAdsCampaignManager.h"
 #import "UnityAdsCampaign.h"
 #import "UnityAdsRewardItem.h"
-#include <sys/socket.h>
-#include <sys/sysctl.h>
-#include <net/if.h>
-#include <net/if_dl.h>
+#import "UnityAdsOpenUDID.h"
 
 NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
 
@@ -127,6 +130,28 @@ typedef enum
 	free(msgBuffer);
 	
 	return macAddressString;
+}
+
+- (NSString *)_md5StringFromString:(NSString *)string
+{
+	const char *ptr = [string UTF8String];
+	unsigned char md5Buffer[CC_MD5_DIGEST_LENGTH];
+	CC_MD5(ptr, strlen(ptr), md5Buffer);
+	NSMutableString *output = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+	for(int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
+		[output appendFormat:@"%02x",md5Buffer[i]];
+	
+	return output;
+}
+
+- (NSString *)_md5OpenUDIDString
+{
+	return [self _md5StringFromString:[UnityAdsOpenUDID value]];
+}
+
+- (NSString *)_md5MACAddressString
+{
+	return [self _md5StringFromString:[self _macAddress]];
 }
 
 - (void)_backgroundRunLoop:(id)dummy
@@ -333,8 +358,6 @@ typedef enum
 	[self performSelector:@selector(_startCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 
 	[self _configureWebView];
-	
-	NSLog(@"%@", [self _macAddress]);
 }
 
 - (BOOL)show
