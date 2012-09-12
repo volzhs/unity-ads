@@ -31,6 +31,7 @@
 	[[UnityAds sharedInstance] setDelegate:self];
 	
     [buttonView addTarget:self action:@selector(nextPhase) forControlEvents:UIControlEventTouchUpInside];
+	[buttonView setImage:[UIImage imageNamed:@"hayday_start"] forState:UIControlStateNormal];
 }
 
 - (void)nextPhase
