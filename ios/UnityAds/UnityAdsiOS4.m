@@ -50,6 +50,7 @@ typedef enum
 @property (nonatomic, strong) UILabel *progressLabel;
 @property (nonatomic, assign) VideoAnalyticsPosition videoPosition;
 @property (nonatomic, strong) UnityAdsAnalyticsUploader *analyticsUploader;
+@property (nonatomic, assign) BOOL webViewLoaded;
 @end
 
 @implementation UnityAdsiOS4
@@ -71,6 +72,7 @@ typedef enum
 @synthesize progressLabel = _progressLabel;
 @synthesize videoPosition = _videoPosition;
 @synthesize analyticsUploader = _analyticsUploader;
+@synthesize webViewLoaded = _webViewLoaded;
 
 #pragma mark - Private
 
@@ -194,6 +196,7 @@ typedef enum
 
 - (void)_configureWebView
 {
+	self.webViewLoaded = NO;
 	self.adsWindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	self.webView = [[UIWebView alloc] initWithFrame:self.adsWindow.bounds];
 	self.webView.delegate = self;
@@ -380,7 +383,7 @@ typedef enum
 {
 	// FIXME: probably not the best way to accomplish this
 	
-	if ([self.campaigns count] > 0)
+	if ([self.campaigns count] > 0 && self.webViewLoaded && self.webView.superview == self.adsWindow)
 	{
 		// merge the following two delegate methods?
 		if ([self.delegate respondsToSelector:@selector(unityAdsWillShow:)])
@@ -425,6 +428,8 @@ typedef enum
 	
 	if ([self.delegate respondsToSelector:@selector(unityAdsFetchCompleted:)])
 		[self.delegate unityAdsFetchCompleted:self];
+	
+	[self _selectCampaign:[self.campaigns lastObject]];
 }
 
 #pragma mark - UIWebViewDelegate
@@ -448,6 +453,9 @@ typedef enum
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+	NSLog(@"web view loaded");
+	
+	self.webViewLoaded = YES;
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
