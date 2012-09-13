@@ -18,6 +18,7 @@
 #import "UnityAdsCampaign.h"
 #import "UnityAdsRewardItem.h"
 #import "UnityAdsOpenUDID.h"
+#import "UnityAdsAnalyticsUploader.h"
 
 NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
 
@@ -32,7 +33,8 @@ typedef enum
 
 @interface UnityAdsiOS4 () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate>
 @property (nonatomic, strong) NSString *gameId;
-@property (nonatomic, strong) NSThread *backgroundThread;
+@property (nonatomic, strong) NSThread *cacheThread;
+@property (nonatomic, strong) NSThread *analyticsThread;
 @property (nonatomic, strong) UnityAdsCampaignManager *campaignManager;
 @property (nonatomic, strong) UIWindow *adsWindow;
 @property (nonatomic, strong) UIWebView *webView;
@@ -46,12 +48,14 @@ typedef enum
 @property (nonatomic, strong) id analyticsTimeObserver;
 @property (nonatomic, strong) UILabel *progressLabel;
 @property (nonatomic, assign) VideoAnalyticsPosition videoPosition;
+@property (nonatomic, strong) UnityAdsAnalyticsUploader *analyticsUploader;
 @end
 
 @implementation UnityAdsiOS4
 
 @synthesize gameId = _gameId;
-@synthesize backgroundThread = _backgroundThread;
+@synthesize cacheThread = _cacheThread;
+@synthesize analyticsThread = _analyticsThread;
 @synthesize campaignManager = _campaignManager;
 @synthesize adsWindow = _adsWindow;
 @synthesize webView = _webView;
@@ -65,6 +69,7 @@ typedef enum
 @synthesize analyticsTimeObserver = _analyticsTimeObserver;
 @synthesize progressLabel = _progressLabel;
 @synthesize videoPosition = _videoPosition;
+@synthesize analyticsUploader = _analyticsUploader;
 
 #pragma mark - Private
 
@@ -254,6 +259,11 @@ typedef enum
 	return [NSValue valueWithCMTime:time];
 }
 
+- (void)_logPositionString:(NSString *)string
+{
+	[self.analyticsUploader sendViewReportForCampaign:self.selectedCampaign positionString:string];
+}
+
 - (void)_logVideoAnalytics
 {
 	self.videoPosition++;
@@ -269,7 +279,7 @@ typedef enum
 	else if (self.videoPosition == kVideoAnalyticsPositionEnd)
 		positionString = @"end";
 	
-	NSLog(@"TODO ViewReport: %@", positionString);
+	[self performSelector:@selector(_logPositionString:) onThread:self.analyticsThread withObject:positionString waitUntilDone:NO];
 }
 
 - (void)_playVideo
@@ -344,6 +354,11 @@ typedef enum
 	[self.adView removeFromSuperview];
 }
 
+- (void)_startAnalyticsUploader
+{
+	self.analyticsUploader = [[UnityAdsAnalyticsUploader alloc] init];
+}
+
 #pragma mark - Public
 
 - (void)startWithGameId:(NSString *)gameId
@@ -352,11 +367,14 @@ typedef enum
 		return;
 	
 	self.gameId = gameId;
-	self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
-	[self.backgroundThread start];
+	self.cacheThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
+	[self.cacheThread start];
+	self.analyticsThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
+	[self.analyticsThread start];
 	
-	[self performSelector:@selector(_startCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
-
+	[self performSelector:@selector(_startCampaignManager) onThread:self.cacheThread withObject:nil waitUntilDone:NO];
+	[self performSelector:@selector(_startAnalyticsUploader) onThread:self.analyticsThread withObject:nil waitUntilDone:NO];
+	
 	[self _configureWebView];
 }
 
@@ -386,7 +404,7 @@ typedef enum
 
 - (void)stopAll
 {
-	[self.campaignManager performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+	[self.campaignManager performSelector:@selector(cancelAllDownloads) onThread:self.cacheThread withObject:nil waitUntilDone:NO];
 }
 
 - (void)dealloc
