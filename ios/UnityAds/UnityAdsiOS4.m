@@ -20,7 +20,8 @@
 #import "UnityAdsOpenUDID.h"
 #import "UnityAdsAnalyticsUploader.h"
 
-NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/webapp.html";
+// FIXME: this is (obviously) NOT the final URL!
+NSString * const kUnityAdsTestWebViewURL = @"http://ads-proto.local/index.html";
 
 typedef enum
 {
