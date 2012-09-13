@@ -357,6 +357,7 @@ typedef enum
 - (void)_startAnalyticsUploader
 {
 	self.analyticsUploader = [[UnityAdsAnalyticsUploader alloc] init];
+	[self.analyticsUploader retryFailedUploads];
 }
 
 #pragma mark - Public
