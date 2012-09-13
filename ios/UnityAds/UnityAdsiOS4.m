@@ -32,7 +32,7 @@ typedef enum
 	kVideoAnalyticsPositionEnd,
 } VideoAnalyticsPosition;
 
-@interface UnityAdsiOS4 () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate>
+@interface UnityAdsiOS4 () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSString *gameId;
 @property (nonatomic, strong) NSThread *cacheThread;
 @property (nonatomic, strong) NSThread *analyticsThread;
@@ -201,6 +201,20 @@ typedef enum
 	self.webView = [[UIWebView alloc] initWithFrame:self.adsWindow.bounds];
 	self.webView.delegate = self;
 	self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+	UIScrollView *scrollView = nil;
+	if ([self.webView respondsToSelector:@selector(scrollView)])
+		scrollView = self.webView.scrollView;
+	else
+	{
+		UIView *view = [self.webView.subviews lastObject];
+		if ([view isKindOfClass:[UIScrollView class]])
+			scrollView = (UIScrollView *)view;
+	}
+	
+	if (scrollView != nil)
+		scrollView.delegate = self;
+	
 	[self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:kUnityAdsTestWebViewURL]]];
 	[self.adsWindow addSubview:self.webView];
 }
@@ -460,6 +474,13 @@ typedef enum
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+	scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
 }
 
 @end
