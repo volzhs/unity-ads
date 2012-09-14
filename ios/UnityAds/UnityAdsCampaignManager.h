@@ -15,13 +15,13 @@
 @protocol UnityAdsCampaignManagerDelegate <NSObject>
 
 - (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem;
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager downloadedJSON:(NSString *)json;
 
 @end
 
 @interface UnityAdsCampaignManager : NSObject
 
 @property (nonatomic, assign) id<UnityAdsCampaignManagerDelegate> delegate;
-@property (nonatomic, strong, readonly) NSString *campaignJSON;
 
 - (void)updateCampaigns;
 - (NSURL *)videoURLForCampaign:(UnityAdsCampaign *)campaign;
