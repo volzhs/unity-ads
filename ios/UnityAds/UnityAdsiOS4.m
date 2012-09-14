@@ -403,7 +403,7 @@ typedef enum
 	
 	NSLog(@"init");
 	
-	NSString *js = [NSString stringWithFormat:@"impactInit(%@, %@, %@);", self.campaignJSON, [self _md5OpenUDIDString], [self _md5MACAddressString]];
+	NSString *js = [NSString stringWithFormat:@"%@(%@, %@, %@);", kUnityAdsWebViewAPINativeInit, self.campaignJSON, [self _md5OpenUDIDString], [self _md5MACAddressString]];
 	
 	[self.webView stringByEvaluatingJavaScriptFromString:js];
 	
@@ -412,12 +412,12 @@ typedef enum
 
 - (void)_webViewShow
 {
-	[self.webView stringByEvaluatingJavaScriptFromString:@"impactShow();"];
+	[self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@();", kUnityAdsWebViewAPINativeShow]];
 }
 
 - (void)_webViewVideoComplete
 {
-	NSString *js = [NSString stringWithFormat:@"impactVideoComplete(%@);", self.selectedCampaign.id];
+	NSString *js = [NSString stringWithFormat:@"%@(%@);", kUnityAdsWebViewAPINativeVideoComplete, self.selectedCampaign.id];
 	
 	[self.webView stringByEvaluatingJavaScriptFromString:js];
 }
