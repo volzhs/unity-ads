@@ -9,10 +9,11 @@
 #import "UnityAdsCache.h"
 #import "UnityAdsCampaign.h"
 
-NSString const * kUnityAdsCacheCampaignKey = @"kUnityAdsCacheCampaignKey";
-NSString const * kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";
-NSString const * kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
-NSString const * kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
+NSString * const kUnityAdsCacheCampaignKey = @"kUnityAdsCacheCampaignKey";
+NSString * const kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";
+NSString * const kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
+NSString * const kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
+NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
 
 @interface UnityAdsCache () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSFileHandle *fileHandle;
@@ -157,9 +158,8 @@ NSString const * kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
 	}
 	
 	NSString *cachePath = [self _cachePath];
-	NSString *campaignIndexPath = [cachePath stringByAppendingString:@"index.plist"];
-	NSArray *oldIndex = [NSArray arrayWithContentsOfFile:campaignIndexPath];
-	
+	NSArray *oldIndex = [[NSUserDefaults standardUserDefaults] arrayForKey:kUnityAdsCacheIndexKey];
+
 	NSMutableArray *index = [NSMutableArray array];
 	for (UnityAdsCampaign *campaign in campaigns)
 	{
@@ -167,8 +167,8 @@ NSString const * kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
 			[index addObject:[campaign.id stringByAppendingString:@".mp4"]];
 	}
 	
-	if ( ! [index writeToFile:campaignIndexPath atomically:YES])
-		NSLog(@"Saving campaign index failed.");
+	[[NSUserDefaults standardUserDefaults] setObject:index forKey:kUnityAdsCacheIndexKey];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	for (NSString *oldFile in oldIndex)
 	{
