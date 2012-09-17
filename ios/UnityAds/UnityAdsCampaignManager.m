@@ -12,7 +12,7 @@
 #import "UnityAdsRewardItem.h"
 #import "UnityAdsCache.h"
 
-NSString * const kUnityAdsTestBackendURL = @"https://impact.applifier.com/mobile/campaigns";
+NSString * const kUnityAdsBackendURL = @"https://impact.applifier.com/mobile/campaigns";
 
 NSString * const kCampaignEndScreenKey = @"endScreen";
 NSString * const kCampaignClickURLKey = @"clickUrl";
@@ -258,7 +258,7 @@ NSString * const kRewardPictureKey = @"picture";
 		return;
 	}
 	
-	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:kUnityAdsTestBackendURL]];
+	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:kUnityAdsBackendURL]];
 	self.urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	[self.urlConnection start];
 }
