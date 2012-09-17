@@ -61,18 +61,6 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	return YES;
 }
 
-#pragma mark - Public
-
-- (id)init
-{
-	if ((self = [super init]))
-	{
-		_uploadQueue = [NSMutableArray array];
-	}
-	
-	return self;
-}
-
 - (void)_queueURL:(NSURL *)url
 {
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -90,6 +78,18 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	
 	if ([self.uploadQueue count] == 1)
 		[self _startNextUpload];
+}
+
+#pragma mark - Public
+
+- (id)init
+{
+	if ((self = [super init]))
+	{
+		_uploadQueue = [NSMutableArray array];
+	}
+	
+	return self;
 }
 
 - (void)sendViewReportForCampaign:(UnityAdsCampaign *)campaign positionString:(NSString *)positionString
