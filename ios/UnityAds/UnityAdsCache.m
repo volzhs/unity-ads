@@ -188,6 +188,12 @@ NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
 
 - (id)init
 {
+	if ([NSThread isMainThread])
+	{
+		NSLog(@"-init cannot be called from main thread.");
+		return nil;
+	}
+	
 	if ((self = [super init]))
 	{
 		_downloadQueue = [NSMutableArray array];
@@ -198,6 +204,12 @@ NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
 
 - (void)cacheCampaigns:(NSArray *)campaigns
 {
+	if ([NSThread isMainThread])
+	{
+		NSLog(@"-cacheCampaigns: cannot be called from main thread.");
+		return;
+	}
+	
 	NSError *error = nil;
 	NSString *cachePath = [self _cachePath];
 	if ( ! [[NSFileManager defaultManager] createDirectoryAtPath:cachePath withIntermediateDirectories:YES attributes:nil error:&error])
@@ -218,6 +230,12 @@ NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
 
 - (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign
 {
+	if ([NSThread isMainThread])
+	{
+		NSLog(@"-localVideoUrlForCampaign: cannot be called from main thread.");
+		return nil;
+	}
+	
 	NSString *path = [self _videoPathForCampaign:campaign];
 	
 	return [NSURL fileURLWithPath:path];
@@ -225,6 +243,12 @@ NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
 
 - (void)cancelAllDownloads
 {
+	if ([NSThread isMainThread])
+	{
+		NSLog(@"-cancelAllDownloads cannot be called from main thread.");
+		return;
+	}
+	
 	if (self.currentDownload != nil)
 	{
 		NSURLConnection *connection = [self.currentDownload objectForKey:kUnityAdsCacheConnectionKey];
