@@ -15,6 +15,9 @@ NSString * const kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 NSString * const kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
 NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
 
+NSString * const kUnityAdsCacheEntryCampaignIDKey = @"kUnityAdsCacheEntryCampaignIDKey";
+NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameKey";
+
 @interface UnityAdsCache () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSFileHandle *fileHandle;
 @property (nonatomic, strong) NSMutableArray *downloadQueue;
@@ -168,18 +171,24 @@ NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
 	NSMutableArray *index = [NSMutableArray array];
 	for (UnityAdsCampaign *campaign in campaigns)
 	{
-		if (campaign.id != nil)
-			[index addObject:[campaign.id stringByAppendingString:@".mp4"]];
+		NSMutableDictionary *campaignIndexEntry = [NSMutableDictionary dictionary];
+		if (campaign.id != nil && campaign.trailerDownloadableURL != nil)
+		{
+			[campaignIndexEntry setObject:campaign.id forKey:kUnityAdsCacheEntryCampaignIDKey];
+			[campaignIndexEntry setObject:[self _videoFilenameForCampaign:campaign] forKey:kUnityAdsCacheEntryFilenameKey];
+			[index addObject:campaignIndexEntry];
+		}
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setObject:index forKey:kUnityAdsCacheIndexKey];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
-	for (NSString *oldFile in oldIndex)
+	for (NSDictionary *oldIndexEntry in oldIndex)
 	{
-		if ( ! [index containsObject:oldFile])
+		if ( ! [index containsObject:oldIndexEntry])
 		{
-			NSString *filePath = [cachePath stringByAppendingString:oldFile];
+			NSString *filename = [oldIndexEntry objectForKey:kUnityAdsCacheEntryFilenameKey];
+			NSString *filePath = [cachePath stringByAppendingString:filename];
 			NSError *error = nil;
 			if ( ! [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error])
 			{
