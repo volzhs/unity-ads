@@ -9,7 +9,7 @@
 #import "UnityAdsAnalyticsUploader.h"
 #import "UnityAdsCampaign.h"
 
-NSString * const kUnityAdsTestAnalyticsURL = @"http://ads-dev.local/manifest.json";
+NSString * const kUnityAdsAnalyticsURL = @"http://log.applifier.com/videoads-tracking";
 NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
 NSString * const kUnityAdsAnalyticsUploaderConnectionKey = @"kUnityAdsAnalyticsUploaderConnectionKey";
 NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUploadsKey";
@@ -100,7 +100,7 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 		return;
 	}
 	
-	NSString *urlString = [kUnityAdsTestAnalyticsURL stringByAppendingFormat:@"?d={\"did\":\"%@\",\"c\":\"%@\",\"pos\":\"%@\"}", @"test", campaign.id, positionString];
+	NSString *urlString = [kUnityAdsAnalyticsURL stringByAppendingFormat:@"?d={\"did\":\"%@\",\"c\":\"%@\",\"pos\":\"%@\"}", @"test", campaign.id, positionString];
 	[self _queueURL:[NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 }
 
