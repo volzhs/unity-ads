@@ -298,7 +298,10 @@ typedef enum
 	}
 	
 	if (scrollView != nil)
+	{
 		scrollView.delegate = self;
+		scrollView.showsVerticalScrollIndicator = NO;
+	}
 	
 	[self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:kUnityAdsTestWebViewURL]]];
 	[self.adsWindow addSubview:self.webView];
