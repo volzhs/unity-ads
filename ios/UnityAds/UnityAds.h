@@ -37,7 +37,6 @@
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds;
 - (void)unityAdsVideoCompleted:(UnityAds *)unityAds;
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
-- (void)unityAds:(UnityAds *)unityAds wantsToShowAdView:(UIView *)adView;
 
 // iOS 6 only! FIXME: requires documentation, since developers need to present this themselves.
 - (void)unityAds:(UnityAds *)unityAds wantsToPresentProductViewController:(SKStoreProductViewController *)productViewController;
@@ -51,8 +50,8 @@
 + (id)sharedInstance;
 
 - (void)startWithGameId:(NSString *)gameId;
-- (BOOL)show;
-- (BOOL)hasCampaigns;
+- (UIView *)adsView;
+- (BOOL)canShow;
 - (void)stopAll;
 
 @end

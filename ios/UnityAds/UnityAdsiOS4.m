@@ -616,38 +616,34 @@ typedef enum
 	[self _configureWebView];
 }
 
-- (BOOL)show
+- (UIView *)adsView
 {
 	if ( ! [NSThread isMainThread])
 	{
-		UALOG_ERROR(@"-show must be run on main thread.");
-		return NO;
+		UALOG_ERROR(@"Must be run on main thread.");
+		return nil;
 	}
 	
 	// FIXME: probably not the best way to accomplish this
 	
 	if ([self.campaigns count] > 0 && self.webViewInitialized && self.webView.superview == self.adsWindow)
 	{
-		[self _webViewShow];
-		
-		// merge the following two delegate methods?
 		if ([self.delegate respondsToSelector:@selector(unityAdsWillShow:)])
 			[self.delegate unityAdsWillShow:self];
-		
-		if ([self.delegate respondsToSelector:@selector(unityAds:wantsToShowAdView:)])
-			[self.delegate unityAds:self wantsToShowAdView:[self _adView]];
-		
-		return YES;
+
+		[self _webViewShow];
+	
+		return [self _adView];
 	}
 	
-	return NO;
+	return nil;
 }
 
-- (BOOL)hasCampaigns
+- (BOOL)canShow
 {
 	if ( ! [NSThread isMainThread])
 	{
-		UALOG_ERROR(@"-hasCampaigns must be run on main thread.");
+		UALOG_ERROR(@"Must be run on main thread.");
 		return NO;
 	}
 

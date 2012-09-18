@@ -36,7 +36,15 @@
 
 - (void)nextPhase
 {
-	[[UnityAds sharedInstance] show];
+	if ([[UnityAds sharedInstance] canShow])
+	{
+		NSLog(@"Showing Unity Ads.");
+		UIView *adView = [[UnityAds sharedInstance] Unity AdsAdView];
+		adView.frame = self.view.bounds;
+		[self.view addSubview:adView];
+	}
+	else
+		NSLog(@"Unity Ads cannot be shown.");
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -71,15 +79,6 @@
 	NSLog(@"unityAdsFetchCompleted");
 
 	[self.buttonView setImage:[UIImage imageNamed:@"unityads_ready"] forState:UIControlStateNormal];
-}
-
-- (void)unityAds:(UnityAds *)unityAds wantsToShowAdView:(UIView *)adView
-{
-	NSLog(@"wantsToShowAdView %@ %@", adView, adView.subviews);
-	
-	adView.frame = self.view.bounds;
-	
-	[self.view addSubview:adView];
 }
 
 - (void)unityAds:(UnityAds *)unityAds wantsToPresentProductViewController:(SKStoreProductViewController *)productViewController

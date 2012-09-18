@@ -56,12 +56,12 @@ static UnityAds *sharedAdsInstance = nil;
 	// do nothing
 }
 
-- (BOOL)show
+- (UIView *)adsView
 {
-	return NO;
+	return nil;
 }
 
-- (BOOL)hasCampaigns
+- (BOOL)canShow
 {
 	return NO;
 }
