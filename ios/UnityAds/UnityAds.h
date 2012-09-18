@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <StoreKit/StoreKit.h>
 
 #define UALOG_DEBUG_LOGGING_ENABLED 1
 
@@ -26,6 +27,7 @@
 //
 
 @class UnityAds;
+@class SKStoreProductViewController;
 
 @protocol UnityAdsDelegate <NSObject>
 
@@ -36,6 +38,9 @@
 - (void)unityAdsVideoCompleted:(UnityAds *)unityAds;
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
 - (void)unityAds:(UnityAds *)unityAds wantsToShowAdView:(UIView *)adView;
+
+// iOS 6 only! FIXME: requires documentation, since developers need to present this themselves.
+- (void)unityAds:(UnityAds *)unityAds wantsToPresentProductViewController:(SKStoreProductViewController *)productViewController;
 
 @end
 

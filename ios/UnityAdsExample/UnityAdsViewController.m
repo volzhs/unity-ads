@@ -11,7 +11,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import "UnityAds.h"
 
-@interface UnityAdsViewController () <UnityAdsDelegate>
+@interface UnityAdsViewController () <UnityAdsDelegate, SKStoreProductViewControllerDelegate>
 @end
 
 @implementation UnityAdsViewController
@@ -78,6 +78,19 @@
 	adView.frame = self.view.bounds;
 	
 	[self.view addSubview:adView];
+}
+
+- (void)unityAds:(UnityAds *)unityAds wantsToPresentProductViewController:(SKStoreProductViewController *)productViewController
+{
+	productViewController.delegate = self;
+	[self presentViewController:productViewController animated:YES completion:nil];
+}
+
+#pragma mark - SKStoreProductViewControllerDelegate
+
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
+{
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
