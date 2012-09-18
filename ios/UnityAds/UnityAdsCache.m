@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Unity Technologies. All rights reserved.
 //
 
+#import "UnityAds.h"
 #import "UnityAdsCache.h"
 #import "UnityAdsCampaign.h"
 
@@ -56,11 +57,11 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 {
 	if (campaign == nil)
 	{
-		NSLog(@"Campaign cannot be nil.");
+		UALOG_DEBUG(@"Campaign cannot be nil.");
 		return;
 	}
 	
-	NSLog(@"Queueing %@, id %@", campaign.trailerDownloadableURL, campaign.id);
+	UALOG_DEBUG(@"Queueing %@, id %@", campaign.trailerDownloadableURL, campaign.id);
 	
 	NSString *filePath = [self _videoPathForCampaign:campaign];
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:campaign.trailerDownloadableURL];
@@ -94,7 +95,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 		{
 			if ( ! [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil])
 			{
-				NSLog(@"Unable to create file at %@", filePath);
+				UALOG_DEBUG(@"Unable to create file at %@", filePath);
 				self.currentDownload = nil;
 				return NO;
 			}
@@ -116,7 +117,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 	else
 		return NO;
 	
-	NSLog(@"starting download %@", self.currentDownload);
+	UALOG_DEBUG(@"starting download %@", self.currentDownload);
 
 	return YES;
 }
@@ -130,7 +131,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 
 - (void)_downloadFinishedWithFailure:(BOOL)failure
 {
-	NSLog(@"download finished with failure: %@", failure ? @"yes" : @"no");
+	UALOG_DEBUG(@"download finished with failure: %@", failure ? @"yes" : @"no");
 	
 	[self.fileHandle closeFile];
 	self.fileHandle = nil;
@@ -161,7 +162,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 {
 	if (campaigns == nil || [campaigns count] == 0)
 	{
-		NSLog(@"No new campaigns.");
+		UALOG_DEBUG(@"No new campaigns.");
 		return;
 	}
 	
@@ -192,7 +193,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 			NSError *error = nil;
 			if ( ! [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error])
 			{
-				NSLog(@"Unable to remove file. %@", error);
+				UALOG_DEBUG(@"Unable to remove file. %@", error);
 			}
 		}
 	}
@@ -204,7 +205,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 {
 	if ([NSThread isMainThread])
 	{
-		NSLog(@"-init cannot be called from main thread.");
+		UALOG_ERROR(@"-init cannot be called from main thread.");
 		return nil;
 	}
 	
@@ -220,7 +221,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 {
 	if ([NSThread isMainThread])
 	{
-		NSLog(@"-cacheCampaigns: cannot be called from main thread.");
+		UALOG_ERROR(@"-cacheCampaigns: cannot be called from main thread.");
 		return;
 	}
 	
@@ -228,7 +229,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 	NSString *cachePath = [self _cachePath];
 	if ( ! [[NSFileManager defaultManager] createDirectoryAtPath:cachePath withIntermediateDirectories:YES attributes:nil error:&error])
 	{
-		NSLog(@"Couldn't create cache path. Error: %@", error);
+		UALOG_DEBUG(@"Couldn't create cache path. Error: %@", error);
 		return;
 	}
 	
@@ -246,7 +247,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 {
 	if ([NSThread isMainThread])
 	{
-		NSLog(@"-localVideoUrlForCampaign: cannot be called from main thread.");
+		UALOG_ERROR(@"-localVideoUrlForCampaign: cannot be called from main thread.");
 		return nil;
 	}
 	
@@ -259,7 +260,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 {
 	if ([NSThread isMainThread])
 	{
-		NSLog(@"-cancelAllDownloads cannot be called from main thread.");
+		UALOG_ERROR(@"-cancelAllDownloads cannot be called from main thread.");
 		return;
 	}
 	
@@ -293,7 +294,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 			long long freeSpace = [[fsAttributes objectForKey:NSFileSystemFreeSize] longLongValue];
 			if (size > freeSpace)
 			{
-				NSLog(@"Not enough space, canceling download. (%lld needed, %lld free)", size, freeSpace);
+				UALOG_DEBUG(@"Not enough space, canceling download. (%lld needed, %lld free)", size, freeSpace);
 				[connection cancel];
 				[self _downloadFinishedWithFailure:YES];
 			}
@@ -313,7 +314,7 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-	NSLog(@"didFailWithError: %@", error);
+	UALOG_DEBUG(@"%@", error);
 	
 	[self _downloadFinishedWithFailure:YES];
 }

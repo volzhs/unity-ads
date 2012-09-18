@@ -8,6 +8,7 @@
 
 #import "UnityAdsAnalyticsUploader.h"
 #import "UnityAdsCampaign.h"
+#import "UnityAds.h"
 
 NSString * const kUnityAdsAnalyticsURL = @"http://log.applifier.com/videoads-tracking";
 NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
@@ -36,7 +37,7 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	NSURLRequest *request = [download objectForKey:kUnityAdsAnalyticsUploaderRequestKey];
 	NSString *urlString = [[request URL] absoluteString];
 	[existingFailedUploads addObject:urlString];
-	NSLog(@"%@", existingFailedUploads);
+	UALOG_DEBUG(@"%@", existingFailedUploads);
 	[[NSUserDefaults standardUserDefaults] setObject:existingFailedUploads forKey:kUnityAdsAnalyticsSavedUploadsKey];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -66,11 +67,11 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];
 	if (request == nil)
 	{
-		NSLog(@"Request could not be created.");
+		UALOG_DEBUG(@"Request could not be created.");
 		return;
 	}
 	
-	NSLog(@"queueing %@", url);
+	UALOG_DEBUG(@"queueing %@", url);
 	
 	NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	NSDictionary *uploadDictionary = @{ kUnityAdsAnalyticsUploaderRequestKey : request, kUnityAdsAnalyticsUploaderConnectionKey : connection };
@@ -96,7 +97,7 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 {
 	if ([NSThread isMainThread])
 	{
-		NSLog(@"Cannot be run on main thread.");
+		UALOG_ERROR(@"Cannot be run on main thread.");
 		return;
 	}
 	
@@ -108,7 +109,7 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 {
 	if ([NSThread isMainThread])
 	{
-		NSLog(@"Cannot be run on main thread.");
+		UALOG_ERROR(@"Cannot be run on main thread.");
 		return;
 	}
 
@@ -140,7 +141,7 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-	NSLog(@"analytics upload finished");
+	UALOG_DEBUG(@"analytics upload finished");
 	
 	self.currentUpload = nil;
 	
@@ -149,7 +150,7 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-	NSLog(@"didFailWithError: %@", error);
+	UALOG_DEBUG(@"%@", error);
 	
 	[self _saveFailedUpload:self.currentUpload];
 
