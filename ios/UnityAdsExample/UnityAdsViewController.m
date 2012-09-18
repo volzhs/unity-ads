@@ -30,8 +30,8 @@
 	
 	[[UnityAds sharedInstance] setDelegate:self];
 	
-    [buttonView addTarget:self action:@selector(nextPhase) forControlEvents:UIControlEventTouchUpInside];
-	[buttonView setImage:[UIImage imageNamed:@"hayday_start"] forState:UIControlStateNormal];
+    [self.buttonView addTarget:self action:@selector(nextPhase) forControlEvents:UIControlEventTouchUpInside];
+	[self.buttonView setImage:[UIImage imageNamed:@"unityads_waiting"] forState:UIControlStateNormal];
 }
 
 - (void)nextPhase
@@ -69,11 +69,13 @@
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds
 {
 	NSLog(@"unityAdsFetchCompleted");
+
+	[self.buttonView setImage:[UIImage imageNamed:@"unityads_ready"] forState:UIControlStateNormal];
 }
 
 - (void)unityAds:(UnityAds *)unityAds wantsToShowAdView:(UIView *)adView
 {
-	NSLog(@"wantsToShowAdView");
+	NSLog(@"wantsToShowAdView %@ %@", adView, adView.subviews);
 	
 	adView.frame = self.view.bounds;
 	
