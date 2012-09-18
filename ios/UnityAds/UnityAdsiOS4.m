@@ -45,8 +45,7 @@ typedef enum
 
 @interface UnityAdsiOS4 () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSString *gameId;
-@property (nonatomic, strong) NSThread *cacheThread;
-@property (nonatomic, strong) NSThread *analyticsThread;
+@property (nonatomic, strong) NSThread *backgroundThread;
 @property (nonatomic, strong) UnityAdsCampaignManager *campaignManager;
 @property (nonatomic, strong) UIWindow *adsWindow;
 @property (nonatomic, strong) UIWebView *webView;
@@ -69,8 +68,7 @@ typedef enum
 @implementation UnityAdsiOS4
 
 @synthesize gameId = _gameId;
-@synthesize cacheThread = _cacheThread;
-@synthesize analyticsThread = _analyticsThread;
+@synthesize backgroundThread = _backgroundThread;
 @synthesize campaignManager = _campaignManager;
 @synthesize adsWindow = _adsWindow;
 @synthesize webView = _webView;
@@ -382,7 +380,7 @@ typedef enum
 	else if (self.videoPosition == kVideoAnalyticsPositionEnd)
 		positionString = @"video_end";
 	
-	[self performSelector:@selector(_logPositionString:) onThread:self.analyticsThread withObject:positionString waitUntilDone:NO];
+	[self performSelector:@selector(_logPositionString:) onThread:self.backgroundThread withObject:positionString waitUntilDone:NO];
 }
 
 - (void)_playVideo
@@ -568,17 +566,15 @@ typedef enum
 		return;
 	}
 	
-	if (self.campaignManager != nil)
+	if (self.gameId != nil)
 		return;
 	
 	self.gameId = gameId;
-	self.cacheThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
-	[self.cacheThread start];
-	self.analyticsThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
-	[self.analyticsThread start];
+	self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
+	[self.backgroundThread start];
 	
-	[self performSelector:@selector(_startCampaignManager) onThread:self.cacheThread withObject:nil waitUntilDone:NO];
-	[self performSelector:@selector(_startAnalyticsUploader) onThread:self.analyticsThread withObject:nil waitUntilDone:NO];
+	[self performSelector:@selector(_startCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+	[self performSelector:@selector(_startAnalyticsUploader) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 	
 	[self _configureWebView];
 }
@@ -629,7 +625,7 @@ typedef enum
 		return;
 	}
 	
-	[self.campaignManager performSelector:@selector(cancelAllDownloads) onThread:self.cacheThread withObject:nil waitUntilDone:NO];
+	[self.campaignManager performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 }
 
 - (void)dealloc

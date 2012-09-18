@@ -245,15 +245,12 @@ NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameK
 
 - (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign
 {
-	if ([NSThread isMainThread])
+	@synchronized (self)
 	{
-		UALOG_ERROR(@"-localVideoUrlForCampaign: cannot be called from main thread.");
-		return nil;
+		NSString *path = [self _videoPathForCampaign:campaign];
+		
+		return [NSURL fileURLWithPath:path];
 	}
-	
-	NSString *path = [self _videoPathForCampaign:campaign];
-	
-	return [NSURL fileURLWithPath:path];
 }
 
 - (void)cancelAllDownloads
