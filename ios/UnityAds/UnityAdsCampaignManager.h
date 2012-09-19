@@ -22,6 +22,7 @@
 @interface UnityAdsCampaignManager : NSObject
 
 @property (nonatomic, assign) id<UnityAdsCampaignManagerDelegate> delegate;
+@property (nonatomic, strong) NSString *queryString;
 
 - (void)updateCampaigns;
 - (NSURL *)videoURLForCampaign:(UnityAdsCampaign *)campaign;
