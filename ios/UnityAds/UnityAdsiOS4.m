@@ -603,6 +603,12 @@ typedef enum
 		return;
 	}
 	
+	if (gameId == nil || [gameId length] == 0)
+	{
+		UALOG_ERROR(@"gameId empty or not set.");
+		return;
+	}
+	
 	if (self.gameId != nil)
 		return;
 	
