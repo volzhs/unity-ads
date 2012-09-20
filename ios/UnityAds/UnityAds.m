@@ -11,8 +11,6 @@
 
 @implementation UnityAds
 
-@synthesize delegate = _delegate;
-
 #pragma mark - Private
 
 - (id)initAdsInstance
