@@ -325,6 +325,12 @@ typedef enum
 
 - (void)_selectCampaignWithID:(NSString *)campaignID
 {
+	if (campaignID == nil)
+	{
+		UALOG_DEBUG(@"Input is nil.");
+		return;
+	}
+	
 	for (UnityAdsCampaign *campaign in self.campaigns)
 	{
 		if ([campaign.id isEqualToString:campaignID])
@@ -426,6 +432,12 @@ typedef enum
 
 - (void)_logPositionString:(NSString *)string
 {
+	if (string == nil)
+	{
+		UALOG_DEBUG(@"Input is nil.");
+		return;
+	}
+	
 	[self.analyticsUploader sendViewReportForCampaign:self.selectedCampaign positionString:string];
 }
 
@@ -529,6 +541,12 @@ typedef enum
 
 - (NSString *)_escapedStringFromString:(NSString *)string
 {
+	if (string == nil)
+	{
+		UALOG_DEBUG(@"Input is nil.");
+		return nil;
+	}
+	
 	NSString *escapedString = [string stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
 	escapedString = [escapedString stringByReplacingOccurrencesOfString:@"'" withString:@"\'"];
 	
@@ -654,6 +672,12 @@ typedef enum
 
 - (void)_openURL:(NSString *)urlString
 {
+	if (urlString == nil)
+	{
+		UALOG_DEBUG(@"No URL set.");
+		return;
+	}
+	
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
 }
 

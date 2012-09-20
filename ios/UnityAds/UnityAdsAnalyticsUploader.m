@@ -29,6 +29,12 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 
 - (void)_saveFailedUpload:(NSDictionary *)download
 {
+	if (download == nil)
+	{
+		UALOG_DEBUG(@"Input is nil.");
+		return;
+	}
+	
 	NSMutableArray *existingFailedUploads = [[[NSUserDefaults standardUserDefaults] arrayForKey:kUnityAdsAnalyticsSavedUploadsKey] mutableCopy];
 	
 	if (existingFailedUploads == nil)
@@ -64,6 +70,12 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 
 - (void)_queueURL:(NSURL *)url
 {
+	if (url == nil)
+	{
+		UALOG_DEBUG(@"Input is nil.");
+		return;
+	}
+	
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];
 	if (request == nil)
 	{
@@ -98,6 +110,12 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	if ([NSThread isMainThread])
 	{
 		UALOG_ERROR(@"Cannot be run on main thread.");
+		return;
+	}
+	
+	if (campaign == nil || positionString == nil || [positionString length] == 0)
+	{
+		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
 	
