@@ -14,6 +14,8 @@ NSString * const kUnityAdsAnalyticsURL = @"http://log.applifier.com/videoads-tra
 NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
 NSString * const kUnityAdsAnalyticsUploaderConnectionKey = @"kUnityAdsAnalyticsUploaderConnectionKey";
 NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUploadsKey";
+NSString * const kUnityAdsAnalyticsSavedUploadURLKey = @"kUnityAdsAnalyticsSavedUploadURLKey";
+NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSavedUploadBodyKey";
 
 @interface UnityAdsAnalyticsUploader () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableArray *uploadQueue;
@@ -24,9 +26,9 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 
 #pragma mark - Private
 
-- (void)_saveFailedUpload:(NSDictionary *)download
+- (void)_saveFailedUpload:(NSDictionary *)upload
 {
-	if (download == nil)
+	if (upload == nil)
 	{
 		UALOG_DEBUG(@"Input is nil.");
 		return;
@@ -37,12 +39,19 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	if (existingFailedUploads == nil)
 		existingFailedUploads = [NSMutableArray array];
 	
-	NSURLRequest *request = [download objectForKey:kUnityAdsAnalyticsUploaderRequestKey];
-	NSString *urlString = [[request URL] absoluteString];
-	[existingFailedUploads addObject:urlString];
-	UALOG_DEBUG(@"%@", existingFailedUploads);
-	[[NSUserDefaults standardUserDefaults] setObject:existingFailedUploads forKey:kUnityAdsAnalyticsSavedUploadsKey];
-	[[NSUserDefaults standardUserDefaults] synchronize];
+	NSURLRequest *request = [upload objectForKey:kUnityAdsAnalyticsUploaderRequestKey];
+	NSMutableDictionary *failedUpload = [NSMutableDictionary dictionary];
+	if ([request URL] != nil && [request HTTPBody] != nil)
+	{
+		[failedUpload setObject:[[request URL] absoluteString] forKey:kUnityAdsAnalyticsSavedUploadURLKey];
+		NSString *bodyString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
+		[failedUpload setObject:bodyString forKey:kUnityAdsAnalyticsSavedUploadBodyKey];
+		[existingFailedUploads addObject:failedUpload];
+		
+		UALOG_DEBUG(@"%@", existingFailedUploads);
+		[[NSUserDefaults standardUserDefaults] setObject:existingFailedUploads forKey:kUnityAdsAnalyticsSavedUploadsKey];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	}
 }
 
 - (BOOL)_startNextUpload
@@ -65,22 +74,26 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	return YES;
 }
 
-- (void)_queueURL:(NSURL *)url
+- (void)_queueURL:(NSURL *)url body:(NSData *)body
 {
-	if (url == nil)
+	if (url == nil || body == nil)
 	{
-		UALOG_DEBUG(@"Input is nil.");
+		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
 	
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+
 	if (request == nil)
 	{
-		UALOG_DEBUG(@"Request could not be created.");
+		UALOG_DEBUG(@"Could not create request.");
 		return;
 	}
 	
-	UALOG_DEBUG(@"queueing %@", url);
+	[request setHTTPMethod:@"POST"];
+	[request setHTTPBody:body];
+	
+	UALOG_DEBUG(@"queueing %@", [request URL]);
 	
 	NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	NSDictionary *uploadDictionary = @{ kUnityAdsAnalyticsUploaderRequestKey : request, kUnityAdsAnalyticsUploaderConnectionKey : connection };
@@ -102,7 +115,7 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	return self;
 }
 
-- (void)sendViewReportForCampaign:(UnityAdsCampaign *)campaign positionString:(NSString *)positionString
+- (void)sendViewReportWithQueryString:(NSString *)queryString
 {
 	if ([NSThread isMainThread])
 	{
@@ -110,14 +123,14 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 		return;
 	}
 	
-	if (campaign == nil || positionString == nil || [positionString length] == 0)
+	if (queryString == nil || [queryString length] == 0)
 	{
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
 	
-	NSString *urlString = [kUnityAdsAnalyticsURL stringByAppendingFormat:@"?d={\"did\":\"%@\",\"c\":\"%@\",\"pos\":\"%@\"}", @"test", campaign.id, positionString];
-	[self _queueURL:[NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+	NSURL *url = [NSURL URLWithString:kUnityAdsAnalyticsURL];
+	[self _queueURL:url body:[queryString dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 - (void)retryFailedUploads
@@ -131,12 +144,11 @@ NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUp
 	NSArray *uploads = [[NSUserDefaults standardUserDefaults] arrayForKey:kUnityAdsAnalyticsSavedUploadsKey];
 	if (uploads != nil)
 	{
-		for (NSString *url in uploads)
+		for (NSDictionary *upload in uploads)
 		{
-			if ([url isKindOfClass:[NSString class]])
-			{
-				[self _queueURL:[NSURL URLWithString:url]];
-			}
+			NSString *url = [upload objectForKey:kUnityAdsAnalyticsSavedUploadURLKey];
+			NSString *body = [upload objectForKey:kUnityAdsAnalyticsSavedUploadBodyKey];
+			[self _queueURL:[NSURL URLWithString:url] body:[body dataUsingEncoding:NSUTF8StringEncoding]];
 		}
 		
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:kUnityAdsAnalyticsSavedUploadsKey];

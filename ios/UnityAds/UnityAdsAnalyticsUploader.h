@@ -12,7 +12,7 @@
 
 @interface UnityAdsAnalyticsUploader : NSObject
 
-- (void)sendViewReportForCampaign:(UnityAdsCampaign *)campaign positionString:(NSString *)positionString;
+- (void)sendViewReportWithQueryString:(NSString *)queryString;
 - (void)retryFailedUploads;
 
 @end

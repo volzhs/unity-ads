@@ -299,9 +299,10 @@ NSString * const kUnityAdsVersion = @"1.0";
 	else if (videoPosition == kVideoAnalyticsPositionEnd)
 		positionString = @"video_end";
 	
-	UALOG_DEBUG(@"TODO");
-//
-//	[self performSelector:@selector(_logPositionString:) onThread:self.backgroundThread withObject:positionString waitUntilDone:NO];
+	NSString *trackingId = self.md5AdvertisingIdentifier != nil ? self.md5AdvertisingIdentifier : self.md5OpenUDID;
+	NSString *query = [NSString stringWithFormat:@"applicationId=%@&type=%@&trackingId=%@&providerId=%@", self.gameId, positionString, trackingId, campaign.id];
+
+	[self.analyticsUploader performSelector:@selector(sendViewReportWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
 }
 
 - (void)_startAnalyticsUploader
