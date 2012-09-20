@@ -33,6 +33,7 @@
 		F684EDF915F8CDC2004F1C78 /* UnityAdsCampaign.m in Sources */ = {isa = PBXBuildFile; fileRef = F684EDF815F8CDC2004F1C78 /* UnityAdsCampaign.m */; };
 		F684EDFC15F8CDFA004F1C78 /* UnityAdsRewardItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F684EDFB15F8CDFA004F1C78 /* UnityAdsRewardItem.m */; };
 		F684EE0315F8CFB7004F1C78 /* UnityAdsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = F684EE0215F8CFB7004F1C78 /* UnityAdsCache.m */; };
+		F6EE8ED6160B14BC0023EEC3 /* UnityAdsViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EE8ED5160B14BC0023EEC3 /* UnityAdsViewManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +78,8 @@
 		F684EDFB15F8CDFA004F1C78 /* UnityAdsRewardItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsRewardItem.m; sourceTree = "<group>"; };
 		F684EE0115F8CFB7004F1C78 /* UnityAdsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsCache.h; sourceTree = "<group>"; };
 		F684EE0215F8CFB7004F1C78 /* UnityAdsCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsCache.m; sourceTree = "<group>"; };
+		F6EE8ED4160B14BC0023EEC3 /* UnityAdsViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsViewManager.h; sourceTree = "<group>"; };
+		F6EE8ED5160B14BC0023EEC3 /* UnityAdsViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsViewManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +208,8 @@
 				F684EE0215F8CFB7004F1C78 /* UnityAdsCache.m */,
 				90B1F7DE1601AD440080A74C /* UnityAdsAnalyticsUploader.h */,
 				90B1F7DF1601AD440080A74C /* UnityAdsAnalyticsUploader.m */,
+				F6EE8ED4160B14BC0023EEC3 /* UnityAdsViewManager.h */,
+				F6EE8ED5160B14BC0023EEC3 /* UnityAdsViewManager.m */,
 			);
 			name = UnityAds;
 			path = ../UnityAds;
@@ -291,6 +296,7 @@
 				F684EE0315F8CFB7004F1C78 /* UnityAdsCache.m in Sources */,
 				90A3797916009F5F00B4035F /* UnityAdsOpenUDID.m in Sources */,
 				90B1F7E01601AD450080A74C /* UnityAdsAnalyticsUploader.m in Sources */,
+				F6EE8ED6160B14BC0023EEC3 /* UnityAdsViewManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
