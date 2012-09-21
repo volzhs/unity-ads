@@ -11,11 +11,13 @@
 #import "UnityAds.h"
 
 NSString * const kUnityAdsAnalyticsURL = @"http://log.applifier.com/videoads-tracking";
+NSString * const kUnityAdsTrackingURL = @"https://impact.applifier.com/gamers/";
 NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
 NSString * const kUnityAdsAnalyticsUploaderConnectionKey = @"kUnityAdsAnalyticsUploaderConnectionKey";
 NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUploadsKey";
 NSString * const kUnityAdsAnalyticsSavedUploadURLKey = @"kUnityAdsAnalyticsSavedUploadURLKey";
 NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSavedUploadBodyKey";
+NSString * const kUnityAdsAnalyticsSavedUploadHTTPMethodKey = @"kUnityAdsAnalyticsSavedUploadHTTPMethodKey";
 
 @interface UnityAdsAnalyticsUploader () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableArray *uploadQueue;
@@ -41,11 +43,17 @@ NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSave
 	
 	NSURLRequest *request = [upload objectForKey:kUnityAdsAnalyticsUploaderRequestKey];
 	NSMutableDictionary *failedUpload = [NSMutableDictionary dictionary];
-	if ([request URL] != nil && [request HTTPBody] != nil)
+	if ([request URL] != nil)
 	{
 		[failedUpload setObject:[[request URL] absoluteString] forKey:kUnityAdsAnalyticsSavedUploadURLKey];
-		NSString *bodyString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
-		[failedUpload setObject:bodyString forKey:kUnityAdsAnalyticsSavedUploadBodyKey];
+		
+		if ([request HTTPBody] != nil)
+		{
+			NSString *bodyString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
+			[failedUpload setObject:bodyString forKey:kUnityAdsAnalyticsSavedUploadBodyKey];
+		}
+		
+		[failedUpload setObject:[request HTTPMethod] forKey:kUnityAdsAnalyticsSavedUploadHTTPMethodKey];
 		[existingFailedUploads addObject:failedUpload];
 		
 		UALOG_DEBUG(@"%@", existingFailedUploads);
@@ -74,9 +82,9 @@ NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSave
 	return YES;
 }
 
-- (void)_queueURL:(NSURL *)url body:(NSData *)body
+- (void)_queueURL:(NSURL *)url body:(NSData *)body httpMethod:(NSString *)httpMethod
 {
-	if (url == nil || body == nil)
+	if (url == nil)
 	{
 		UALOG_DEBUG(@"Invalid input.");
 		return;
@@ -90,8 +98,9 @@ NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSave
 		return;
 	}
 	
-	[request setHTTPMethod:@"POST"];
-	[request setHTTPBody:body];
+	[request setHTTPMethod:httpMethod];
+	if (body != nil)
+		[request setHTTPBody:body];
 	
 	UALOG_DEBUG(@"queueing %@", [request URL]);
 	
@@ -101,6 +110,16 @@ NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSave
 	
 	if ([self.uploadQueue count] == 1)
 		[self _startNextUpload];
+}
+
+- (void)_queueWithURLString:(NSString *)urlString queryString:(NSString *)queryString httpMethod:(NSString *)httpMethod
+{
+	NSURL *url = [NSURL URLWithString:urlString];
+	NSData *body = nil;
+	if (queryString != nil)
+		body = [queryString dataUsingEncoding:NSUTF8StringEncoding];
+
+	[self _queueURL:url body:body httpMethod:httpMethod];
 }
 
 #pragma mark - Public
@@ -129,8 +148,24 @@ NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSave
 		return;
 	}
 	
-	NSURL *url = [NSURL URLWithString:kUnityAdsAnalyticsURL];
-	[self _queueURL:url body:[queryString dataUsingEncoding:NSUTF8StringEncoding]];
+	[self _queueWithURLString:kUnityAdsAnalyticsURL queryString:queryString httpMethod:@"POST"];
+}
+
+- (void)sendTrackingCallWithQueryString:(NSString *)queryString
+{
+	if ([NSThread isMainThread])
+	{
+		UALOG_ERROR(@"Cannot be run on main thread.");
+		return;
+	}
+	
+	if (queryString == nil || [queryString length] == 0)
+	{
+		UALOG_DEBUG(@"Invalid input.");
+		return;
+	}
+	
+	[self _queueWithURLString:[kUnityAdsTrackingURL stringByAppendingString:queryString] queryString:nil httpMethod:@"GET"];
 }
 
 - (void)retryFailedUploads
@@ -148,7 +183,8 @@ NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSave
 		{
 			NSString *url = [upload objectForKey:kUnityAdsAnalyticsSavedUploadURLKey];
 			NSString *body = [upload objectForKey:kUnityAdsAnalyticsSavedUploadBodyKey];
-			[self _queueURL:[NSURL URLWithString:url] body:[body dataUsingEncoding:NSUTF8StringEncoding]];
+			NSString *httpMethod = [upload objectForKey:kUnityAdsAnalyticsSavedUploadHTTPMethodKey];
+			[self _queueURL:[NSURL URLWithString:url] body:[body dataUsingEncoding:NSUTF8StringEncoding] httpMethod:httpMethod];
 		}
 		
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:kUnityAdsAnalyticsSavedUploadsKey];
