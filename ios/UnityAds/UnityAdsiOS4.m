@@ -295,8 +295,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 		trackingString = @"view";
 	}
 	
-	NSString *trackingId = self.md5AdvertisingIdentifier != nil ? self.md5AdvertisingIdentifier : self.md5OpenUDID;
-	NSString *query = [NSString stringWithFormat:@"applicationId=%@&type=%@&trackingId=%@&providerId=%@", self.gameId, positionString, trackingId, campaign.id];
+	NSString *query = [NSString stringWithFormat:@"applicationId=%@&type=%@&trackingId=%@&providerId=%@", self.gameId, positionString, self.gamerID, campaign.id];
 
 	[self.analyticsUploader performSelector:@selector(sendViewReportWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
 	
