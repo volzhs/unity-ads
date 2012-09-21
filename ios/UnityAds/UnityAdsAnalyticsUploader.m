@@ -10,7 +10,7 @@
 #import "UnityAdsCampaign.h"
 #import "UnityAds.h"
 
-NSString * const kUnityAdsAnalyticsURL = @"http://log.applifier.com/videoads-tracking";
+NSString * const kUnityAdsAnalyticsURL = @"https://log.applifier.com/videoads-tracking";
 NSString * const kUnityAdsTrackingURL = @"https://impact.applifier.com/gamers/";
 NSString * const kUnityAdsInstallTrackingURL = @"https://impact.applifier.com/games/";
 NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
