@@ -13,6 +13,7 @@
 
 @protocol UnityAdsCacheDelegate <NSObject>
 
+@required
 - (void)cache:(UnityAdsCache *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
 - (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache;
 
