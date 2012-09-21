@@ -8,12 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const kUnityAdsQueryDictionaryQueryKey;
+extern NSString * const kUnityAdsQueryDictionaryBodyKey;
+
 @class UnityAdsCampaign;
 
 @interface UnityAdsAnalyticsUploader : NSObject
 
 - (void)sendViewReportWithQueryString:(NSString *)queryString;
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString;
+- (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary;
 - (void)retryFailedUploads;
 
 @end

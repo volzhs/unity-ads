@@ -322,6 +322,21 @@ NSString * const kUnityAdsVersion = @"1.0";
 	}
 }
 
+- (void)_trackInstall
+{
+	if (self.gameId == nil)
+	{
+		UALOG_ERROR(@"Unity Ads has not been started properly. Launch with -startWithGameId: first.");
+		return;
+	}
+	
+	NSString *queryString = [NSString stringWithFormat:@"%@/install", self.gameId];
+	NSString *bodyString = [NSString stringWithFormat:@"openUdid=%@&macAddress=%@", self.md5OpenUDID, self.md5MACAddress];
+	NSDictionary *queryDictionary = @{ kUnityAdsQueryDictionaryQueryKey : queryString, kUnityAdsQueryDictionaryBodyKey : bodyString };
+	
+	[self.analyticsUploader performSelector:@selector(sendInstallTrackingCallWithQueryDictionary:) onThread:self.backgroundThread withObject:queryDictionary waitUntilDone:NO];
+}
+
 #pragma mark - Public
 
 - (void)startWithGameId:(NSString *)gameId
@@ -397,11 +412,22 @@ NSString * const kUnityAdsVersion = @"1.0";
 {
 	if ( ! [NSThread isMainThread])
 	{
-		UALOG_ERROR(@"-stopAll must be run on main thread.");
+		UALOG_ERROR(@"Must be run on main thread.");
 		return;
 	}
 	
 	[self.campaignManager performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+}
+
+- (void)trackInstall
+{
+	if ( ! [NSThread isMainThread])
+	{
+		UALOG_ERROR(@"Must be run on main thread.");
+		return;
+	}
+	
+	[self _trackInstall];
 }
 
 - (void)dealloc

@@ -12,12 +12,15 @@
 
 NSString * const kUnityAdsAnalyticsURL = @"http://log.applifier.com/videoads-tracking";
 NSString * const kUnityAdsTrackingURL = @"https://impact.applifier.com/gamers/";
+NSString * const kUnityAdsInstallTrackingURL = @"https://impact.applifier.com/games/";
 NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
 NSString * const kUnityAdsAnalyticsUploaderConnectionKey = @"kUnityAdsAnalyticsUploaderConnectionKey";
 NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUploadsKey";
 NSString * const kUnityAdsAnalyticsSavedUploadURLKey = @"kUnityAdsAnalyticsSavedUploadURLKey";
 NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSavedUploadBodyKey";
 NSString * const kUnityAdsAnalyticsSavedUploadHTTPMethodKey = @"kUnityAdsAnalyticsSavedUploadHTTPMethodKey";
+NSString * const kUnityAdsQueryDictionaryQueryKey = @"kUnityAdsQueryDictionaryQueryKey";
+NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBodyKey";
 
 @interface UnityAdsAnalyticsUploader () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableArray *uploadQueue;
@@ -166,6 +169,32 @@ NSString * const kUnityAdsAnalyticsSavedUploadHTTPMethodKey = @"kUnityAdsAnalyti
 	}
 	
 	[self _queueWithURLString:[kUnityAdsTrackingURL stringByAppendingString:queryString] queryString:nil httpMethod:@"GET"];
+}
+
+- (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary
+{
+	if ([NSThread isMainThread])
+	{
+		UALOG_ERROR(@"Cannot be run on main thread.");
+		return;
+	}
+	
+	if (queryDictionary == nil)
+	{
+		UALOG_DEBUG(@"Invalid input.");
+		return;
+	}
+	
+	NSString *query = [queryDictionary objectForKey:kUnityAdsQueryDictionaryQueryKey];
+	NSString *body = [queryDictionary objectForKey:kUnityAdsQueryDictionaryBodyKey];
+	
+	if (query == nil || [query length] == 0 || body == nil || [body length] == 0)
+	{
+		UALOG_DEBUG(@"Invalid parameters in query dictionary.");
+		return;
+	}
+	
+	[self _queueWithURLString:[kUnityAdsInstallTrackingURL stringByAppendingString:query] queryString:body httpMethod:@"POST"];
 }
 
 - (void)retryFailedUploads

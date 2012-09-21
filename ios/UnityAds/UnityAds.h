@@ -53,5 +53,6 @@
 - (UIView *)adsView;
 - (BOOL)canShow;
 - (void)stopAll;
+- (void)trackInstall;
 
 @end
