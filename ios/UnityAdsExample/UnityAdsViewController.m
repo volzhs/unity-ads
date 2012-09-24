@@ -69,9 +69,9 @@
 	NSLog(@"unityAdsVideoStarted");
 }
 
-- (void)unityAdsVideoCompleted:(UnityAds *)unityAds
+- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItem:(UnityAdsRewardItem *)rewardItem
 {
-	NSLog(@"unityAdsVideoCompleted");
+	NSLog(@"unityAds:completedVideoWithRewardItem:");
 }
 
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds

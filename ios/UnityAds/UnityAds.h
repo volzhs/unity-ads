@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
+#import "UnityAdsRewardItem.h"
 
 #define UALOG_DEBUG_LOGGING_ENABLED 1
 
@@ -35,7 +36,7 @@
 - (void)unityAdsWillShow:(UnityAds *)unityAds;
 - (void)unityAdsWillHide:(UnityAds *)unityAds;
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds;
-- (void)unityAdsVideoCompleted:(UnityAds *)unityAds;
+- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItem:(UnityAdsRewardItem *)rewardItem;
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
 
 // iOS 6 only! FIXME: requires documentation, since developers need to present this themselves.

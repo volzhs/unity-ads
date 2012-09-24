@@ -494,8 +494,8 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)viewManagerVideoEnded:(UnityAdsViewManager *)viewManager
 {
-	if ([self.delegate respondsToSelector:@selector(unityAdsVideoCompleted:)])
-		[self.delegate unityAdsVideoCompleted:self];
+	if ([self.delegate respondsToSelector:@selector(unityAds:completedVideoWithRewardItem:)])
+		[self.delegate unityAds:self completedVideoWithRewardItem:self.rewardItem];
 }
 
 - (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign
