@@ -69,9 +69,9 @@
 	NSLog(@"unityAdsVideoStarted");
 }
 
-- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItem:(UnityAdsRewardItem *)rewardItem
+- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey
 {
-	NSLog(@"unityAds:completedVideoWithRewardItem:");
+	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
 }
 
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds
