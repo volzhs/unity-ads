@@ -331,7 +331,10 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	}
 	
 	if ( ! downloadsQueued)
+	{
+		UALOG_DEBUG(@"No new or partial videos to download.");
 		[self.delegate cacheFinishedCachingCampaigns:self];
+	}
 }
 
 - (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign
