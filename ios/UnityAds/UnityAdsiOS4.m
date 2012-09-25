@@ -285,9 +285,9 @@ NSString * const kUnityAdsVersion = @"1.0";
 				connectionString = nil;
 			}
 		}
+
+		CFRelease(reachabilityRef);
 	}
-	
-	CFRelease(reachabilityRef);
 	
 	return connectionString;
 }
