@@ -33,15 +33,13 @@
 
 @required
 - (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey;
+- (UIViewController *)viewControllerForPresentingViewControllersForAds:(UnityAds *)unityAds;
 
 @optional
 - (void)unityAdsWillShow:(UnityAds *)unityAds;
 - (void)unityAdsWillHide:(UnityAds *)unityAds;
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds;
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
-
-// iOS 6 only! FIXME: requires documentation, since developers need to present this themselves.
-- (void)unityAds:(UnityAds *)unityAds wantsToPresentProductViewController:(SKStoreProductViewController *)productViewController;
 
 @end
 

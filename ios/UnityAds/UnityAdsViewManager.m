@@ -22,7 +22,7 @@ NSString * const kUnityAdsWebViewAPIClose = @"close";
 NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateto";
 NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 
-@interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate>
+@interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate, SKStoreProductViewControllerDelegate>
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIView *adContainerView;
@@ -34,6 +34,7 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 @property (nonatomic, strong) id timeObserver;
 @property (nonatomic, strong) id analyticsTimeObserver;
 @property (nonatomic, assign) VideoAnalyticsPosition videoPosition;
+@property (nonatomic, assign) UIViewController *storePresentingViewController;
 @end
 
 @implementation UnityAdsViewManager
@@ -258,10 +259,14 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 	{
 		__block UnityAdsViewManager *blockSelf = self;
 		__block id storeController = [[[storeProductViewControllerClass class] alloc] init];
+		[storeController setDelegate:self];
 		NSDictionary *productParameters = @{ SKStoreProductParameterITunesItemIdentifier : gameID };
 		[storeController loadProductWithParameters:productParameters completionBlock:^(BOOL result, NSError *error) {
 			if (result)
-				[blockSelf.delegate viewManager:blockSelf wantsToPresentProductViewController:storeController];
+			{
+				blockSelf.storePresentingViewController = [self.delegate viewControllerForPresentingViewControllersForViewManager:blockSelf];
+				[blockSelf.storePresentingViewController presentModalViewController:storeController animated:YES];
+			}
 			else
 				UALOG_DEBUG(@"Loading product information failed: %@", error);
 		}];
@@ -423,6 +428,12 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 {
 	NSURL *url = [request URL];
 	UALOG_DEBUG(@"url %@", url);
+	if ([[url host] isEqualToString:@"close"])
+	{
+		[self _openStoreViewControllerWithGameID:@"523405247"];
+		return NO;
+	}
+	
 	if ([[url scheme] isEqualToString:@"applifier-impact"])
 	{
 		[self _processWebViewResponseWithHost:[url host] query:[url query]];
@@ -458,6 +469,15 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 	scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
+}
+
+#pragma mark - SKStoreProductViewControllerDelegate
+
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
+{
+	[self.storePresentingViewController dismissViewControllerAnimated:YES completion:nil];
+
+	self.storePresentingViewController = nil;
 }
 
 @end

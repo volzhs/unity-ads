@@ -81,17 +81,11 @@
 	[self.buttonView setImage:[UIImage imageNamed:@"unityads_ready"] forState:UIControlStateNormal];
 }
 
-- (void)unityAds:(UnityAds *)unityAds wantsToPresentProductViewController:(SKStoreProductViewController *)productViewController
+- (UIViewController *)viewControllerForPresentingViewControllersForAds:(UnityAds *)unityAds
 {
-	productViewController.delegate = self;
-	[self presentViewController:productViewController animated:YES completion:nil];
-}
-
-#pragma mark - SKStoreProductViewControllerDelegate
-
-- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
-{
-	[self dismissViewControllerAnimated:YES completion:nil];
+	NSLog(@"viewControllerForPresentingViewControllersForAds");
+	
+	return self;
 }
 
 @end

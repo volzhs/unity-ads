@@ -640,12 +640,11 @@ NSString * const kUnityAdsVersion = @"1.0";
 	[self _logVideoAnalyticsWithPosition:videoPosition campaign:campaign];
 }
 
-- (void)viewManager:(UnityAdsViewManager *)viewManager wantsToPresentProductViewController:(SKStoreProductViewController *)productViewController
+- (UIViewController *)viewControllerForPresentingViewControllersForViewManager:(UnityAdsViewManager *)viewManager
 {
 	UALOG_DEBUG(@"");
 	
-	if ([self.delegate respondsToSelector:@selector(unityAds:wantsToPresentProductViewController:)])
-		[self.delegate unityAds:self wantsToPresentProductViewController:productViewController];
+	return [self.delegate viewControllerForPresentingViewControllersForAds:self];
 }
 
 - (void)viewManagerWillCloseAdView:(UnityAdsViewManager *)viewManager
