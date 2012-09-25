@@ -316,12 +316,41 @@ NSString * const kUnityAdsVersion = @"1.0";
 	}
 }
 
-- (void)_startCampaignManager
+- (void)_refreshCampaignManager
 {
-	self.campaignManager = [[UnityAdsCampaignManager alloc] init];
-	self.campaignManager.delegate = self;
+	if ([NSThread isMainThread])
+	{
+		UALOG_DEBUG(@"Cannot be run on main thread.");
+		return;
+	}
+
 	self.campaignManager.queryString = self.campaignQueryString;
 	[self.campaignManager updateCampaigns];
+}
+
+- (void)_startCampaignManager
+{
+	if ([NSThread isMainThread])
+	{
+		UALOG_DEBUG(@"Cannot be run on main thread.");
+		return;
+	}
+	
+	self.campaignManager = [[UnityAdsCampaignManager alloc] init];
+	self.campaignManager.delegate = self;
+	[self _refreshCampaignManager];
+}
+
+- (void)_startAnalyticsUploader
+{
+	if ([NSThread isMainThread])
+	{
+		UALOG_DEBUG(@"Cannot be run on main thread.");
+		return;
+	}
+	
+	self.analyticsUploader = [[UnityAdsAnalyticsUploader alloc] init];
+	[self.analyticsUploader retryFailedUploads];
 }
 
 - (void)_logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign
@@ -364,12 +393,6 @@ NSString * const kUnityAdsVersion = @"1.0";
 	});
 }
 
-- (void)_startAnalyticsUploader
-{
-	self.analyticsUploader = [[UnityAdsAnalyticsUploader alloc] init];
-	[self.analyticsUploader retryFailedUploads];
-}
-
 - (void)_notifyDelegateOfCampaignAvailability
 {
 	if (self.campaigns != nil && self.rewardItem != nil && self.webViewInitialized)
@@ -393,6 +416,29 @@ NSString * const kUnityAdsVersion = @"1.0";
 		NSDictionary *queryDictionary = @{ kUnityAdsQueryDictionaryQueryKey : queryString, kUnityAdsQueryDictionaryBodyKey : bodyString };
 		
 		[self.analyticsUploader performSelector:@selector(sendInstallTrackingCallWithQueryDictionary:) onThread:self.backgroundThread withObject:queryDictionary waitUntilDone:NO];
+	});
+}
+
+- (void)_refresh
+{
+	if (self.gameId == nil)
+	{
+		UALOG_ERROR(@"Unity Ads has not been started properly. Launch with -startWithGameId: first.");
+		return;
+	}
+	
+	self.campaigns = nil;
+	self.rewardItem = nil;
+	self.campaignJSON = nil;
+	
+	dispatch_async(self.queue, ^{
+		self.connectionType = [self _currentConnectionType];
+		self.campaignQueryString = [self _queryString];
+		
+		[self performSelector:@selector(_refreshCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+		[self.analyticsUploader performSelector:@selector(retryFailedUploads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+		
+		// FIXME: refresh web view?
 	});
 }
 
@@ -494,6 +540,17 @@ NSString * const kUnityAdsVersion = @"1.0";
 	}
 	
 	[self _trackInstall];
+}
+
+- (void)refresh
+{
+	if ( ! [NSThread isMainThread])
+	{
+		UALOG_ERROR(@"Must be run on main thread.");
+		return;
+	}
+	
+	[self _refresh];
 }
 
 - (void)dealloc

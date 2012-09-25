@@ -51,27 +51,36 @@ static UnityAds *sharedAdsInstance = nil;
 
 - (void)startWithGameId:(NSString *)gameId
 {
-	// do nothing
+	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
 - (UIView *)adsView
 {
+	UALOG_DEBUG(@"Disabled on older versions of iOS.");
+
 	return nil;
 }
 
 - (BOOL)canShow
 {
+	UALOG_DEBUG(@"Disabled on older versions of iOS.");
+
 	return NO;
 }
 
 - (void)stopAll
 {
-	// do nothing
+	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
 - (void)trackInstall
 {
-	// do nothing
+	UALOG_DEBUG(@"Disabled on older versions of iOS.");
+}
+
+- (void)refresh
+{
+	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
 @end
