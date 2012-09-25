@@ -511,6 +511,8 @@ NSString * const kUnityAdsVersion = @"1.0";
 		UALOG_ERROR(@"Method must be run on main thread.");
 		return;
 	}
+
+	UALOG_DEBUG(@"");
 	
 	self.campaigns = campaigns;
 	self.rewardItem = rewardItem;
@@ -526,6 +528,8 @@ NSString * const kUnityAdsVersion = @"1.0";
 		UALOG_ERROR(@"Method must be run on main thread.");
 		return;
 	}
+	
+	UALOG_DEBUG(@"");
 	
 	self.viewManager.campaignJSON = json;
 }
@@ -545,45 +549,61 @@ NSString * const kUnityAdsVersion = @"1.0";
 		}
 	}
 	
+	UALOG_DEBUG(@"");
+	
 	return foundCampaign;
 }
 
 -(NSURL *)viewManager:(UnityAdsViewManager *)viewManager videoURLForCampaign:(UnityAdsCampaign *)campaign
 {
+	UALOG_DEBUG(@"");
+	
 	return [self.campaignManager videoURLForCampaign:campaign];
 }
 
 - (void)viewManagerStartedPlayingVideo:(UnityAdsViewManager *)viewManager
 {
+	UALOG_DEBUG(@"");
+	
 	if ([self.delegate respondsToSelector:@selector(unityAdsVideoStarted:)])
 		[self.delegate unityAdsVideoStarted:self];
 }
 
 - (void)viewManagerVideoEnded:(UnityAdsViewManager *)viewManager
 {
+	UALOG_DEBUG(@"");
+	
 	if ([self.delegate respondsToSelector:@selector(unityAds:completedVideoWithRewardItemKey:)])
 		[self.delegate unityAds:self completedVideoWithRewardItemKey:self.rewardItem.key];
 }
 
 - (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign
 {
+	UALOG_DEBUG(@"");
+	
 	[self _logVideoAnalyticsWithPosition:videoPosition campaign:campaign];
 }
 
 - (void)viewManager:(UnityAdsViewManager *)viewManager wantsToPresentProductViewController:(SKStoreProductViewController *)productViewController
 {
+	UALOG_DEBUG(@"");
+	
 	if ([self.delegate respondsToSelector:@selector(unityAds:wantsToPresentProductViewController:)])
 		[self.delegate unityAds:self wantsToPresentProductViewController:productViewController];
 }
 
 - (void)viewManagerWillCloseAdView:(UnityAdsViewManager *)viewManager
 {
+	UALOG_DEBUG(@"");
+	
 	if ([self.delegate respondsToSelector:@selector(unityAdsWillHide:)])
 		[self.delegate unityAdsWillHide:self];
 }
 
 - (void)viewManagerWebViewInitialized:(UnityAdsViewManager *)viewManager
 {
+	UALOG_DEBUG(@"");
+	
 	self.webViewInitialized = YES;
 	
 	[self _notifyDelegateOfCampaignAvailability];
