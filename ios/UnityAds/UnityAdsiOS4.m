@@ -630,8 +630,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 {
 	UALOG_DEBUG(@"");
 	
-	if ([self.delegate respondsToSelector:@selector(unityAds:completedVideoWithRewardItemKey:)])
-		[self.delegate unityAds:self completedVideoWithRewardItemKey:self.rewardItem.key];
+	[self.delegate unityAds:self completedVideoWithRewardItemKey:self.rewardItem.key];
 }
 
 - (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign

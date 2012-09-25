@@ -54,6 +54,11 @@
 
 #pragma mark - UnityAdsDelegate
 
+- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey
+{
+	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
+}
+
 - (void)unityAdsWillShow:(UnityAds *)unityAds
 {
 	NSLog(@"unityAdsWillShow");
@@ -67,11 +72,6 @@
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds
 {
 	NSLog(@"unityAdsVideoStarted");
-}
-
-- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey
-{
-	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
 }
 
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds
