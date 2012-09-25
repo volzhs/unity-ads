@@ -50,6 +50,7 @@ NSString * const kGamerIDKey = @"gamerId";
 @property (nonatomic, strong) NSArray *campaigns;
 @property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
 @property (nonatomic, strong) NSString *gamerID;
+@property (nonatomic, strong) NSString *campaignJSON;
 @end
 
 @implementation UnityAdsCampaignManager
@@ -66,22 +67,20 @@ NSString * const kGamerIDKey = @"gamerId";
 	
 	UnityAdsSBJsonParser *parser = [[UnityAdsSBJsonParser alloc] init];
 	NSError *error = nil;
-	__block NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+	NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+	if ([jsonString isEqualToString:self.campaignJSON])
+		return nil;
+	
 	id repr = [parser objectWithString:jsonString error:&error];
 	if (repr == nil)
 	{
 		UALOG_DEBUG(@"-JSONValue failed. Error is: %@", error);
 		UALOG_DEBUG(@"String value: %@", jsonString);
+
+		return nil;
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(campaignManager:downloadedJSON:)])
-	{
-		__block UnityAdsCampaignManager *blockSelf = self;
-		
-		[[NSOperationQueue mainQueue] addOperationWithBlock:^{
-			[blockSelf.delegate campaignManager:blockSelf downloadedJSON:jsonString];
-		}];
-	}
+	self.campaignJSON = jsonString;
 	
 	return repr;
 }
@@ -245,7 +244,7 @@ NSString * const kGamerIDKey = @"gamerId";
 		[self.cache cacheCampaigns:self.campaigns];
 	}
 	else
-		UALOG_DEBUG(@"Unknown data type for JSON: %@", [json class]);
+		UALOG_DEBUG(@"JSON not changed or unknown data type for JSON: %@", [json class]);
 }
 
 #pragma mark - Public
@@ -351,14 +350,11 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache
 {
-	if ([self.delegate respondsToSelector:@selector(campaignManager:updatedWithCampaigns:rewardItem:gamerID:)])
-	{
-		__block UnityAdsCampaignManager *blockSelf = self;
-		
-		[[NSOperationQueue mainQueue] addOperationWithBlock:^{
-			[blockSelf.delegate campaignManager:blockSelf updatedWithCampaigns:blockSelf.campaigns rewardItem:blockSelf.rewardItem gamerID:blockSelf.gamerID];
-		}];
-	}
+	__block UnityAdsCampaignManager *blockSelf = self;
+	
+	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+		[blockSelf.delegate campaignManager:blockSelf updatedWithCampaigns:blockSelf.campaigns rewardItem:blockSelf.rewardItem gamerID:blockSelf.gamerID json:self.campaignJSON];
+	}];
 }
 
 @end
