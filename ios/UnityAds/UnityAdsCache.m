@@ -67,6 +67,24 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	return size;
 }
 
+- (BOOL)_campaignExistsInQueue:(UnityAdsCampaign *)campaign
+{
+	BOOL exists = NO;
+	
+	for (NSDictionary *downloadDictionary in self.downloadQueue)
+	{
+		UnityAdsCampaign *downloadCampaign = [downloadDictionary objectForKey:kUnityAdsCacheCampaignKey];
+		
+		if ([downloadCampaign.id isEqualToString:campaign.id] && [downloadCampaign.trailerDownloadableURL isEqual:campaign.trailerDownloadableURL])
+		{
+			UALOG_DEBUG(@"Campaign '%@' exists in queue.", campaign.id);
+			exists = YES;
+		}
+	}
+	
+	return exists;
+}
+
 - (BOOL)_queueCampaignDownload:(UnityAdsCampaign *)campaign
 {
 	if (campaign == nil)
@@ -79,10 +97,8 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	long long existingFilesize = [self _filesizeForPath:filePath];
 	long long filesize = [self _cachedFilesizeForVideoFilename:[self _videoFilenameForCampaign:campaign]];
 	
-	if (existingFilesize < filesize || filesize == 0)
+	if ( ! [self _campaignExistsInQueue:campaign] && (existingFilesize < filesize || filesize == 0))
 	{
-		// TODO: Check if download already exists in queue.
-		
 		UALOG_DEBUG(@"Queueing %@, id %@", campaign.trailerDownloadableURL, campaign.id);
 		
 		NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:campaign.trailerDownloadableURL];
