@@ -280,7 +280,7 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 	[storeController loadProductWithParameters:productParameters completionBlock:^(BOOL result, NSError *error) {
 		if (result)
 		{
-			blockSelf.storePresentingViewController = [self.delegate viewControllerForPresentingViewControllersForViewManager:blockSelf];
+			blockSelf.storePresentingViewController = [blockSelf.delegate viewControllerForPresentingViewControllersForViewManager:blockSelf];
 			[blockSelf.storePresentingViewController presentModalViewController:storeController animated:YES];
 		}
 		else
