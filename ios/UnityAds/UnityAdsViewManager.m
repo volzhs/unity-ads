@@ -21,6 +21,7 @@ NSString * const kUnityAdsWebViewAPIPlayVideo = @"playvideo";
 NSString * const kUnityAdsWebViewAPIClose = @"close";
 NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateto";
 NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
+NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
 @interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate, SKStoreProductViewControllerDelegate>
 @property (nonatomic, strong) UIWindow *window;
@@ -80,7 +81,7 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 	if (query != nil)
 		queryComponents = [query componentsSeparatedByString:@"="];
 	
-	if ([command isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [command isEqualToString:kUnityAdsWebViewAPINavigateTo])
+	if ([command isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [command isEqualToString:kUnityAdsWebViewAPINavigateTo] || [command isEqualToString:kUnityAdsWebViewAPIAppStore])
 	{
 		if (queryComponents == nil)
 		{
@@ -107,6 +108,11 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 			if ([parameter isEqualToString:@"url"])
 				[self _openURL:value];
 		}
+		else if ([command isEqualToString:kUnityAdsWebViewAPIAppStore])
+		{
+			if ([parameter isEqualToString:@"id"])
+				[self _openStoreViewControllerWithGameID:value];
+		}
 	}
 	else if ([command isEqualToString:kUnityAdsWebViewAPIClose])
 	{
@@ -129,12 +135,6 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 	if (urlString == nil)
 	{
 		UALOG_DEBUG(@"No URL set.");
-		return;
-	}
-	
-	if ([self _canOpenStoreProductViewController])
-	{
-		[self _openStoreViewControllerWithGameID:self.selectedCampaign.itunesID];
 		return;
 	}
 	
@@ -268,7 +268,8 @@ NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 	
 	if ( ! [self _canOpenStoreProductViewController])
 	{
-		UALOG_DEBUG(@"Not supported on older versions of iOS.");
+		UALOG_DEBUG(@"Cannot open store product view controller, falling back to click URL.");
+		[self _openURL:[self.selectedCampaign.clickURL absoluteString]];
 		return;
 	}
 	
