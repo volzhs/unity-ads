@@ -105,7 +105,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 		}
 		else if ([command isEqualToString:kUnityAdsWebViewAPINavigateTo])
 		{
-			if ([parameter isEqualToString:@"url"])
+			if ([parameter isEqualToString:@"clickUrl"])
 				[self _openURL:value];
 		}
 		else if ([command isEqualToString:kUnityAdsWebViewAPIAppStore])
