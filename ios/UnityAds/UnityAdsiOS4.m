@@ -572,7 +572,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 #pragma mark - UnityAdsCampaignManagerDelegate
 
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID json:(NSString *)json
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID
 {
 	if ( ! [NSThread isMainThread])
 	{
@@ -582,19 +582,24 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 	UALOG_DEBUG(@"");
 	
-	// If campaigns already exist, it means that campaigns were updated, and we might want to update the webapp.
-	if (self.campaigns != nil)
+	self.campaigns = campaigns;
+	self.rewardItem = rewardItem;
+	self.gamerID = gamerID;
+	
+	[self _notifyDelegateOfCampaignAvailability];
+}
+
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedJSON:(NSString *)json
+{
+	// If the view manager already has campaign JSON data, it means that
+	// campaigns were updated, and we might want to update the webapp.
+	if (self.viewManager.campaignJSON != nil)
 	{
 		self.webViewInitialized = NO;
 		[self.viewManager loadWebView];
 	}
 	
-	self.campaigns = campaigns;
-	self.rewardItem = rewardItem;
-	self.gamerID = gamerID;
 	self.viewManager.campaignJSON = json;
-	
-	[self _notifyDelegateOfCampaignAvailability];
 }
 
 #pragma mark - UnityAdsViewManagerDelegate

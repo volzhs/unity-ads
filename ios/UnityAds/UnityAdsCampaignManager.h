@@ -15,7 +15,8 @@
 @protocol UnityAdsCampaignManagerDelegate <NSObject>
 
 @required
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID json:(NSString *)json;
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID;
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedJSON:(NSString *)json;
 
 @end
 
