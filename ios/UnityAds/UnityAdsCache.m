@@ -340,11 +340,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (id)init
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-init cannot be called from main thread.");
-		return nil;
-	}
+	UAAssertV( ! [NSThread isMainThread], nil);
 	
 	if ((self = [super init]))
 	{
@@ -356,11 +352,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (void)cacheCampaigns:(NSArray *)campaigns
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-cacheCampaigns: cannot be called from main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	if (campaigns == nil)
 	{
@@ -411,11 +403,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (void)cancelAllDownloads
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-cancelAllDownloads cannot be called from main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	if (self.currentDownload != nil)
 	{

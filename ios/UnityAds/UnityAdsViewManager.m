@@ -334,11 +334,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
 - (id)init
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_DEBUG(@"Must be run in main thread.");
-		return nil;
-	}
+	UAAssertV([NSThread isMainThread], nil);
 	
 	if ((self = [super init]))
 	{
@@ -371,11 +367,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
 - (void)loadWebView
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_DEBUG(@"Must be run in main thread.");
-		return;
-	}
+	UAAssert([NSThread isMainThread]);
 	
 	self.webViewLoaded = NO;
 	self.webViewInitialized = NO;
@@ -385,11 +377,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
 - (UIView *)adView
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_DEBUG(@"Must be run in main thread.");
-		return nil;
-	}
+	UAAssertV([NSThread isMainThread], nil);
 	
 	if (self.webViewInitialized)
 	{
@@ -427,11 +415,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
 - (void)setCampaignJSON:(NSString *)campaignJSON
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_DEBUG(@"Must be run in main thread.");
-		return;
-	}
+	UAAssert([NSThread isMainThread]);
 	
 	_campaignJSON = campaignJSON;
 	
@@ -441,6 +425,8 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
 - (BOOL)adViewVisible
 {
+	UAAssertV([NSThread isMainThread], NO);
+	
 	if (self.webView.superview == self.window)
 		return NO;
 	else

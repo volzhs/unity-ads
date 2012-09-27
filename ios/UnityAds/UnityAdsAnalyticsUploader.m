@@ -139,11 +139,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 
 - (void)sendViewReportWithQueryString:(NSString *)queryString
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Cannot be run on main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	if (queryString == nil || [queryString length] == 0)
 	{
@@ -156,11 +152,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Cannot be run on main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	if (queryString == nil || [queryString length] == 0)
 	{
@@ -173,11 +165,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 
 - (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Cannot be run on main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	if (queryDictionary == nil)
 	{
@@ -199,12 +187,8 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 
 - (void)retryFailedUploads
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Cannot be run on main thread.");
-		return;
-	}
-
+	UAAssert( ! [NSThread isMainThread]);
+	
 	NSArray *uploads = [[NSUserDefaults standardUserDefaults] arrayForKey:kUnityAdsAnalyticsSavedUploadsKey];
 	if (uploads != nil)
 	{

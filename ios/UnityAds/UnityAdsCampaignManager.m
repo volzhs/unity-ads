@@ -264,11 +264,7 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (id)init
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-init cannot be called from main thread.");
-		return nil;
-	}
+	UAAssertV( ! [NSThread isMainThread], nil);
 	
 	if ((self = [super init]))
 	{
@@ -281,11 +277,7 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (void)updateCampaigns
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-updateCampaigns cannot be called from main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	NSString *urlString = kUnityAdsBackendURL;
 	if (self.queryString != nil)
@@ -316,11 +308,7 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (void)cancelAllDownloads
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-cancelAllDownloads cannot be called from main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	[self.urlConnection cancel];
 	self.urlConnection = nil;
