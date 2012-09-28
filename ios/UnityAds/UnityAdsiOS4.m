@@ -322,6 +322,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 - (void)_refreshCampaignManager
 {
 	UAAssert( ! [NSThread isMainThread]);
+	UAAssert(self.campaignManager != nil);
 	
 	self.campaignManager.queryString = self.campaignQueryString;
 	[self.campaignManager updateCampaigns];
