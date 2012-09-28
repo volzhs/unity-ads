@@ -134,40 +134,35 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (BOOL)_startNextDownloadInQueue
 {
-	if (self.currentDownload != nil)
+	if (self.currentDownload != nil || [self.downloadQueue count] == 0)
 		return NO;
 	
-	if ([self.downloadQueue count] > 0)
+	self.currentDownload = [self.downloadQueue objectAtIndex:0];
+	
+	NSMutableURLRequest *request = [self.currentDownload objectForKey:kUnityAdsCacheURLRequestKey];
+	NSString *filePath = [self.currentDownload objectForKey:kUnityAdsCacheFilePathKey];
+	
+	if ( ! [[NSFileManager defaultManager] fileExistsAtPath:filePath])
 	{
-		self.currentDownload = [self.downloadQueue objectAtIndex:0];
-		
-		NSMutableURLRequest *request = [self.currentDownload objectForKey:kUnityAdsCacheURLRequestKey];
-		NSString *filePath = [self.currentDownload objectForKey:kUnityAdsCacheFilePathKey];
-		
-		if ( ! [[NSFileManager defaultManager] fileExistsAtPath:filePath])
+		if ( ! [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil])
 		{
-			if ( ! [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil])
-			{
-				UALOG_DEBUG(@"Unable to create file at %@", filePath);
-				self.currentDownload = nil;
-				return NO;
-			}
+			UALOG_DEBUG(@"Unable to create file at %@", filePath);
+			self.currentDownload = nil;
+			return NO;
 		}
-		
-		self.fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
-		[self.fileHandle seekToEndOfFile];
-		long long rangeStart = [self.fileHandle offsetInFile];
-		if (rangeStart > 0)
-			[request setValue:[NSString stringWithFormat:@"bytes=%qi-", rangeStart] forHTTPHeaderField:@"Range"];
-		
-		NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
-		[self.currentDownload setObject:urlConnection forKey:kUnityAdsCacheConnectionKey];
-		[urlConnection start];
-
-		[self.downloadQueue removeObjectAtIndex:0];
 	}
-	else
-		return NO;
+	
+	self.fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
+	[self.fileHandle seekToEndOfFile];
+	long long rangeStart = [self.fileHandle offsetInFile];
+	if (rangeStart > 0)
+		[request setValue:[NSString stringWithFormat:@"bytes=%qi-", rangeStart] forHTTPHeaderField:@"Range"];
+	
+	NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+	[self.currentDownload setObject:urlConnection forKey:kUnityAdsCacheConnectionKey];
+	[urlConnection start];
+	
+	[self.downloadQueue removeObjectAtIndex:0];
 	
 	UALOG_DEBUG(@"starting download %@", self.currentDownload);
 
