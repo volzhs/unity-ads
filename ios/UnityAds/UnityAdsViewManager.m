@@ -23,7 +23,7 @@ NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateto";
 NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
 NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
-@interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate, SKStoreProductViewControllerDelegate>
+@interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIView *adContainerView;
@@ -280,11 +280,11 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 		[self _openURL:[self.selectedCampaign.clickURL absoluteString]];
 		return;
 	}
-	
-	Class storeProductViewControllerClass = NSClassFromString(@"SKStoreProductViewController");
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
+	__block SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
 	__block UnityAdsViewManager *blockSelf = self;
-	__block id storeController = [[[storeProductViewControllerClass class] alloc] init];
-	[storeController setDelegate:self];
+	storeController.delegate = (id)self;
 	NSDictionary *productParameters = @{ SKStoreProductParameterITunesItemIdentifier : gameID };
 	[storeController loadProductWithParameters:productParameters completionBlock:^(BOOL result, NSError *error) {
 		if (result)
@@ -295,6 +295,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 		else
 			UALOG_DEBUG(@"Loading product information failed: %@", error);
 	}];
+#endif
 }
 
 - (void)_webViewInitComplete
