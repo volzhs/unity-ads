@@ -33,11 +33,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 - (NSString *)_cachePath
 {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	if (paths == nil || [paths count] == 0)
-	{
-		UALOG_ERROR(@"No cache path found.");
-		return nil;
-	}
+	UAAssertV(paths != nil && [paths count] > 0, nil);
 	
 	return [[paths objectAtIndex:0] stringByAppendingPathComponent:@"unityads"];
 }
