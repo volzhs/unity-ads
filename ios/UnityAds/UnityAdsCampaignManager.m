@@ -48,11 +48,7 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (id)_JSONValueFromData:(NSData *)data
 {
-	if (data == nil)
-	{
-		UALOG_DEBUG(@"Input is nil.");
-		return nil;
-	}
+	UAAssertV(data != nil, nil);
 	
 	UnityAdsSBJsonParser *parser = [[UnityAdsSBJsonParser alloc] init];
 	NSError *error = nil;
@@ -93,84 +89,45 @@ NSString * const kGamerIDKey = @"gamerId";
 		if ([campaignDictionary isKindOfClass:[NSDictionary class]])
 		{
 			UnityAdsCampaign *campaign = [[UnityAdsCampaign alloc] init];
+			
 			NSURL *endScreenURL = [NSURL URLWithString:[campaignDictionary objectForKey:kCampaignEndScreenKey]];
-			if (endScreenURL == nil)
-			{
-				UALOG_DEBUG(@"Campaign end screen URL is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(endScreenURL != nil, nil);
 			campaign.endScreenURL = endScreenURL;
 			
 			NSURL *clickURL = [NSURL URLWithString:[campaignDictionary objectForKey:kCampaignClickURLKey]];
-			if (clickURL == nil)
-			{
-				UALOG_DEBUG(@"Campaign click URL is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(clickURL != nil, nil);
 			campaign.clickURL = clickURL;
 			
 			NSURL *pictureURL = [NSURL URLWithString:[campaignDictionary objectForKey:kCampaignPictureKey]];
-			if (pictureURL == nil)
-			{
-				UALOG_DEBUG(@"Campaign picture URL is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(pictureURL != nil, nil);
 			campaign.pictureURL = pictureURL;
 			
 			NSURL *trailerDownloadableURL = [NSURL URLWithString:[campaignDictionary objectForKey:kCampaignTrailerDownloadableKey]];
-			if (trailerDownloadableURL == nil)
-			{
-				UALOG_DEBUG(@"Campaign downloadable trailer URL is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(trailerDownloadableURL != nil, nil);
 			campaign.trailerDownloadableURL = trailerDownloadableURL;
 			
 			NSURL *trailerStreamingURL = [NSURL URLWithString:[campaignDictionary objectForKey:kCampaignTrailerStreamingKey]];
-			if (trailerStreamingURL == nil)
-			{
-				UALOG_DEBUG(@"Campaign streaming trailer URL is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(trailerStreamingURL != nil, nil);
 			campaign.trailerStreamingURL = trailerStreamingURL;
 			
 			NSString *gameID = [NSString stringWithFormat:@"%@", [campaignDictionary objectForKey:kCampaignGameIDKey]];
-			if (gameID == nil || [gameID length] == 0)
-			{
-				UALOG_DEBUG(@"Campaign game ID  is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(gameID != nil && [gameID length] > 0, nil);
 			campaign.gameID = gameID;
 			
 			NSString *gameName = [NSString stringWithFormat:@"%@", [campaignDictionary objectForKey:kCampaignGameNameKey]];
-			if (gameName == nil || [gameName length] == 0)
-			{
-				UALOG_DEBUG(@"Campaign game name is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(gameName != nil && [gameName length] > 0, nil);
 			campaign.gameName = gameName;
 			
 			NSString *id = [NSString stringWithFormat:@"%@", [campaignDictionary objectForKey:kCampaignIDKey]];
-			if (id == nil || [id length] == 0)
-			{
-				UALOG_DEBUG(@"Campaign ID is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(id != nil && [id length] > 0, nil);
 			campaign.id = id;
 			
 			NSString *tagline = [NSString stringWithFormat:@"%@", [campaignDictionary objectForKey:kCampaignTaglineKey]];
-			if (tagline == nil || [tagline length] == 0)
-			{
-				UALOG_DEBUG(@"Campaign tagline is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(tagline != nil && [tagline length] > 0, nil);
 			campaign.tagline = tagline;
 			
 			NSString *itunesID = [NSString stringWithFormat:@"%@", [campaignDictionary objectForKey:kCampaignStoreIDKey]];
-			if (itunesID == nil || [itunesID length] == 0)
-			{
-				UALOG_DEBUG(@"iTunes ID is empty or invalid. %@", campaignDictionary);
-				return nil;
-			}
+			UAAssertV(itunesID != nil && [itunesID length] > 0, nil);
 			campaign.itunesID = itunesID;
 			
 			[campaigns addObject:campaign];
@@ -188,64 +145,39 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (id)_deserializeRewardItem:(NSDictionary *)itemDictionary
 {
-	if ([itemDictionary isKindOfClass:[NSDictionary class]])
-	{
-		UnityAdsRewardItem *item = [[UnityAdsRewardItem alloc] init];
-		NSString *key = [NSString stringWithFormat:@"%@", [itemDictionary objectForKey:kRewardItemKey]];
-		if (key == nil || [key length] == 0)
-		{
-			UALOG_DEBUG(@"Item key is empty. %@", itemDictionary);
-			return nil;
-		}
-		item.key = key;
-		
-		NSString *name = [NSString stringWithFormat:@"%@", [itemDictionary objectForKey:kRewardNameKey]];
-		if (name == nil || [name length] == 0)
-		{
-			UALOG_DEBUG(@"Item name is empty. %@", itemDictionary);
-			return nil;
-		}
-		item.name = name;
-
-		NSURL *pictureURL = [NSURL URLWithString:[itemDictionary objectForKey:kRewardPictureKey]];
-		if (pictureURL == nil)
-		{
-			UALOG_DEBUG(@"Item picture URL is empty or invalid. %@", itemDictionary);
-			return nil;
-		}
-		item.pictureURL = pictureURL;
-		
-		return item;
-	}
-	else
-	{
-		UALOG_DEBUG(@"Unknown data type for reward item dictionary: %@", [itemDictionary class]);
-		
-		return nil;
-	}
+	UAAssertV([itemDictionary isKindOfClass:[NSDictionary class]], nil);
+	
+	UnityAdsRewardItem *item = [[UnityAdsRewardItem alloc] init];
+	NSString *key = [NSString stringWithFormat:@"%@", [itemDictionary objectForKey:kRewardItemKey]];
+	UAAssertV(key != nil && [key length] > 0, nil);
+	item.key = key;
+	
+	NSString *name = [NSString stringWithFormat:@"%@", [itemDictionary objectForKey:kRewardNameKey]];
+	UAAssertV(name != nil && [name length] > 0, nil);
+	item.name = name;
+	
+	NSURL *pictureURL = [NSURL URLWithString:[itemDictionary objectForKey:kRewardPictureKey]];
+	UAAssertV(pictureURL != nil, nil);
+	item.pictureURL = pictureURL;
+	
+	return item;
 }
 
 - (void)_processCampaignDownloadData
 {
 	id json = [self _JSONValueFromData:self.campaignDownloadData];
-	if ([json isKindOfClass:[NSDictionary class]])
-	{
-		NSDictionary *jsonDictionary = [(NSDictionary *)json objectForKey:@"data"];
-		self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
-		self.rewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
-		
-		NSString *gamerID = [jsonDictionary objectForKey:kGamerIDKey];
-		if (gamerID == nil)
-		{
-			UALOG_DEBUG(@"Gamer ID is nil.");
-			return;
-		}
-		self.gamerID = gamerID;
-				
-		[self.cache cacheCampaigns:self.campaigns];
-	}
-	else
-		UALOG_DEBUG(@"JSON not changed or unknown data type for JSON: %@", [json class]);
+
+	UAAssert([json isKindOfClass:[NSDictionary class]]);
+	
+	NSDictionary *jsonDictionary = [(NSDictionary *)json objectForKey:@"data"];
+	self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
+	self.rewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
+	
+	NSString *gamerID = [jsonDictionary objectForKey:kGamerIDKey];
+	UAAssert(gamerID != nil);
+	self.gamerID = gamerID;
+	
+	[self.cache cacheCampaigns:self.campaigns];
 }
 
 #pragma mark - Public
