@@ -458,6 +458,10 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 		
 		return NO;
 	}
+	else if ([[url scheme] isEqualToString:@"itms-apps"])
+	{
+		return NO;
+	}
 	
 	return YES;
 }
