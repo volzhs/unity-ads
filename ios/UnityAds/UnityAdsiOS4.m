@@ -99,7 +99,10 @@ NSString * const kUnityAdsVersion = @"1.0";
 - (NSString *)_substringOfString:(NSString *)string toIndex:(NSInteger)index
 {
 	if (index > [string length])
+	{
+		UALOG_DEBUG(@"Index %d out of bounds for length %d.", index, [string length]);
 		return nil;
+	}
 	
 	return [string substringToIndex:index];
 }
