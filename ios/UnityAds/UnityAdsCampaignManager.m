@@ -287,7 +287,22 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-	UALOG_DEBUG(@"didFailWithError: %@", error);
+	self.campaignDownloadData = nil;
+	self.urlConnection = nil;
+	
+	NSInteger errorCode = [error code];
+	if (errorCode != NSURLErrorNotConnectedToInternet &&
+		errorCode != NSURLErrorCannotFindHost &&
+		errorCode != NSURLErrorCannotConnectToHost &&
+		errorCode != NSURLErrorResourceUnavailable &&
+		errorCode != NSURLErrorFileDoesNotExist &&
+		errorCode != NSURLErrorNoPermissionsToReadFile)
+	{
+		UALOG_DEBUG(@"Retrying campaign download.");
+		[self updateCampaigns];
+	}
+	else
+		UALOG_DEBUG(@"Not retrying campaign download.");
 }
 
 #pragma mark - UnityAdsCacheDelegate
