@@ -97,7 +97,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 
 	if (request == nil)
 	{
-		UALOG_DEBUG(@"Could not create request.");
+		UALOG_ERROR(@"Could not create request with url '%@'.", url);
 		return;
 	}
 	
