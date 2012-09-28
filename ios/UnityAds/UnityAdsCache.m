@@ -15,6 +15,10 @@ NSString * const kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";
 NSString * const kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 NSString * const kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
 NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
+NSString * const kUnityAdsCacheResumeKey = @"kUnityAdsCacheResumeKey";
+
+NSString * const kUnityAdsCacheDownloadResumeExpected = @"kUnityAdsCacheDownloadResumeExpected";
+NSString * const kUnityAdsCacheDownloadNewDownload = @"kUnityAdsCacheDownloadNewDownload";
 
 NSString * const kUnityAdsCacheEntryCampaignIDKey = @"kUnityAdsCacheEntryCampaignIDKey";
 NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameKey";
@@ -105,6 +109,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 		[downloadDictionary setObject:request forKey:kUnityAdsCacheURLRequestKey];
 		[downloadDictionary setObject:campaign forKey:kUnityAdsCacheCampaignKey];
 		[downloadDictionary setObject:filePath forKey:kUnityAdsCacheFilePathKey];
+		[downloadDictionary setObject:(existingFilesize > 0 ? kUnityAdsCacheDownloadResumeExpected : kUnityAdsCacheDownloadNewDownload) forKey:kUnityAdsCacheResumeKey];
 		[self.downloadQueue addObject:downloadDictionary];
 		[self _startDownload];
 		
@@ -423,6 +428,19 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	NSHTTPURLResponse *httpResponse = nil;
 	if ([response isKindOfClass:[NSHTTPURLResponse class]])
 		httpResponse = (NSHTTPURLResponse *)response;
+	
+	NSString *resumeStatus = [self.currentDownload objectForKey:kUnityAdsCacheResumeKey];
+	BOOL resumeExpected = [resumeStatus isEqualToString:kUnityAdsCacheDownloadResumeExpected];
+	if (resumeExpected && [httpResponse statusCode] == 200)
+	{
+		UALOG_DEBUG(@"Resume expected but got status code 200, restarting download.");
+		
+		[self.fileHandle truncateFileAtOffset:0];
+	}
+	else if ([httpResponse statusCode] == 206)
+	{
+		UALOG_DEBUG(@"Resuming download.");
+	}
 	
 	NSNumber *contentLength = [[httpResponse allHeaderFields] objectForKey:@"Content-Length"];
 	if (contentLength != nil)
