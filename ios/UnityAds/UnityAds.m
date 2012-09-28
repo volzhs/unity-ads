@@ -28,6 +28,8 @@ static UnityAds *sharedAdsInstance = nil;
 
 - (id)init
 {
+	UALOG_ERROR(@"Use the +sharedInstance singleton instead of initializing this class directly.");
+	
 	[self doesNotRecognizeSelector:_cmd];
 	
 	return nil;
