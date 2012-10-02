@@ -23,7 +23,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[[UnityAds sharedInstance] startWithGameId:@"UnityAds"];
+	[[UnityAds sharedInstance] startWithGameId:@"16"];
 	
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 

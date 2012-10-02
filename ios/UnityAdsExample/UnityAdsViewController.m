@@ -11,7 +11,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import "UnityAds.h"
 
-@interface UnityAdsViewController () <UnityAdsDelegate, SKStoreProductViewControllerDelegate>
+@interface UnityAdsViewController () <UnityAdsDelegate>
 @end
 
 @implementation UnityAdsViewController

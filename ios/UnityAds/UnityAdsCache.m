@@ -15,6 +15,10 @@ NSString * const kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";
 NSString * const kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
 NSString * const kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
 NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
+NSString * const kUnityAdsCacheResumeKey = @"kUnityAdsCacheResumeKey";
+
+NSString * const kUnityAdsCacheDownloadResumeExpected = @"kUnityAdsCacheDownloadResumeExpected";
+NSString * const kUnityAdsCacheDownloadNewDownload = @"kUnityAdsCacheDownloadNewDownload";
 
 NSString * const kUnityAdsCacheEntryCampaignIDKey = @"kUnityAdsCacheEntryCampaignIDKey";
 NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameKey";
@@ -33,10 +37,9 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 - (NSString *)_cachePath
 {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	if (paths == nil || [paths count] == 0)
-		return nil;
+	UAAssertV(paths != nil && [paths count] > 0, nil);
 	
-	return [[paths objectAtIndex:0] stringByAppendingString:@"/applifier/"];
+	return [[paths objectAtIndex:0] stringByAppendingPathComponent:@"unityads"];
 }
 
 - (NSString *)_videoFilenameForCampaign:(UnityAdsCampaign *)campaign
@@ -46,7 +49,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (NSString *)_videoPathForCampaign:(UnityAdsCampaign *)campaign
 {
-	return [[self _cachePath] stringByAppendingString:[self _videoFilenameForCampaign:campaign]];
+	return [[self _cachePath] stringByAppendingPathComponent:[self _videoFilenameForCampaign:campaign]];
 }
 
 - (long long)_cachedFilesizeForVideoFilename:(NSString *)filename
@@ -67,6 +70,24 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	return size;
 }
 
+- (BOOL)_campaignExistsInQueue:(UnityAdsCampaign *)campaign
+{
+	BOOL exists = NO;
+	
+	for (NSDictionary *downloadDictionary in self.downloadQueue)
+	{
+		UnityAdsCampaign *downloadCampaign = [downloadDictionary objectForKey:kUnityAdsCacheCampaignKey];
+		
+		if ([downloadCampaign.id isEqualToString:campaign.id] && [downloadCampaign.trailerDownloadableURL isEqual:campaign.trailerDownloadableURL])
+		{
+			UALOG_DEBUG(@"Campaign '%@' exists in queue.", campaign.id);
+			exists = YES;
+		}
+	}
+	
+	return exists;
+}
+
 - (BOOL)_queueCampaignDownload:(UnityAdsCampaign *)campaign
 {
 	if (campaign == nil)
@@ -79,7 +100,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	long long existingFilesize = [self _filesizeForPath:filePath];
 	long long filesize = [self _cachedFilesizeForVideoFilename:[self _videoFilenameForCampaign:campaign]];
 	
-	if (existingFilesize < filesize || filesize == 0)
+	if ( ! [self _campaignExistsInQueue:campaign] && (existingFilesize < filesize || filesize == 0))
 	{
 		UALOG_DEBUG(@"Queueing %@, id %@", campaign.trailerDownloadableURL, campaign.id);
 		
@@ -88,6 +109,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 		[downloadDictionary setObject:request forKey:kUnityAdsCacheURLRequestKey];
 		[downloadDictionary setObject:campaign forKey:kUnityAdsCacheCampaignKey];
 		[downloadDictionary setObject:filePath forKey:kUnityAdsCacheFilePathKey];
+		[downloadDictionary setObject:(existingFilesize > 0 ? kUnityAdsCacheDownloadResumeExpected : kUnityAdsCacheDownloadNewDownload) forKey:kUnityAdsCacheResumeKey];
 		[self.downloadQueue addObject:downloadDictionary];
 		[self _startDownload];
 		
@@ -112,42 +134,35 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (BOOL)_startNextDownloadInQueue
 {
-	if (self.currentDownload != nil)
+	if (self.currentDownload != nil || [self.downloadQueue count] == 0)
 		return NO;
 	
-	if ([self.downloadQueue count] > 0)
+	self.currentDownload = [self.downloadQueue objectAtIndex:0];
+	
+	NSMutableURLRequest *request = [self.currentDownload objectForKey:kUnityAdsCacheURLRequestKey];
+	NSString *filePath = [self.currentDownload objectForKey:kUnityAdsCacheFilePathKey];
+	
+	if ( ! [[NSFileManager defaultManager] fileExistsAtPath:filePath])
 	{
-		self.currentDownload = [self.downloadQueue objectAtIndex:0];
-		
-		NSMutableURLRequest *request = [self.currentDownload objectForKey:kUnityAdsCacheURLRequestKey];
-		NSString *filePath = [self.currentDownload objectForKey:kUnityAdsCacheFilePathKey];
-		
-		if ( ! [[NSFileManager defaultManager] fileExistsAtPath:filePath])
+		if ( ! [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil])
 		{
-			if ( ! [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil])
-			{
-				UALOG_DEBUG(@"Unable to create file at %@", filePath);
-				self.currentDownload = nil;
-				return NO;
-			}
+			UALOG_DEBUG(@"Unable to create file at %@", filePath);
+			self.currentDownload = nil;
+			return NO;
 		}
-		
-		long long rangeStart = [self _filesizeForPath:filePath];
-		self.fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
-		if (rangeStart > 0)
-		{
-			[self.fileHandle seekToEndOfFile];
-			[request setValue:[NSString stringWithFormat:@"bytes=%qi-", rangeStart] forHTTPHeaderField:@"Range"];
-		}
-		
-		NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
-		[self.currentDownload setObject:urlConnection forKey:kUnityAdsCacheConnectionKey];
-		[urlConnection start];
-
-		[self.downloadQueue removeObjectAtIndex:0];
 	}
-	else
-		return NO;
+	
+	self.fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
+	[self.fileHandle seekToEndOfFile];
+	long long rangeStart = [self.fileHandle offsetInFile];
+	if (rangeStart > 0)
+		[request setValue:[NSString stringWithFormat:@"bytes=%qi-", rangeStart] forHTTPHeaderField:@"Range"];
+	
+	NSURLConnection *urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+	[self.currentDownload setObject:urlConnection forKey:kUnityAdsCacheConnectionKey];
+	[urlConnection start];
+	
+	[self.downloadQueue removeObjectAtIndex:0];
 	
 	UALOG_DEBUG(@"starting download %@", self.currentDownload);
 
@@ -184,7 +199,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	[self _startDownload];
 }
 
-- (void)_compareCampaigns:(NSArray *)campaigns
+- (void)_cleanUpIndexWithCampaigns:(NSArray *)campaigns
 {
 	// FIXME: what to do with old campaigns?
 	if (campaigns == nil || [campaigns count] == 0)
@@ -215,7 +230,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 		
 		if ( ! found)
 		{
-			NSString *filePath = [cachePath stringByAppendingString:oldFilename];
+			NSString *filePath = [cachePath stringByAppendingPathComponent:oldFilename];
 			NSError *error = nil;
 			if ([[NSFileManager defaultManager] removeItemAtPath:filePath error:&error])
 			{
@@ -281,15 +296,48 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	}
 }
 
+- (void)_removeInvalidDownloadsWithCampaigns:(NSArray *)campaigns
+{
+	if ([self.downloadQueue count] == 0)
+	{
+		UALOG_DEBUG(@"No downloads queued.");
+		return;
+	}
+	
+	NSMutableArray *downloadsToRemove = [NSMutableArray array];
+	
+	for (NSDictionary *downloadDictionary in self.downloadQueue)
+	{
+		UnityAdsCampaign *downloadCampaign = [downloadDictionary objectForKey:kUnityAdsCacheCampaignKey];
+		BOOL found = NO;
+		
+		for (UnityAdsCampaign *campaign in campaigns)
+		{
+			if ([campaign.id isEqualToString:downloadCampaign.id] && [campaign.trailerDownloadableURL isEqual:downloadCampaign.trailerDownloadableURL])
+			{
+				found = YES;
+				break;
+			}
+		}
+		
+		if ( ! found)
+			[downloadsToRemove addObject:downloadDictionary];
+	}
+	
+	if ([downloadsToRemove count] > 0)
+	{
+		UALOG_DEBUG(@"Removing downloads from queue: %@", downloadsToRemove);
+		[self.downloadQueue removeObjectsInArray:downloadsToRemove];
+	}
+	else
+		UALOG_DEBUG(@"Not removing any downloads from the queue.");
+}
+
 #pragma mark - Public
 
 - (id)init
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-init cannot be called from main thread.");
-		return nil;
-	}
+	UAAssertV( ! [NSThread isMainThread], nil);
 	
 	if ((self = [super init]))
 	{
@@ -301,11 +349,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (void)cacheCampaigns:(NSArray *)campaigns
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-cacheCampaigns: cannot be called from main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	if (campaigns == nil)
 	{
@@ -320,8 +364,9 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 		UALOG_DEBUG(@"Couldn't create cache path. Error: %@", error);
 		return;
 	}
-		
-	[self _compareCampaigns:campaigns];
+	
+	[self _removeInvalidDownloadsWithCampaigns:campaigns];
+	[self _cleanUpIndexWithCampaigns:campaigns];
 	
 	BOOL downloadsQueued = NO;
 	for (UnityAdsCampaign *campaign in campaigns)
@@ -355,11 +400,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (void)cancelAllDownloads
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_ERROR(@"-cancelAllDownloads cannot be called from main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	if (self.currentDownload != nil)
 	{
@@ -380,6 +421,19 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	NSHTTPURLResponse *httpResponse = nil;
 	if ([response isKindOfClass:[NSHTTPURLResponse class]])
 		httpResponse = (NSHTTPURLResponse *)response;
+	
+	NSString *resumeStatus = [self.currentDownload objectForKey:kUnityAdsCacheResumeKey];
+	BOOL resumeExpected = [resumeStatus isEqualToString:kUnityAdsCacheDownloadResumeExpected];
+	if (resumeExpected && [httpResponse statusCode] == 200)
+	{
+		UALOG_DEBUG(@"Resume expected but got status code 200, restarting download.");
+		
+		[self.fileHandle truncateFileAtOffset:0];
+	}
+	else if ([httpResponse statusCode] == 206)
+	{
+		UALOG_DEBUG(@"Resuming download.");
+	}
 	
 	NSNumber *contentLength = [[httpResponse allHeaderFields] objectForKey:@"Content-Length"];
 	if (contentLength != nil)

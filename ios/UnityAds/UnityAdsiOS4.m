@@ -90,7 +90,7 @@ NSString * const kUnityAdsVersion = @"1.0";
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);
     char *answer = malloc(size);
 	sysctlbyname("hw.machine", answer, &size, NULL, 0);
-	NSString *result = [NSString stringWithCString:answer encoding: NSUTF8StringEncoding];
+	NSString *result = [NSString stringWithCString:answer encoding:NSUTF8StringEncoding];
 	free(answer);
 	
 	return result;
@@ -99,7 +99,10 @@ NSString * const kUnityAdsVersion = @"1.0";
 - (NSString *)_substringOfString:(NSString *)string toIndex:(NSInteger)index
 {
 	if (index > [string length])
+	{
+		UALOG_DEBUG(@"Index %d out of bounds for string '%@', length %d.", index, string, [string length]);
 		return nil;
+	}
 	
 	return [string substringToIndex:index];
 }
@@ -318,23 +321,16 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)_refreshCampaignManager
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_DEBUG(@"Cannot be run on main thread.");
-		return;
-	}
-
+	UAAssert( ! [NSThread isMainThread]);
+	UAAssert(self.campaignManager != nil);
+	
 	self.campaignManager.queryString = self.campaignQueryString;
 	[self.campaignManager updateCampaigns];
 }
 
 - (void)_startCampaignManager
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_DEBUG(@"Cannot be run on main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	self.campaignManager = [[UnityAdsCampaignManager alloc] init];
 	self.campaignManager.delegate = self;
@@ -343,11 +339,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)_startAnalyticsUploader
 {
-	if ([NSThread isMainThread])
-	{
-		UALOG_DEBUG(@"Cannot be run on main thread.");
-		return;
-	}
+	UAAssert( ! [NSThread isMainThread]);
 	
 	self.analyticsUploader = [[UnityAdsAnalyticsUploader alloc] init];
 	[self.analyticsUploader retryFailedUploads];
@@ -393,9 +385,17 @@ NSString * const kUnityAdsVersion = @"1.0";
 	});
 }
 
+- (BOOL)_adViewCanBeShown
+{
+	if (self.campaigns != nil && [self.campaigns count] > 0 && self.rewardItem != nil && self.webViewInitialized)
+		return YES;
+	else
+		return NO;
+}
+
 - (void)_notifyDelegateOfCampaignAvailability
 {
-	if (self.campaigns != nil && self.rewardItem != nil && self.webViewInitialized)
+	if ([self _adViewCanBeShown])
 	{
 		if ([self.delegate respondsToSelector:@selector(unityAdsFetchCompleted:)])
 			[self.delegate unityAdsFetchCompleted:self];
@@ -442,11 +442,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)startWithGameId:(NSString *)gameId
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Unity Ads must be run on main thread.");
-		return;
-	}
+	UAAssert([NSThread isMainThread]);
 	
 	if (gameId == nil || [gameId length] == 0)
 	{
@@ -488,13 +484,9 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (UIView *)adsView
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Must be run on main thread.");
-		return nil;
-	}
+	UAAssertV([NSThread mainThread], nil);
 	
-	if ([self.campaigns count] > 0)
+	if ([self _adViewCanBeShown])
 	{
 		UIView *adView = [self.viewManager adView];
 		if (adView != nil)
@@ -511,44 +503,28 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (BOOL)canShow
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Must be run on main thread.");
-		return NO;
-	}
-
-	return ([self.campaigns count] > 0 && self.webViewInitialized);
+	UAAssertV([NSThread mainThread], NO);
+	
+	return [self _adViewCanBeShown];
 }
 
 - (void)stopAll
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Must be run on main thread.");
-		return;
-	}
+	UAAssert([NSThread isMainThread]);
 	
 	[self.campaignManager performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 }
 
 - (void)trackInstall
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Must be run on main thread.");
-		return;
-	}
+	UAAssert([NSThread isMainThread]);
 	
 	[self _trackInstall];
 }
 
 - (void)refresh
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Must be run on main thread.");
-		return;
-	}
+	UAAssert([NSThread isMainThread]);
 	
 	if ([self.viewManager adViewVisible])
 		UALOG_DEBUG(@"Ad view visible, not refreshing.");
@@ -560,39 +536,46 @@ NSString * const kUnityAdsVersion = @"1.0";
 {
 	self.campaignManager.delegate = nil;
 	self.viewManager.delegate = nil;
+	
+	dispatch_release(self.queue);
 }
 
 #pragma mark - UnityAdsCampaignManagerDelegate
 
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID json:(NSString *)json
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID
 {
-	if ( ! [NSThread isMainThread])
-	{
-		UALOG_ERROR(@"Method must be run on main thread.");
-		return;
-	}
-
+	UAAssert([NSThread isMainThread]);
+	
 	UALOG_DEBUG(@"");
 	
-	// If campaigns already exist, it means that campaigns were updated, and we might want to update the webapp.
-	if (self.campaigns != nil)
+	self.campaigns = campaigns;
+	self.rewardItem = rewardItem;
+	self.gamerID = gamerID;
+	
+	[self _notifyDelegateOfCampaignAvailability];
+}
+
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedJSON:(NSString *)json
+{
+	UAAssert([NSThread isMainThread]);
+	
+	// If the view manager already has campaign JSON data, it means that
+	// campaigns were updated, and we might want to update the webapp.
+	if (self.viewManager.campaignJSON != nil)
 	{
 		self.webViewInitialized = NO;
 		[self.viewManager loadWebView];
 	}
 	
-	self.campaigns = campaigns;
-	self.rewardItem = rewardItem;
-	self.gamerID = gamerID;
 	self.viewManager.campaignJSON = json;
-	
-	[self _notifyDelegateOfCampaignAvailability];
 }
 
 #pragma mark - UnityAdsViewManagerDelegate
 
 -(UnityAdsCampaign *)viewManager:(UnityAdsViewManager *)viewManager campaignWithID:(NSString *)campaignID
 {
+	UAAssertV([NSThread isMainThread], nil);
+	
 	UnityAdsCampaign *foundCampaign = nil;
 	
 	for (UnityAdsCampaign *campaign in self.campaigns)
@@ -611,6 +594,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 -(NSURL *)viewManager:(UnityAdsViewManager *)viewManager videoURLForCampaign:(UnityAdsCampaign *)campaign
 {
+	UAAssertV([NSThread isMainThread], nil);
 	UALOG_DEBUG(@"");
 	
 	return [self.campaignManager videoURLForCampaign:campaign];
@@ -618,6 +602,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)viewManagerStartedPlayingVideo:(UnityAdsViewManager *)viewManager
 {
+	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
 	if ([self.delegate respondsToSelector:@selector(unityAdsVideoStarted:)])
@@ -626,6 +611,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)viewManagerVideoEnded:(UnityAdsViewManager *)viewManager
 {
+	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
 	[self.delegate unityAds:self completedVideoWithRewardItemKey:self.rewardItem.key];
@@ -633,6 +619,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign
 {
+	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
 	[self _logVideoAnalyticsWithPosition:videoPosition campaign:campaign];
@@ -640,6 +627,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (UIViewController *)viewControllerForPresentingViewControllersForViewManager:(UnityAdsViewManager *)viewManager
 {
+	UAAssertV([NSThread isMainThread], nil);
 	UALOG_DEBUG(@"");
 	
 	return [self.delegate viewControllerForPresentingViewControllersForAds:self];
@@ -647,6 +635,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)viewManagerWillCloseAdView:(UnityAdsViewManager *)viewManager
 {
+	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
 	if ([self.delegate respondsToSelector:@selector(unityAdsWillHide:)])
@@ -655,6 +644,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)viewManagerWebViewInitialized:(UnityAdsViewManager *)viewManager
 {
+	UAAssert([NSThread isMainThread]);	
 	UALOG_DEBUG(@"");
 	
 	self.webViewInitialized = YES;
