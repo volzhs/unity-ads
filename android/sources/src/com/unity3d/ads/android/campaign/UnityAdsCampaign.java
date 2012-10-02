@@ -28,7 +28,7 @@ public class UnityAdsCampaign {
 	};
 	
 	private JSONObject _campaignJson = null;
-	private String[] _requiredKeys = new String[]{"v", "s", "id", "rt"};
+	private String[] _requiredKeys = new String[]{"id", "gameId", "trailerDownloadable", "trailerStreaming", "clickUrl"};
 	
 	public UnityAdsCampaign () {		
 	}
@@ -43,13 +43,10 @@ public class UnityAdsCampaign {
 	}
 	
 	public JSONObject toJson () {
-		JSONObject retObject = new JSONObject();
+		JSONObject retObject = _campaignJson;
 		
 		try {
-			retObject.put("v", getVideoUrl());
-			retObject.put("s", getCampaignStatus().toString());
-			retObject.put("id", getCampaignId());
-			retObject.put("rt", getVideoStreamUrl());
+			retObject.put("status", getCampaignStatus().toString());
 		}
 		catch (Exception e) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Error creating campaign JSON");
@@ -72,23 +69,36 @@ public class UnityAdsCampaign {
 		return null;
 	}
 	
-	public UnityAdsCampaignStatus getCampaignStatus () {
+	public String getGameId () {
 		if (checkDataIntegrity()) {
 			try {
-				return UnityAdsCampaignStatus.getValueOf(_campaignJson.getString("s"));
+				return _campaignJson.getString("gameId");
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "getCampaignStatus: This should not happen!");
+				Log.d(UnityAdsProperties.LOG_NAME, "getGameId: This should not happen!");
 			}
 		}
 		
 		return null;
 	}
 	
+	public UnityAdsCampaignStatus getCampaignStatus () {
+		/*
+		if (checkDataIntegrity()) {
+			try {
+				return UnityAdsCampaignStatus.getValueOf(_campaignJson.getString("status"));
+			}
+			catch (Exception e) {
+				Log.d(UnityAdsProperties.LOG_NAME, "getCampaignStatus: This should not happen!");
+			}
+		}*/
+		return UnityAdsCampaignStatus.getValueOf("ready");
+	}
+	
 	public void setCampaignStatus (UnityAdsCampaignStatus status) {
 		if (checkDataIntegrity()) {
 			try {
-				_campaignJson.put("s", status.toString());
+				_campaignJson.put("status", status.toString());
 			}
 			catch (Exception e) {
 				Log.d(UnityAdsProperties.LOG_NAME, "setCampaignStatus: This should not happen!");
@@ -99,7 +109,7 @@ public class UnityAdsCampaign {
 	public String getVideoStreamUrl () {
 		if (checkDataIntegrity()) {
 			try {
-				return _campaignJson.getString("rt");
+				return _campaignJson.getString("trailerStreaming");
 			}
 			catch (Exception e) {
 				Log.d(UnityAdsProperties.LOG_NAME, "getVideoStreamUrl: This should not happen!");
@@ -109,10 +119,23 @@ public class UnityAdsCampaign {
 		return null;
 	}
 	
+	public String getClickUrl () {
+		if (checkDataIntegrity()) {
+			try {
+				return _campaignJson.getString("clickUrl");
+			}
+			catch (Exception e) {
+				Log.d(UnityAdsProperties.LOG_NAME, "getClickUrl: This should not happen!");
+			}
+		}
+		
+		return null;
+	}
+	
 	public String getVideoUrl () {
 		if (checkDataIntegrity()) {
 			try {
-				return _campaignJson.getString("v");
+				return _campaignJson.getString("trailerDownloadable");
 			}
 			catch (Exception e) {
 				Log.d(UnityAdsProperties.LOG_NAME, "getVideoUrl: This should not happen!");
@@ -125,7 +148,7 @@ public class UnityAdsCampaign {
 	public String getVideoFilename () {
 		if (checkDataIntegrity()) {
 			try {
-				File videoFile = new File(_campaignJson.getString("v"));
+				File videoFile = new File(_campaignJson.getString("trailerDownloadable"));
 				return videoFile.getName();
 			}
 			catch (Exception e) {

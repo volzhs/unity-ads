@@ -34,15 +34,19 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		return (_downloadingHandlers != null && _downloadingHandlers.size() > 0);
 	}
 	
-	public void initCache (ArrayList<UnityAdsCampaign> activeList, ArrayList<UnityAdsCampaign> pruneList) {
-		updateCache(activeList, pruneList);
+	//public void initCache (ArrayList<UnityAdsCampaign> activeList, ArrayList<UnityAdsCampaign> pruneList) {
+	public void initCache (ArrayList<UnityAdsCampaign> activeList) {
+		updateCache(activeList);
 	}
 		
-	public void updateCache (ArrayList<UnityAdsCampaign> activeList, ArrayList<UnityAdsCampaign> pruneList) {
+	//public void updateCache (ArrayList<UnityAdsCampaign> activeList, ArrayList<UnityAdsCampaign> pruneList) {
+	public void updateCache (ArrayList<UnityAdsCampaign> activeList) {
 		if (_downloadListener != null)
 			_downloadListener.onCampaignUpdateStarted();
 		
 		_amountPrepared = 0;
+		
+		Log.d(UnityAdsProperties.LOG_NAME, activeList.toString());
 		
 		// Check cache directory and delete all files that don't match the current files in campaigns
 		if (UnityAdsUtils.getCacheDirectory() != null) {
@@ -64,6 +68,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		// Prune -list contains campaigns that were still in cache but not in the received videoPlan.
 		// Therefore they will not be put into cache. Check that the existing videos for those
 		// campaigns are not needed by current active ones and remove them if needed.
+		/*
 		if (pruneList != null) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Updating cache: Pruning old campaigns");
 			for (UnityAdsCampaign campaign : pruneList) {
@@ -72,7 +77,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 					UnityAdsUtils.removeFile(campaign.getVideoUrl());
 				}
 			}
-		}
+		}*/
 		
 		// Active -list contains campaigns that came with the videoPlan
 		if (activeList != null) {

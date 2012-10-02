@@ -23,6 +23,7 @@ import android.util.Log;
 
 public class UnityAdsUtils {
 	
+	/*
 	public static ArrayList<UnityAdsCampaign> createCampaignsFromJson (JSONObject json) {
 		if (json != null && json.has("va")) {
 			ArrayList<UnityAdsCampaign> campaignData = new ArrayList<UnityAdsCampaign>();
@@ -44,6 +45,35 @@ public class UnityAdsUtils {
 				catch (Exception e) {
 					Log.d(UnityAdsProperties.LOG_NAME, "Malformed JSON");
 				}				
+			}
+			
+			return campaignData;
+		}
+		
+		return null;
+	}*/
+	
+	public static ArrayList<UnityAdsCampaign> createCampaignsFromJson (JSONObject json) {
+		if (json != null && json.has("campaigns")) {
+			ArrayList<UnityAdsCampaign> campaignData = new ArrayList<UnityAdsCampaign>();
+			JSONArray receivedCampaigns = null;
+			JSONObject currentCampaign = null;
+			
+			try {
+				receivedCampaigns = json.getJSONArray("campaigns");
+			}
+			catch (Exception e) {
+				Log.d(UnityAdsProperties.LOG_NAME, "Malformed JSON");
+			}
+			
+			for (int i = 0; i < receivedCampaigns.length(); i++) {
+				try {
+					currentCampaign = receivedCampaigns.getJSONObject(i);
+					campaignData.add(new UnityAdsCampaign(currentCampaign));
+				}
+				catch (Exception e) {
+					Log.d(UnityAdsProperties.LOG_NAME, "Malformed JSON");
+				}
 			}
 			
 			return campaignData;
@@ -122,6 +152,7 @@ public class UnityAdsUtils {
 		}
 	}
 		
+	/*
 	public static JSONObject createJsonFromCampaigns (ArrayList<UnityAdsCampaign> campaignList) {
 		JSONObject retJson = new JSONObject();
 		JSONArray campaigns = new JSONArray();
@@ -134,8 +165,9 @@ public class UnityAdsUtils {
 				if (currentCampaign != null)
 					campaigns.put(currentCampaign);
 			}
-			
-			retJson.put("va", campaigns);
+			JSONObject obj = new JSONObject();
+			obj.put("campaigns", campaigns);
+			retJson.put("data", obj);
 		}
 		catch (Exception e) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Error while creating JSON from Campaigns");
@@ -143,7 +175,7 @@ public class UnityAdsUtils {
 		}
 		
 		return retJson;
-	}
+	}*/
 		
 	public static ArrayList<UnityAdsCampaign> substractFromCampaignList (ArrayList<UnityAdsCampaign> fromList, ArrayList<UnityAdsCampaign> substractionList) {
 		if (fromList == null) return null;
@@ -197,6 +229,7 @@ public class UnityAdsUtils {
 		return false;
 	}
 	
+	/*
 	public static ArrayList<UnityAdsCampaign> getViewableCampaignsFromCampaignList (ArrayList<UnityAdsCampaign> campaignList) {
 		ArrayList<UnityAdsCampaign> retList = new ArrayList<UnityAdsCampaign>();
 		
@@ -210,7 +243,7 @@ public class UnityAdsUtils {
 		}
 		
 		return null;		
-	}
+	}*/
 	
 	public static boolean isFileInCache (String fileName) {
 		File targetFile = new File (fileName);

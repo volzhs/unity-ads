@@ -2,6 +2,8 @@ package com.unity3d.ads.android.webapp;
 
 import java.lang.reflect.Method;
 
+import org.json.JSONObject;
+
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 
@@ -19,7 +21,10 @@ import android.webkit.WebViewClient;
 
 public class UnityAdsWebView extends WebView {
 
-	private String _url = "http://ads-dev.local/webapp.html";	
+//	private String _url = "http://ads-dev.local/webapp.html";	
+	//private String _url = "http://ads-proto.local/index.html";	
+	private String _url = "http://ads-dev.local/newproto/index.html";	
+	
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
 	private UnityAdsWebBridge _webBridge = null;
@@ -39,19 +44,63 @@ public class UnityAdsWebView extends WebView {
 	}
 	
 	public void setView (String view) {
-		if (isWebAppLoaded())
-			loadUrl("javascript:setView('" + view + "');");
+		setView(view, null);
 	}
 	
+	public void setView (String view, JSONObject data) {		
+		String jsonString = "";
+		
+		if (data != null)
+			jsonString = data.toString();
+		
+		if (isWebAppLoaded()) {
+			String jsCommand = "javascript:";
+			
+			if (view.equals("videoStart"))
+				jsCommand = jsCommand + "impactShow();";
+			else if (view.equals("videoCompleted")) {
+				String campaignId = "";
+				try {
+					campaignId = data.getString("campaignId");
+				}
+				catch (Exception e) {
+					Log.d(UnityAdsProperties.LOG_NAME, "Could not get campaignId");
+				}
+				
+				jsCommand = jsCommand + "impactVideoComplete(\"" + campaignId + "\");";
+			}
+				
+			
+			loadUrl(jsCommand);
+		}
+
+		//loadUrl("javascript:setView('" + view + "','" + jsonString + "');");
+	}
+	
+	/*
 	public void setSelectedCampaign (UnityAdsCampaign campaign) {
 		if (isWebAppLoaded())
 			loadUrl("javascript:selectCampaign('" + campaign.getCampaignId() + "');");
-	}
+	}*/
 	
 	public void setAvailableCampaigns (String videoPlan) {
-		if (isWebAppLoaded())
-			loadUrl("javascript:setAvailableCampaigns('" + videoPlan + "');");
+		if (isWebAppLoaded()) {
+			videoPlan = videoPlan.replace("\"", "\\\"");
+			JSONObject params = new JSONObject();
+			try {
+				params.put("platform", "android");
+			}
+			catch (Exception e) {
+				Log.d(UnityAdsProperties.LOG_NAME, "JSON Error");
+			}
+			String paramStr = "";
+			paramStr = params.toString();
+			paramStr = paramStr.replace("\"", "\\\"");
+			loadUrl("javascript:impactInit(\"" + videoPlan + "\", \"" + paramStr + "\");");
+		}
+		//loadUrl("javascript:setAvailableCampaigns('" + videoPlan + "');");
 	}
+	
 	
 	public void setDeviceId (String deviceId) {
 		if (isWebAppLoaded())

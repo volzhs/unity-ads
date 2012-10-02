@@ -8,7 +8,7 @@ import com.unity3d.ads.android.UnityAdsProperties;
 
 
 public class UnityAdsWebBridge {
-	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView;
+	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView, InitComplete;
 		@Override
 		public String toString () {
 			String retVal = null;
@@ -21,6 +21,9 @@ public class UnityAdsWebBridge {
 					break;
 				case CloseView:
 					retVal = "close";
+					break;
+				case InitComplete:
+					retVal = "initComplete";
 					break;
 			}
 			return retVal;
@@ -56,9 +59,13 @@ public class UnityAdsWebBridge {
 			Log.d(UnityAdsProperties.LOG_NAME, "Error while parsing parameters: " + e.getMessage());
 		}
 		
+		//Log.d(UnityAdsProperties.LOG_NAME, "GOT WEBEVENT: " + event + ", " + data);
+		
 		if (paramObj == null || event == null) return;
 		
 		UnityAdsWebEvent eventType = getEventType(event);
+		
+		if (eventType == null) return;
 		
 		switch (eventType) {
 			case PlayVideo:
@@ -69,6 +76,9 @@ public class UnityAdsWebBridge {
 				break;
 			case CloseView:
 				_listener.onCloseView(paramObj);
+				break;
+			case InitComplete:
+				_listener.onWebAppInitComplete(paramObj);
 				break;
 		}
 	}

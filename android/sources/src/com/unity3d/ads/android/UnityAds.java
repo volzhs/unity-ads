@@ -43,6 +43,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _initialized = false;
 	private boolean _showingAds = false;
 	private boolean _adsReadySent = false;
+	private boolean _webAppLoaded = false;
 	
 	// Views
 	private UnityAdsVideoPlayView _vp = null;
@@ -95,13 +96,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public boolean show () {
-		selectCampaign();
+		//selectCampaign();
 		
-		if (!_showingAds && _selectedCampaign != null && _webView != null && _webView.isWebAppLoaded()) {
+		//if (!_showingAds && _selectedCampaign != null && _webView != null && _webView.isWebAppLoaded()) {
+		if (!_showingAds && _webView != null && _webView.isWebAppLoaded() && _webAppLoaded) {
 			UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 			focusToView(_webView);
 			_webView.setView("videoStart");
-			_webView.setSelectedCampaign(_selectedCampaign);
+			//_webView.setSelectedCampaign(_selectedCampaign);
 			_showingAds = true;	
 			
 			if (_adsListener != null)
@@ -114,8 +116,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 		
 	public boolean hasCampaigns () {
-		if (cachemanifest != null && canShowAds()) {
-			return cachemanifest.getViewableCachedCampaigns().size() > 0;
+		if (webdata != null && canShowAds()) {
+			return webdata.getVideoPlanCampaigns().size() > 0;
 		}
 		
 		return false;
@@ -141,10 +143,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 				
 		Log.d(UnityAdsProperties.LOG_NAME, "Got onCampaignReady: " + campaignHandler.getCampaign().toString());
-		
+		/*
 		if (!cachemanifest.addCampaignToManifest(campaignHandler.getCampaign()))
 			cachemanifest.updateCampaignInManifest(campaignHandler.getCampaign());
-		
+		*/
 		if (canShowAds())
 			sendAdsReadyEvent();
 	}
@@ -162,21 +164,28 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	@Override
 	public void onWebDataFailed () {
-		setup();
+		//setup();
 	}
 	
 	// IUnityAdsWebViewListener
 	@Override
 	public void onWebAppLoaded () {
+		_webView.setAvailableCampaigns(webdata.getVideoPlan());
+		//Log.d(UnityAdsProperties.LOG_NAME, "SETTING CAMPAIGNS");
+
+		/*
 		ArrayList<UnityAdsCampaign> campaignList = solveCurrentCampaigns();
 		
 		if (campaignList != null)
 			_webView.setAvailableCampaigns(UnityAdsUtils.createJsonFromCampaigns(campaignList).toString());
 		
 		_webView.setDeviceId(UnityAdsUtils.getDeviceId(UnityAdsProperties.CURRENT_ACTIVITY));
+		*/
 		
-		if (canShowAds())
-			sendAdsReadyEvent();
+		//_webView.setAvailableCampaigns(webdata.getVideoPlan());
+
+		//if (canShowAds())
+		//	sendAdsReadyEvent();
 	}
 	
 	// IUnityAdsViewListener
@@ -193,7 +202,23 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsWebBrigeListener
 	@Override
 	public void onPlayVideo(JSONObject data) {
-		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsPlayVideoRunner());
+		if (data.has("campaignId")) {
+			String campaignId = null;
+			
+			try {
+				campaignId = data.getString("campaignId");
+			}
+			catch (Exception e) {
+				Log.d(UnityAdsProperties.LOG_NAME, "Could not get campaignId");
+			}
+			
+			if (campaignId != null) {
+				_selectedCampaign = webdata.getCampaignById(campaignId);
+				
+				if (_selectedCampaign != null)
+					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsPlayVideoRunner());
+			}
+		}
 	}
 
 	@Override
@@ -206,6 +231,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onCloseView(JSONObject data) {
 		UnityAdsCloseViewRunner closeViewRunner = new UnityAdsCloseViewRunner(_webView, true);
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeViewRunner);
+	}
+	
+	@Override
+	public void onWebAppInitComplete (JSONObject data) {
+		//_webView.setAvailableCampaigns(webdata.getVideoPlan());
+		_webAppLoaded = true;
+
+		if (canShowAds())
+			sendAdsReadyEvent();			
 	}
 	
 	// IUnityAdsVideoPlayerListener
@@ -221,11 +255,18 @@ public class UnityAds implements IUnityAdsCacheListener,
 			_videoListener.onVideoCompleted();
 		
 		_selectedCampaign.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
-		cachemanifest.writeCurrentCacheManifest();
+		//cachemanifest.writeCurrentCacheManifest();
 		
 		_vp.setKeepScreenOn(false);
-		closeView(_vp, false);	
-		_webView.setView("videoCompleted");
+		closeView(_vp, false);
+		JSONObject params = null;
+		try {
+			params = new JSONObject("{\"campaignId\":\"" + _selectedCampaign.getCampaignId() + "\"}");
+		}
+		catch (Exception e) {
+			Log.d(UnityAdsProperties.LOG_NAME, "Could not create JSON");
+		}
+		_webView.setView("videoCompleted", params);
 		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_webView);
 		onEventPositionReached(UnityAdsVideoPosition.End);
@@ -244,18 +285,23 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (_initialized) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Init cache");
 			// Campaigns that were received in the videoPlan
+			
+			/*
 			ArrayList<UnityAdsCampaign> videoPlanCampaigns = solveCurrentCampaigns();
 			// Campaigns that were in cache but were not returned in the videoPlan (old or not current)
 			ArrayList<UnityAdsCampaign> pruneList = solvePruneList();
 				
 			// If current videoPlan is null (nothing in the cache either), just forget going any further.
 			if (videoPlanCampaigns == null || videoPlanCampaigns.size() == 0) return;
+			*/
+			
 			
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
-			cachemanager.updateCache(videoPlanCampaigns, pruneList);				
+			cachemanager.updateCache(webdata.getVideoPlanCampaigns());				
 		}
 	}
 	
+	/*
 	private ArrayList<UnityAdsCampaign> solveCurrentCampaigns () {
 		ArrayList<UnityAdsCampaign> campaigns = webdata.getVideoPlanCampaigns();
 		if (campaigns == null)
@@ -267,20 +313,26 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private ArrayList<UnityAdsCampaign> solvePruneList () {
 		if (webdata.getVideoPlanCampaigns() == null) return null;		
 		return UnityAdsUtils.substractFromCampaignList(cachemanifest.getCachedCampaigns(), webdata.getVideoPlanCampaigns());		
-	}
+	}*/
 	
 	private boolean canShowAds () {
-		return _webView != null && _webView.isWebAppLoaded() && cachemanifest.getViewableCachedCampaignAmount() > 0;
+		return _webView != null && _webView.isWebAppLoaded() && _webAppLoaded && webdata.getVideoPlanCampaigns().size() > 0;
 	}
 	
 	private void sendAdsReadyEvent () {
 		if (!_adsReadySent && _campaignListener != null) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Unity Ads ready!");
-			_adsReadySent = true;
-			_campaignListener.onFetchCompleted();
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+				@Override
+				public void run() {
+					Log.d(UnityAdsProperties.LOG_NAME, "Unity Ads ready!");
+					_adsReadySent = true;
+					_campaignListener.onFetchCompleted();
+				}
+			});
 		}
 	}
 	
+	/*
 	private void selectCampaign () {
 		ArrayList<UnityAdsCampaign> viewableCampaigns = cachemanifest.getViewableCachedCampaigns();
 		
@@ -289,7 +341,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			Log.d(UnityAdsProperties.LOG_NAME, "Selected campaign " + (campaignIndex + 1) + ", out of " + viewableCampaigns.size());
 			_selectedCampaign = viewableCampaigns.get(campaignIndex);		
 		}
-	}
+	}*/
 
 	private void closeView (View view, boolean freeView) {
 		view.setFocusable(false);
