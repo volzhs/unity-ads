@@ -7,8 +7,11 @@ public class UnityAdsProperties {
 	public static final String CACHE_DIR_NAME = "UnityAdsVideoCache";
 	public static final String CACHE_MANIFEST_FILENAME = "manifest.json";
 	public static final String PENDING_REQUESTS_FILENAME = "pendingrequests.dat";
-	//public static final String WEBDATA_URL = "http://ads-dev.local/manifest.json";	
-	public static final String WEBDATA_URL = "https://impact.applifier.com/mobile/campaigns";
+	
+	public static final String UNITY_ADS_BASEURL = "http://impact.applifier.com/";
+	public static final String UNITY_ADS_GAMERPATH = "gamers";
+	public static final String UNITY_ADS_MOBILEPATH = "mobile";
+	public static final String UNITY_ADS_CAMPAIGNPATH = "campaigns";
 	
 	public static Activity CURRENT_ACTIVITY = null;
 	public static String UNITY_ADS_APP_ID = "";

@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import org.json.JSONObject;
 
 import com.unity3d.ads.android.UnityAdsProperties;
-import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -21,10 +20,7 @@ import android.webkit.WebViewClient;
 
 public class UnityAdsWebView extends WebView {
 
-//	private String _url = "http://ads-dev.local/webapp.html";	
-	//private String _url = "http://ads-proto.local/index.html";	
 	private String _url = "http://ads-dev.local/newproto/index.html";	
-	
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
 	private UnityAdsWebBridge _webBridge = null;
@@ -48,11 +44,6 @@ public class UnityAdsWebView extends WebView {
 	}
 	
 	public void setView (String view, JSONObject data) {		
-		String jsonString = "";
-		
-		if (data != null)
-			jsonString = data.toString();
-		
 		if (isWebAppLoaded()) {
 			String jsCommand = "javascript:";
 			
@@ -60,6 +51,7 @@ public class UnityAdsWebView extends WebView {
 				jsCommand = jsCommand + "impactShow();";
 			else if (view.equals("videoCompleted")) {
 				String campaignId = "";
+				
 				try {
 					campaignId = data.getString("campaignId");
 				}
@@ -69,19 +61,10 @@ public class UnityAdsWebView extends WebView {
 				
 				jsCommand = jsCommand + "impactVideoComplete(\"" + campaignId + "\");";
 			}
-				
 			
 			loadUrl(jsCommand);
 		}
-
-		//loadUrl("javascript:setView('" + view + "','" + jsonString + "');");
 	}
-	
-	/*
-	public void setSelectedCampaign (UnityAdsCampaign campaign) {
-		if (isWebAppLoaded())
-			loadUrl("javascript:selectCampaign('" + campaign.getCampaignId() + "');");
-	}*/
 	
 	public void setAvailableCampaigns (String videoPlan) {
 		if (isWebAppLoaded()) {
@@ -98,7 +81,6 @@ public class UnityAdsWebView extends WebView {
 			paramStr = paramStr.replace("\"", "\\\"");
 			loadUrl("javascript:impactInit(\"" + videoPlan + "\", \"" + paramStr + "\");");
 		}
-		//loadUrl("javascript:setAvailableCampaigns('" + videoPlan + "');");
 	}
 	
 	

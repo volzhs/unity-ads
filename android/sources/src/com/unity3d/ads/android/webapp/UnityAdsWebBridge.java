@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.unity3d.ads.android.UnityAdsProperties;
 
-
 public class UnityAdsWebBridge {
 	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView, InitComplete;
 		@Override
@@ -58,8 +57,6 @@ public class UnityAdsWebBridge {
 		catch (Exception e) {
 			Log.d(UnityAdsProperties.LOG_NAME, "Error while parsing parameters: " + e.getMessage());
 		}
-		
-		//Log.d(UnityAdsProperties.LOG_NAME, "GOT WEBEVENT: " + event + ", " + data);
 		
 		if (paramObj == null || event == null) return;
 		

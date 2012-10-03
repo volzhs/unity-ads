@@ -54,12 +54,6 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	public void initCampaign () {
 		// Check video
 		checkFileAndDownloadIfNeeded(_campaign.getVideoUrl());
-		UnityAdsCampaign possiblyCachedCampaign = UnityAds.cachemanifest.getCachedCampaignById(_campaign.getCampaignId());
-		
-		// If manifest has this campaign and their files are not the same, remove the cached file if not needed anymore.
-		if (possiblyCachedCampaign != null && !_campaign.getVideoUrl().equals(possiblyCachedCampaign.getVideoUrl()) && 
-			!UnityAdsUtils.isFileRequiredByCampaigns(possiblyCachedCampaign.getVideoUrl(), _activeCampaigns))
-			UnityAdsUtils.removeFile(possiblyCachedCampaign.getVideoUrl());
 		
 		// No downloads, report campaign done
 		if (!hasDownloads() && _handlerListener != null && !_cancelledDownloads) {

@@ -3,7 +3,6 @@ package com.unity3d.ads.android.cache;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
@@ -34,12 +33,10 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		return (_downloadingHandlers != null && _downloadingHandlers.size() > 0);
 	}
 	
-	//public void initCache (ArrayList<UnityAdsCampaign> activeList, ArrayList<UnityAdsCampaign> pruneList) {
 	public void initCache (ArrayList<UnityAdsCampaign> activeList) {
 		updateCache(activeList);
 	}
 		
-	//public void updateCache (ArrayList<UnityAdsCampaign> activeList, ArrayList<UnityAdsCampaign> pruneList) {
 	public void updateCache (ArrayList<UnityAdsCampaign> activeList) {
 		if (_downloadListener != null)
 			_downloadListener.onCampaignUpdateStarted();
@@ -64,21 +61,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 				}
 			}
 		}
-		
-		// Prune -list contains campaigns that were still in cache but not in the received videoPlan.
-		// Therefore they will not be put into cache. Check that the existing videos for those
-		// campaigns are not needed by current active ones and remove them if needed.
-		/*
-		if (pruneList != null) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Updating cache: Pruning old campaigns");
-			for (UnityAdsCampaign campaign : pruneList) {
-				UnityAds.cachemanifest.removeCampaignFromManifest(campaign.getCampaignId());
-				if (!UnityAdsUtils.isFileRequiredByCampaigns(campaign.getVideoUrl(), activeList)) {
-					UnityAdsUtils.removeFile(campaign.getVideoUrl());
-				}
-			}
-		}*/
-		
+
 		// Active -list contains campaigns that came with the videoPlan
 		if (activeList != null) {
 			_totalCampaigns = activeList.size();

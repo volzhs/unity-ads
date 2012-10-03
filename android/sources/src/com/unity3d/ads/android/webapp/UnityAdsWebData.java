@@ -7,7 +7,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
@@ -16,6 +15,7 @@ import android.util.Log;
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 
 public class UnityAdsWebData {
 	
@@ -40,6 +40,9 @@ public class UnityAdsWebData {
 					break;
 				case ThirdQuartile:
 					output = "third_quartile";
+					break;
+				case End:
+					output = "view";
 					break;
 				default:
 					output = name().toString().toLowerCase();
@@ -80,7 +83,6 @@ public class UnityAdsWebData {
 		return _videoPlanCampaigns;
 	}
 	
-	
 	public UnityAdsCampaign getCampaignById (String campaignId) {
 		if (campaignId != null) {
 			for (int i = 0; i < _videoPlanCampaigns.size(); i++) {
@@ -93,19 +95,26 @@ public class UnityAdsWebData {
 	}
 	
 	public ArrayList<UnityAdsCampaign> getViewableVideoPlanCampaigns () {
-		return _videoPlanCampaigns;
+		ArrayList<UnityAdsCampaign> viewableCampaigns = null;
+		UnityAdsCampaign currentCampaign = null; 
+		
+		if (_videoPlanCampaigns != null) {
+			viewableCampaigns = new ArrayList<UnityAdsCampaign>();
+			for (int i = 0; i < _videoPlanCampaigns.size(); i++) {
+				currentCampaign = _videoPlanCampaigns.get(i);
+				if (currentCampaign != null && !currentCampaign.getCampaignStatus().equals(UnityAdsCampaignStatus.VIEWED))
+					viewableCampaigns.add(currentCampaign);
+			}
+		}
+		
+		return viewableCampaigns;
 	}
 
-	public boolean initVideoPlan (ArrayList<String> cachedCampaignIds) {
-		JSONObject json = new JSONObject();
-		JSONArray data = getCachedCampaignIdsArray(cachedCampaignIds);
-		String dataString = "gameId=" + UnityAdsProperties.UNITY_ADS_APP_ID + "&openUdid=someudid&device=iphone&iosVersion=6.0";
+	public boolean initVideoPlan () {
+		String url = UnityAdsProperties.UNITY_ADS_BASEURL + UnityAdsProperties.UNITY_ADS_MOBILEPATH + "/" + UnityAdsProperties.UNITY_ADS_CAMPAIGNPATH;
+		String queryString = "gameId=" + UnityAdsProperties.UNITY_ADS_APP_ID + "&openUdid=someudid&device=iphone&iosVersion=6.0";
 		
-		
-		if (data != null)
-			dataString = json.toString();
-			
-		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(UnityAdsProperties.WEBDATA_URL + "?" + dataString, UnityAdsRequestType.VideoPlan);
+		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(url + "?" + queryString, UnityAdsRequestType.VideoPlan);
 		addLoader(loader);
 		startNextLoader();
 		checkFailedUrls();
@@ -113,25 +122,18 @@ public class UnityAdsWebData {
 		return true;
 	}
 	
-	public boolean sendCampaignViewed (UnityAdsCampaign campaign, UnityAdsVideoPosition position) {
+	public boolean sendCampaignViewProgress (UnityAdsCampaign campaign, UnityAdsVideoPosition position) {
 		if (campaign == null) return false;
+
+		Log.d(UnityAdsProperties.LOG_NAME, "VP: " + position.toString() + ", " + getGamerId());
 		
-		JSONObject json = new JSONObject();
-		
-		try {
-			json.put("did", UnityAdsUtils.getDeviceId(UnityAdsProperties.CURRENT_ACTIVITY));
-			json.put("c", campaign.getCampaignId());
-			json.put("pos", position.toString());
+		if (position != null && getGamerId() != null && (position.equals(UnityAdsVideoPosition.Start)  || position.equals(UnityAdsVideoPosition.End))) {
+			String viewUrl = UnityAdsProperties.UNITY_ADS_BASEURL + UnityAdsProperties.UNITY_ADS_GAMERPATH + "/" + getGamerId() + "/" + position.toString() + "/" + campaign.getCampaignId();
+			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, UnityAdsRequestType.VideoViewed);
+			addLoader(loader);
+			startNextLoader();
+			return true;
 		}
-		catch (Exception e) {			
-		}
-		
-		String dataString = "";
-		dataString = json.toString();
-		
-		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(UnityAdsProperties.WEBDATA_URL + "?v=" + dataString, UnityAdsRequestType.VideoViewed);
-		addLoader(loader);
-		startNextLoader();		
 		
 		return false;
 	}
@@ -144,7 +146,36 @@ public class UnityAdsWebData {
 	}
 	
 	public String getVideoPlan () {
-		return _videoPlan.toString();
+		if (_videoPlan != null)
+			return _videoPlan.toString();
+		
+		return null;
+	}
+	
+	public String getGamerId () {
+		if (_videoPlan != null) {
+			if (_videoPlan.has("data")) {				
+				JSONObject dataObj = null;
+				try {
+					dataObj = _videoPlan.getJSONObject("data");
+				}
+				catch (Exception e) {
+					Log.d(UnityAdsProperties.LOG_NAME, "Malformed JSON");
+					return null;
+				}
+				
+				if (dataObj != null) {
+					try {						
+						return dataObj.getString("gamerId");
+					}
+					catch (Exception e) {
+						Log.d(UnityAdsProperties.LOG_NAME, "Malformed JSON");
+					}
+				}
+			}
+		}
+			
+		return null;
 	}
 	
 	
@@ -162,20 +193,6 @@ public class UnityAdsWebData {
 			_isLoading = true;
 			_currentLoader = (UnityAdsUrlLoader)_urlLoaders.remove(0).execute();
 		}			
-	}
-	
-	private JSONArray getCachedCampaignIdsArray (ArrayList<String> cachedCampaignIds) {
-		JSONArray campaignIds = null;
-		
-		if (cachedCampaignIds != null && cachedCampaignIds.size() > 0) {
-			campaignIds = new JSONArray();
-			
-			for (String id : cachedCampaignIds) {
-				campaignIds.put(id);
-			}
-		}
-		
-		return campaignIds;
 	}
 	
 	private void urlLoadCompleted (UnityAdsUrlLoader loader) {

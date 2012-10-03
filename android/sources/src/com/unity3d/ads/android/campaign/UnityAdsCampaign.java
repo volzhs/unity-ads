@@ -29,6 +29,7 @@ public class UnityAdsCampaign {
 	
 	private JSONObject _campaignJson = null;
 	private String[] _requiredKeys = new String[]{"id", "gameId", "trailerDownloadable", "trailerStreaming", "clickUrl"};
+	private UnityAdsCampaignStatus _campaignStatus = UnityAdsCampaignStatus.READY;
 	
 	public UnityAdsCampaign () {		
 	}
@@ -83,27 +84,11 @@ public class UnityAdsCampaign {
 	}
 	
 	public UnityAdsCampaignStatus getCampaignStatus () {
-		/*
-		if (checkDataIntegrity()) {
-			try {
-				return UnityAdsCampaignStatus.getValueOf(_campaignJson.getString("status"));
-			}
-			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "getCampaignStatus: This should not happen!");
-			}
-		}*/
-		return UnityAdsCampaignStatus.getValueOf("ready");
+		return _campaignStatus;
 	}
 	
 	public void setCampaignStatus (UnityAdsCampaignStatus status) {
-		if (checkDataIntegrity()) {
-			try {
-				_campaignJson.put("status", status.toString());
-			}
-			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "setCampaignStatus: This should not happen!");
-			}
-		}
+		_campaignStatus = status;
 	}
 	
 	public String getVideoStreamUrl () {
