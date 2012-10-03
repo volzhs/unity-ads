@@ -33,7 +33,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	// Unity Ads components
 	public static UnityAds instance = null;
-	//public static UnityAdsCacheManifest cachemanifest = null;
 	public static UnityAdsCacheManager cachemanager = null;
 	public static UnityAdsWebData webdata = null;
 	
@@ -79,7 +78,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 		cachemanager = new UnityAdsCacheManager();
 		cachemanager.setDownloadListener(this);
-		//cachemanifest = new UnityAdsCacheManifest();
 		webdata = new UnityAdsWebData();
 		webdata.setWebDataListener(this);
 		

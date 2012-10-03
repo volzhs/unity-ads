@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
-import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
@@ -14,14 +13,12 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	
 	private ArrayList<String> _downloadList = null;
 	private UnityAdsCampaign _campaign = null;
-	private ArrayList<UnityAdsCampaign> _activeCampaigns = null;
 	private IUnityAdsCampaignHandlerListener _handlerListener = null;
 	private boolean _cancelledDownloads = false;
 	
 	
-	public UnityAdsCampaignHandler (UnityAdsCampaign campaign, ArrayList<UnityAdsCampaign> activeList) {
+	public UnityAdsCampaignHandler (UnityAdsCampaign campaign) {
 		_campaign = campaign;
-		_activeCampaigns = activeList;
 	}
 	
 	public boolean hasDownloads () {
