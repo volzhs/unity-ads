@@ -12,6 +12,7 @@ public class UnityAdsProperties {
 	public static final String UNITY_ADS_GAMERPATH = "gamers";
 	public static final String UNITY_ADS_MOBILEPATH = "mobile";
 	public static final String UNITY_ADS_CAMPAIGNPATH = "campaigns";
+	public static final String UNITY_ADS_JS_PREFIX = "javascript:applifierimpact.";
 	
 	public static Activity CURRENT_ACTIVITY = null;
 	public static String UNITY_ADS_APP_ID = "";

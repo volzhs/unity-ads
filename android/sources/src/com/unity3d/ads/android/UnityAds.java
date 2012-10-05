@@ -95,7 +95,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (!_showingAds && canShowAds()) {
 			UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 			focusToView(_webView);
-			_webView.setView("videoStart");
+			_webView.setView("start");
 			_showingAds = true;	
 			
 			if (_adsListener != null)
@@ -153,7 +153,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	@Override
 	public void onWebDataFailed () {
-		//setup();
 	}
 	
 	// IUnityAdsWebViewListener
@@ -226,9 +225,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onCompletion(MediaPlayer mp) {				
 		if (_videoListener != null)
 			_videoListener.onVideoCompleted();
-		
-		_selectedCampaign.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
-		
+				
 		_vp.setKeepScreenOn(false);
 		closeView(_vp, false);
 		JSONObject params = null;
@@ -240,10 +237,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 			Log.d(UnityAdsProperties.LOG_NAME, "Could not create JSON");
 		}
 		
-		_webView.setView("videoCompleted", params);
+		_webView.setView("completed", params);
 		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_webView);
 		onEventPositionReached(UnityAdsVideoPosition.End);
+		_selectedCampaign.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 		_selectedCampaign = null;
 	}
 	
@@ -264,7 +262,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private boolean canShowAds () {
-		Log.d(UnityAdsProperties.LOG_NAME, "" + webdata.getViewableVideoPlanCampaigns().size());
 		return _webView != null && _webView.isWebAppLoaded() && _webAppLoaded && webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
 	
