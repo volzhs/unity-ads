@@ -50,6 +50,25 @@ public class UnityAdsUtils {
 		return null;
 	}
 	
+	public static JSONObject getPlatformProperties () {
+		JSONObject params = new JSONObject();
+		
+		try {
+			params.put("deviceId", getDeviceId(UnityAdsProperties.CURRENT_ACTIVITY));
+			params.put("softwareVersion", Build.VERSION.SDK_INT);
+			params.put("hardwareVersion", "unknown");
+			params.put("deviceType", "phone");
+			params.put("apiVersion", "1");
+			params.put("platform", "android");
+		}
+		catch (Exception e) {
+			Log.d(UnityAdsProperties.LOG_NAME, "JSON Error");
+		}
+		
+		return params;
+	}
+	
+	
 	public static String readFile (File fileToRead, boolean addLineBreaks) {
 		String fileContent = "";
 		BufferedReader br = null;

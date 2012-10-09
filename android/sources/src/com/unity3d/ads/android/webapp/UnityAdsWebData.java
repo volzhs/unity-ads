@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.json.JSONObject;
 
@@ -113,8 +114,22 @@ public class UnityAdsWebData {
 	public boolean initVideoPlan () {
 		String url = UnityAdsProperties.UNITY_ADS_BASEURL + UnityAdsProperties.UNITY_ADS_MOBILEPATH + "/" + UnityAdsProperties.UNITY_ADS_CAMPAIGNPATH;
 		String queryString = "gameId=" + UnityAdsProperties.UNITY_ADS_APP_ID + "&openUdid=someudid&device=iphone&iosVersion=6.0";
+		String collatedProperties = "";
+		JSONObject properties = UnityAdsUtils.getPlatformProperties();		
+		Iterator<String> dataKeys = properties.keys();
+		String key = "";
 		
-		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(url + "?" + queryString, UnityAdsRequestType.VideoPlan);
+		while (dataKeys.hasNext()) {
+			key = dataKeys.next();
+			try {
+				collatedProperties = collatedProperties + "&" + key + "=" + properties.getString(key);
+			}
+			catch (Exception e) {
+				Log.d(UnityAdsProperties.LOG_NAME, "Error while creating properties");
+			}
+		}
+		
+		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(url + "?" + queryString + collatedProperties, UnityAdsRequestType.VideoPlan);
 		addLoader(loader);
 		startNextLoader();
 		checkFailedUrls();
