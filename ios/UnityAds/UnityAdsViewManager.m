@@ -14,8 +14,6 @@
 
 // FIXME: this is (obviously) NOT the final URL!
 NSString * const kUnityAdsTestWebViewURL = @"http://ads-proto.local/index.html";
-//NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/newproto/index.html";
-/*  http://ads-dev.local/newproto/ */
 NSString * const kUnityAdsWebViewAPINativeInit = @"impactInit";
 NSString * const kUnityAdsWebViewAPINativeShow = @"impactShow";
 NSString * const kUnityAdsWebViewAPINativeVideoComplete = @"impactVideoComplete";
@@ -219,9 +217,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 #if !(TARGET_IPHONE_SIMULATOR)
 	__block UnityAdsViewManager *blockSelf = self;  
   self.timeObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
-    dispatch_async(dispatch_get_main_queue(), ^{
       [blockSelf _updateTimeRemainingLabelWithTime:time];
-    });
 	}];
 #endif
   
