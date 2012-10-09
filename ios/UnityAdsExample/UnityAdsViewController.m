@@ -9,7 +9,7 @@
 #import "UnityAdsViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
-#import "UnityAds.h"
+#import <UnityAds/UnityAds.h>
 
 @interface UnityAdsViewController () <UnityAdsDelegate>
 @end

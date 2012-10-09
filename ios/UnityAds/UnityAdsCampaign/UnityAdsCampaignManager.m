@@ -7,7 +7,7 @@
 //
 
 #import "UnityAdsCampaignManager.h"
-#import "UnityAdsSBJSONParser.h"
+#import "UnityAdsSBJsonParser.h"
 #import "UnityAdsCampaign.h"
 #import "UnityAdsRewardItem.h"
 #import "UnityAdsCache.h"
@@ -192,7 +192,7 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (void)_processCampaignDownloadData
 {
-	id json = [self _JSONValueFromData:self.campaignDownloadData];
+  id json = [self _JSONValueFromData:self.campaignDownloadData];
 
 	UAAssert([json isKindOfClass:[NSDictionary class]]);
 	
@@ -273,17 +273,20 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-	self.campaignDownloadData = [NSMutableData data];
+	UALOG_DEBUG(@"didReceiveResponse");
+  self.campaignDownloadData = [NSMutableData data];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
+	UALOG_DEBUG(@"didReceiveData");
 	[self.campaignDownloadData appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-	[self _processCampaignDownloadData];
+  UALOG_DEBUG(@"connectionDidFinishLoading");
+  [self _processCampaignDownloadData];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error

@@ -202,7 +202,8 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 - (void)_cleanUpIndexWithCampaigns:(NSArray *)campaigns
 {
 	// FIXME: what to do with old campaigns?
-	if (campaigns == nil || [campaigns count] == 0)
+	
+  if (campaigns == nil || [campaigns count] == 0)
 	{
 		UALOG_DEBUG(@"No new campaigns.");
 		return;
@@ -298,12 +299,12 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (void)_removeInvalidDownloadsWithCampaigns:(NSArray *)campaigns
 {
-	if ([self.downloadQueue count] == 0)
+  if ([self.downloadQueue count] == 0)
 	{
 		UALOG_DEBUG(@"No downloads queued.");
 		return;
 	}
-	
+  
 	NSMutableArray *downloadsToRemove = [NSMutableArray array];
 	
 	for (NSDictionary *downloadDictionary in self.downloadQueue)
@@ -341,7 +342,8 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	
 	if ((self = [super init]))
 	{
-		_downloadQueue = [NSMutableArray array];
+    UALOG_DEBUG(@"creating downloadqueue");
+    _downloadQueue = [NSMutableArray array];
 	}
 	
 	return self;
@@ -350,8 +352,8 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 - (void)cacheCampaigns:(NSArray *)campaigns
 {
 	UAAssert( ! [NSThread isMainThread]);
-	
-	if (campaigns == nil)
+
+  if (campaigns == nil)
 	{
 		UALOG_DEBUG(@"Input is nil.");
 		return;
@@ -367,12 +369,12 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	
 	[self _removeInvalidDownloadsWithCampaigns:campaigns];
 	[self _cleanUpIndexWithCampaigns:campaigns];
-	
-	BOOL downloadsQueued = NO;
+  
+  BOOL downloadsQueued = YES;
 	for (UnityAdsCampaign *campaign in campaigns)
 	{
 		if ([self _queueCampaignDownload:campaign])
-			downloadsQueued = YES;
+ 	  	downloadsQueued = YES;
 	}
 	
 	if ( ! downloadsQueued)
