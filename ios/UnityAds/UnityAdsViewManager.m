@@ -216,9 +216,8 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 	self.playerLayer.frame = self.adContainerView.bounds;
 	[self.adContainerView.layer addSublayer:self.playerLayer];
 	
-	__block UnityAdsViewManager *blockSelf = self;
-	
 #if !(TARGET_IPHONE_SIMULATOR)
+	__block UnityAdsViewManager *blockSelf = self;  
   self.timeObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
     dispatch_async(dispatch_get_main_queue(), ^{
       [blockSelf _updateTimeRemainingLabelWithTime:time];
