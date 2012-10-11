@@ -10,17 +10,18 @@
 
 #import "UnityAdsViewManager.h"
 #import "UnityAds.h"
-#import "UnityAdsCampaign.h"
+#import "UnityAdsCampaign/UnityAdsCampaign.h"
+#import "UnityAdsURLProtocol/UnityAdsURLProtocol.h"
 
 // FIXME: this is (obviously) NOT the final URL!
-NSString * const kUnityAdsTestWebViewURL = @"http://ads-proto.local/index.html";
-NSString * const kUnityAdsWebViewAPINativeInit = @"impactInit";
-NSString * const kUnityAdsWebViewAPINativeShow = @"impactShow";
-NSString * const kUnityAdsWebViewAPINativeVideoComplete = @"impactVideoComplete";
-NSString * const kUnityAdsWebViewAPIPlayVideo = @"playvideo";
+NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/ios/index.html";
+NSString * const kUnityAdsWebViewPrefix = @"applifierimpact.";
+NSString * const kUnityAdsWebViewJSInit = @"init";
+NSString * const kUnityAdsWebViewJSChangeView = @"setView";
+NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
 NSString * const kUnityAdsWebViewAPIClose = @"close";
-NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateto";
-NSString * const kUnityAdsWebViewAPIInitComplete = @"initcomplete";
+NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
+NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
 NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
 @interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate>
@@ -36,6 +37,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 @property (nonatomic, strong) id analyticsTimeObserver;
 @property (nonatomic, assign) VideoAnalyticsPosition videoPosition;
 @property (nonatomic, assign) UIViewController *storePresentingViewController;
+
 @end
 
 @implementation UnityAdsViewManager
@@ -319,6 +321,8 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 	
 	UALOG_DEBUG(@"");
 	
+  [NSURLProtocol registerClass:[UnityAdsURLProtocol class]];
+  
 	NSString *escapedJSON = [self _escapedStringFromString:self.campaignJSON];
 	NSString *deviceInformation = nil;
 	if (self.md5AdvertisingIdentifier != nil)
@@ -326,24 +330,71 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 	else
 		deviceInformation = [NSString stringWithFormat:@"{\"openUdid\":\"%@\",\"macAddress\":\"%@\",\"iOSVersion\":\"%@\",\"deviceType\":\"%@\"}", self.md5OpenUDID, self.md5MACAddress, [[UIDevice currentDevice] systemVersion], self.machineName];
 	
-	NSString *js = [NSString stringWithFormat:@"%@(\"%@\",\"%@\");", kUnityAdsWebViewAPINativeInit, escapedJSON, [self _escapedStringFromString:deviceInformation]];
+	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\",\"%@\");", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSInit, escapedJSON, [self _escapedStringFromString:deviceInformation]];
 	
 	[self.webView stringByEvaluatingJavaScriptFromString:js];
+}
+
+- (void)_setWebViewCurrentView:(NSString *)view data:(NSString *)data
+{
+  [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@%@(\"%@\", \"%@\");", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, data]];
 }
 
 - (void)_webViewShow
 {
-	[self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@();", kUnityAdsWebViewAPINativeShow]];
+	[self _setWebViewCurrentView:@"start" data:@""];
 }
 
 - (void)_webViewVideoComplete
 {
-	NSString *js = [NSString stringWithFormat:@"%@(%@);", kUnityAdsWebViewAPINativeVideoComplete, self.selectedCampaign.id];
-	
-	[self.webView stringByEvaluatingJavaScriptFromString:js];
+	NSString *data = [NSString stringWithFormat:@"{\"campaignId\":\"%@\"}", self.selectedCampaign.id];
+  [self _setWebViewCurrentView:@"completed" data:[self _escapedStringFromString:data]];
 }
 
 #pragma mark - Public
+
+static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
+
++ (id)sharedInstance
+{
+	@synchronized(self)
+	{
+		if (sharedUnityAdsInstanceViewManager == nil)
+				sharedUnityAdsInstanceViewManager = [[UnityAdsViewManager alloc] init];
+	}
+	
+	return sharedUnityAdsInstanceViewManager;
+}
+
+- (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data
+{
+  if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [type isEqualToString:kUnityAdsWebViewAPINavigateTo] || [type isEqualToString:kUnityAdsWebViewAPIAppStore])
+	{
+		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo])
+		{
+      if ([data objectForKey:@"campaignId"] != nil)
+        [self _selectCampaignWithID:[data objectForKey:@"campaignId"]];
+		}
+		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo])
+		{
+        if ([data objectForKey:@"clickUrl"] != nil)
+          [self _openURL:[data objectForKey:@"clickUrl"]];
+		}
+		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore])
+		{
+          if ([data objectForKey:@"clickUrl"] != nil)
+            [self _openStoreViewControllerWithGameID:[data objectForKey:@"clickUrl"]];
+		}
+	}
+	else if ([type isEqualToString:kUnityAdsWebViewAPIClose])
+	{
+		[self _closeAdView];
+	}
+	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete])
+	{
+		[self _webViewInitComplete];
+	}
+}
 
 - (id)init
 {
@@ -457,13 +508,8 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 {
 	NSURL *url = [request URL];
 	UALOG_DEBUG(@"url %@", url);
-	if ([[url scheme] isEqualToString:@"applifier-impact"])
-	{
-		[self _processWebViewResponseWithHost:[url host] query:[url query]];
-		
-		return NO;
-	}
-	else if ([[url scheme] isEqualToString:@"itms-apps"])
+	
+  if ([[url scheme] isEqualToString:@"itms-apps"])
 	{
 		return NO;
 	}

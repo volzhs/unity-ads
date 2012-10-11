@@ -53,7 +53,6 @@
 @property (nonatomic, assign) id<UnityAdsDelegate> delegate;
 
 + (id)sharedInstance;
-
 - (void)startWithGameId:(NSString *)gameId;
 - (UIView *)adsView;
 - (BOOL)canShow;

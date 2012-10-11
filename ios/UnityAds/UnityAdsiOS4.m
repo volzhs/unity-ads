@@ -27,7 +27,6 @@ NSString * const kUnityAdsVersion = @"1.0";
 @interface UnityAdsiOS4 () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate, UnityAdsViewManagerDelegate>
 @property (nonatomic, strong) UnityAdsCampaignManager *campaignManager;
 @property (nonatomic, strong) UnityAdsAnalyticsUploader *analyticsUploader;
-@property (nonatomic, strong) UnityAdsViewManager *viewManager;
 @property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
 @property (nonatomic, strong) NSString *gameId;
 @property (nonatomic, strong) NSString *campaignJSON;
@@ -471,13 +470,12 @@ NSString * const kUnityAdsVersion = @"1.0";
 		[self performSelector:@selector(_startAnalyticsUploader) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 		
     dispatch_sync(dispatch_get_main_queue(), ^{
-			self.viewManager = [[UnityAdsViewManager alloc] init];
-			self.viewManager.delegate = self;
-			self.viewManager.machineName = self.machineName;
-			self.viewManager.md5AdvertisingIdentifier = self.md5AdvertisingIdentifier;
-			self.viewManager.md5MACAddress = self.md5MACAddress;
-			self.viewManager.md5OpenUDID = self.md5OpenUDID;
-			[self.viewManager loadWebView];
+      [[UnityAdsViewManager sharedInstance] setDelegate:self];
+      [[UnityAdsViewManager sharedInstance] setMachineName:self.machineName];
+      [[UnityAdsViewManager sharedInstance] setMd5AdvertisingIdentifier:self.md5AdvertisingIdentifier];
+      [[UnityAdsViewManager sharedInstance] setMd5MACAddress:self.md5MACAddress];
+      [[UnityAdsViewManager sharedInstance] setMd5OpenUDID:self.md5OpenUDID];
+      [[UnityAdsViewManager sharedInstance] loadWebView];
 		});
 	});
 }
@@ -488,7 +486,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 	
 	if ([self _adViewCanBeShown])
 	{
-		UIView *adView = [self.viewManager adView];
+		UIView *adView = [[UnityAdsViewManager sharedInstance] adView];
 		if (adView != nil)
 		{
 			if ([self.delegate respondsToSelector:@selector(unityAdsWillShow:)])
@@ -526,7 +524,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 {
 	UAAssert([NSThread isMainThread]);
 	
-	if ([self.viewManager adViewVisible])
+	if ([[UnityAdsViewManager sharedInstance] adViewVisible])
 		UALOG_DEBUG(@"Ad view visible, not refreshing.");
 	else
 		[self _refresh];
@@ -535,7 +533,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 - (void)dealloc
 {
 	self.campaignManager.delegate = nil;
-	self.viewManager.delegate = nil;
+	[[UnityAdsViewManager sharedInstance] setDelegate:nil];
 	
 	dispatch_release(self.queue);
 }
@@ -561,13 +559,13 @@ NSString * const kUnityAdsVersion = @"1.0";
 	
   // If the view manager already has campaign JSON data, it means that
 	// campaigns were updated, and we might want to update the webapp.
-	if (self.viewManager.campaignJSON != nil)
+	if ([[UnityAdsViewManager sharedInstance] campaignJSON] != nil)
 	{
 		self.webViewInitialized = NO;
-		[self.viewManager loadWebView];
+    [[UnityAdsViewManager sharedInstance] loadWebView];
 	}
   
-  self.viewManager.campaignJSON = json;
+  [[UnityAdsViewManager sharedInstance] setCampaignJSON:json];
 }
 
 #pragma mark - UnityAdsViewManagerDelegate

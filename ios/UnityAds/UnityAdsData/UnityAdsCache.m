@@ -460,7 +460,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-	[self.fileHandle writeData:data];
+  [self.fileHandle writeData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
