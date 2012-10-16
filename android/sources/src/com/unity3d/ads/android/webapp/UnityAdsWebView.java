@@ -22,7 +22,7 @@ import android.webkit.WebViewClient;
 
 public class UnityAdsWebView extends WebView {
 
-	private String _url = "http://ads-dev.local/newproto/index.html";	
+	private String _url = "http://ads-dev.local/android/index.html";
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
 	private UnityAdsWebBridge _webBridge = null;

@@ -13,6 +13,9 @@ import org.json.JSONObject;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
@@ -50,16 +53,47 @@ public class UnityAdsUtils {
 		return null;
 	}
 	
+	public static boolean isUsingWifi () {
+		ConnectivityManager mConnectivity = null;
+		mConnectivity = (ConnectivityManager)UnityAdsProperties.CURRENT_ACTIVITY.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		if (mConnectivity == null)
+			return false;
+
+		TelephonyManager mTelephony = (TelephonyManager)UnityAdsProperties.CURRENT_ACTIVITY.getSystemService(Context.TELEPHONY_SERVICE);
+		// Skip if no connection, or background data disabled
+		NetworkInfo info = mConnectivity.getActiveNetworkInfo();
+		if (info == null || !mConnectivity.getBackgroundDataSetting() || mTelephony == null) {
+		    return false;
+		}
+
+		int netType = info.getType();
+		if (netType == ConnectivityManager.TYPE_WIFI) {
+		    return info.isConnected();
+		}
+		else {
+			return false;
+		}
+	}
+
 	public static JSONObject getPlatformProperties () {
 		JSONObject params = new JSONObject();
+		String deviceType = "";
+
+		if (UnityAdsProperties.CURRENT_ACTIVITY != null &&
+			UnityAdsProperties.CURRENT_ACTIVITY.getResources() != null &&
+			UnityAdsProperties.CURRENT_ACTIVITY.getResources().getConfiguration() != null) {
+			deviceType = "" + UnityAdsProperties.CURRENT_ACTIVITY.getResources().getConfiguration().screenLayout;
+		}
 		
 		try {
 			params.put("deviceId", getDeviceId(UnityAdsProperties.CURRENT_ACTIVITY));
 			params.put("softwareVersion", Build.VERSION.SDK_INT);
-			params.put("hardwareVersion", "unknown");
-			params.put("deviceType", "phone");
-			params.put("apiVersion", "1");
+			params.put("hardwareVersion", Build.MANUFACTURER + " " + Build.MODEL);
+			params.put("deviceType", deviceType);
+			params.put("apiVersion", UnityAdsProperties.UNITY_ADS_API_VERSION);
 			params.put("platform", "android");
+			params.put("connectionType", isUsingWifi() ? "wifi" : "cellular");
 		}
 		catch (Exception e) {
 			Log.d(UnityAdsProperties.LOG_NAME, "JSON Error");
