@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
