@@ -10,4 +10,14 @@
 
 @interface UnityAdsDevice : NSObject
 
++ (NSString *)advertisingIdentifier;
++ (BOOL)canUseTracking;
++ (NSString *)machineName;
++ (NSString *)analyticsMachineName;
++ (NSString *)macAddress;
++ (NSString *)md5OpenUDIDString;
++ (NSString *)md5MACAddressString;
++ (NSString *)md5AdvertisingIdentifierString;
++ (NSString *)currentConnectionType;
+
 @end
