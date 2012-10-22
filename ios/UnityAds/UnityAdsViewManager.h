@@ -8,16 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
-typedef enum
-{
-	kVideoAnalyticsPositionUnplayed = -1,
-	kVideoAnalyticsPositionStart = 0,
-	kVideoAnalyticsPositionFirstQuartile = 1,
-	kVideoAnalyticsPositionMidPoint = 2,
-	kVideoAnalyticsPositionThirdQuartile = 3,
-	kVideoAnalyticsPositionEnd = 4,
-} VideoAnalyticsPosition;
+#import "UnityAdsVideo/UnityAdsVideo.h"
 
 @class UnityAdsCampaign;
 @class UnityAdsViewManager;
@@ -37,7 +28,7 @@ typedef enum
 
 @end
 
-@interface UnityAdsViewManager : NSObject
+@interface UnityAdsViewManager : NSObject <UnityAdsVideoDelegate>
 
 @property (nonatomic, assign) id<UnityAdsViewManagerDelegate> delegate;
 @property (nonatomic, strong) NSString *machineName;
