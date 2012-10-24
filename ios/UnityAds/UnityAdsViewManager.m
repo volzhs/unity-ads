@@ -13,19 +13,11 @@
 #import "UnityAdsCampaign/UnityAdsCampaign.h"
 #import "UnityAdsURLProtocol/UnityAdsURLProtocol.h"
 #import "UnityAdsVideo/UnityAdsVideo.h"
-
-// FIXME: this is (obviously) NOT the final URL!
-NSString * const kUnityAdsTestWebViewURL = @"http://ads-dev.local/ios/index.html";
-NSString * const kUnityAdsWebViewPrefix = @"applifierimpact.";
-NSString * const kUnityAdsWebViewJSInit = @"init";
-NSString * const kUnityAdsWebViewJSChangeView = @"setView";
-NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
-NSString * const kUnityAdsWebViewAPIClose = @"close";
-NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
-NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
-NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
+#import "UnityAdsWebView/UnityAdsWebAppController.h"
+#import "UnityAdsUtils/UnityAdsUtils.h"
 
 @interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate>
+@property (nonatomic, strong) UnityAdsWebAppController *webApp;
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIView *adContainerView;
@@ -45,7 +37,7 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 {
 	[self.delegate viewManagerWillCloseAdView:self];
 	
-	[self.window addSubview:self.webView];
+	[self.window addSubview:_webApp.webView];
 	[self.adContainerView removeFromSuperview];
 }
 
@@ -70,59 +62,6 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 		UALOG_DEBUG(@"No campaign with id '%@' found.", campaignID);
 }
 
-- (void)_processWebViewResponseWithHost:(NSString *)host query:(NSString *)query
-{
-	if (host == nil)
-		return;
-	
-	NSString *command = [host lowercaseString];
-	NSArray *queryComponents = nil;
-	if (query != nil)
-		queryComponents = [query componentsSeparatedByString:@"="];
-	
-	if ([command isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [command isEqualToString:kUnityAdsWebViewAPINavigateTo] || [command isEqualToString:kUnityAdsWebViewAPIAppStore])
-	{
-		if (queryComponents == nil)
-		{
-			UALOG_DEBUG(@"No parameters given.");
-			return;
-		}
-		
-		NSString *parameter = [queryComponents objectAtIndex:0];
-		NSString *value = [queryComponents objectAtIndex:1];
-		
-		if ([queryComponents count] > 2)
-		{
-			for (NSInteger i = 2; i < [queryComponents count]; i++)
-				value = [value stringByAppendingFormat:@"=%@", [queryComponents objectAtIndex:i]];
-		}
-		
-		if ([command isEqualToString:kUnityAdsWebViewAPIPlayVideo])
-		{
-			if ([parameter isEqualToString:@"campaignID"])
-				[self _selectCampaignWithID:value];
-		}
-		else if ([command isEqualToString:kUnityAdsWebViewAPINavigateTo])
-		{
-			if ([parameter isEqualToString:@"clickUrl"])
-				[self _openURL:value];
-		}
-		else if ([command isEqualToString:kUnityAdsWebViewAPIAppStore])
-		{
-			if ([parameter isEqualToString:@"id"])
-				[self _openStoreViewControllerWithGameID:value];
-		}
-	}
-	else if ([command isEqualToString:kUnityAdsWebViewAPIClose])
-	{
-		[self _closeAdView];
-	}
-	else if ([command isEqualToString:kUnityAdsWebViewAPIInitComplete])
-	{
-		[self _webViewInitComplete];
-	}
-}
-
 - (BOOL)_canOpenStoreProductViewController
 {
 	Class storeProductViewControllerClass = NSClassFromString(@"SKStoreProductViewController");
@@ -138,22 +77,6 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 	}
 	
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
-}
-
-- (NSString *)_escapedStringFromString:(NSString *)string
-{
-	if (string == nil)
-	{
-		UALOG_DEBUG(@"Input is nil.");
-		return nil;
-	}
-	
-	NSString *escapedString = [string stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-	escapedString = [escapedString stringByReplacingOccurrencesOfString:@"'" withString:@"\'"];
-	NSArray *components = [escapedString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-	escapedString = [components componentsJoinedByString:@""];
-	
-	return escapedString;
 }
 
 - (Float64)_currentVideoDuration
@@ -221,49 +144,19 @@ NSString * const kUnityAdsWebViewAPIAppStore = @"appstore";
 
 - (void)_webViewInitComplete
 {
-	self.webViewInitialized = YES;
-	
+	_webApp.webViewInitialized = YES;
 	[self.delegate viewManagerWebViewInitialized:self];
-}
-
-- (void)_webViewInit
-{
-	if (self.campaignJSON == nil || !self.webViewLoaded)
-	{
-		UALOG_DEBUG(@"JSON or web view has not been loaded yet.");
-		return;
-	}
-	
-	UALOG_DEBUG(@"");
-	
-  [NSURLProtocol registerClass:[UnityAdsURLProtocol class]];
-  
-	NSString *escapedJSON = [self _escapedStringFromString:self.campaignJSON];
-	NSString *deviceInformation = nil;
-	if (self.md5AdvertisingIdentifier != nil)
-		deviceInformation = [NSString stringWithFormat:@"{\"advertisingTrackingID\":\"%@\",\"iOSVersion\":\"%@\",\"deviceType\":\"%@\"}", self.md5AdvertisingIdentifier, [[UIDevice currentDevice] systemVersion], self.machineName];
-	else
-		deviceInformation = [NSString stringWithFormat:@"{\"openUdid\":\"%@\",\"macAddress\":\"%@\",\"iOSVersion\":\"%@\",\"deviceType\":\"%@\"}", self.md5OpenUDID, self.md5MACAddress, [[UIDevice currentDevice] systemVersion], self.machineName];
-	
-	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\",\"%@\");", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSInit, escapedJSON, [self _escapedStringFromString:deviceInformation]];
-	
-	[self.webView stringByEvaluatingJavaScriptFromString:js];
-}
-
-- (void)_setWebViewCurrentView:(NSString *)view data:(NSString *)data
-{
-  [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@%@(\"%@\", \"%@\");", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, data]];
 }
 
 - (void)_webViewShow
 {
-	[self _setWebViewCurrentView:@"start" data:@""];
+  [_webApp setWebViewCurrentView:@"start" data:@""];
 }
 
 - (void)_webViewVideoComplete
 {
 	NSString *data = [NSString stringWithFormat:@"{\"campaignId\":\"%@\"}", self.selectedCampaign.id];
-  [self _setWebViewCurrentView:@"completed" data:[self _escapedStringFromString:data]];
+  [_webApp setWebViewCurrentView:@"completed" data:[UnityAdsUtils escapedStringFromString:data]];
 }
 
 #pragma mark - Public
@@ -283,29 +176,29 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data
 {
-  if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [type isEqualToString:kUnityAdsWebViewAPINavigateTo] || [type isEqualToString:kUnityAdsWebViewAPIAppStore])
+  if ([type isEqualToString:_webApp.WEBVIEW_API_PLAYVIDEO] || [type isEqualToString:_webApp.WEBVIEW_API_NAVIGATETO] || [type isEqualToString:_webApp.WEBVIEW_API_APPSTORE])
 	{
-		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo])
+		if ([type isEqualToString:_webApp.WEBVIEW_API_PLAYVIDEO])
 		{
       if ([data objectForKey:@"campaignId"] != nil)
         [self _selectCampaignWithID:[data objectForKey:@"campaignId"]];
 		}
-		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo])
+		else if ([type isEqualToString:_webApp.WEBVIEW_API_NAVIGATETO])
 		{
         if ([data objectForKey:@"clickUrl"] != nil)
           [self _openURL:[data objectForKey:@"clickUrl"]];
 		}
-		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore])
+		else if ([type isEqualToString:_webApp.WEBVIEW_API_APPSTORE])
 		{
           if ([data objectForKey:@"clickUrl"] != nil)
             [self _openStoreViewControllerWithGameID:[data objectForKey:@"clickUrl"]];
 		}
 	}
-	else if ([type isEqualToString:kUnityAdsWebViewAPIClose])
+	else if ([type isEqualToString:_webApp.WEBVIEW_API_CLOSE])
 	{
 		[self _closeAdView];
 	}
-	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete])
+	else if ([type isEqualToString:_webApp.WEBVIEW_API_INITCOMPLETE])
 	{
 		[self _webViewInitComplete];
 	}
@@ -318,27 +211,9 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	if ((self = [super init]))
 	{
 		_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-		_webView = [[UIWebView alloc] initWithFrame:_window.bounds];
-		_webView.delegate = self;
-		_webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		
-		UIScrollView *scrollView = nil;
-		if ([_webView respondsToSelector:@selector(scrollView)])
-			scrollView = _webView.scrollView;
-		else
-		{
-			UIView *view = [_webView.subviews lastObject];
-			if ([view isKindOfClass:[UIScrollView class]])
-				scrollView = (UIScrollView *)view;
-		}
-		
-		if (scrollView != nil)
-		{
-			scrollView.delegate = self;
-			scrollView.showsVerticalScrollIndicator = NO;
-		}
-		
-		[_window addSubview:_webView];
+		_webApp = [[UnityAdsWebAppController alloc] init];
+
+		[_window addSubview:_webApp.webView];
 	}
 	
 	return self;
@@ -347,18 +222,14 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 - (void)loadWebView
 {
 	UAAssert([NSThread isMainThread]);
-	
-	self.webViewLoaded = NO;
-	self.webViewInitialized = NO;
-	
-	[self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:kUnityAdsTestWebViewURL]]];
+  //[_webApp setup:_window.bounds webAppParams:valueDictionary];
 }
 
 - (UIView *)adView
 {
 	UAAssertV([NSThread isMainThread], nil);
 	
-	if (self.webViewInitialized)
+	if (_webApp.webViewInitialized)
 	{
 		[self _webViewShow];
 		
@@ -377,10 +248,10 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 			[self.adContainerView addSubview:self.progressLabel];
 		}
 		
-		if (self.webView.superview != self.adContainerView)
+		if (_webApp.webView.superview != self.adContainerView)
 		{
-			self.webView.bounds = self.adContainerView.bounds;
-			[self.adContainerView addSubview:self.webView];
+			_webApp.webView.bounds = self.adContainerView.bounds;
+			[self.adContainerView addSubview:_webApp.webView];
 		}
 		
 		return self.adContainerView;
@@ -397,16 +268,17 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	UAAssert([NSThread isMainThread]);
 	
 	_campaignJSON = campaignJSON;
-	
-	if (self.webViewLoaded)
-		[self _webViewInit];
+  
+  NSDictionary *values = @{@"advertisingTraackingId":self.md5AdvertisingIdentifier, @"iOSVersion":[[UIDevice currentDevice] systemVersion], @"deviceType":self.machineName, @"openUdid":self.md5OpenUDID, @"macAddress":self.md5MACAddress, @"campaignJSON":self.campaignJSON};
+ 
+  [_webApp setup:_window.bounds webAppParams:values];
 }
 
 - (BOOL)adViewVisible
 {
 	UAAssertV([NSThread isMainThread], NO);
 	
-	if (self.webView.superview == self.window)
+	if (_webApp.webView.superview == self.window)
 		return NO;
 	else
 		return YES;
@@ -415,48 +287,6 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-#pragma mark - UIWebViewDelegate
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
-	NSURL *url = [request URL];
-	UALOG_DEBUG(@"url %@", url);
-	
-  if ([[url scheme] isEqualToString:@"itms-apps"])
-	{
-		return NO;
-	}
-	
-	return YES;
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-	UALOG_DEBUG(@"");
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-	UALOG_DEBUG(@"");
-	
-	self.webViewLoaded = YES;
-	
-	if ( ! self.webViewInitialized)
-		[self _webViewInit];
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-	UALOG_DEBUG(@"%@", error);
-}
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-	scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
 }
 
 #pragma mark - SKStoreProductViewControllerDelegate
@@ -471,7 +301,6 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 #pragma mark - UnityAdsVideoDelegate
 
 - (void)videoAnalyticsPositionReached:(VideoAnalyticsPosition)analyticsPosition {
-  UALOG_DEBUG(@"VID ANALYTICS POS: %i", analyticsPosition);
   [self.delegate viewManager:self loggedVideoPosition:analyticsPosition campaign:self.selectedCampaign];
 }
 
@@ -485,8 +314,6 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 }
 
 - (void)videoPlaybackEnded {
-	UALOG_DEBUG(@"");
-	
 	[self.delegate viewManagerVideoEnded:self];
 	
 	self.progressLabel.hidden = YES;

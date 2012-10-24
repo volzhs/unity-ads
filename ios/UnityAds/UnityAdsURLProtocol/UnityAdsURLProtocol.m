@@ -50,6 +50,8 @@ static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.
   NSURLRequest *request = [self request];
   NSData *reqData = [request HTTPBody];
   
+  //UALOG_DEBUG(@"WOOOOT: %@ %@", request, reqData);
+  
   [self actOnJSONResults: reqData];
   
   // Create the response
@@ -91,8 +93,6 @@ static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.
     dictData = (NSDictionary *)data;
   }
   
-  UALOG_DEBUG(@"TYPE: %@", type);
-
   if (dictData != nil) {
     dispatch_async(dispatch_get_main_queue(), ^{
       [[UnityAdsViewManager sharedInstance] handleWebEvent:type data:dictData];
