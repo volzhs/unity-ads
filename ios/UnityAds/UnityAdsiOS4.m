@@ -222,8 +222,8 @@ NSString * const kUnityAdsVersion = @"1.0";
 		self.md5MACAddress = [UnityAdsDevice md5MACAddressString];
 		self.md5OpenUDID = [UnityAdsDevice md5OpenUDIDString];
 		self.connectionType = [UnityAdsDevice currentConnectionType];
-		self.campaignQueryString = [self _queryString];
     self.md5DeviceId = self.md5AdvertisingIdentifier != nil ? self.md5AdvertisingIdentifier : self.md5OpenUDID;
+		self.campaignQueryString = [self _queryString];
 		
 		self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
 		[self.backgroundThread start];
