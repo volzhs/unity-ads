@@ -8,7 +8,7 @@
 
 #import "UnityAds.h"
 #import "UnityAdsCache.h"
-#import "UnityAdsCampaign.h"
+#import "../UnityAdsCampaign/UnityAdsCampaign.h"
 
 NSString * const kUnityAdsCacheCampaignKey = @"kUnityAdsCacheCampaignKey";
 NSString * const kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";

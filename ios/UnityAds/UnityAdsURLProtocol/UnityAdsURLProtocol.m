@@ -7,7 +7,7 @@
 //
 
 #import "UnityAdsURLProtocol.h"
-#import "UnityAdsViewManager.h"
+#import "../UnityAdsViewManager.h"
 
 static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.com";
 

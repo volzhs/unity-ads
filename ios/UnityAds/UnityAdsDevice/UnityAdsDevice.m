@@ -15,8 +15,8 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 
 #import "UnityAdsDevice.h"
-#import "UnityAds.h"
-#import "UnityAdsOpenUDID.h"
+#import "../UnityAds.h"
+#import "../UnityAdsOpenUDID/UnityAdsOpenUDID.h"
 
 @implementation UnityAdsDevice
 

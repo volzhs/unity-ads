@@ -7,7 +7,7 @@
 //
 
 #import "UnityAdsUtils.h"
-#import "UnityAds.h"
+#import "../UnityAds.h"
 
 @implementation UnityAdsUtils
 
