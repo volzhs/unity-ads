@@ -48,7 +48,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 	NSString *advertisingIdentifier = self.md5AdvertisingIdentifier != nil ? self.md5AdvertisingIdentifier : @"";
   NSString *queryParams = @"?";
   
-  queryParams = [NSString stringWithFormat:@"%@deviceId=%@&platform=%@", queryParams, self.md5DeviceId, @"ios"];
+  queryParams = [NSString stringWithFormat:@"%@deviceId=%@&platform=%@&gameId=%@", queryParams, self.md5DeviceId, @"ios", self.gameId];
   
   if (self.md5AdvertisingIdentifier != nil)
     queryParams = [NSString stringWithFormat:@"%@&advertisingTrackingId=%@", queryParams, advertisingIdentifier];

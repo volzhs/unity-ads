@@ -25,7 +25,7 @@ static UnityAdsProperties *sharedProperties = nil;
 
 -(UnityAdsProperties *)init {
   if (self = [super init]) {
-    [self setCampaignDataUrl:@"http://ads-dev.local/data.json"];
+    [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
   }
   
   return self;
