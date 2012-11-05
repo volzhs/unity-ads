@@ -51,6 +51,10 @@ static UnityAds *sharedAdsInstance = nil;
 	return sharedAdsInstance;
 }
 
+- (void)setTestMode:(BOOL)testModeEnabled {
+	UALOG_DEBUG(@"Disabled on older versions of iOS.");
+}
+
 - (void)startWithGameId:(NSString *)gameId
 {
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
