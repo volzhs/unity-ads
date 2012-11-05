@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		78057A121643CADB005EF487 /* UnityAdsProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = 78057A0E1643CADB005EF487 /* UnityAdsProperties.h */; };
+		78057A131643CADB005EF487 /* UnityAdsProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 78057A0F1643CADB005EF487 /* UnityAdsProperties.m */; };
 		786F5D64163142BB00FD34C4 /* UnityAdsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 786F5D62163142BB00FD34C4 /* UnityAdsDevice.h */; };
 		786F5D65163142BB00FD34C4 /* UnityAdsDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 786F5D63163142BB00FD34C4 /* UnityAdsDevice.m */; };
 		786F5D6F1635359500FD34C4 /* UnityAdsVideo.h in Headers */ = {isa = PBXBuildFile; fileRef = 786F5D6B1635359400FD34C4 /* UnityAdsVideo.h */; };
@@ -43,6 +45,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		78057A0E1643CADB005EF487 /* UnityAdsProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsProperties.h; sourceTree = "<group>"; };
+		78057A0F1643CADB005EF487 /* UnityAdsProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsProperties.m; sourceTree = "<group>"; };
 		786F5D62163142BB00FD34C4 /* UnityAdsDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsDevice.h; sourceTree = "<group>"; };
 		786F5D63163142BB00FD34C4 /* UnityAdsDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsDevice.m; sourceTree = "<group>"; };
 		786F5D6B1635359400FD34C4 /* UnityAdsVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsVideo.h; sourceTree = "<group>"; };
@@ -92,6 +96,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		78057A0D1643CADB005EF487 /* UnityAdsProperties */ = {
+			isa = PBXGroup;
+			children = (
+				78057A0E1643CADB005EF487 /* UnityAdsProperties.h */,
+				78057A0F1643CADB005EF487 /* UnityAdsProperties.m */,
+			);
+			path = UnityAdsProperties;
+			sourceTree = "<group>";
+		};
 		786F5D61163142BB00FD34C4 /* UnityAdsDevice */ = {
 			isa = PBXGroup;
 			children = (
@@ -192,6 +205,7 @@
 				78AC20131622EF56007DE419 /* UnityAdsData */,
 				786F5D61163142BB00FD34C4 /* UnityAdsDevice */,
 				CC6C7D8C1523390A00B1B783 /* UnityAdsOpenUDID */,
+				78057A0D1643CADB005EF487 /* UnityAdsProperties */,
 				CC496CAF15078AB000AF335E /* UnityAdsSBJSON */,
 				786F5D6A1635359400FD34C4 /* UnityAdsVideo */,
 				78CB842C16255EB200E94915 /* UnityAdsURLProtocol */,
@@ -255,6 +269,7 @@
 				786F5D6F1635359500FD34C4 /* UnityAdsVideo.h in Headers */,
 				786F5D921636A82200FD34C4 /* UnityAdsUtils.h in Headers */,
 				786F5D981636AF9600FD34C4 /* UnityAdsWebAppController.h in Headers */,
+				78057A121643CADB005EF487 /* UnityAdsProperties.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,6 +397,7 @@
 				786F5D701635359500FD34C4 /* UnityAdsVideo.m in Sources */,
 				786F5D931636A82200FD34C4 /* UnityAdsUtils.m in Sources */,
 				786F5D991636AF9600FD34C4 /* UnityAdsWebAppController.m in Sources */,
+				78057A131643CADB005EF487 /* UnityAdsProperties.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

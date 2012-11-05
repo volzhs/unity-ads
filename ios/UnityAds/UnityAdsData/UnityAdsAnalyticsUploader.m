@@ -7,12 +7,13 @@
 //
 
 #import "UnityAdsAnalyticsUploader.h"
-#import "UnityAdsCampaign.h"
-#import "UnityAds.h"
+#import "../UnityAdsCampaign/UnityAdsCampaign.h"
+#import "../UnityAds.h"
+#import "../UnityAdsProperties/UnityAdsProperties.h"
 
-NSString * const kUnityAdsAnalyticsURL = @"https://log.applifier.com/videoads-tracking";
-NSString * const kUnityAdsTrackingURL = @"https://impact.applifier.com/gamers/";
-NSString * const kUnityAdsInstallTrackingURL = @"https://impact.applifier.com/games/";
+//NSString * const kUnityAdsAnalyticsURL = @"https://log.applifier.com/videoads-tracking";
+NSString * const kUnityAdsTrackingPath = @"gamers/";
+NSString * const kUnityAdsInstallTrackingPath = @"games/";
 NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
 NSString * const kUnityAdsAnalyticsUploaderConnectionKey = @"kUnityAdsAnalyticsUploaderConnectionKey";
 NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUploadsKey";
@@ -142,7 +143,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 		return;
 	}
 	
-	[self _queueWithURLString:kUnityAdsAnalyticsURL queryString:queryString httpMethod:@"POST"];
+	[self _queueWithURLString:[[UnityAdsProperties sharedInstance] analyticsBaseUrl] queryString:queryString httpMethod:@"POST"];
 }
 
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString
@@ -154,8 +155,10 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
-	
-	[self _queueWithURLString:[kUnityAdsTrackingURL stringByAppendingString:queryString] queryString:nil httpMethod:@"GET"];
+  
+	[self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath] queryString:nil httpMethod:@"GET"];
+  
+	//[self _queueWithURLString:[kUnityAdsTrackingURL stringByAppendingString:queryString] queryString:nil httpMethod:@"GET"];
 }
 
 - (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary
@@ -177,7 +180,10 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 		return;
 	}
 	
-	[self _queueWithURLString:[kUnityAdsInstallTrackingURL stringByAppendingString:query] queryString:body httpMethod:@"POST"];
+  [self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsInstallTrackingPath] queryString:nil httpMethod:@"GET"];
+
+  
+	//[self _queueWithURLString:[kUnityAdsInstallTrackingURL stringByAppendingString:query] queryString:body httpMethod:@"POST"];
 }
 
 - (void)retryFailedUploads

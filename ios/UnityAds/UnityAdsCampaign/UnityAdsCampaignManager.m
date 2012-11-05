@@ -7,13 +7,13 @@
 //
 
 #import "UnityAdsCampaignManager.h"
-#import "UnityAdsSBJsonParser.h"
+#import "../UnityAdsSBJSON/UnityAdsSBJsonParser.h"
 #import "UnityAdsCampaign.h"
 #import "UnityAdsRewardItem.h"
-#import "UnityAdsCache.h"
-#import "UnityAds.h"
+#import "../UnityAdsData/UnityAdsCache.h"
+#import "../UnityAds.h"
+#import "../UnityAdsProperties/UnityAdsProperties.h"
 
-NSString * const kUnityAdsBackendURL = @"https://impact.applifier.com/mobile/campaigns";
 
 NSString * const kCampaignEndScreenKey = @"endScreen";
 NSString * const kCampaignClickURLKey = @"clickUrl";
@@ -66,11 +66,7 @@ NSString * const kGamerIDKey = @"gamerId";
 	}
 	
 	self.campaignJSON = jsonString;
-	
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[self.delegate campaignManager:self updatedJSON:jsonString];
-	});
-	
+  
 	return repr;
 }
 
@@ -193,6 +189,7 @@ NSString * const kGamerIDKey = @"gamerId";
 - (void)_processCampaignDownloadData
 {
   id json = [self _JSONValueFromData:self.campaignDownloadData];
+  [self setCampaignData:json];
 
 	UAAssert([json isKindOfClass:[NSDictionary class]]);
 	
@@ -200,11 +197,19 @@ NSString * const kGamerIDKey = @"gamerId";
 	self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
 	self.rewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
 	
+  [[UnityAdsProperties sharedInstance] setWebViewBaseUrl:(NSString *)[jsonDictionary objectForKey:@"webViewUrl"]];
+  [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"analyticsUrl"]];
+  [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"impactUrl"]];
+  
 	NSString *gamerID = [jsonDictionary objectForKey:kGamerIDKey];
 	UAAssert(gamerID != nil);
 	self.gamerID = gamerID;
 	
 	[self.cache cacheCampaigns:self.campaigns];
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+		[self.delegate campaignManager:self updatedJSON:self.campaignJSON];
+	});
 }
 
 #pragma mark - Public
@@ -226,7 +231,7 @@ NSString * const kGamerIDKey = @"gamerId";
 {
 	UAAssert( ! [NSThread isMainThread]);
 	
-	NSString *urlString = kUnityAdsBackendURL;
+	NSString *urlString = [[UnityAdsProperties sharedInstance] campaignDataUrl];
 	if (self.queryString != nil)
 		urlString = [urlString stringByAppendingString:self.queryString];
 	
