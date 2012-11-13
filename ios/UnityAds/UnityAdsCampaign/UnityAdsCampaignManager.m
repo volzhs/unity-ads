@@ -13,6 +13,7 @@
 #import "../UnityAdsData/UnityAdsCache.h"
 #import "../UnityAds.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 
 
 NSString * const kCampaignEndScreenKey = @"endScreen";
@@ -39,20 +40,23 @@ NSString * const kGamerIDKey = @"gamerId";
 @property (nonatomic, strong) NSArray *campaigns;
 @property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
 @property (nonatomic, strong) NSString *gamerID;
-@property (nonatomic, strong) NSString *campaignJSON;
+//@property (nonatomic, strong) NSString *campaignJSON;
+@property (nonatomic, strong) NSDictionary *campaignData;
 @end
 
 @implementation UnityAdsCampaignManager
 
 #pragma mark - Private
 
+/*
 - (id)_JSONValueFromData:(NSData *)data
 {
 	UAAssertV(data != nil, nil);
 	
-	UnityAdsSBJsonParser *parser = [[UnityAdsSBJsonParser alloc] init];
-	NSError *error = nil;
 	NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  _campaignData = [jsonString JSONValue];
+  UALOG_DEBUG(@"%@", [_campaignData JSONRepresentation]);
+  
 	if ([jsonString isEqualToString:self.campaignJSON])
 		return nil;
 	
@@ -68,7 +72,9 @@ NSString * const kGamerIDKey = @"gamerId";
 	self.campaignJSON = jsonString;
   
 	return repr;
-}
+  
+  return nil;
+}*/
 
 - (NSArray *)_deserializeCampaigns:(NSArray *)campaignArray
 {
@@ -188,12 +194,17 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (void)_processCampaignDownloadData
 {
-  id json = [self _JSONValueFromData:self.campaignDownloadData];
-  [self setCampaignData:json];
-
-	UAAssert([json isKindOfClass:[NSDictionary class]]);
+  //id json = [self _JSONValueFromData:self.campaignDownloadData];
+  //[self setCampaignData:json];
+  
+  NSString *jsonString = [[NSString alloc] initWithData:self.campaignDownloadData encoding:NSUTF8StringEncoding];
+  _campaignData = [jsonString JSONValue];
+  
+  UALOG_DEBUG(@"%@", [_campaignData JSONRepresentation]);
+  
+	UAAssert([_campaignData isKindOfClass:[NSDictionary class]]);
 	
-	NSDictionary *jsonDictionary = [(NSDictionary *)json objectForKey:@"data"];
+	NSDictionary *jsonDictionary = [(NSDictionary *)_campaignData objectForKey:@"data"];
 	self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
 	self.rewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
 	
@@ -208,7 +219,7 @@ NSString * const kGamerIDKey = @"gamerId";
 	[self.cache cacheCampaigns:self.campaigns];
   
   dispatch_async(dispatch_get_main_queue(), ^{
-		[self.delegate campaignManager:self updatedJSON:self.campaignJSON];
+		[self.delegate campaignManager:self campaignData:_campaignData];
 	});
 }
 

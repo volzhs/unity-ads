@@ -9,6 +9,30 @@
 /* Begin PBXBuildFile section */
 		78057A121643CADB005EF487 /* UnityAdsProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = 78057A0E1643CADB005EF487 /* UnityAdsProperties.h */; };
 		78057A131643CADB005EF487 /* UnityAdsProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 78057A0F1643CADB005EF487 /* UnityAdsProperties.m */; };
+		784E9314165245DC009667F6 /* UnityAdsSBJsonParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E930D165245DC009667F6 /* UnityAdsSBJsonParser.h */; };
+		784E9315165245DC009667F6 /* UnityAdsSBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E930E165245DC009667F6 /* UnityAdsSBJsonParser.m */; };
+		784E9316165245DC009667F6 /* UnityAdsSBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E930F165245DC009667F6 /* UnityAdsSBJsonWriter.h */; };
+		784E9317165245DC009667F6 /* UnityAdsSBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E9310165245DC009667F6 /* UnityAdsSBJsonWriter.m */; };
+		784E9318165245DC009667F6 /* NSObject+UnityAdsSBJson.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E9311165245DC009667F6 /* NSObject+UnityAdsSBJson.h */; };
+		784E9319165245DC009667F6 /* NSObject+UnityAdsSBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E9312165245DC009667F6 /* NSObject+UnityAdsSBJson.m */; };
+		784E9322165246A6009667F6 /* UnityAdsSBJsonStreamParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E931A165246A6009667F6 /* UnityAdsSBJsonStreamParser.h */; };
+		784E9323165246A6009667F6 /* UnityAdsSBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E931B165246A6009667F6 /* UnityAdsSBJsonStreamParser.m */; };
+		784E9324165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E931C165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.h */; };
+		784E9325165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E931D165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.m */; };
+		784E9326165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E931E165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.h */; };
+		784E9327165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E931F165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.m */; };
+		784E9328165246A6009667F6 /* UnityAdsSBJsonStreamParserState.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E9320165246A6009667F6 /* UnityAdsSBJsonStreamParserState.h */; };
+		784E9329165246A6009667F6 /* UnityAdsSBJsonStreamParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E9321165246A6009667F6 /* UnityAdsSBJsonStreamParserState.m */; };
+		784E932C165246F5009667F6 /* UnityAdsSBJsonTokeniser.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E932A165246F5009667F6 /* UnityAdsSBJsonTokeniser.h */; };
+		784E932D165246F5009667F6 /* UnityAdsSBJsonTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E932B165246F5009667F6 /* UnityAdsSBJsonTokeniser.m */; };
+		784E93341652482D009667F6 /* UnityAdsSBJsonStreamWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E932E1652482B009667F6 /* UnityAdsSBJsonStreamWriter.h */; };
+		784E93351652482D009667F6 /* UnityAdsSBJsonStreamWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E932F1652482B009667F6 /* UnityAdsSBJsonStreamWriter.m */; };
+		784E93361652482D009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E93301652482C009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.h */; };
+		784E93371652482D009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E93311652482C009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.m */; };
+		784E93381652482D009667F6 /* UnityAdsSBJsonStreamWriterState.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E93321652482C009667F6 /* UnityAdsSBJsonStreamWriterState.h */; };
+		784E93391652482D009667F6 /* UnityAdsSBJsonStreamWriterState.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E93331652482D009667F6 /* UnityAdsSBJsonStreamWriterState.m */; };
+		784E933C1652487C009667F6 /* UnityAdsSBJsonUTF8Stream.h in Headers */ = {isa = PBXBuildFile; fileRef = 784E933A1652487B009667F6 /* UnityAdsSBJsonUTF8Stream.h */; };
+		784E933D1652487C009667F6 /* UnityAdsSBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E933B1652487B009667F6 /* UnityAdsSBJsonUTF8Stream.m */; };
 		786F5D64163142BB00FD34C4 /* UnityAdsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 786F5D62163142BB00FD34C4 /* UnityAdsDevice.h */; };
 		786F5D65163142BB00FD34C4 /* UnityAdsDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 786F5D63163142BB00FD34C4 /* UnityAdsDevice.m */; };
 		786F5D6F1635359500FD34C4 /* UnityAdsVideo.h in Headers */ = {isa = PBXBuildFile; fileRef = 786F5D6B1635359400FD34C4 /* UnityAdsVideo.h */; };
@@ -29,10 +53,6 @@
 		78AC202E1622EFFD007DE419 /* UnityAdsCampaignManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20281622EFFD007DE419 /* UnityAdsCampaignManager.m */; };
 		78AC202F1622EFFD007DE419 /* UnityAdsRewardItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20291622EFFD007DE419 /* UnityAdsRewardItem.h */; };
 		78AC20301622EFFD007DE419 /* UnityAdsRewardItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC202A1622EFFD007DE419 /* UnityAdsRewardItem.m */; };
-		78AC20351622F007007DE419 /* UnityAdsSBJsonBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20311622F007007DE419 /* UnityAdsSBJsonBase.h */; };
-		78AC20361622F007007DE419 /* UnityAdsSBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20321622F007007DE419 /* UnityAdsSBJsonBase.m */; };
-		78AC20371622F007007DE419 /* UnityAdsSBJsonParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20331622F007007DE419 /* UnityAdsSBJsonParser.h */; };
-		78AC20381622F007007DE419 /* UnityAdsSBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20341622F007007DE419 /* UnityAdsSBJsonParser.m */; };
 		78AC203F1622F01F007DE419 /* UnityAds.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20391622F01F007DE419 /* UnityAds.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		78AC20401622F01F007DE419 /* UnityAds.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC203A1622F01F007DE419 /* UnityAds.m */; };
 		78AC20411622F01F007DE419 /* UnityAdsiOS4.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC203B1622F01F007DE419 /* UnityAdsiOS4.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -47,6 +67,30 @@
 /* Begin PBXFileReference section */
 		78057A0E1643CADB005EF487 /* UnityAdsProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsProperties.h; sourceTree = "<group>"; };
 		78057A0F1643CADB005EF487 /* UnityAdsProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsProperties.m; sourceTree = "<group>"; };
+		784E930D165245DC009667F6 /* UnityAdsSBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonParser.h; sourceTree = "<group>"; };
+		784E930E165245DC009667F6 /* UnityAdsSBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonParser.m; sourceTree = "<group>"; };
+		784E930F165245DC009667F6 /* UnityAdsSBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonWriter.h; sourceTree = "<group>"; };
+		784E9310165245DC009667F6 /* UnityAdsSBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonWriter.m; sourceTree = "<group>"; };
+		784E9311165245DC009667F6 /* NSObject+UnityAdsSBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+UnityAdsSBJson.h"; sourceTree = "<group>"; };
+		784E9312165245DC009667F6 /* NSObject+UnityAdsSBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+UnityAdsSBJson.m"; sourceTree = "<group>"; };
+		784E931A165246A6009667F6 /* UnityAdsSBJsonStreamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonStreamParser.h; sourceTree = "<group>"; };
+		784E931B165246A6009667F6 /* UnityAdsSBJsonStreamParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonStreamParser.m; sourceTree = "<group>"; };
+		784E931C165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonStreamParserAccumulator.h; sourceTree = "<group>"; };
+		784E931D165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonStreamParserAccumulator.m; sourceTree = "<group>"; };
+		784E931E165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonStreamParserAdapter.h; sourceTree = "<group>"; };
+		784E931F165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonStreamParserAdapter.m; sourceTree = "<group>"; };
+		784E9320165246A6009667F6 /* UnityAdsSBJsonStreamParserState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonStreamParserState.h; sourceTree = "<group>"; };
+		784E9321165246A6009667F6 /* UnityAdsSBJsonStreamParserState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonStreamParserState.m; sourceTree = "<group>"; };
+		784E932A165246F5009667F6 /* UnityAdsSBJsonTokeniser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonTokeniser.h; sourceTree = "<group>"; };
+		784E932B165246F5009667F6 /* UnityAdsSBJsonTokeniser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonTokeniser.m; sourceTree = "<group>"; };
+		784E932E1652482B009667F6 /* UnityAdsSBJsonStreamWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonStreamWriter.h; sourceTree = "<group>"; };
+		784E932F1652482B009667F6 /* UnityAdsSBJsonStreamWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonStreamWriter.m; sourceTree = "<group>"; };
+		784E93301652482C009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonStreamWriterAccumulator.h; sourceTree = "<group>"; };
+		784E93311652482C009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonStreamWriterAccumulator.m; sourceTree = "<group>"; };
+		784E93321652482C009667F6 /* UnityAdsSBJsonStreamWriterState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonStreamWriterState.h; sourceTree = "<group>"; };
+		784E93331652482D009667F6 /* UnityAdsSBJsonStreamWriterState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonStreamWriterState.m; sourceTree = "<group>"; };
+		784E933A1652487B009667F6 /* UnityAdsSBJsonUTF8Stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonUTF8Stream.h; sourceTree = "<group>"; };
+		784E933B1652487B009667F6 /* UnityAdsSBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonUTF8Stream.m; sourceTree = "<group>"; };
 		786F5D62163142BB00FD34C4 /* UnityAdsDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsDevice.h; sourceTree = "<group>"; };
 		786F5D63163142BB00FD34C4 /* UnityAdsDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsDevice.m; sourceTree = "<group>"; };
 		786F5D6B1635359400FD34C4 /* UnityAdsVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsVideo.h; sourceTree = "<group>"; };
@@ -67,10 +111,6 @@
 		78AC20281622EFFD007DE419 /* UnityAdsCampaignManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsCampaignManager.m; sourceTree = "<group>"; };
 		78AC20291622EFFD007DE419 /* UnityAdsRewardItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsRewardItem.h; sourceTree = "<group>"; };
 		78AC202A1622EFFD007DE419 /* UnityAdsRewardItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsRewardItem.m; sourceTree = "<group>"; };
-		78AC20311622F007007DE419 /* UnityAdsSBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonBase.h; sourceTree = "<group>"; };
-		78AC20321622F007007DE419 /* UnityAdsSBJsonBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonBase.m; sourceTree = "<group>"; };
-		78AC20331622F007007DE419 /* UnityAdsSBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsSBJsonParser.h; sourceTree = "<group>"; };
-		78AC20341622F007007DE419 /* UnityAdsSBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsSBJsonParser.m; sourceTree = "<group>"; };
 		78AC20391622F01F007DE419 /* UnityAds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAds.h; sourceTree = "<group>"; };
 		78AC203A1622F01F007DE419 /* UnityAds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAds.m; sourceTree = "<group>"; };
 		78AC203B1622F01F007DE419 /* UnityAdsiOS4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsiOS4.h; sourceTree = "<group>"; };
@@ -229,10 +269,30 @@
 		CC496CAF15078AB000AF335E /* UnityAdsSBJSON */ = {
 			isa = PBXGroup;
 			children = (
-				78AC20311622F007007DE419 /* UnityAdsSBJsonBase.h */,
-				78AC20321622F007007DE419 /* UnityAdsSBJsonBase.m */,
-				78AC20331622F007007DE419 /* UnityAdsSBJsonParser.h */,
-				78AC20341622F007007DE419 /* UnityAdsSBJsonParser.m */,
+				784E933A1652487B009667F6 /* UnityAdsSBJsonUTF8Stream.h */,
+				784E933B1652487B009667F6 /* UnityAdsSBJsonUTF8Stream.m */,
+				784E932E1652482B009667F6 /* UnityAdsSBJsonStreamWriter.h */,
+				784E932F1652482B009667F6 /* UnityAdsSBJsonStreamWriter.m */,
+				784E93301652482C009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.h */,
+				784E93311652482C009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.m */,
+				784E93321652482C009667F6 /* UnityAdsSBJsonStreamWriterState.h */,
+				784E93331652482D009667F6 /* UnityAdsSBJsonStreamWriterState.m */,
+				784E932A165246F5009667F6 /* UnityAdsSBJsonTokeniser.h */,
+				784E932B165246F5009667F6 /* UnityAdsSBJsonTokeniser.m */,
+				784E931A165246A6009667F6 /* UnityAdsSBJsonStreamParser.h */,
+				784E931B165246A6009667F6 /* UnityAdsSBJsonStreamParser.m */,
+				784E931C165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.h */,
+				784E931D165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.m */,
+				784E931E165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.h */,
+				784E931F165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.m */,
+				784E9320165246A6009667F6 /* UnityAdsSBJsonStreamParserState.h */,
+				784E9321165246A6009667F6 /* UnityAdsSBJsonStreamParserState.m */,
+				784E930D165245DC009667F6 /* UnityAdsSBJsonParser.h */,
+				784E930E165245DC009667F6 /* UnityAdsSBJsonParser.m */,
+				784E930F165245DC009667F6 /* UnityAdsSBJsonWriter.h */,
+				784E9310165245DC009667F6 /* UnityAdsSBJsonWriter.m */,
+				784E9311165245DC009667F6 /* NSObject+UnityAdsSBJson.h */,
+				784E9312165245DC009667F6 /* NSObject+UnityAdsSBJson.m */,
 			);
 			path = UnityAdsSBJSON;
 			sourceTree = "<group>";
@@ -259,8 +319,6 @@
 				78AC202B1622EFFD007DE419 /* UnityAdsCampaign.h in Headers */,
 				78AC202D1622EFFD007DE419 /* UnityAdsCampaignManager.h in Headers */,
 				78AC202F1622EFFD007DE419 /* UnityAdsRewardItem.h in Headers */,
-				78AC20351622F007007DE419 /* UnityAdsSBJsonBase.h in Headers */,
-				78AC20371622F007007DE419 /* UnityAdsSBJsonParser.h in Headers */,
 				78AC203F1622F01F007DE419 /* UnityAds.h in Headers */,
 				78AC20411622F01F007DE419 /* UnityAdsiOS4.h in Headers */,
 				78AC20431622F01F007DE419 /* UnityAdsViewManager.h in Headers */,
@@ -270,6 +328,18 @@
 				786F5D921636A82200FD34C4 /* UnityAdsUtils.h in Headers */,
 				786F5D981636AF9600FD34C4 /* UnityAdsWebAppController.h in Headers */,
 				78057A121643CADB005EF487 /* UnityAdsProperties.h in Headers */,
+				784E9314165245DC009667F6 /* UnityAdsSBJsonParser.h in Headers */,
+				784E9316165245DC009667F6 /* UnityAdsSBJsonWriter.h in Headers */,
+				784E9318165245DC009667F6 /* NSObject+UnityAdsSBJson.h in Headers */,
+				784E9322165246A6009667F6 /* UnityAdsSBJsonStreamParser.h in Headers */,
+				784E9324165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.h in Headers */,
+				784E9326165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.h in Headers */,
+				784E9328165246A6009667F6 /* UnityAdsSBJsonStreamParserState.h in Headers */,
+				784E932C165246F5009667F6 /* UnityAdsSBJsonTokeniser.h in Headers */,
+				784E93341652482D009667F6 /* UnityAdsSBJsonStreamWriter.h in Headers */,
+				784E93361652482D009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.h in Headers */,
+				784E93381652482D009667F6 /* UnityAdsSBJsonStreamWriterState.h in Headers */,
+				784E933C1652487C009667F6 /* UnityAdsSBJsonUTF8Stream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,8 +457,6 @@
 				78AC202C1622EFFD007DE419 /* UnityAdsCampaign.m in Sources */,
 				78AC202E1622EFFD007DE419 /* UnityAdsCampaignManager.m in Sources */,
 				78AC20301622EFFD007DE419 /* UnityAdsRewardItem.m in Sources */,
-				78AC20361622F007007DE419 /* UnityAdsSBJsonBase.m in Sources */,
-				78AC20381622F007007DE419 /* UnityAdsSBJsonParser.m in Sources */,
 				78AC20401622F01F007DE419 /* UnityAds.m in Sources */,
 				78AC20421622F01F007DE419 /* UnityAdsiOS4.m in Sources */,
 				78AC20441622F01F007DE419 /* UnityAdsViewManager.m in Sources */,
@@ -398,6 +466,18 @@
 				786F5D931636A82200FD34C4 /* UnityAdsUtils.m in Sources */,
 				786F5D991636AF9600FD34C4 /* UnityAdsWebAppController.m in Sources */,
 				78057A131643CADB005EF487 /* UnityAdsProperties.m in Sources */,
+				784E9315165245DC009667F6 /* UnityAdsSBJsonParser.m in Sources */,
+				784E9317165245DC009667F6 /* UnityAdsSBJsonWriter.m in Sources */,
+				784E9319165245DC009667F6 /* NSObject+UnityAdsSBJson.m in Sources */,
+				784E9323165246A6009667F6 /* UnityAdsSBJsonStreamParser.m in Sources */,
+				784E9325165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.m in Sources */,
+				784E9327165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.m in Sources */,
+				784E9329165246A6009667F6 /* UnityAdsSBJsonStreamParserState.m in Sources */,
+				784E932D165246F5009667F6 /* UnityAdsSBJsonTokeniser.m in Sources */,
+				784E93351652482D009667F6 /* UnityAdsSBJsonStreamWriter.m in Sources */,
+				784E93371652482D009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.m in Sources */,
+				784E93391652482D009667F6 /* UnityAdsSBJsonStreamWriterState.m in Sources */,
+				784E933D1652487C009667F6 /* UnityAdsSBJsonUTF8Stream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

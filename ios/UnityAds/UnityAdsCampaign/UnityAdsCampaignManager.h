@@ -16,7 +16,7 @@
 
 @required
 - (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID;
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedJSON:(NSString *)json;
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager campaignData:(NSDictionary *)data;
 
 @end
 
@@ -24,7 +24,7 @@
 
 @property (nonatomic, assign) id<UnityAdsCampaignManagerDelegate> delegate;
 @property (nonatomic, strong) NSString *queryString;
-@property (nonatomic, strong) id campaignData;
+//@property (nonatomic, strong) id campaignData;
 
 - (void)updateCampaigns;
 - (NSURL *)videoURLForCampaign:(UnityAdsCampaign *)campaign;

@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface UnityAdsUtils : NSObject
-+ (NSString *)escapedStringFromString:(NSString *)string;
+//+ (NSString *)escapedStringFromString:(NSString *)string;
 @end

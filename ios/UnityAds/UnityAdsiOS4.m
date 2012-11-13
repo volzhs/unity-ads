@@ -324,7 +324,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 	[self _notifyDelegateOfCampaignAvailability];
 }
 
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedJSON:(NSString *)json
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager campaignData:(NSDictionary *)data
 {
 	UAAssert([NSThread isMainThread]);
 
@@ -338,7 +338,8 @@ NSString * const kUnityAdsVersion = @"1.0";
     [[UnityAdsViewManager sharedInstance] loadWebView];
   }
   
-  [[UnityAdsViewManager sharedInstance] setCampaignJSON:json];
+  // FIX (SHOULD NOT EVEN SET THE CAMPAIGN DATA)
+  [[UnityAdsViewManager sharedInstance] setCampaignJSON:data];
 }
 
 #pragma mark - UnityAdsViewManagerDelegate

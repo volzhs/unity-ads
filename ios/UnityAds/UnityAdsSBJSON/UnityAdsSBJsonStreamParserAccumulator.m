@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Stig Brautaset. All rights reserved.
+ Copyright (C) 2011 Stig Brautaset. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -27,47 +27,21 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "UnityAdsSBJsonBase.h"
-NSString * UnityAdsSBJSONErrorDomain = @"org.brautaset.JSON.ErrorDomain";
+#import "UnityAdsSBJsonStreamParserAccumulator.h"
+
+@implementation UnityAdsSBJsonStreamParserAccumulator
+
+@synthesize value;
 
 
-@implementation UnityAdsSBJsonBase
+#pragma mark UnityAdsSBJsonStreamParserAdapterDelegate
 
-@synthesize errorTrace;
-@synthesize maxDepth;
-
-- (id)init {
-    self = [super init];
-    if (self)
-        self.maxDepth = 512;
-    return self;
+- (void)parser:(UnityAdsSBJsonStreamParser*)parser foundArray:(NSArray *)array {
+	value = array;
 }
 
-
-- (void)addErrorWithCode:(NSUInteger)code description:(NSString*)str {
-    NSDictionary *userInfo;
-    if (!errorTrace) {
-        errorTrace = [NSMutableArray new];
-        userInfo = [NSDictionary dictionaryWithObject:str forKey:NSLocalizedDescriptionKey];
-        
-    } else {
-        userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                    str, NSLocalizedDescriptionKey,
-                    [errorTrace lastObject], NSUnderlyingErrorKey,
-                    nil];
-    }
-    
-    NSError *error = [NSError errorWithDomain:UnityAdsSBJSONErrorDomain code:code userInfo:userInfo];
-
-    [self willChangeValueForKey:@"errorTrace"];
-    [errorTrace addObject:error];
-    [self didChangeValueForKey:@"errorTrace"];
-}
-
-- (void)clearErrorTrace {
-    [self willChangeValueForKey:@"errorTrace"];
-    errorTrace = nil;
-    [self didChangeValueForKey:@"errorTrace"];
+- (void)parser:(UnityAdsSBJsonStreamParser*)parser foundObject:(NSDictionary *)dict {
+	value = dict;
 }
 
 @end

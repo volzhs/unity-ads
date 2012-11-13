@@ -15,6 +15,7 @@
 #import "UnityAdsVideo/UnityAdsVideo.h"
 #import "UnityAdsWebView/UnityAdsWebAppController.h"
 #import "UnityAdsUtils/UnityAdsUtils.h"
+#import "UnityAdsDevice/UnityAdsDevice.h"
 
 @interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) UnityAdsWebAppController *webApp;
@@ -156,7 +157,9 @@
 - (void)_webViewVideoComplete
 {
 	NSString *data = [NSString stringWithFormat:@"{\"campaignId\":\"%@\"}", self.selectedCampaign.id];
-  [_webApp setWebViewCurrentView:@"completed" data:[UnityAdsUtils escapedStringFromString:data]];
+  
+  // FIX
+ // [_webApp setWebViewCurrentView:@"completed" data:[UnityAdsUtils escapedStringFromString:data]];
 }
 
 #pragma mark - Public
@@ -263,13 +266,13 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	}
 }
 
-- (void)setCampaignJSON:(NSString *)campaignJSON
+- (void)setCampaignJSON:(NSDictionary *)campaignJSON
 {
 	UAAssert([NSThread isMainThread]);
 	
 	_campaignJSON = campaignJSON;
   
-  NSDictionary *values = @{@"advertisingTrackingId":self.md5AdvertisingIdentifier, @"iOSVersion":[[UIDevice currentDevice] systemVersion], @"deviceType":self.machineName, @"deviceId":self.md5DeviceId, @"macAddress":self.md5MACAddress, @"openUdid":self.md5OpenUDID, @"campaignJSON":self.campaignJSON};
+  NSDictionary *values = @{@"advertisingTrackingId":self.md5AdvertisingIdentifier, @"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":self.machineName, @"deviceId":self.md5DeviceId, @"macAddress":self.md5MACAddress, @"openUdid":self.md5OpenUDID, @"campaignData":_campaignJSON};
  
   [_webApp setup:_window.bounds webAppParams:values];
 }
