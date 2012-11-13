@@ -16,18 +16,25 @@
 
 @required
 - (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID;
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager campaignData:(NSDictionary *)data;
+//- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager campaignData:(NSDictionary *)data;
+- (void)campaignManagerCampaignDataReceived;
 
 @end
 
 @interface UnityAdsCampaignManager : NSObject
 
 @property (nonatomic, assign) id<UnityAdsCampaignManagerDelegate> delegate;
-@property (nonatomic, strong) NSString *queryString;
+//@property (nonatomic, strong) NSString *queryString;
+@property (nonatomic, strong) NSArray *campaigns;
+@property (nonatomic, strong) NSDictionary *campaignData;
+@property (nonatomic, strong) UnityAdsCampaign *selectedCampaign;
 //@property (nonatomic, strong) id campaignData;
 
 - (void)updateCampaigns;
 - (NSURL *)videoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (void)cancelAllDownloads;
+- (UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId;
+
++ (id)sharedInstance;
 
 @end

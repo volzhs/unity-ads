@@ -16,6 +16,8 @@
 #import "UnityAdsWebView/UnityAdsWebAppController.h"
 #import "UnityAdsUtils/UnityAdsUtils.h"
 #import "UnityAdsDevice/UnityAdsDevice.h"
+#import "UnityAdsProperties/UnityAdsProperties.h"
+#import "UnityAdsCampaign/UnityAdsCampaignManager.h"
 
 @interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) UnityAdsWebAppController *webApp;
@@ -42,25 +44,27 @@
 	[self.adContainerView removeFromSuperview];
 }
 
-- (void)_selectCampaignWithID:(NSString *)campaignID
+- (void)_selectCampaignWithID:(NSString *)campaignId
 {
-	self.selectedCampaign = nil;
+	[[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
+  //self.selectedCampaign = nil;
 	
-	if (campaignID == nil)
+	if (campaignId == nil)
 	{
 		UALOG_DEBUG(@"Input is nil.");
 		return;
 	}
 
-	UnityAdsCampaign *campaign = [self.delegate viewManager:self campaignWithID:campaignID];
+	UnityAdsCampaign *campaign = [[UnityAdsCampaignManager sharedInstance] getCampaignWithId:campaignId];
 	
 	if (campaign != nil)
 	{
-		self.selectedCampaign = campaign;
+		[[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
+    //self.selectedCampaign = campaign;
 		[self _playVideo];
 	}
 	else
-		UALOG_DEBUG(@"No campaign with id '%@' found.", campaignID);
+		UALOG_DEBUG(@"No campaign with id '%@' found.", campaignId);
 }
 
 - (BOOL)_canOpenStoreProductViewController
@@ -123,7 +127,8 @@
 	if ( ! [self _canOpenStoreProductViewController])
 	{
 		UALOG_DEBUG(@"Cannot open store product view controller, falling back to click URL.");
-		[self _openURL:[self.selectedCampaign.clickURL absoluteString]];
+		[self _openURL:[[[UnityAdsCampaignManager sharedInstance] selectedCampaign].clickURL absoluteString]];
+    //[self _openURL:[self.selectedCampaign.clickURL absoluteString]];
 		return;
 	}
 
@@ -156,7 +161,7 @@
 
 - (void)_webViewVideoComplete
 {
-	NSString *data = [NSString stringWithFormat:@"{\"campaignId\":\"%@\"}", self.selectedCampaign.id];
+	NSString *data = [NSString stringWithFormat:@"{\"campaignId\":\"%@\"}", [[UnityAdsCampaignManager sharedInstance] selectedCampaign].id];
   
   // FIX
  // [_webApp setWebViewCurrentView:@"completed" data:[UnityAdsUtils escapedStringFromString:data]];
@@ -179,6 +184,8 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data
 {
+  UALOG_DEBUG(@"Gotevent: %@  widthData: %@", type, data);
+  
   if ([type isEqualToString:_webApp.WEBVIEW_API_PLAYVIDEO] || [type isEqualToString:_webApp.WEBVIEW_API_NAVIGATETO] || [type isEqualToString:_webApp.WEBVIEW_API_APPSTORE])
 	{
 		if ([type isEqualToString:_webApp.WEBVIEW_API_PLAYVIDEO])
@@ -266,6 +273,9 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	}
 }
 
+// FIX
+
+/*
 - (void)setCampaignJSON:(NSDictionary *)campaignJSON
 {
 	UAAssert([NSThread isMainThread]);
@@ -274,6 +284,16 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
   
   NSDictionary *values = @{@"advertisingTrackingId":self.md5AdvertisingIdentifier, @"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":self.machineName, @"deviceId":self.md5DeviceId, @"macAddress":self.md5MACAddress, @"openUdid":self.md5OpenUDID, @"campaignData":_campaignJSON};
  
+  [_webApp setup:_window.bounds webAppParams:values];
+}*/
+
+- (void)campaignDataReceived {
+	UAAssert([NSThread isMainThread]);
+	
+	//_campaignJSON = campaignJSON;
+  
+  NSDictionary *values = @{@"advertisingTrackingId":[UnityAdsDevice md5AdvertisingIdentifierString], @"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice machineName], @"deviceId":[UnityAdsDevice md5DeviceId], @"macAddress":[UnityAdsDevice md5MACAddressString], @"openUdid":[UnityAdsDevice md5OpenUDIDString], @"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData]};
+  
   [_webApp setup:_window.bounds webAppParams:values];
 }
 
@@ -304,7 +324,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 #pragma mark - UnityAdsVideoDelegate
 
 - (void)videoAnalyticsPositionReached:(VideoAnalyticsPosition)analyticsPosition {
-  [self.delegate viewManager:self loggedVideoPosition:analyticsPosition campaign:self.selectedCampaign];
+  [self.delegate viewManager:self loggedVideoPosition:analyticsPosition campaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 }
 
 - (void)videoPositionChanged:(CMTime)time {
@@ -327,7 +347,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	
 	[self _webViewVideoComplete];
 	
-	self.selectedCampaign.viewed = YES;
+	[[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
 }
 
 #pragma mark - Video
@@ -336,7 +356,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 {
 	UALOG_DEBUG(@"");
 	
-	NSURL *videoURL = [self.delegate viewManager:self videoURLForCampaign:self.selectedCampaign];
+	NSURL *videoURL = [[UnityAdsCampaignManager sharedInstance] videoURLForCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 	if (videoURL == nil)
 	{
 		UALOG_DEBUG(@"Video not found!");

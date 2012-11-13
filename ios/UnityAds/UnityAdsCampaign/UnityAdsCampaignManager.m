@@ -37,14 +37,26 @@ NSString * const kGamerIDKey = @"gamerId";
 @property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
 @property (nonatomic, strong) UnityAdsCache *cache;
-@property (nonatomic, strong) NSArray *campaigns;
 @property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
 @property (nonatomic, strong) NSString *gamerID;
 //@property (nonatomic, strong) NSString *campaignJSON;
-@property (nonatomic, strong) NSDictionary *campaignData;
 @end
 
 @implementation UnityAdsCampaignManager
+
+static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
+
++ (id)sharedInstance
+{
+	@synchronized(self)
+	{
+		if (sharedUnityAdsInstanceCampaignManager == nil)
+      sharedUnityAdsInstanceCampaignManager = [[UnityAdsCampaignManager alloc] init];
+	}
+	
+	return sharedUnityAdsInstanceCampaignManager;
+}
+
 
 #pragma mark - Private
 
@@ -75,6 +87,11 @@ NSString * const kGamerIDKey = @"gamerId";
   
   return nil;
 }*/
+
+- (void)_campaignDataReceived {
+//  [[UnityAdsViewManager sharedInstance] campaign]
+  [self _processCampaignDownloadData];
+}
 
 - (NSArray *)_deserializeCampaigns:(NSArray *)campaignArray
 {
@@ -219,7 +236,7 @@ NSString * const kGamerIDKey = @"gamerId";
 	[self.cache cacheCampaigns:self.campaigns];
   
   dispatch_async(dispatch_get_main_queue(), ^{
-		[self.delegate campaignManager:self campaignData:_campaignData];
+		[self.delegate campaignManagerCampaignDataReceived];
 	});
 }
 
@@ -243,9 +260,10 @@ NSString * const kGamerIDKey = @"gamerId";
 	UAAssert( ! [NSThread isMainThread]);
 	
 	NSString *urlString = [[UnityAdsProperties sharedInstance] campaignDataUrl];
-	if (self.queryString != nil)
-		urlString = [urlString stringByAppendingString:self.queryString];
 	
+  if ([[UnityAdsProperties sharedInstance] campaignQueryString] != nil)
+		urlString = [urlString stringByAppendingString:[[UnityAdsProperties sharedInstance] campaignQueryString]];
+  
   UALOG_DEBUG(@"UrlString %@", urlString);
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
 	self.urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
@@ -269,6 +287,27 @@ NSString * const kGamerIDKey = @"gamerId";
 		return videoURL;
 	}
 }
+
+-(UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId
+{
+	UAAssertV([NSThread isMainThread], nil);
+	
+	UnityAdsCampaign *foundCampaign = nil;
+	
+	for (UnityAdsCampaign *campaign in self.campaigns)
+	{
+		if ([campaign.id isEqualToString:campaignId])
+		{
+			foundCampaign = campaign;
+			break;
+		}
+	}
+	
+	UALOG_DEBUG(@"");
+	
+	return foundCampaign;
+}
+
 
 - (void)cancelAllDownloads
 {
@@ -299,7 +338,7 @@ NSString * const kGamerIDKey = @"gamerId";
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-  [self _processCampaignDownloadData];
+  [self _campaignDataReceived];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error

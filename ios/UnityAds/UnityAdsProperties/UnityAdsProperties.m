@@ -7,6 +7,9 @@
 //
 
 #import "UnityAdsProperties.h"
+#import "../UnityAdsDevice/UnityAdsDevice.h"
+
+NSString * const kUnityAdsVersion = @"1.0";
 
 @implementation UnityAdsProperties
 
@@ -23,12 +26,42 @@ static UnityAdsProperties *sharedProperties = nil;
 	return sharedProperties;
 }
 
--(UnityAdsProperties *)init {
+- (UnityAdsProperties *)init {
   if (self = [super init]) {
-    [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
+    ///src/
+    [self setCampaignDataUrl:@"http://192.168.1.152:3500/mobile/campaigns"];
+    [self setCampaignQueryString:[self _createCampaignQueryString]];
   }
   
   return self;
+}
+
+- (NSString *)_createCampaignQueryString
+{
+	//NSString *advertisingIdentifier = self.md5AdvertisingIdentifier != nil ? self.md5AdvertisingIdentifier : @"";
+  NSString *queryParams = @"?";
+  
+  queryParams = [NSString stringWithFormat:@"%@deviceId=%@&platform=%@&gameId=%@", queryParams, [UnityAdsDevice md5DeviceId], @"ios", [self adsGameId]];
+  
+  if ([UnityAdsDevice md5AdvertisingIdentifierString] != nil)
+    queryParams = [NSString stringWithFormat:@"%@&advertisingTrackingId=%@", queryParams, [UnityAdsDevice md5AdvertisingIdentifierString]];
+  
+  if ([UnityAdsDevice canUseTracking]) {
+    queryParams = [NSString stringWithFormat:@"%@&softwareVersion=%@&hardwareVersion=%@&deviceType=%@&apiVersion=%@&connectionType=%@", queryParams, [UnityAdsDevice softwareVersion], @"unknown", [UnityAdsDevice machineName], kUnityAdsVersion, [UnityAdsDevice currentConnectionType]];
+    if ([UnityAdsDevice md5AdvertisingIdentifierString] == nil) {
+      queryParams = [NSString stringWithFormat:@"%@&macAddress=%@&openUdid=%@", queryParams, [UnityAdsDevice md5MACAddressString], [UnityAdsDevice md5OpenUDIDString]];
+    }
+  }
+  
+  if ([self testModeEnabled]) {
+    queryParams = [NSString stringWithFormat:@"%@test=true", queryParams];
+  }
+  
+  return queryParams;
+}
+
+- (void)refreshCampaignQueryString {
+  [self setCampaignQueryString:[self _createCampaignQueryString]];
 }
 
 @end

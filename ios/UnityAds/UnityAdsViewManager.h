@@ -17,8 +17,8 @@
 @protocol UnityAdsViewManagerDelegate <NSObject>
 
 @required
-- (UnityAdsCampaign *)viewManager:(UnityAdsViewManager *)viewManager campaignWithID:(NSString *)campaignID;
-- (NSURL *)viewManager:(UnityAdsViewManager *)viewManager videoURLForCampaign:(UnityAdsCampaign *)campaign;
+//- (UnityAdsCampaign *)viewManager:(UnityAdsViewManager *)viewManager campaignWithID:(NSString *)campaignID;
+//- (NSURL *)viewManager:(UnityAdsViewManager *)viewManager videoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (void)viewManagerStartedPlayingVideo:(UnityAdsViewManager *)viewManager;
 - (void)viewManagerVideoEnded:(UnityAdsViewManager *)viewManager;
 - (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
@@ -31,6 +31,8 @@
 @interface UnityAdsViewManager : NSObject <UnityAdsVideoDelegate>
 
 @property (nonatomic, assign) id<UnityAdsViewManagerDelegate> delegate;
+
+/*
 @property (nonatomic, strong) NSString *machineName;
 @property (nonatomic, strong) NSString *md5AdvertisingIdentifier;
 @property (nonatomic, strong) NSString *md5MACAddress;
@@ -38,11 +40,14 @@
 @property (nonatomic, strong) NSString *md5DeviceId;
 @property (nonatomic, strong) NSDictionary *campaignJSON;
 @property (nonatomic, strong) UnityAdsCampaign *selectedCampaign;
+*/
+ 
 @property (nonatomic, assign, readonly) BOOL adViewVisible;
 
 + (id)sharedInstance;
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data;
 - (UIView *)adView;
 - (void)loadWebView;
+- (void)campaignDataReceived;
 
 @end

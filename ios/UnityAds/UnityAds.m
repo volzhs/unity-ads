@@ -8,6 +8,7 @@
 
 #import "UnityAds.h"
 #import "UnityAdsiOS4.h"
+#import "UnityAdsDevice/UnityAdsDevice.h"
 
 @implementation UnityAds
 
@@ -41,10 +42,16 @@ static UnityAds *sharedAdsInstance = nil;
 	{
 		if (sharedAdsInstance == nil)
 		{
-			if ([self respondsToSelector:@selector(autoContentAccessingProxy)]) // check if we're on at least iOS 4.0
-				sharedAdsInstance = [[UnityAdsiOS4 alloc] initAdsInstance];
-			else
+			// check if we're on at least iOS 4.0
+      UALOG_DEBUG(@"%i", [UnityAdsDevice getIOSMajorVersion]);
+      if ([UnityAdsDevice getIOSMajorVersion] > 3) {
+        UALOG_DEBUG(@"PLOP");
+        sharedAdsInstance = [[UnityAdsiOS4 alloc] initAdsInstance];
+      }
+      else {
+        UALOG_DEBUG(@"PLOP2");
 				sharedAdsInstance = [[self alloc] initAdsInstance];
+      }
 		}
 	}
 	
@@ -55,9 +62,8 @@ static UnityAds *sharedAdsInstance = nil;
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
-- (void)startWithGameId:(NSString *)gameId
-{
-	UALOG_DEBUG(@"Disabled on older versions of iOS.");
+- (void)startWithGameId:(NSString *)gameId {	
+  UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
 - (UIView *)adsView

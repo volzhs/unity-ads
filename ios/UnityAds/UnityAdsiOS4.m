@@ -16,13 +16,16 @@
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
 
-NSString * const kUnityAdsVersion = @"1.0";
-
 @interface UnityAdsiOS4 () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate, UnityAdsViewManagerDelegate>
-@property (nonatomic, strong) UnityAdsCampaignManager *campaignManager;
+//@property (nonatomic, strong) UnityAdsCampaignManager *campaignManager;
 @property (nonatomic, strong) UnityAdsAnalyticsUploader *analyticsUploader;
+
+/*
 @property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
 @property (nonatomic, strong) NSString *gameId;
+*/
+
+/*
 @property (nonatomic, strong) NSString *campaignJSON;
 @property (nonatomic, strong) NSString *machineName;
 @property (nonatomic, strong) NSString *md5AdvertisingIdentifier;
@@ -32,8 +35,13 @@ NSString * const kUnityAdsVersion = @"1.0";
 @property (nonatomic, strong) NSString *campaignQueryString;
 @property (nonatomic, strong) NSString *gamerID;
 @property (nonatomic, strong) NSString *connectionType;
+ */
 @property (nonatomic, strong) NSThread *backgroundThread;
+
+/*
 @property (nonatomic, strong) NSArray *campaigns;
+*/
+
 @property (nonatomic, assign) BOOL webViewInitialized;
 @property (nonatomic, assign) BOOL testModeEnabled;
 @property (nonatomic, assign) dispatch_queue_t queue;
@@ -43,6 +51,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 #pragma mark - Private
 
+/*
 - (NSString *)_queryString
 {
 	NSString *advertisingIdentifier = self.md5AdvertisingIdentifier != nil ? self.md5AdvertisingIdentifier : @"";
@@ -65,7 +74,7 @@ NSString * const kUnityAdsVersion = @"1.0";
   }
 
   return queryParams;
-}
+}*/
 
 - (void)_backgroundRunLoop:(id)dummy
 {
@@ -87,18 +96,21 @@ NSString * const kUnityAdsVersion = @"1.0";
 - (void)_refreshCampaignManager
 {
 	UAAssert( ! [NSThread isMainThread]);
-	UAAssert(self.campaignManager != nil);
+	//UAAssert(self.campaignManager != nil);
 	
-	self.campaignManager.queryString = self.campaignQueryString;
-	[self.campaignManager updateCampaigns];
+	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
+  //self.campaignManager.queryString = self.campaignQueryString;
+	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
+  //[self.campaignManager updateCampaigns];
 }
 
 - (void)_startCampaignManager
 {
 	UAAssert( ! [NSThread isMainThread]);
 	
-	self.campaignManager = [[UnityAdsCampaignManager alloc] init];
-	self.campaignManager.delegate = self;
+	//self.campaignManager = [[UnityAdsCampaignManager alloc] init];
+  [[UnityAdsCampaignManager sharedInstance] setDelegate:self];
+	//self.campaignManager.delegate = self;
 	[self _refreshCampaignManager];
 }
 
@@ -138,6 +150,9 @@ NSString * const kUnityAdsVersion = @"1.0";
 			trackingString = @"view";
 		}
 		
+    // FIX
+    
+    /*
 		NSString *query = [NSString stringWithFormat:@"applicationId=%@&type=%@&trackingId=%@&providerId=%@", self.gameId, positionString, self.gamerID, campaign.id];
 		
 		[self.analyticsUploader performSelector:@selector(sendViewReportWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
@@ -146,16 +161,20 @@ NSString * const kUnityAdsVersion = @"1.0";
 		{
 			NSString *trackingQuery = [NSString stringWithFormat:@"%@/%@/%@?gameId=%@", self.gamerID, trackingString, campaign.id, self.gameId];
 			[self.analyticsUploader performSelector:@selector(sendTrackingCallWithQueryString:) onThread:self.backgroundThread withObject:trackingQuery waitUntilDone:NO];
-		}
+		}*/
 	});
 }
 
 - (BOOL)_adViewCanBeShown
 {
-	if (self.campaigns != nil && [self.campaigns count] > 0 && self.rewardItem != nil && self.webViewInitialized)
+	// FIX
+  
+  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] rewardItem] != nil && self.webViewInitialized)
 		return YES;
 	else
 		return NO;
+  
+  return NO;
 }
 
 - (void)_notifyDelegateOfCampaignAvailability
@@ -169,24 +188,27 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)_trackInstall
 {
-	if (self.gameId == nil)
+	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil)
 	{
 		UALOG_ERROR(@"Unity Ads has not been started properly. Launch with -startWithGameId: first.");
 		return;
 	}
 	
 	dispatch_async(self.queue, ^{
-		NSString *queryString = [NSString stringWithFormat:@"%@/install", self.gameId];
-		NSString *bodyString = [NSString stringWithFormat:@"deviceId=%@", self.md5DeviceId];
-		NSDictionary *queryDictionary = @{ kUnityAdsQueryDictionaryQueryKey : queryString, kUnityAdsQueryDictionaryBodyKey : bodyString };
 		
-		[self.analyticsUploader performSelector:@selector(sendInstallTrackingCallWithQueryDictionary:) onThread:self.backgroundThread withObject:queryDictionary waitUntilDone:NO];
+    // FIX
+    
+    NSString *queryString = [NSString stringWithFormat:@"%@/install", [[UnityAdsProperties sharedInstance] adsGameId]];
+		// NSString *bodyString = [NSString stringWithFormat:@"deviceId=%@", self.md5DeviceId];
+		//NSDictionary *queryDictionary = @{ kUnityAdsQueryDictionaryQueryKey : queryString, kUnityAdsQueryDictionaryBodyKey : bodyString };
+		/*
+		[self.analyticsUploader performSelector:@selector(sendInstallTrackingCallWithQueryDictionary:) onThread:self.backgroundThread withObject:queryDictionary waitUntilDone:NO];*/
 	});
 }
 
 - (void)_refresh
 {
-	if (self.gameId == nil)
+	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil)
 	{
 		UALOG_ERROR(@"Unity Ads has not been started properly. Launch with -startWithGameId: first.");
 		return;
@@ -195,9 +217,10 @@ NSString * const kUnityAdsVersion = @"1.0";
 	UALOG_DEBUG(@"");
 	
 	dispatch_async(self.queue, ^{
-		self.connectionType = [UnityAdsDevice currentConnectionType];
-		self.campaignQueryString = [self _queryString];
-		
+		//self.connectionType = [UnityAdsDevice currentConnectionType];
+		//self.campaignQueryString = [self _queryString];
+		[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
+    
 		[self performSelector:@selector(_refreshCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 		[self.analyticsUploader performSelector:@selector(retryFailedUploads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 	});
@@ -219,21 +242,25 @@ NSString * const kUnityAdsVersion = @"1.0";
 		return;
 	}
 	
-	if (self.gameId != nil)
+	if ([[UnityAdsProperties sharedInstance] adsGameId] != nil)
 		return;
 	
-	self.gameId = gameId;
+	[[UnityAdsProperties sharedInstance] setAdsGameId:gameId];
 	self.queue = dispatch_queue_create("com.unity3d.ads", NULL);
 	
 	dispatch_async(self.queue, ^{
-		self.machineName = [UnityAdsDevice analyticsMachineName];
+		
+    // FIX
+    /*
+    self.machineName = [UnityAdsDevice analyticsMachineName];
 		self.md5AdvertisingIdentifier = [UnityAdsDevice md5AdvertisingIdentifierString];
 		self.md5MACAddress = [UnityAdsDevice md5MACAddressString];
 		self.md5OpenUDID = [UnityAdsDevice md5OpenUDIDString];
 		self.connectionType = [UnityAdsDevice currentConnectionType];
     self.md5DeviceId = self.md5AdvertisingIdentifier != nil ? self.md5AdvertisingIdentifier : self.md5OpenUDID;
 		self.campaignQueryString = [self _queryString];
-		
+		*/
+     
 		self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
 		[self.backgroundThread start];
 
@@ -242,11 +269,15 @@ NSString * const kUnityAdsVersion = @"1.0";
 		
     dispatch_sync(dispatch_get_main_queue(), ^{
       [[UnityAdsViewManager sharedInstance] setDelegate:self];
+      
+      // FIX
+      /*
       [[UnityAdsViewManager sharedInstance] setMachineName:self.machineName];
       [[UnityAdsViewManager sharedInstance] setMd5AdvertisingIdentifier:self.md5AdvertisingIdentifier];
       [[UnityAdsViewManager sharedInstance] setMd5DeviceId:self.md5DeviceId];
       [[UnityAdsViewManager sharedInstance] setMd5MACAddress:self.md5MACAddress];
       [[UnityAdsViewManager sharedInstance] setMd5OpenUDID:self.md5OpenUDID];
+      */
 		});
 	});
 }
@@ -281,7 +312,8 @@ NSString * const kUnityAdsVersion = @"1.0";
 {
 	UAAssert([NSThread isMainThread]);
 	
-	[self.campaignManager performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+	//[self.campaignManager performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+  [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 }
 
 - (void)trackInstall
@@ -303,7 +335,8 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 - (void)dealloc
 {
-	self.campaignManager.delegate = nil;
+	[[UnityAdsCampaignManager sharedInstance] setDelegate:nil];
+  //self.campaignManager.delegate = nil;
 	[[UnityAdsViewManager sharedInstance] setDelegate:nil];
 	
 	dispatch_release(self.queue);
@@ -317,13 +350,15 @@ NSString * const kUnityAdsVersion = @"1.0";
 	
 	UALOG_DEBUG(@"");
 	
-	self.campaigns = campaigns;
-	self.rewardItem = rewardItem;
-	self.gamerID = gamerID;
+	//self.campaigns = campaigns;
+	[[UnityAdsProperties sharedInstance] setRewardItem:rewardItem];
+	//self.gamerID = gamerID;
 	
 	[self _notifyDelegateOfCampaignAvailability];
 }
 
+
+/*
 - (void)campaignManager:(UnityAdsCampaignManager *)campaignManager campaignData:(NSDictionary *)data
 {
 	UAAssert([NSThread isMainThread]);
@@ -340,17 +375,25 @@ NSString * const kUnityAdsVersion = @"1.0";
   
   // FIX (SHOULD NOT EVEN SET THE CAMPAIGN DATA)
   [[UnityAdsViewManager sharedInstance] setCampaignJSON:data];
+}*/
+
+- (void)campaignManagerCampaignDataReceived {
+  // FIX (remember the "update campaigns")
+  UALOG_DEBUG(@"CAMPAIGN DATA RECEIVED");
+  [[UnityAdsViewManager sharedInstance] campaignDataReceived];
 }
 
+ 
 #pragma mark - UnityAdsViewManagerDelegate
 
+/*
 -(UnityAdsCampaign *)viewManager:(UnityAdsViewManager *)viewManager campaignWithID:(NSString *)campaignID
 {
 	UAAssertV([NSThread isMainThread], nil);
 	
 	UnityAdsCampaign *foundCampaign = nil;
 	
-	for (UnityAdsCampaign *campaign in self.campaigns)
+	for (UnityAdsCampaign *campaign in [[UnityAdsCampaignManager sharedInstance] campaigns])
 	{
 		if ([campaign.id isEqualToString:campaignID])
 		{
@@ -362,15 +405,16 @@ NSString * const kUnityAdsVersion = @"1.0";
 	UALOG_DEBUG(@"");
 	
 	return foundCampaign;
-}
+}*/
 
+/*
 -(NSURL *)viewManager:(UnityAdsViewManager *)viewManager videoURLForCampaign:(UnityAdsCampaign *)campaign
 {
 	UAAssertV([NSThread isMainThread], nil);
 	UALOG_DEBUG(@"");
 	
-	return [self.campaignManager videoURLForCampaign:campaign];
-}
+	return [[UnityAdsCampaignManager sharedInstance] videoURLForCampaign:campaign];
+}*/
 
 - (void)viewManagerStartedPlayingVideo:(UnityAdsViewManager *)viewManager
 {
@@ -386,7 +430,7 @@ NSString * const kUnityAdsVersion = @"1.0";
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
-	[self.delegate unityAds:self completedVideoWithRewardItemKey:self.rewardItem.key];
+	[self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsProperties sharedInstance] rewardItem].key];
 }
 
 - (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign
