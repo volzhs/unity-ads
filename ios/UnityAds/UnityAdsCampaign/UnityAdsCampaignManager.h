@@ -31,7 +31,7 @@
 //@property (nonatomic, strong) id campaignData;
 
 - (void)updateCampaigns;
-- (NSURL *)videoURLForCampaign:(UnityAdsCampaign *)campaign;
+- (NSURL *)getVideoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (void)cancelAllDownloads;
 - (UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId;
 

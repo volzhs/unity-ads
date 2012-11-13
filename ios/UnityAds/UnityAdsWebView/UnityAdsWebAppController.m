@@ -74,8 +74,6 @@
 
 - (void)initWebAppWithValues:(NSDictionary *)values {
   
-  UALOG_DEBUG(@"FOOOOOOO: %@", [values JSONRepresentation]);
-  
   /*
   NSMutableDictionary *deviceInformation = [[NSMutableDictionary init] alloc];
   [deviceInformation setValue:[values valueForKey:@"deviceId"] forKey:@"deviceId"];

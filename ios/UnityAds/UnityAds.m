@@ -43,13 +43,10 @@ static UnityAds *sharedAdsInstance = nil;
 		if (sharedAdsInstance == nil)
 		{
 			// check if we're on at least iOS 4.0
-      UALOG_DEBUG(@"%i", [UnityAdsDevice getIOSMajorVersion]);
-      if ([UnityAdsDevice getIOSMajorVersion] > 3) {
-        UALOG_DEBUG(@"PLOP");
+      if ([self respondsToSelector:@selector(autoContentAccessingProxy)]) {
         sharedAdsInstance = [[UnityAdsiOS4 alloc] initAdsInstance];
       }
       else {
-        UALOG_DEBUG(@"PLOP2");
 				sharedAdsInstance = [[self alloc] initAdsInstance];
       }
 		}

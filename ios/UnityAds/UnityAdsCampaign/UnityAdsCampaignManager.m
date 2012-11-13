@@ -270,7 +270,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	[self.urlConnection start];
 }
 
-- (NSURL *)videoURLForCampaign:(UnityAdsCampaign *)campaign
+- (NSURL *)getVideoURLForCampaign:(UnityAdsCampaign *)campaign
 {
 	@synchronized (self)
 	{

@@ -356,7 +356,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 {
 	UALOG_DEBUG(@"");
 	
-	NSURL *videoURL = [[UnityAdsCampaignManager sharedInstance] videoURLForCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+	NSURL *videoURL = [[UnityAdsCampaignManager sharedInstance] getVideoURLForCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 	if (videoURL == nil)
 	{
 		UALOG_DEBUG(@"Video not found!");

@@ -50,8 +50,6 @@ static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.
   NSURLRequest *request = [self request];
   NSData *reqData = [request HTTPBody];
   
-  UALOG_DEBUG(@"WOOOOT: %@ %@", request, reqData);
-  
   [self actOnJSONResults: reqData];
   
   // Create the response
