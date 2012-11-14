@@ -7,7 +7,7 @@
 //
 
 #import "UnityAdsURLProtocol.h"
-#import "../UnityAdsViewManager.h"
+#import "../UnityAdsWebView/UnityAdsWebAppController.h"
 
 static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.com";
 
@@ -93,7 +93,7 @@ static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.
   
   if (dictData != nil) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      [[UnityAdsViewManager sharedInstance] handleWebEvent:type data:dictData];
+      [[UnityAdsWebAppController sharedInstance] handleWebEvent:type data:dictData];
     });
   }
 }

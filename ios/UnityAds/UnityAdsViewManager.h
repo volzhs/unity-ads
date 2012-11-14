@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "UnityAdsVideo/UnityAdsVideo.h"
+#import "UnityAdsWebView/UnityAdsWebAppController.h"
 
 @class UnityAdsCampaign;
 @class UnityAdsViewManager;
@@ -19,35 +20,25 @@
 @required
 //- (UnityAdsCampaign *)viewManager:(UnityAdsViewManager *)viewManager campaignWithID:(NSString *)campaignID;
 //- (NSURL *)viewManager:(UnityAdsViewManager *)viewManager videoURLForCampaign:(UnityAdsCampaign *)campaign;
-- (void)viewManagerStartedPlayingVideo:(UnityAdsViewManager *)viewManager;
-- (void)viewManagerVideoEnded:(UnityAdsViewManager *)viewManager;
+- (void)viewManagerStartedPlayingVideo;
+- (void)viewManagerVideoEnded;
 - (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
 - (UIViewController *)viewControllerForPresentingViewControllersForViewManager:(UnityAdsViewManager *)viewManager;
-- (void)viewManagerWillCloseAdView:(UnityAdsViewManager *)viewManager;
-- (void)viewManagerWebViewInitialized:(UnityAdsViewManager *)viewManager;
-
+- (void)viewManagerWillCloseAdView;
+- (void)viewManagerWebViewInitialized;
 @end
 
-@interface UnityAdsViewManager : NSObject <UnityAdsVideoDelegate>
+@interface UnityAdsViewManager : NSObject <UnityAdsVideoDelegate, UnityAdsWebAppControllerDelegate>
 
 @property (nonatomic, assign) id<UnityAdsViewManagerDelegate> delegate;
-
-/*
-@property (nonatomic, strong) NSString *machineName;
-@property (nonatomic, strong) NSString *md5AdvertisingIdentifier;
-@property (nonatomic, strong) NSString *md5MACAddress;
-@property (nonatomic, strong) NSString *md5OpenUDID;
-@property (nonatomic, strong) NSString *md5DeviceId;
-@property (nonatomic, strong) NSDictionary *campaignJSON;
-@property (nonatomic, strong) UnityAdsCampaign *selectedCampaign;
-*/
- 
 @property (nonatomic, assign, readonly) BOOL adViewVisible;
 
 + (id)sharedInstance;
-- (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data;
 - (UIView *)adView;
 - (void)loadWebView;
-- (void)campaignDataReceived;
+- (void)initWebApp;
+- (void)openAppStoreWithGameId:(NSString *)gameId;
+- (void)showPlayerAndPlaySelectedVideo;
+- (void)closeAdView;
 
 @end

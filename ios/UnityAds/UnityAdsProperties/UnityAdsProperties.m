@@ -29,7 +29,8 @@ static UnityAdsProperties *sharedProperties = nil;
 - (UnityAdsProperties *)init {
   if (self = [super init]) {
     ///src/
-    [self setCampaignDataUrl:@"http://192.168.1.152:3500/mobile/campaigns"];
+    [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
+    //[self setCampaignDataUrl:@"http://192.168.1.152:3500/mobile/campaigns"];
     [self setCampaignQueryString:[self _createCampaignQueryString]];
   }
   
@@ -47,7 +48,7 @@ static UnityAdsProperties *sharedProperties = nil;
     queryParams = [NSString stringWithFormat:@"%@&advertisingTrackingId=%@", queryParams, [UnityAdsDevice md5AdvertisingIdentifierString]];
   
   if ([UnityAdsDevice canUseTracking]) {
-    queryParams = [NSString stringWithFormat:@"%@&softwareVersion=%@&hardwareVersion=%@&deviceType=%@&apiVersion=%@&connectionType=%@", queryParams, [UnityAdsDevice softwareVersion], @"unknown", [UnityAdsDevice machineName], kUnityAdsVersion, [UnityAdsDevice currentConnectionType]];
+    queryParams = [NSString stringWithFormat:@"%@&softwareVersion=%@&hardwareVersion=%@&deviceType=%@&apiVersion=%@&connectionType=%@", queryParams, [UnityAdsDevice softwareVersion], @"unknown", [UnityAdsDevice analyticsMachineName], kUnityAdsVersion, [UnityAdsDevice currentConnectionType]];
     if ([UnityAdsDevice md5AdvertisingIdentifierString] == nil) {
       queryParams = [NSString stringWithFormat:@"%@&macAddress=%@&openUdid=%@", queryParams, [UnityAdsDevice md5MACAddressString], [UnityAdsDevice md5OpenUDIDString]];
     }

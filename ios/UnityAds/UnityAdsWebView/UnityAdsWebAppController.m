@@ -13,8 +13,21 @@
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsSBJSON/UnityAdsSBJsonWriter.h"
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
+#import "../UnityAdsCampaign/UnityAdsCampaign.h"
+#import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
+#import "../UnityAdsViewManager.h"
 
+NSString * const kUnityAdsWebViewPrefix = @"applifierimpact.";
+NSString * const kUnityAdsWebViewJSInit = @"init";
+NSString * const kUnityAdsWebViewJSChangeView = @"setView";
+NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
+NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
+NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
+NSString * const kUnityAdsWebViewAPIClose = @"close";
+NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
 
+NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
+NSString * const kUnityAdsWebViewViewTypeStart = @"start";
 
 @interface UnityAdsWebAppController ()
   @property (nonatomic, strong) NSDictionary* webAppInitalizationParams;
@@ -23,17 +36,20 @@
 @implementation UnityAdsWebAppController
 
 - (UnityAdsWebAppController *)init {
-  
-  self.WEBVIEW_PREFIX = @"applifierimpact.";
-  self.WEBVIEW_JS_INIT = @"init";
-  self.WEBVIEW_JS_CHANGEVIEW = @"setView";
-  self.WEBVIEW_API_PLAYVIDEO = @"playVideo";
-  self.WEBVIEW_API_NAVIGATETO = @"navigateTo";
-  self.WEBVIEW_API_INITCOMPLETE = @"initComplete";
-  self.WEBVIEW_API_CLOSE = @"close";
-  self.WEBVIEW_API_APPSTORE = @"appstore";
-  
   return [super init];
+}
+
+static UnityAdsWebAppController *sharedWebAppController = nil;
+
++ (id)sharedInstance
+{
+	@synchronized(self)
+	{
+		if (sharedWebAppController == nil)
+      sharedWebAppController = [[UnityAdsWebAppController alloc] init];
+	}
+	
+	return sharedWebAppController;
 }
 
 - (void)setup:(CGRect)frame webAppParams:(NSDictionary *)webAppParams {
@@ -65,47 +81,90 @@
 	[self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[[UnityAdsProperties sharedInstance] webViewBaseUrl]]]];
 }
 
-- (void)setWebViewCurrentView:(NSString *)view data:(NSString *)data
+- (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data
 {
-  [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@%@(\"%@\", %@);", self.WEBVIEW_PREFIX, self.WEBVIEW_JS_CHANGEVIEW, view, data]];
+  [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]]];
 }
+
+- (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data
+{
+  UALOG_DEBUG(@"Gotevent: %@  widthData: %@", type, data);
+  
+  if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [type isEqualToString:kUnityAdsWebViewAPINavigateTo] || [type isEqualToString:kUnityAdsWebViewAPIAppStore])
+	{
+		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo])
+		{
+      if ([data objectForKey:@"campaignId"] != nil) {
+        [self _selectCampaignWithID:[data objectForKey:@"campaignId"]];
+        [[UnityAdsViewManager sharedInstance] showPlayerAndPlaySelectedVideo];
+      }
+		}
+		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo])
+		{
+      if ([data objectForKey:@"clickUrl"] != nil) {
+        [self openExternalUrl:[data objectForKey:@"clickUrl"]];
+      }
+    
+		}
+		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore])
+		{
+      if ([data objectForKey:@"clickUrl"] != nil) {
+        [[UnityAdsViewManager sharedInstance] openAppStoreWithGameId:[data objectForKey:@"clickUrl"]];
+      }    
+		}
+	}
+	else if ([type isEqualToString:kUnityAdsWebViewAPIClose])
+	{
+    [[UnityAdsViewManager sharedInstance] closeAdView];
+	}
+	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete])
+	{
+    if (self.delegate != nil) {
+      [self.delegate webAppReady];
+    }
+	}
+}
+
+- (void)_selectCampaignWithID:(NSString *)campaignId
+{
+	[[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
+	
+	if (campaignId == nil)
+	{
+		UALOG_DEBUG(@"Input is nil.");
+		return;
+	}
+  
+	UnityAdsCampaign *campaign = [[UnityAdsCampaignManager sharedInstance] getCampaignWithId:campaignId];
+	
+	if (campaign != nil)
+	{
+		[[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
+	}
+	else
+		UALOG_DEBUG(@"No campaign with id '%@' found.", campaignId);
+}
+
+- (void)openExternalUrl:(NSString *)urlString
+{
+	if (urlString == nil)
+	{
+		UALOG_DEBUG(@"No URL set.");
+		return;
+	}
+	
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+}
+
 
 #pragma mark - WebView
 
 - (void)initWebAppWithValues:(NSDictionary *)values {
-  
-  /*
-  NSMutableDictionary *deviceInformation = [[NSMutableDictionary init] alloc];
-  [deviceInformation setValue:[values valueForKey:@"deviceId"] forKey:@"deviceId"];
-  UALOG_DEBUG(@"%@", [deviceInformation JSONRepresentation]);*/
-  
-  
-  
-  //NSString *escapedJSON = [UnityAdsUtils escapedStringFromString:[values valueForKey:@"campaignJSON"]];
-	
-  /*
-  NSString *deviceInformation = nil;
-  NSString *md5AdvertisingTrackingID = [values valueForKey:@"advertisingTrackingID"];
-  NSString *iOSVersion = [values valueForKey:@"iOSVersion"];
-  NSString *deviceType = [values valueForKey:@"deviceType"];
-  NSString *deviceId = [values valueForKey:@"deviceId"];
-  NSString *md5OpenUDID = [values valueForKey:@"openUdid"];
-  NSString *md5MACAddress = [values valueForKey:@"macAddress"];
-	*/
-  
-  /*
-  if (md5AdvertisingTrackingID != nil) {
-		//deviceInformation = [NSString stringWithFormat:@"{\"deviceId\":\"%@\",\"advertisingTrackingID\":\"%@\",\"iOSVersion\":\"%@\",\"deviceType\":\"%@\"}",  deviceId, md5AdvertisingTrackingID, iOSVersion, deviceType];
-  }
-	else {
-		//deviceInformation = [NSString stringWithFormat:@"{\"deviceId\":\"%@\",\"iOSVersion\":\"%@\",\"deviceType\":\"%@\",\"macAddress\":\"%@\",\"openUdid\":\"%@\"}", deviceId, [[UIDevice currentDevice] systemVersion], deviceType, md5MACAddress, md5OpenUDID];
-  }
-	*/
-  
-	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", self.WEBVIEW_PREFIX, self.WEBVIEW_JS_INIT, [values JSONRepresentation]];
+	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSInit, [values JSONRepresentation]];
   UALOG_DEBUG(@"%@", js);
 	[self.webView stringByEvaluatingJavaScriptFromString:js];
 }
+
 
 #pragma mark - UIWebViewDelegate
 
@@ -142,12 +201,12 @@
 	UALOG_DEBUG(@"%@", error);
 }
 
+
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 	scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
 }
-
 
 @end

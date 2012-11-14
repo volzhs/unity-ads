@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Unity Technologies. All rights reserved.
 //
 
-#import "UnityAds.h"
+#import "../UnityAds.h"
 #import "UnityAdsCache.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 
@@ -334,6 +334,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 		UALOG_DEBUG(@"Not removing any downloads from the queue.");
 }
 
+
 #pragma mark - Public
 
 - (id)init
@@ -416,6 +417,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	
 	[self.downloadQueue removeAllObjects];
 }
+
 
 #pragma mark - NSURLConnectionDelegate
 
