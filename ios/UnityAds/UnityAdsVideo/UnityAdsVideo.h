@@ -21,12 +21,11 @@ typedef enum
 @protocol UnityAdsVideoDelegate <NSObject>
 
 @required
-- (void)videoAnalyticsPositionReached:(VideoAnalyticsPosition)analyticsPosition;
+//- (void)videoAnalyticsPositionReached:(VideoAnalyticsPosition)analyticsPosition;
 - (void)videoPlaybackStarted;
 - (void)videoPlaybackEnded;
 - (void)videoPositionChanged:(CMTime)time;
 @end
-
 
 @interface UnityAdsVideo : AVPlayer
 @property (nonatomic, assign) id<UnityAdsVideoDelegate> delegate;

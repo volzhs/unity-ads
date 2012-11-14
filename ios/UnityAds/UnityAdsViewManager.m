@@ -24,7 +24,6 @@
 @property (nonatomic, strong) UILabel *progressLabel;
 @property (nonatomic, strong) UnityAdsVideo *player;
 @property (nonatomic, assign) UIViewController *storePresentingViewController;
-
 @end
 
 @implementation UnityAdsViewManager
@@ -246,9 +245,10 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 #pragma mark - UnityAdsVideoDelegate
 
+/*
 - (void)videoAnalyticsPositionReached:(VideoAnalyticsPosition)analyticsPosition {
   [self.delegate viewManager:self loggedVideoPosition:analyticsPosition campaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
-}
+}*/
 
 - (void)videoPositionChanged:(CMTime)time {
   [self _updateTimeRemainingLabelWithTime:time];
@@ -261,12 +261,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 - (void)videoPlaybackEnded {
 	[self.delegate viewManagerVideoEnded];
-	
-	self.progressLabel.hidden = YES;
-	
-	[self.player.playerLayer removeFromSuperlayer];
-	self.player.playerLayer = nil;
-	self.player = nil;
+	[self hidePlayer];
 	
   NSDictionary *data = @{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id};
   [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:data];
@@ -276,8 +271,14 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 #pragma mark - Video
 
-- (void)showPlayerAndPlaySelectedVideo;
-{
+- (void)hidePlayer {
+ 	self.progressLabel.hidden = YES;
+	[self.player.playerLayer removeFromSuperlayer];
+	self.player.playerLayer = nil;
+	self.player = nil;
+}
+
+- (void)showPlayerAndPlaySelectedVideo {
 	UALOG_DEBUG(@"");
 	
 	NSURL *videoURL = [[UnityAdsCampaignManager sharedInstance] getVideoURLForCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
@@ -301,6 +302,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 #pragma mark - WebAppController
 
 - (void)webAppReady {
+  _webViewInitialized = YES;
   [self.delegate viewManagerWebViewInitialized];
 }
 

@@ -11,7 +11,6 @@
 #import "../UnityAds.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 
-//NSString * const kUnityAdsAnalyticsURL = @"https://log.applifier.com/videoads-tracking";
 NSString * const kUnityAdsTrackingPath = @"gamers/";
 NSString * const kUnityAdsInstallTrackingPath = @"games/";
 NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
@@ -26,33 +25,49 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 @interface UnityAdsAnalyticsUploader () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableArray *uploadQueue;
 @property (nonatomic, strong) NSDictionary *currentUpload;
+@property (nonatomic, assign) dispatch_queue_t analyticsQueue;
+@property (nonatomic, strong) NSThread *backgroundThread;
 @end
 
 @implementation UnityAdsAnalyticsUploader
 
 #pragma mark - Private
 
-- (void)_saveFailedUpload:(NSDictionary *)upload
-{
-	if (upload == nil)
+- (void)_backgroundRunLoop:(id)dummy {
+	@autoreleasepool
 	{
+		NSPort *port = [[NSPort alloc] init];
+		[port scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		
+		while([[NSThread currentThread] isCancelled] == NO)
+		{
+			@autoreleasepool
+			{
+				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:3.0]];
+			}
+		}
+	}
+}
+
+- (void)_saveFailedUpload:(NSDictionary *)upload {
+	if (upload == nil) {
 		UALOG_DEBUG(@"Input is nil.");
 		return;
 	}
 	
 	NSMutableArray *existingFailedUploads = [[[NSUserDefaults standardUserDefaults] arrayForKey:kUnityAdsAnalyticsSavedUploadsKey] mutableCopy];
 	
-	if (existingFailedUploads == nil)
-		existingFailedUploads = [NSMutableArray array];
-	
+	if (existingFailedUploads == nil) {
+    existingFailedUploads = [NSMutableArray array];
+  }
+  
 	NSURLRequest *request = [upload objectForKey:kUnityAdsAnalyticsUploaderRequestKey];
 	NSMutableDictionary *failedUpload = [NSMutableDictionary dictionary];
-	if ([request URL] != nil)
-	{
+	
+  if ([request URL] != nil) {
 		[failedUpload setObject:[[request URL] absoluteString] forKey:kUnityAdsAnalyticsSavedUploadURLKey];
 		
-		if ([request HTTPBody] != nil)
-		{
+		if ([request HTTPBody] != nil) {
 			NSString *bodyString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
 			[failedUpload setObject:bodyString forKey:kUnityAdsAnalyticsSavedUploadBodyKey];
 		}
@@ -66,8 +81,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	}
 }
 
-- (BOOL)_startNextUpload
-{
+- (BOOL)_startNextUpload {
 	if (self.currentUpload != nil || [self.uploadQueue count] == 0)
 		return NO;
 	
@@ -81,18 +95,15 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	return YES;
 }
 
-- (void)_queueURL:(NSURL *)url body:(NSData *)body httpMethod:(NSString *)httpMethod
-{
-	if (url == nil)
-	{
+- (void)_queueURL:(NSURL *)url body:(NSData *)body httpMethod:(NSString *)httpMethod {
+	if (url == nil) {
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
 
-	if (request == nil)
-	{
+	if (request == nil) {
 		UALOG_ERROR(@"Could not create request with url '%@'.", url);
 		return;
 	}
@@ -111,8 +122,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 		[self _startNextUpload];
 }
 
-- (void)_queueWithURLString:(NSString *)urlString queryString:(NSString *)queryString httpMethod:(NSString *)httpMethod
-{
+- (void)_queueWithURLString:(NSString *)urlString queryString:(NSString *)queryString httpMethod:(NSString *)httpMethod {
 	NSURL *url = [NSURL URLWithString:urlString];
 	NSData *body = nil;
 	if (queryString != nil)
@@ -121,24 +131,76 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	[self _queueURL:url body:body httpMethod:httpMethod];
 }
 
+
 #pragma mark - Public
 
-- (id)init
-{
-	if ((self = [super init]))
+static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
+
++ (id)sharedInstance {
+	@synchronized(self)
 	{
+		if (sharedUnityAdsInstanceAnalyticsUploader == nil)
+      sharedUnityAdsInstanceAnalyticsUploader = [[UnityAdsAnalyticsUploader alloc] init];
+	}
+	
+	return sharedUnityAdsInstanceAnalyticsUploader;
+}
+
+- (id)init {
+	if ((self = [super init])) {
 		_uploadQueue = [NSMutableArray array];
+    self.analyticsQueue = dispatch_queue_create("com.unity3d.ads.analytics", NULL);
+    self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
+		[self.backgroundThread start];
 	}
 	
 	return self;
 }
 
-- (void)sendViewReportWithQueryString:(NSString *)queryString
-{
+- (void)dealloc {
+  dispatch_release(self.analyticsQueue);
+}
+
+- (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign {
+	if (campaign == nil) {
+		UALOG_DEBUG(@"Campaign is nil.");
+		return;
+	}
+	
+	dispatch_async(self.analyticsQueue, ^{
+		NSString *positionString = nil;
+		NSString *trackingString = nil;
+    
+		if (videoPosition == kVideoAnalyticsPositionStart) {
+			positionString = @"video_start";
+			trackingString = @"start";
+		}
+		else if (videoPosition == kVideoAnalyticsPositionFirstQuartile)
+			positionString = @"first_quartile";
+		else if (videoPosition == kVideoAnalyticsPositionMidPoint)
+			positionString = @"mid_point";
+		else if (videoPosition == kVideoAnalyticsPositionThirdQuartile)
+			positionString = @"third_quartile";
+		else if (videoPosition == kVideoAnalyticsPositionEnd) {
+			positionString = @"video_end";
+			trackingString = @"view";
+		}
+		
+     NSString *query = [NSString stringWithFormat:@"gameId=%@&type=%@&trackingId=%@&providerId=%@", [[UnityAdsProperties sharedInstance] adsGameId], positionString, [[UnityAdsProperties sharedInstance] gamerId], campaign.id];
+    
+    [self performSelector:@selector(sendViewReportWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
+     
+     if (trackingString != nil) {
+       NSString *trackingQuery = [NSString stringWithFormat:@"%@/%@/%@?gameId=%@", [[UnityAdsProperties sharedInstance] gamerId], trackingString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId]];
+       [self performSelector:@selector(sendTrackingCallWithQueryString:) onThread:self.backgroundThread withObject:trackingQuery waitUntilDone:NO];
+     }
+	});
+}
+
+- (void)sendViewReportWithQueryString:(NSString *)queryString {
 	UAAssert( ! [NSThread isMainThread]);
 	
-	if (queryString == nil || [queryString length] == 0)
-	{
+	if (queryString == nil || [queryString length] == 0) {
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
@@ -146,27 +208,21 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	[self _queueWithURLString:[[UnityAdsProperties sharedInstance] analyticsBaseUrl] queryString:queryString httpMethod:@"POST"];
 }
 
-- (void)sendTrackingCallWithQueryString:(NSString *)queryString
-{
+- (void)sendTrackingCallWithQueryString:(NSString *)queryString {
 	UAAssert( ! [NSThread isMainThread]);
 	
-	if (queryString == nil || [queryString length] == 0)
-	{
+	if (queryString == nil || [queryString length] == 0) {
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
   
 	[self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath] queryString:nil httpMethod:@"GET"];
-  
-	//[self _queueWithURLString:[kUnityAdsTrackingURL stringByAppendingString:queryString] queryString:nil httpMethod:@"GET"];
 }
 
-- (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary
-{
+- (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary {
 	UAAssert( ! [NSThread isMainThread]);
 	
-	if (queryDictionary == nil)
-	{
+	if (queryDictionary == nil) {
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
@@ -174,27 +230,20 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	NSString *query = [queryDictionary objectForKey:kUnityAdsQueryDictionaryQueryKey];
 	NSString *body = [queryDictionary objectForKey:kUnityAdsQueryDictionaryBodyKey];
 	
-	if (query == nil || [query length] == 0 || body == nil || [body length] == 0)
-	{
+	if (query == nil || [query length] == 0 || body == nil || [body length] == 0) {
 		UALOG_DEBUG(@"Invalid parameters in query dictionary.");
 		return;
 	}
 	
   [self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsInstallTrackingPath] queryString:nil httpMethod:@"GET"];
-
-  
-	//[self _queueWithURLString:[kUnityAdsInstallTrackingURL stringByAppendingString:query] queryString:body httpMethod:@"POST"];
 }
 
-- (void)retryFailedUploads
-{
+- (void)retryFailedUploads {
 	UAAssert( ! [NSThread isMainThread]);
 	
 	NSArray *uploads = [[NSUserDefaults standardUserDefaults] arrayForKey:kUnityAdsAnalyticsSavedUploadsKey];
-	if (uploads != nil)
-	{
-		for (NSDictionary *upload in uploads)
-		{
+	if (uploads != nil) {
+		for (NSDictionary *upload in uploads) {
 			NSString *url = [upload objectForKey:kUnityAdsAnalyticsSavedUploadURLKey];
 			NSString *body = [upload objectForKey:kUnityAdsAnalyticsSavedUploadBodyKey];
 			NSString *httpMethod = [upload objectForKey:kUnityAdsAnalyticsSavedUploadHTTPMethodKey];
@@ -206,33 +255,27 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	}
 }
 
+
 #pragma mark - NSURLConnectionDelegate
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 	UALOG_DEBUG(@"analytics upload finished");
 	
-	self.currentUpload = nil;
-	
+	self.currentUpload = nil;	
 	[self _startNextUpload];
 }
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
 	UALOG_DEBUG(@"%@", error);
 	
 	[self _saveFailedUpload:self.currentUpload];
-
 	self.currentUpload = nil;
-	
 	[self _startNextUpload];
 }
 

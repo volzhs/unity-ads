@@ -10,6 +10,8 @@
 #import "../UnityAds.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
+#import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
+#import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 
 id timeObserver;
 id analyticsTimeObserver;
@@ -76,7 +78,8 @@ UnityAdsCampaign *selectedCampaign;
 - (void)_logVideoAnalytics
 {
 	videoPosition++;
-	[self.delegate videoAnalyticsPositionReached:videoPosition];
+	//[self.delegate videoAnalyticsPositionReached:videoPosition];
+  [[UnityAdsAnalyticsUploader sharedInstance] logVideoAnalyticsWithPosition:videoPosition campaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 }
 
 - (Float64)_currentVideoDuration
@@ -92,6 +95,5 @@ UnityAdsCampaign *selectedCampaign;
 	CMTime time = CMTimeMakeWithSeconds(duration, NSEC_PER_SEC);
 	return [NSValue valueWithCMTime:time];
 }
-
 
 @end

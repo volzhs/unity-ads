@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "../UnityAdsVideo/UnityAdsVideo.h"
 
 extern NSString * const kUnityAdsQueryDictionaryQueryKey;
 extern NSString * const kUnityAdsQueryDictionaryBodyKey;
@@ -19,5 +20,7 @@ extern NSString * const kUnityAdsQueryDictionaryBodyKey;
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString;
 - (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary;
 - (void)retryFailedUploads;
+- (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
 
++ (id)sharedInstance;
 @end

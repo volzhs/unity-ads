@@ -22,7 +22,7 @@
 //- (NSURL *)viewManager:(UnityAdsViewManager *)viewManager videoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (void)viewManagerStartedPlayingVideo;
 - (void)viewManagerVideoEnded;
-- (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
+//- (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
 - (UIViewController *)viewControllerForPresentingViewControllersForViewManager:(UnityAdsViewManager *)viewManager;
 - (void)viewManagerWillCloseAdView;
 - (void)viewManagerWebViewInitialized;
@@ -32,6 +32,7 @@
 
 @property (nonatomic, assign) id<UnityAdsViewManagerDelegate> delegate;
 @property (nonatomic, assign, readonly) BOOL adViewVisible;
+@property (nonatomic) BOOL webViewInitialized;
 
 + (id)sharedInstance;
 - (UIView *)adView;
@@ -39,6 +40,7 @@
 - (void)initWebApp;
 - (void)openAppStoreWithGameId:(NSString *)gameId;
 - (void)showPlayerAndPlaySelectedVideo;
+- (void)hidePlayer;
 - (void)closeAdView;
 
 @end
