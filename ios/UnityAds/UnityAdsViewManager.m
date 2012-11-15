@@ -31,7 +31,7 @@
 
 - (void)closeAdView {
 	[self.delegate viewManagerWillCloseAdView];
-	
+	[[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{}];
 	[self.window addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
 	[self.adContainerView removeFromSuperview];
 }
