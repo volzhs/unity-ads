@@ -18,11 +18,8 @@
 @protocol UnityAdsViewManagerDelegate <NSObject>
 
 @required
-//- (UnityAdsCampaign *)viewManager:(UnityAdsViewManager *)viewManager campaignWithID:(NSString *)campaignID;
-//- (NSURL *)viewManager:(UnityAdsViewManager *)viewManager videoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (void)viewManagerStartedPlayingVideo;
 - (void)viewManagerVideoEnded;
-//- (void)viewManager:(UnityAdsViewManager *)viewManager loggedVideoPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
 - (UIViewController *)viewControllerForPresentingViewControllersForViewManager:(UnityAdsViewManager *)viewManager;
 - (void)viewManagerWillCloseAdView;
 - (void)viewManagerWebViewInitialized;
@@ -34,7 +31,7 @@
 @property (nonatomic, assign, readonly) BOOL adViewVisible;
 @property (nonatomic) BOOL webViewInitialized;
 
-+ (id)sharedInstance;
++ (UnityAdsViewManager *)sharedInstance;
 - (UIView *)adView;
 - (void)loadWebView;
 - (void)initWebApp;

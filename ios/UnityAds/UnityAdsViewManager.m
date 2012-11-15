@@ -121,14 +121,6 @@
   [_webApp setWebViewCurrentView:@"start" data:@""];
 }*/
 
-/*
-- (void)_webViewVideoComplete
-{
-	NSString *data = [NSString stringWithFormat:@"{\"campaignId\":\"%@\"}", [[UnityAdsCampaignManager sharedInstance] selectedCampaign].id];
-  
-  // FIX
- // [_webApp setWebViewCurrentView:@"completed" data:[UnityAdsUtils escapedStringFromString:data]];
-}*/
 
 #pragma mark - Public
 
@@ -210,11 +202,18 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 - (void)initWebApp {
 	UAAssert([NSThread isMainThread]);
+ 
+  NSDictionary *persistingData = @{@"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData], @"platform":@"ios", @"deviceId":[UnityAdsDevice md5DeviceId]};
   
-  NSDictionary *values = @{@"advertisingTrackingId":[UnityAdsDevice md5AdvertisingIdentifierString], @"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice analyticsMachineName], @"deviceId":[UnityAdsDevice md5DeviceId], @"macAddress":[UnityAdsDevice md5MACAddressString], @"openUdid":[UnityAdsDevice md5OpenUDIDString], @"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData]};
+  NSDictionary *trackingData = @{@"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice analyticsMachineName]};
+  NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];
+  
+  if ([UnityAdsDevice canUseTracking]) {
+    [webAppValues addEntriesFromDictionary:trackingData];
+  }
   
   [[UnityAdsWebAppController sharedInstance] setDelegate:self];
-  [[UnityAdsWebAppController sharedInstance] setup:_window.bounds webAppParams:values];
+  [[UnityAdsWebAppController sharedInstance] setup:_window.bounds webAppParams:webAppValues];
 }
 
 - (BOOL)adViewVisible
@@ -244,11 +243,6 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 
 #pragma mark - UnityAdsVideoDelegate
-
-/*
-- (void)videoAnalyticsPositionReached:(VideoAnalyticsPosition)analyticsPosition {
-  [self.delegate viewManager:self loggedVideoPosition:analyticsPosition campaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
-}*/
 
 - (void)videoPositionChanged:(CMTime)time {
   [self _updateTimeRemainingLabelWithTime:time];

@@ -8,7 +8,6 @@
 
 #import "UnityAdsWebAppController.h"
 #import "../UnityAds.h"
-#import "../UnityAdsUtils/UnityAdsUtils.h"
 #import "../UnityAdsURLProtocol/UnityAdsURLProtocol.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsSBJSON/UnityAdsSBJsonWriter.h"
@@ -119,6 +118,8 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete])
 	{
+    self.webViewInitialized = YES;
+    
     if (self.delegate != nil) {
       [self.delegate webAppReady];
     }

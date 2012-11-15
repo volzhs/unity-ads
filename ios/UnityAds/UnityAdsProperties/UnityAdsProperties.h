@@ -20,7 +20,7 @@
   @property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
   @property (nonatomic) BOOL testModeEnabled;
 
-+ (id)sharedInstance;
++ (UnityAdsProperties *)sharedInstance;
 - (void)refreshCampaignQueryString;
 
 @end

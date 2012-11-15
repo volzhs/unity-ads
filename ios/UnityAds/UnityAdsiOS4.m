@@ -23,6 +23,7 @@
 
 @implementation UnityAdsiOS4
 
+
 #pragma mark - Private
 
 - (void)_backgroundRunLoop:(id)dummy
@@ -45,21 +46,15 @@
 - (void)_refreshCampaignManager
 {
 	UAAssert( ! [NSThread isMainThread]);
-	//UAAssert(self.campaignManager != nil);
-	
 	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
-  //self.campaignManager.queryString = self.campaignQueryString;
 	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
-  //[self.campaignManager updateCampaigns];
 }
 
 - (void)_startCampaignManager
 {
 	UAAssert( ! [NSThread isMainThread]);
 	
-	//self.campaignManager = [[UnityAdsCampaignManager alloc] init];
   [[UnityAdsCampaignManager sharedInstance] setDelegate:self];
-	//self.campaignManager.delegate = self;
 	[self _refreshCampaignManager];
 }
 
@@ -67,8 +62,6 @@
 {
 	UAAssert( ! [NSThread isMainThread]);
 	[[UnityAdsAnalyticsUploader sharedInstance] retryFailedUploads];
-	//self.analyticsUploader = [[UnityAdsAnalyticsUploader alloc] init];
-	//[self.analyticsUploader retryFailedUploads];
 }
 
 - (BOOL)_adViewCanBeShown
@@ -133,19 +126,20 @@
 
 - (void)startWithGameId:(NSString *)gameId
 {
-	UAAssert([NSThread isMainThread]);
+  UAAssert([NSThread isMainThread]);
 	
 	if (gameId == nil || [gameId length] == 0)
 	{
 		UALOG_ERROR(@"gameId empty or not set.");
 		return;
 	}
-	
+  
 	if ([[UnityAdsProperties sharedInstance] adsGameId] != nil)
 		return;
-	
+	  
 	[[UnityAdsProperties sharedInstance] setAdsGameId:gameId];
-	self.queue = dispatch_queue_create("com.unity3d.ads", NULL);
+	
+  self.queue = dispatch_queue_create("com.unity3d.ads", NULL);
 	
 	dispatch_async(self.queue, ^{
 		self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
@@ -228,24 +222,23 @@
 }
 
 
-/*
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager campaignData:(NSDictionary *)data
-{
-	UAAssert([NSThread isMainThread]);
+//- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager campaignData:(NSDictionary *)data
+//{
+//	UAAssert([NSThread isMainThread]);
 
   // If the view manager already has campaign JSON data, it means that
 	// campaigns were updated, and we might want to update the webapp.
-	if ([[UnityAdsViewManager sharedInstance] campaignJSON] != nil) {
-		self.webViewInitialized = NO;
-	}
+//	if ([[UnityAdsViewManager sharedInstance] campaignJSON] != nil) {
+//		self.webViewInitialized = NO;
+//	}
   
-  if (self.webViewInitialized == NO) {
-    [[UnityAdsViewManager sharedInstance] loadWebView];
-  }
+//  if (self.webViewInitialized == NO) {
+//    [[UnityAdsViewManager sharedInstance] loadWebView];
+//  }
   
   // FIX (SHOULD NOT EVEN SET THE CAMPAIGN DATA)
-  [[UnityAdsViewManager sharedInstance] setCampaignJSON:data];
-}*/
+//  [[UnityAdsViewManager sharedInstance] setCampaignJSON:data];
+//}
 
 - (void)campaignManagerCampaignDataReceived {
   // FIX (remember the "update campaigns")
