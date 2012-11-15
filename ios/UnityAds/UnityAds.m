@@ -16,8 +16,7 @@
 
 - (id)initAdsInstance
 {
-	if ((self = [super init]))
-	{
+	if ((self = [super init])) {
 	}
 	
 	return self;
@@ -27,8 +26,7 @@
 
 static UnityAds *sharedAdsInstance = nil;
 
-- (id)init
-{
+- (id)init {
 	UALOG_ERROR(@"Use the +sharedInstance singleton instead of initializing this class directly.");
 	
 	[self doesNotRecognizeSelector:_cmd];
@@ -36,12 +34,9 @@ static UnityAds *sharedAdsInstance = nil;
 	return nil;
 }
 
-+ (id)sharedInstance
-{
-	@synchronized(self)
-	{
-		if (sharedAdsInstance == nil)
-		{
++ (id)sharedInstance {
+	@synchronized(self) {
+		if (sharedAdsInstance == nil) {
 			// check if we're on at least iOS 4.0
       if ([self respondsToSelector:@selector(autoContentAccessingProxy)]) {
         sharedAdsInstance = [[UnityAdsiOS4 alloc] initAdsInstance];
@@ -63,32 +58,27 @@ static UnityAds *sharedAdsInstance = nil;
   UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
-- (UIView *)adsView
-{
+- (UIView *)adsView {
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 
 	return nil;
 }
 
-- (BOOL)canShow
-{
+- (BOOL)canShow {
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 
 	return NO;
 }
 
-- (void)stopAll
-{
+- (void)stopAll {
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
-- (void)trackInstall
-{
+- (void)trackInstall {
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
-- (void)refresh
-{
+- (void)refresh {
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 

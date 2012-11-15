@@ -15,7 +15,6 @@
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 
-
 NSString * const kCampaignEndScreenKey = @"endScreen";
 NSString * const kCampaignClickURLKey = @"clickUrl";
 NSString * const kCampaignPictureKey = @"picture";
@@ -39,7 +38,6 @@ NSString * const kGamerIDKey = @"gamerId";
 @property (nonatomic, strong) UnityAdsCache *cache;
 @property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
 @property (nonatomic, strong) NSString *gamerID;
-//@property (nonatomic, strong) NSString *campaignJSON;
 @end
 
 @implementation UnityAdsCampaignManager
@@ -59,7 +57,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 #pragma mark - Private
 
 - (void)_campaignDataReceived {
-  //  [[UnityAdsViewManager sharedInstance] campaign]
   [self _processCampaignDownloadData];
 }
 

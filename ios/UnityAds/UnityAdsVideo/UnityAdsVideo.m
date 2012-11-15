@@ -78,7 +78,6 @@ UnityAdsCampaign *selectedCampaign;
 - (void)_logVideoAnalytics
 {
 	videoPosition++;
-	//[self.delegate videoAnalyticsPositionReached:videoPosition];
   [[UnityAdsAnalyticsUploader sharedInstance] logVideoAnalyticsWithPosition:videoPosition campaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 }
 

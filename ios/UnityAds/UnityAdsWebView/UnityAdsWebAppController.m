@@ -40,10 +40,8 @@ NSString * const kUnityAdsWebViewViewTypeStart = @"start";
 
 static UnityAdsWebAppController *sharedWebAppController = nil;
 
-+ (id)sharedInstance
-{
-	@synchronized(self)
-	{
++ (id)sharedInstance {
+	@synchronized(self) {
 		if (sharedWebAppController == nil)
       sharedWebAppController = [[UnityAdsWebAppController alloc] init];
 	}
@@ -85,39 +83,33 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]]];
 }
 
-- (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data
-{
+- (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data {
   UALOG_DEBUG(@"Gotevent: %@  widthData: %@", type, data);
   
   if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [type isEqualToString:kUnityAdsWebViewAPINavigateTo] || [type isEqualToString:kUnityAdsWebViewAPIAppStore])
 	{
-		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo])
-		{
+		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
       if ([data objectForKey:@"campaignId"] != nil) {
         [self _selectCampaignWithID:[data objectForKey:@"campaignId"]];
         [[UnityAdsViewManager sharedInstance] showPlayerAndPlaySelectedVideo];
       }
 		}
-		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo])
-		{
+		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo]) {
       if ([data objectForKey:@"clickUrl"] != nil) {
         [self openExternalUrl:[data objectForKey:@"clickUrl"]];
       }
     
 		}
-		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore])
-		{
+		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore]) {
       if ([data objectForKey:@"clickUrl"] != nil) {
         [[UnityAdsViewManager sharedInstance] openAppStoreWithGameId:[data objectForKey:@"clickUrl"]];
       }    
 		}
 	}
-	else if ([type isEqualToString:kUnityAdsWebViewAPIClose])
-	{
+	else if ([type isEqualToString:kUnityAdsWebViewAPIClose]) {
     [[UnityAdsViewManager sharedInstance] closeAdView];
 	}
-	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete])
-	{
+	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete]) {
     self.webViewInitialized = YES;
     
     if (self.delegate != nil) {
@@ -126,30 +118,25 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	}
 }
 
-- (void)_selectCampaignWithID:(NSString *)campaignId
-{
+- (void)_selectCampaignWithID:(NSString *)campaignId {
 	[[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
 	
-	if (campaignId == nil)
-	{
+	if (campaignId == nil) {
 		UALOG_DEBUG(@"Input is nil.");
 		return;
 	}
   
 	UnityAdsCampaign *campaign = [[UnityAdsCampaignManager sharedInstance] getCampaignWithId:campaignId];
 	
-	if (campaign != nil)
-	{
+	if (campaign != nil) {
 		[[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
 	}
 	else
 		UALOG_DEBUG(@"No campaign with id '%@' found.", campaignId);
 }
 
-- (void)openExternalUrl:(NSString *)urlString
-{
-	if (urlString == nil)
-	{
+- (void)openExternalUrl:(NSString *)urlString {
+	if (urlString == nil) {
 		UALOG_DEBUG(@"No URL set.");
 		return;
 	}
@@ -169,26 +156,22 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 
 #pragma mark - UIWebViewDelegate
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSURL *url = [request URL];
 	UALOG_DEBUG(@"url %@", url);
 	
-  if ([[url scheme] isEqualToString:@"itms-apps"])
-	{
+  if ([[url scheme] isEqualToString:@"itms-apps"]) {
 		return NO;
 	}
 	
 	return YES;
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
+- (void)webViewDidStartLoad:(UIWebView *)webView {
 	UALOG_DEBUG(@"");
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
 	UALOG_DEBUG(@"%@", _webAppInitalizationParams);
 	
 	self.webViewLoaded = YES;
@@ -197,16 +180,14 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		[self initWebAppWithValues:_webAppInitalizationParams];
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	UALOG_DEBUG(@"%@", error);
 }
 
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
 }
 

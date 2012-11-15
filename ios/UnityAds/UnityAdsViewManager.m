@@ -13,7 +13,6 @@
 #import "UnityAdsCampaign/UnityAdsCampaign.h"
 #import "UnityAdsVideo/UnityAdsVideo.h"
 #import "UnityAdsWebView/UnityAdsWebAppController.h"
-#import "UnityAdsUtils/UnityAdsUtils.h"
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsCampaign/UnityAdsCampaignManager.h"
@@ -84,7 +83,6 @@
 	{
 		UALOG_DEBUG(@"Cannot open store product view controller, falling back to click URL.");
 		[[UnityAdsWebAppController sharedInstance] openExternalUrl:[[[UnityAdsCampaignManager sharedInstance] selectedCampaign].clickURL absoluteString]];
-    //[self _openURL:[self.selectedCampaign.clickURL absoluteString]];
 		return;
 	}
 
@@ -103,23 +101,6 @@
 	}];
 #endif
 }
-
-// FIX
-
-/*
-- (void)_webViewInitComplete
-{
-	_webApp.webViewInitialized = YES;
-	[self.delegate viewManagerWebViewInitialized:self];
-}*/
-
-// FIX
-
-/*
-- (void)_webViewShow
-{
-  [_webApp setWebViewCurrentView:@"start" data:@""];
-}*/
 
 
 #pragma mark - Public
@@ -145,11 +126,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	{
 		_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [UnityAdsWebAppController sharedInstance];
-		//_webApp = [[UnityAdsWebAppController alloc] init];
-
-    // FIX
     [_window addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
-		//[_window addSubview:_webApp.webView];
 	}
 	
 	return self;

@@ -16,10 +16,8 @@ NSString * const kUnityAdsVersion = @"1.0";
 
 static UnityAdsProperties *sharedProperties = nil;
 
-+ (id)sharedInstance
-{
-	@synchronized(self)
-	{
++ (id)sharedInstance {
+	@synchronized(self) {
 		if (sharedProperties == nil)
       sharedProperties = [[UnityAdsProperties alloc] init];
 	}
@@ -29,7 +27,6 @@ static UnityAdsProperties *sharedProperties = nil;
 
 - (UnityAdsProperties *)init {
   if (self = [super init]) {
-    ///src/
     [self setCampaignDataUrl:@"http://192.168.1.152:3500/mobile/campaigns"];
     [self setCampaignQueryString:[self _createCampaignQueryString]];
   }
@@ -37,9 +34,7 @@ static UnityAdsProperties *sharedProperties = nil;
   return self;
 }
 
-- (NSString *)_createCampaignQueryString
-{
-	//NSString *advertisingIdentifier = self.md5AdvertisingIdentifier != nil ? self.md5AdvertisingIdentifier : @"";
+- (NSString *)_createCampaignQueryString {
   NSString *queryParams = @"?";
   
   queryParams = [NSString stringWithFormat:@"%@deviceId=%@&platform=%@&gameId=%@", queryParams, [UnityAdsDevice md5DeviceId], @"ios", [self adsGameId]];
