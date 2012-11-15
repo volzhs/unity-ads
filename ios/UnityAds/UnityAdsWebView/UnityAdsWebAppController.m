@@ -81,10 +81,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data
 {
 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
-  UALOG_DEBUG(@"SETWEBVIEWCURRENTVIEW: %@", js);
 	[self.webView stringByEvaluatingJavaScriptFromString:js];
-  /*
-  [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]]];*/
 }
 
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data {

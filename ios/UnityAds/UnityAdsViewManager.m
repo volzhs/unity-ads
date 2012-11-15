@@ -150,6 +150,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 		if (self.adContainerView == nil)
 		{
 			self.adContainerView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+      [self.adContainerView setBackgroundColor:[UIColor blackColor]];
 			
 			self.progressLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 			self.progressLabel.backgroundColor = [UIColor clearColor];
@@ -228,15 +229,15 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 - (void)videoPlaybackStarted {
   [self _displayProgressLabel];
   [self.delegate viewManagerStartedPlayingVideo];
+  [[UnityAdsWebAppController sharedInstance] webView].hidden = YES;
 }
 
 - (void)videoPlaybackEnded {
+  [[UnityAdsWebAppController sharedInstance] webView].hidden = NO;
 	[self.delegate viewManagerVideoEnded];
 	[self hidePlayer];
 	
   NSDictionary *data = @{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id};
-  
-  UALOG_DEBUG(@"PLAYBACK ENDED: %@", data);
   
   [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:data];
 	[[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
@@ -254,7 +255,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 - (void)showPlayerAndPlaySelectedVideo {
 	UALOG_DEBUG(@"");
-	//[self.]
+  
 	NSURL *videoURL = [[UnityAdsCampaignManager sharedInstance] getVideoURLForCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 	if (videoURL == nil)
 	{
