@@ -229,11 +229,11 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 - (void)videoPlaybackStarted {
   [self _displayProgressLabel];
   [self.delegate viewManagerStartedPlayingVideo];
-  [[UnityAdsWebAppController sharedInstance] webView].hidden = YES;
+  [[UnityAdsWebAppController sharedInstance] webView].userInteractionEnabled = NO;
 }
 
 - (void)videoPlaybackEnded {
-  [[UnityAdsWebAppController sharedInstance] webView].hidden = NO;
+  [[UnityAdsWebAppController sharedInstance] webView].userInteractionEnabled = YES;
 	[self.delegate viewManagerVideoEnded];
 	[self hidePlayer];
 	
