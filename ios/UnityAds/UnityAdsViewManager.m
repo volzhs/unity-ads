@@ -124,13 +124,30 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	
 	if ((self = [super init]))
 	{
-		_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [UnityAdsWebAppController sharedInstance];
     [_window addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
 	}
 	
 	return self;
 }
+
+#pragma mark - Notification receiver
+
+- (void)notificationHandler: (id) notification {
+  NSString *name = [notification name];
+  
+  UALOG_DEBUG(@"notification: %@", name);
+  
+  if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
+    [[UnityAdsWebAppController sharedInstance] webView].userInteractionEnabled = YES;
+    [self hidePlayer];
+    //[self closeAdView];
+  }
+}
+
 
 - (void)loadWebView
 {
@@ -247,10 +264,12 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 #pragma mark - Video
 
 - (void)hidePlayer {
- 	self.progressLabel.hidden = YES;
-	[self.player.playerLayer removeFromSuperlayer];
-	self.player.playerLayer = nil;
-	self.player = nil;
+  if (self.player != nil) {
+    self.progressLabel.hidden = YES;
+    [self.player.playerLayer removeFromSuperlayer];
+    self.player.playerLayer = nil;
+    self.player = nil;
+  }
 }
 
 - (void)showPlayerAndPlaySelectedVideo {

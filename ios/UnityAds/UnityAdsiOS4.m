@@ -203,7 +203,7 @@
 
 - (void)dealloc
 {
-	[[UnityAdsCampaignManager sharedInstance] setDelegate:nil];
+  [[UnityAdsCampaignManager sharedInstance] setDelegate:nil];
 	[[UnityAdsViewManager sharedInstance] setDelegate:nil];
   [[UnityAdsWebAppController sharedInstance] setDelegate:nil];
 	
