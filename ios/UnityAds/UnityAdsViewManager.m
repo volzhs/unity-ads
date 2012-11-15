@@ -235,6 +235,9 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	[self hidePlayer];
 	
   NSDictionary *data = @{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id};
+  
+  UALOG_DEBUG(@"PLAYBACK ENDED: %@", data);
+  
   [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:data];
 	[[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
 }
@@ -251,7 +254,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
 - (void)showPlayerAndPlaySelectedVideo {
 	UALOG_DEBUG(@"");
-	
+	//[self.]
 	NSURL *videoURL = [[UnityAdsCampaignManager sharedInstance] getVideoURLForCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 	if (videoURL == nil)
 	{
