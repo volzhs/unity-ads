@@ -134,6 +134,9 @@
 		return;
 	}
   
+  NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+  [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];
+  
 	if ([[UnityAdsProperties sharedInstance] adsGameId] != nil)
 		return;
 	  
@@ -152,6 +155,16 @@
       [[UnityAdsViewManager sharedInstance] setDelegate:self];
 		});
 	});
+}
+
+- (void)notificationHandler: (id) notification {
+  NSString *name = [notification name];
+  
+  UALOG_DEBUG(@"notification: %@", name);
+  
+  if ([name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
+    [self _refresh];
+  }
 }
 
 - (UIView *)adsView
@@ -206,7 +219,7 @@
   [[UnityAdsCampaignManager sharedInstance] setDelegate:nil];
 	[[UnityAdsViewManager sharedInstance] setDelegate:nil];
   [[UnityAdsWebAppController sharedInstance] setDelegate:nil];
-	
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	dispatch_release(self.queue);
 }
 
@@ -220,25 +233,6 @@
 	[[UnityAdsProperties sharedInstance] setRewardItem:rewardItem];
 	[self _notifyDelegateOfCampaignAvailability];
 }
-
-
-//- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager campaignData:(NSDictionary *)data
-//{
-//	UAAssert([NSThread isMainThread]);
-
-  // If the view manager already has campaign JSON data, it means that
-	// campaigns were updated, and we might want to update the webapp.
-//	if ([[UnityAdsViewManager sharedInstance] campaignJSON] != nil) {
-//		self.webViewInitialized = NO;
-//	}
-  
-//  if (self.webViewInitialized == NO) {
-//    [[UnityAdsViewManager sharedInstance] loadWebView];
-//  }
-  
-  // FIX (SHOULD NOT EVEN SET THE CAMPAIGN DATA)
-//  [[UnityAdsViewManager sharedInstance] setCampaignJSON:data];
-//}
 
 - (void)campaignManagerCampaignDataReceived {
   // FIX (remember the "update campaigns")

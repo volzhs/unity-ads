@@ -132,7 +132,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   NSString *returnValue = nil;
   
   if (javaScriptString != nil) {
-    UALOG_DEBUG(@"Runnig JavaScript: %@", javaScriptString);
+    UALOG_DEBUG(@"Running JavaScriptString: %@", javaScriptString);
     returnValue = [self.webView stringByEvaluatingJavaScriptFromString:javaScriptString];
   }
   
@@ -162,8 +162,9 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	if (campaign != nil) {
 		[[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
 	}
-	else
-		UALOG_DEBUG(@"No campaign with id '%@' found.", campaignId);
+	else {
+    UALOG_DEBUG(@"No campaign with id '%@' found.", campaignId);
+  }		
 }
 
 - (void)openExternalUrl:(NSString *)urlString {
@@ -180,7 +181,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 
 - (void)initWebAppWithValues:(NSDictionary *)values {
 	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSInit, [values JSONRepresentation]];
-  UALOG_DEBUG(@"%@", js);
+  UALOG_DEBUG(@"");
   [self runJavascript:js];
 }
 
@@ -203,7 +204,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-	UALOG_DEBUG(@"%@", _webAppInitalizationParams);
+	UALOG_DEBUG(@"");
 	
 	self.webViewLoaded = YES;
 	
