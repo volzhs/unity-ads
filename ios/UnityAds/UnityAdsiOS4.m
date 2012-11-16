@@ -242,8 +242,16 @@
 
 - (void)campaignManagerCampaignDataReceived {
   // FIX (remember the "update campaigns")
+  UAAssert([NSThread isMainThread]);
   UALOG_DEBUG(@"CAMPAIGN DATA RECEIVED");
-  [[UnityAdsViewManager sharedInstance] initWebApp];
+  
+  if ([[UnityAdsCampaignManager sharedInstance] campaignData] != nil) {
+    [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
+  }
+  
+  if (![[UnityAdsWebAppController sharedInstance] webViewInitialized]) {
+    [[UnityAdsViewManager sharedInstance] initWebApp];
+  }
 }
 
  

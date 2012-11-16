@@ -42,46 +42,54 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 
 + (id)sharedInstance {
 	@synchronized(self) {
-		if (sharedWebAppController == nil)
+		if (sharedWebAppController == nil) {
       sharedWebAppController = [[UnityAdsWebAppController alloc] init];
+      [sharedWebAppController setWebViewInitialized:NO];
+      [sharedWebAppController setWebViewLoaded:NO];
+    }
 	}
 	
 	return sharedWebAppController;
 }
 
-- (void)setup:(CGRect)frame webAppParams:(NSDictionary *)webAppParams {
-  _webAppInitalizationParams = webAppParams;
-  self.webView = [[UIWebView alloc] initWithFrame:frame];
-  self.webView.delegate = self;
-  self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  
+- (void)loadWebApp:(NSDictionary *)webAppParams {
 	self.webViewLoaded = NO;
 	self.webViewInitialized = NO;
-
-  UIScrollView *scrollView = nil;
-  if ([self.webView respondsToSelector:@selector(scrollView)])
-    scrollView = self.webView.scrollView;
-  else
-  {
-    UIView *view = [self.webView.subviews lastObject];
-    if ([view isKindOfClass:[UIScrollView class]])
-      scrollView = (UIScrollView *)view;
-  }
-  
-  if (scrollView != nil)
-  {
-    scrollView.delegate = self;
-    scrollView.showsVerticalScrollIndicator = NO;
-  }
-  
+  _webAppInitalizationParams = webAppParams;
   [NSURLProtocol registerClass:[UnityAdsURLProtocol class]];
 	[self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[[UnityAdsProperties sharedInstance] webViewBaseUrl]]]];
+}
+
+- (void)setupWebApp:(CGRect)frame {  
+  if (self.webView == nil) {
+    self.webView = [[UIWebView alloc] initWithFrame:frame];
+    self.webView.delegate = self;
+    self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    UIScrollView *scrollView = nil;
+    
+    if ([self.webView respondsToSelector:@selector(scrollView)]) {
+      scrollView = self.webView.scrollView;
+    }
+    else {
+      UIView *view = [self.webView.subviews lastObject];
+      if ([view isKindOfClass:[UIScrollView class]])
+        scrollView = (UIScrollView *)view;
+    }
+    
+    if (scrollView != nil) {
+      scrollView.delegate = self;
+      scrollView.showsVerticalScrollIndicator = NO;
+    }
+  }
 }
 
 - (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data
 {
 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
-	[self.webView stringByEvaluatingJavaScriptFromString:js];
+  
+  UALOG_DEBUG(@"");
+  [self runJavascript:js];
 }
 
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data {
@@ -119,6 +127,28 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	}
 }
 
+- (void)runJavascript:(NSString *)javaScriptString {
+  
+  NSString *returnValue = nil;
+  
+  if (javaScriptString != nil) {
+    UALOG_DEBUG(@"Runnig JavaScript: %@", javaScriptString);
+    returnValue = [self.webView stringByEvaluatingJavaScriptFromString:javaScriptString];
+  }
+  
+  if (returnValue != nil) {
+    if ([returnValue isEqualToString:@"true"]) {
+      UALOG_DEBUG(@"JavaScript call successfull.");
+    }
+    else {
+      UALOG_DEBUG(@"Got unexpected response when running javascript: %@", returnValue);
+    }
+  }
+  else {
+    UALOG_DEBUG(@"JavaScript call failed!");
+  }
+}
+
 - (void)_selectCampaignWithID:(NSString *)campaignId {
 	[[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
 	
@@ -151,7 +181,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)initWebAppWithValues:(NSDictionary *)values {
 	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSInit, [values JSONRepresentation]];
   UALOG_DEBUG(@"%@", js);
-	[self.webView stringByEvaluatingJavaScriptFromString:js];
+  [self runJavascript:js];
 }
 
 

@@ -144,7 +144,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
     [[UnityAdsWebAppController sharedInstance] webView].userInteractionEnabled = YES;
     [self hidePlayer];
-    //[self closeAdView];
+    [self closeAdView];
   }
 }
 
@@ -208,7 +208,8 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
   }
   
   [[UnityAdsWebAppController sharedInstance] setDelegate:self];
-  [[UnityAdsWebAppController sharedInstance] setup:_window.bounds webAppParams:webAppValues];
+  [[UnityAdsWebAppController sharedInstance] setupWebApp:_window.bounds];
+  [[UnityAdsWebAppController sharedInstance] loadWebApp:webAppValues];
 }
 
 - (BOOL)adViewVisible
