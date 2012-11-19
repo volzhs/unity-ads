@@ -35,7 +35,7 @@ UnityAdsCampaign *selectedCampaign;
 
 - (void)playSelectedVideo {
   __block UnityAdsVideo *blockSelf = self;
-  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:@"iosUnknown"]) {
+  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
     timeObserver = [self addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
       [blockSelf _videoPositionChanged:time];
     }];
@@ -48,7 +48,7 @@ UnityAdsCampaign *selectedCampaign;
 	[analyticsTimeValues addObject:[self _valueWithDuration:duration * .5]];
 	[analyticsTimeValues addObject:[self _valueWithDuration:duration * .75]];
   
-  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:@"iosUnknown"]) {
+  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
     analyticsTimeObserver = [self addBoundaryTimeObserverForTimes:analyticsTimeValues queue:nil usingBlock:^{
       [blockSelf _logVideoAnalytics];
     }];
@@ -66,7 +66,7 @@ UnityAdsCampaign *selectedCampaign;
 	
   [self destroyPlayer];
   
-  if ([[UnityAdsDevice analyticsMachineName] isEqualToString:@"iosUnknown"]) {
+  if ([[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
     videoPosition = kVideoAnalyticsPositionThirdQuartile;
   }
   

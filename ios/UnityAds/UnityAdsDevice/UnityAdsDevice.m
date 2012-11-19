@@ -18,6 +18,21 @@
 #import "../UnityAds.h"
 #import "../UnityAdsOpenUDID/UnityAdsOpenUDID.h"
 
+NSString * const kUnityAdsDeviceIphone = @"iphone";
+NSString * const kUnityAdsDeviceIphone3g = @"iphone3g";
+NSString * const kUnityAdsDeviceIphone3gs = @"iphone3gs";
+NSString * const kUnityAdsDeviceIphone4 = @"iphone4";
+NSString * const kUnityAdsDeviceIphone4s = @"iphone4s";
+NSString * const kUnityAdsDeviceIphone5 = @"iphone5";
+NSString * const kUnityAdsDeviceIpodTouch1gen = @"ipodtouch1gen";
+NSString * const kUnityAdsDeviceIpodTouch2gen = @"ipodtouch2gen";
+NSString * const kUnityAdsDeviceIpodTouch3gen = @"ipodtouch3gen";
+NSString * const kUnityAdsDeviceIpodTouch4gen = @"ipodtouch4gen";
+NSString * const kUnityAdsDeviceIpad1 = @"ipad1";
+NSString * const kUnityAdsDeviceIpad2 = @"ipad2";
+NSString * const kUnityAdsDeviceIpad3 = @"ipad3";
+NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
+
 @implementation UnityAdsDevice
 
 + (NSString *)_substringOfString:(NSString *)string toIndex:(NSInteger)index
@@ -102,43 +117,40 @@
 	return result;
 }
 
-+ (NSString *)analyticsMachineName
-{
++ (NSString *)analyticsMachineName {
 	NSString *machine = [self machineName];
 	if ([machine isEqualToString:@"iPhone1,1"])
-		return @"iphone";
+		return kUnityAdsDeviceIphone;
 	else if ([machine isEqualToString:@"iPhone1,2"])
-		return @"iphone3g";
+		return kUnityAdsDeviceIphone3g;
 	else if ([machine isEqualToString:@"iPhone2,1"])
-		return @"iphone3gs";
+		return kUnityAdsDeviceIphone3gs;
 	else if ([machine length] > 6 && [[self _substringOfString:machine toIndex:7] isEqualToString:@"iPhone3"])
-		return @"iphone4";
+		return kUnityAdsDeviceIphone4;
 	else if ([machine length] > 6 && [[self _substringOfString:machine toIndex:7] isEqualToString:@"iPhone4"])
-		return @"iphone4s";
+		return kUnityAdsDeviceIphone4s;
 	else if ([machine length] > 6 && [[self _substringOfString:machine toIndex:7] isEqualToString:@"iPhone5"])
-		return @"iphone5";
+		return kUnityAdsDeviceIphone5;
 	else if ([machine isEqualToString:@"iPod1,1"])
-		return @"ipodtouch1gen";
+		return kUnityAdsDeviceIpodTouch1gen;
 	else if ([machine isEqualToString:@"iPod2,1"])
-		return @"ipodtouch2gen";
+		return kUnityAdsDeviceIpodTouch2gen;
 	else if ([machine isEqualToString:@"iPod3,1"])
-		return @"ipodtouch3gen";
+		return kUnityAdsDeviceIpodTouch3gen;
 	else if ([machine isEqualToString:@"iPod4,1"])
-		return @"ipodtouch4gen";
+		return kUnityAdsDeviceIpodTouch4gen;
 	else if ([machine length] > 4 && [[self _substringOfString:machine toIndex:5] isEqualToString:@"iPad1"])
-		return @"ipad1";
+		return kUnityAdsDeviceIpad1;
 	else if ([machine length] > 4 && [[self _substringOfString:machine toIndex:5] isEqualToString:@"iPad2"])
-		return @"ipad2";
+		return kUnityAdsDeviceIpad2;
 	else if ([machine length] > 4 && [[self _substringOfString:machine toIndex:5] isEqualToString:@"iPad3"])
-		return @"ipad3";
+		return kUnityAdsDeviceIpad3;
   
-	return @"iosUnknown";
+	return kUnityAdsDeviceIosUnknown;
 }
 
-+ (NSString *)_md5StringFromString:(NSString *)string
-{
-	if (string == nil)
-	{
++ (NSString *)_md5StringFromString:(NSString *)string {
+	if (string == nil) {
 		UALOG_DEBUG(@"Input is nil.");
 		return nil;
 	}
@@ -153,16 +165,13 @@
 	return output;
 }
 
-+ (NSString *)md5OpenUDIDString
-{
++ (NSString *)md5OpenUDIDString {
 	return [UnityAdsDevice _md5StringFromString:[UnityAdsOpenUDID value]];
 }
 
-+ (NSString *)md5AdvertisingIdentifierString
-{
++ (NSString *)md5AdvertisingIdentifierString {
 	NSString *adId = [self advertisingIdentifier];
-	if (adId == nil)
-	{
+	if (adId == nil) {
 		UALOG_DEBUG(@"Advertising identifier not available.");
 		return nil;
 	}
@@ -170,20 +179,16 @@
 	return [self _md5StringFromString:adId];
 }
 
-+ (NSString *)currentConnectionType
-{
++ (NSString *)currentConnectionType {
 	NSString *wifiString = @"wifi";
 	NSString *cellularString = @"cellular";
 	NSString *connectionString = nil;
 	
 	SCNetworkReachabilityRef reachabilityRef = SCNetworkReachabilityCreateWithName(NULL, "unity3d.com");
-	if (reachabilityRef != NULL)
-	{
+	if (reachabilityRef != NULL) {
 		SCNetworkReachabilityFlags flags;
-		if (SCNetworkReachabilityGetFlags(reachabilityRef, &flags))
-		{
-			if ((flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0)
-			{
+		if (SCNetworkReachabilityGetFlags(reachabilityRef, &flags)) {
+			if ((flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0) {
 				// if target host is reachable and no connection is required
 				//  then we'll assume (for now) that you're on Wi-Fi
 				connectionString = wifiString;

@@ -75,10 +75,9 @@
 - (void)openAppStoreWithData:(NSDictionary *)data {
 	UALOG_DEBUG(@"");
 	
-  if ( ! [self _canOpenStoreProductViewController]) {
+  if (![self _canOpenStoreProductViewController]) {
 		NSString *clickUrl = [data objectForKey:@"clickUrl"];
-    if (clickUrl == nil) return;
-    
+    if (clickUrl == nil) return;    
     UALOG_DEBUG(@"Cannot open store product view controller, falling back to click URL.");
 		[[UnityAdsWebAppController sharedInstance] openExternalUrl:clickUrl];
 		return;
