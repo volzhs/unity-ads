@@ -34,7 +34,7 @@
 + (UnityAdsViewManager *)sharedInstance;
 - (UIView *)adView;
 - (void)initWebApp;
-- (void)openAppStoreWithGameId:(NSString *)gameId;
+- (void)openAppStoreWithData:(NSDictionary *)data;
 - (void)showPlayerAndPlaySelectedVideo;
 - (void)hidePlayer;
 - (void)closeAdView;

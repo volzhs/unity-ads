@@ -111,7 +111,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore]) {
       if ([data objectForKey:@"clickUrl"] != nil) {
-        [[UnityAdsViewManager sharedInstance] openAppStoreWithGameId:[data objectForKey:@"clickUrl"]];
+        [[UnityAdsViewManager sharedInstance] openAppStoreWithData:data];
       }    
 		}
 	}
