@@ -12,11 +12,12 @@
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
+#import "../UnityAdsWebView/UnityAdsWebAppController.h"
 
 id timeObserver;
 id analyticsTimeObserver;
 VideoAnalyticsPosition videoPosition;
-UnityAdsCampaign *selectedCampaign;
+//UnityAdsCampaign *selectedCampaign;
 
 @implementation UnityAdsVideo
 
@@ -55,7 +56,7 @@ UnityAdsCampaign *selectedCampaign;
   }
     
 	[self play];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_videoPlaybackEnded:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];  
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_videoPlaybackEnded:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
   [self.delegate videoPlaybackStarted];
 	[self _logVideoAnalytics];
 }
@@ -71,6 +72,7 @@ UnityAdsCampaign *selectedCampaign;
   }
   
   [self _logVideoAnalytics];
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"videoCompleted" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   [self.delegate videoPlaybackEnded];
 }
 

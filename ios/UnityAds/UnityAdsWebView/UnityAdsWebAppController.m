@@ -19,6 +19,7 @@
 NSString * const kUnityAdsWebViewPrefix = @"applifierimpact.";
 NSString * const kUnityAdsWebViewJSInit = @"init";
 NSString * const kUnityAdsWebViewJSChangeView = @"setView";
+NSString * const kUnityAdsWebViewJSHandleNativeEvent = @"handleNativeEvent";
 NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
 NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
 NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
@@ -87,6 +88,13 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data
 {
 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
+  
+  UALOG_DEBUG(@"");
+  [self runJavascript:js];
+}
+
+- (void)sendNativeEventToWebApp:(NSString *)eventType data:(NSDictionary *)data {
+ 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
   [self runJavascript:js];
