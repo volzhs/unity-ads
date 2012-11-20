@@ -106,7 +106,7 @@
       }
     };
     
-    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id, @"text":@"Loading AppStore..."}];
+    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
     SEL loadProduct = @selector(loadProductWithParameters:completionBlock:);
     if ([self.storeController respondsToSelector:loadProduct]) {
 #pragma clang diagnostic push
