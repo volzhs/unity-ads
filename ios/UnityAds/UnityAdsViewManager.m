@@ -122,10 +122,8 @@
 
 static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 
-+ (id)sharedInstance
-{
-	@synchronized(self)
-	{
++ (id)sharedInstance {
+	@synchronized(self) {
 		if (sharedUnityAdsInstanceViewManager == nil)
 				sharedUnityAdsInstanceViewManager = [[UnityAdsViewManager alloc] init];
 	}
@@ -133,12 +131,10 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	return sharedUnityAdsInstanceViewManager;
 }
 
-- (id)init
-{
+- (id)init {
 	UAAssertV([NSThread isMainThread], nil);
 	
-	if ((self = [super init]))
-	{
+	if ((self = [super init])) {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -249,7 +245,6 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 {
 	UALOG_DEBUG(@"");
   [self.storePresentingViewController dismissViewControllerAnimated:YES completion:nil];
-
 	self.storePresentingViewController = nil;
 }
 
