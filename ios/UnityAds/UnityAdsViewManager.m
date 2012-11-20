@@ -284,10 +284,10 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
   }
 }
 
-- (void)showPlayerAndPlaySelectedVideo {
+- (void)showPlayerAndPlaySelectedVideo:(BOOL)checkIfWatched {
 	UALOG_DEBUG(@"");
   
-  if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed) {
+  if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed && checkIfWatched) {
     UALOG_DEBUG(@"Trying to watch a campaign that is already viewed!");
     return;
   }

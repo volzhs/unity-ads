@@ -108,7 +108,12 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
       if ([data objectForKey:@"campaignId"] != nil) {
         [self _selectCampaignWithID:[data objectForKey:@"campaignId"]];
-        [[UnityAdsViewManager sharedInstance] showPlayerAndPlaySelectedVideo];
+        BOOL checkIfWatched = YES;
+        if ([data objectForKey:@"rewatch"] != nil && [[data valueForKey:@"rewatch"] boolValue] == true) {
+          checkIfWatched = NO;
+        }
+        
+        [[UnityAdsViewManager sharedInstance] showPlayerAndPlaySelectedVideo:checkIfWatched];
       }
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo]) {
