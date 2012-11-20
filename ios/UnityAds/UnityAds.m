@@ -14,8 +14,7 @@
 
 #pragma mark - Private
 
-- (id)initAdsInstance
-{
+- (id)initAdsInstance {
 	if ((self = [super init])) {
 	}
 	
@@ -75,10 +74,6 @@ static UnityAds *sharedAdsInstance = nil;
 }
 
 - (void)trackInstall {
-	UALOG_DEBUG(@"Disabled on older versions of iOS.");
-}
-
-- (void)refresh {
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 

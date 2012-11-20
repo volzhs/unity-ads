@@ -245,8 +245,13 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		}
 		
 		NSURL *videoURL = [self.cache localVideoURLForCampaign:campaign];
-		if (videoURL == nil)
-			videoURL = campaign.trailerStreamingURL;
+    UALOG_DEBUG(@"%@ and %i", videoURL.absoluteString, [self.cache campaignExistsInQueue:campaign]);
+		if (videoURL == nil || [self.cache campaignExistsInQueue:campaign]) {
+      UALOG_DEBUG(@"Campaign is not cached!");
+      videoURL = campaign.trailerStreamingURL;
+    }
+    
+    UALOG_DEBUG(@"%@", videoURL);
     
 		return videoURL;
 	}
@@ -254,7 +259,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 - (UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId {
 	UAAssertV([NSThread isMainThread], nil);
-	
 	UnityAdsCampaign *foundCampaign = nil;
 	
 	for (UnityAdsCampaign *campaign in self.campaigns) {
@@ -265,7 +269,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	}
 	
 	UALOG_DEBUG(@"");
-	
 	return foundCampaign;
 }
 

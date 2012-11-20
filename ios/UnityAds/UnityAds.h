@@ -53,6 +53,5 @@
 - (BOOL)canShow;
 - (void)stopAll;
 - (void)trackInstall;
-- (void)refresh;
 
 @end

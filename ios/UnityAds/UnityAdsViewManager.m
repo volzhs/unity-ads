@@ -292,13 +292,18 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 - (void)showPlayerAndPlaySelectedVideo {
 	UALOG_DEBUG(@"");
   
+  if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed) {
+    UALOG_DEBUG(@"Trying to watch a campaign that is already viewed!");
+    return;
+  }
+  
 	NSURL *videoURL = [[UnityAdsCampaignManager sharedInstance] getVideoURLForCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
-	if (videoURL == nil)
-	{
+  
+	if (videoURL == nil) {
 		UALOG_DEBUG(@"Video not found!");
 		return;
 	}
-	
+  
 	AVPlayerItem *item = [AVPlayerItem playerItemWithURL:videoURL];
   
   self.player = [[UnityAdsVideo alloc] initWithPlayerItem:item];

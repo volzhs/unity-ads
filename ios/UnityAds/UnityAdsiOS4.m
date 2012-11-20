@@ -26,46 +26,38 @@
 
 #pragma mark - Private
 
-- (void)_backgroundRunLoop:(id)dummy
-{
-	@autoreleasepool
-	{
+- (void)_backgroundRunLoop:(id)dummy {
+	@autoreleasepool {
 		NSPort *port = [[NSPort alloc] init];
 		[port scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		
-		while([[NSThread currentThread] isCancelled] == NO)
-		{
-			@autoreleasepool
-			{
+		while([[NSThread currentThread] isCancelled] == NO) {
+			@autoreleasepool {
 				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:3.0]];
 			}
 		}
 	}
 }
 
-- (void)_refreshCampaignManager
-{
-	UAAssert( ! [NSThread isMainThread]);
+- (void)_refreshCampaignManager {
+	UAAssert(![NSThread isMainThread]);
 	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
 	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
 }
 
-- (void)_startCampaignManager
-{
-	UAAssert( ! [NSThread isMainThread]);
+- (void)_startCampaignManager {
+	UAAssert(![NSThread isMainThread]);
 	
   [[UnityAdsCampaignManager sharedInstance] setDelegate:self];
 	[self _refreshCampaignManager];
 }
 
-- (void)_startAnalyticsUploader
-{
-	UAAssert( ! [NSThread isMainThread]);
+- (void)_startAnalyticsUploader {
+	UAAssert(![NSThread isMainThread]);
 	[[UnityAdsAnalyticsUploader sharedInstance] retryFailedUploads];
 }
 
-- (BOOL)_adViewCanBeShown
-{
+- (BOOL)_adViewCanBeShown {
   if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] rewardItem] != nil && [[UnityAdsViewManager sharedInstance] webViewInitialized])
 		return YES;
 	else
@@ -74,19 +66,15 @@
   return NO;
 }
 
-- (void)_notifyDelegateOfCampaignAvailability
-{
-	if ([self _adViewCanBeShown])
-	{
+- (void)_notifyDelegateOfCampaignAvailability {
+	if ([self _adViewCanBeShown]) {
 		if ([self.delegate respondsToSelector:@selector(unityAdsFetchCompleted:)])
 			[self.delegate unityAdsFetchCompleted:self];
 	}
 }
 
-- (void)_trackInstall
-{
-	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil)
-	{
+- (void)_trackInstall {
+	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil) {
 		UALOG_ERROR(@"Unity Ads has not been started properly. Launch with -startWithGameId: first.");
 		return;
 	}
@@ -100,10 +88,8 @@
 	});
 }
 
-- (void)_refresh
-{
-	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil)
-	{
+- (void)_refresh {
+	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil) {
 		UALOG_ERROR(@"Unity Ads has not been started properly. Launch with -startWithGameId: first.");
 		return;
 	}
@@ -124,12 +110,10 @@
   [[UnityAdsProperties sharedInstance] setTestModeEnabled:testModeEnabled];
 }
 
-- (void)startWithGameId:(NSString *)gameId
-{
+- (void)startWithGameId:(NSString *)gameId {
   UAAssert([NSThread isMainThread]);
 	
-	if (gameId == nil || [gameId length] == 0)
-	{
+	if (gameId == nil || [gameId length] == 0) {
 		UALOG_ERROR(@"gameId empty or not set.");
 		return;
 	}
@@ -137,9 +121,10 @@
   NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
   [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];
   
-	if ([[UnityAdsProperties sharedInstance] adsGameId] != nil)
-		return;
-	  
+	if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) {
+    return;
+  }
+
 	[[UnityAdsProperties sharedInstance] setAdsGameId:gameId];
 	
   self.queue = dispatch_queue_create("com.unity3d.ads", NULL);
@@ -163,19 +148,23 @@
   UALOG_DEBUG(@"notification: %@", name);
   
   if ([name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
-    [self _refresh];
+    UAAssert([NSThread isMainThread]);
+    
+    if ([[UnityAdsViewManager sharedInstance] adViewVisible]) {
+      UALOG_DEBUG(@"Ad view visible, not refreshing.");
+    }
+    else {
+      [self _refresh];
+    }
   }
 }
 
-- (UIView *)adsView
-{
+- (UIView *)adsView {
 	UAAssertV([NSThread mainThread], nil);
 	
-	if ([self _adViewCanBeShown])
-	{
+	if ([self _adViewCanBeShown]) {
 		UIView *adView = [[UnityAdsViewManager sharedInstance] adView];
-		if (adView != nil)
-		{
+		if (adView != nil) {
 			if ([self.delegate respondsToSelector:@selector(unityAdsWillShow:)])
 				[self.delegate unityAdsWillShow:self];
 
@@ -186,36 +175,22 @@
 	return nil;
 }
 
-- (BOOL)canShow
-{
+- (BOOL)canShow {
 	UAAssertV([NSThread mainThread], NO);
 	return [self _adViewCanBeShown];
 }
 
-- (void)stopAll
-{
+- (void)stopAll{
 	UAAssert([NSThread isMainThread]);
   [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 }
 
-- (void)trackInstall
-{
+- (void)trackInstall{
 	UAAssert([NSThread isMainThread]);
 	[self _trackInstall];
 }
 
-- (void)refresh
-{
-	UAAssert([NSThread isMainThread]);
-	
-	if ([[UnityAdsViewManager sharedInstance] adViewVisible])
-		UALOG_DEBUG(@"Ad view visible, not refreshing.");
-	else
-		[self _refresh];
-}
-
-- (void)dealloc
-{
+- (void)dealloc {
   UALOG_DEBUG(@"");
   [[UnityAdsCampaignManager sharedInstance] setDelegate:nil];
 	[[UnityAdsViewManager sharedInstance] setDelegate:nil];
@@ -226,8 +201,7 @@
 
 #pragma mark - UnityAdsCampaignManagerDelegate
 
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID
-{
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
@@ -237,7 +211,7 @@
 
 - (void)campaignManagerCampaignDataReceived {
   UAAssert([NSThread isMainThread]);
-  UALOG_DEBUG(@"CAMPAIGN DATA RECEIVED");
+  UALOG_DEBUG(@"Campaign data received.");
   
   if ([[UnityAdsCampaignManager sharedInstance] campaignData] != nil) {
     [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
@@ -251,8 +225,7 @@
  
 #pragma mark - UnityAdsViewManagerDelegate
 
-- (UIViewController *)viewControllerForPresentingViewControllersForViewManager:(UnityAdsViewManager *)viewManager
-{
+- (UIViewController *)viewControllerForPresentingViewControllersForViewManager:(UnityAdsViewManager *)viewManager {
 	UAAssertV([NSThread isMainThread], nil);
 	UALOG_DEBUG(@"");
 	
