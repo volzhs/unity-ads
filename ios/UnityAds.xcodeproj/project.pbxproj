@@ -39,6 +39,8 @@
 		786F5D701635359500FD34C4 /* UnityAdsVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 786F5D6C1635359400FD34C4 /* UnityAdsVideo.m */; };
 		786F5D981636AF9600FD34C4 /* UnityAdsWebAppController.h in Headers */ = {isa = PBXBuildFile; fileRef = 786F5D961636AF9600FD34C4 /* UnityAdsWebAppController.h */; };
 		786F5D991636AF9600FD34C4 /* UnityAdsWebAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 786F5D971636AF9600FD34C4 /* UnityAdsWebAppController.m */; };
+		787893A5165CE94F00134FC3 /* UnityAdsVideoView.h in Headers */ = {isa = PBXBuildFile; fileRef = 787893A3165CE94F00134FC3 /* UnityAdsVideoView.h */; };
+		787893A6165CE94F00134FC3 /* UnityAdsVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 787893A4165CE94F00134FC3 /* UnityAdsVideoView.m */; };
 		78AC201A1622EFEA007DE419 /* UnityAdsOpenUDID.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */; };
 		78AC201B1622EFEA007DE419 /* UnityAdsOpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */; };
 		78AC20211622EFF3007DE419 /* UnityAdsAnalyticsUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */; };
@@ -95,6 +97,8 @@
 		786F5D6C1635359400FD34C4 /* UnityAdsVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsVideo.m; sourceTree = "<group>"; };
 		786F5D961636AF9600FD34C4 /* UnityAdsWebAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsWebAppController.h; sourceTree = "<group>"; };
 		786F5D971636AF9600FD34C4 /* UnityAdsWebAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsWebAppController.m; sourceTree = "<group>"; };
+		787893A3165CE94F00134FC3 /* UnityAdsVideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsVideoView.h; sourceTree = "<group>"; };
+		787893A4165CE94F00134FC3 /* UnityAdsVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsVideoView.m; sourceTree = "<group>"; };
 		78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsOpenUDID.h; sourceTree = "<group>"; };
 		78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsOpenUDID.m; sourceTree = "<group>"; };
 		78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsAnalyticsUploader.h; sourceTree = "<group>"; };
@@ -155,6 +159,8 @@
 			children = (
 				786F5D6B1635359400FD34C4 /* UnityAdsVideo.h */,
 				786F5D6C1635359400FD34C4 /* UnityAdsVideo.m */,
+				787893A3165CE94F00134FC3 /* UnityAdsVideoView.h */,
+				787893A4165CE94F00134FC3 /* UnityAdsVideoView.m */,
 			);
 			path = UnityAdsVideo;
 			sourceTree = "<group>";
@@ -325,6 +331,7 @@
 				784E93361652482D009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.h in Headers */,
 				784E93381652482D009667F6 /* UnityAdsSBJsonStreamWriterState.h in Headers */,
 				784E933C1652487C009667F6 /* UnityAdsSBJsonUTF8Stream.h in Headers */,
+				787893A5165CE94F00134FC3 /* UnityAdsVideoView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +469,7 @@
 				784E93371652482D009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.m in Sources */,
 				784E93391652482D009667F6 /* UnityAdsSBJsonStreamWriterState.m in Sources */,
 				784E933D1652487C009667F6 /* UnityAdsSBJsonUTF8Stream.m in Sources */,
+				787893A6165CE94F00134FC3 /* UnityAdsVideoView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

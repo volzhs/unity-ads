@@ -16,6 +16,7 @@
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsCampaign/UnityAdsCampaignManager.h"
+#import "UnityAdsVideo/UnityAdsVideoView.h"
 
 @interface UnityAdsViewManager () <UIWebViewDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) UIWindow *window;
@@ -25,6 +26,7 @@
 @property (nonatomic, assign) UIViewController *storePresentingViewController;
 @property (nonatomic, strong) NSDictionary *productParams;
 @property (nonatomic, strong) UIViewController *storeController;
+@property (nonatomic, strong) UnityAdsVideoView *videoView;
 @end
 
 @implementation UnityAdsViewManager
@@ -231,9 +233,7 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 - (void)hidePlayer {
   if (self.player != nil) {
     self.progressLabel.hidden = YES;
-    [self.player.playerLayer removeFromSuperlayer];
-    self.player.playerLayer = nil;
-    self.player = nil;
+    [self.adContainerView sendSubviewToBack:self.videoView];
   }
 }
 
@@ -254,11 +254,16 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
   
 	AVPlayerItem *item = [AVPlayerItem playerItemWithURL:videoURL];
   
-  self.player = [[UnityAdsVideo alloc] initWithPlayerItem:item];
-  self.player.delegate = self;
-  [self.player createPlayerLayer];
-  self.player.playerLayer.frame = self.adContainerView.bounds;
-	[self.adContainerView.layer addSublayer:self.player.playerLayer];
+  if (self.player == nil) {
+    self.player = [[UnityAdsVideo alloc] initWithPlayerItem:item];
+    self.player.delegate = self;
+    [_videoView setPlayer:self.player];
+  }
+  else {
+    [self.player replaceCurrentItemWithPlayerItem:item];
+  }
+  
+  [self.adContainerView bringSubviewToFront:self.videoView];
   [self.player playSelectedVideo];
 }
 
@@ -308,6 +313,11 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 		
 		if (self.adContainerView == nil) {
 			self.adContainerView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+      self.videoView = [[UnityAdsVideoView alloc] initWithFrame:self.adContainerView.bounds];
+      [self.videoView setBackgroundColor:[UIColor blackColor]];
+      [self.adContainerView addSubview:self.videoView];
+      self.videoView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+      [self.adContainerView sendSubviewToBack:self.videoView];
       [self.adContainerView setBackgroundColor:[UIColor blackColor]];
 			
 			self.progressLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -319,10 +329,13 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 			self.progressLabel.shadowOffset = CGSizeMake(0, 1.0);
 			self.progressLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
 			[self.adContainerView addSubview:self.progressLabel];
+      self.adContainerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+      self.adContainerView.autoresizesSubviews = true;
 		}
 		
 		if ([[UnityAdsWebAppController sharedInstance] webView].superview != self.adContainerView) {
 			[[[UnityAdsWebAppController sharedInstance] webView] setBounds:self.adContainerView.bounds];
+      [[UnityAdsWebAppController sharedInstance] webView].autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth; 
 			[self.adContainerView addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
 		}
 		
