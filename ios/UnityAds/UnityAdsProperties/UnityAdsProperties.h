@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "../UnityAdsCampaign/UnityAdsRewardItem.h"
 
 @interface UnityAdsProperties : NSObject
@@ -17,8 +18,8 @@
   @property (nonatomic, strong) NSString *campaignQueryString;
   @property (nonatomic, strong) NSString *adsGameId;
   @property (nonatomic, strong) NSString *gamerId;
-//  @property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
   @property (nonatomic) BOOL testModeEnabled;
+  @property (nonatomic, assign) UIViewController *currentViewController;
 
 + (UnityAdsProperties *)sharedInstance;
 - (void)refreshCampaignQueryString;

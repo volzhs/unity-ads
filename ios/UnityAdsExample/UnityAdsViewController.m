@@ -24,8 +24,7 @@
 @synthesize avAsset;
 @synthesize avPlayerItem;
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 	
 	[[UnityAds sharedInstance] setDelegate:self];
@@ -34,58 +33,40 @@
 	[self.buttonView setImage:[UIImage imageNamed:@"unityads_waiting"] forState:UIControlStateNormal];
 }
 
-- (void)nextPhase
-{
-	if ([[UnityAds sharedInstance] canShow])
-	{
-		NSLog(@"Showing Unity Ads.");
-		UIView *adView = [[UnityAds sharedInstance] Unity AdsAdView];
-		adView.frame = self.view.bounds;
-		[self.view addSubview:adView];
+- (void)nextPhase {
+	if ([[UnityAds sharedInstance] canShow]) {
+        [[UnityAds sharedInstance] show];
 	}
-	else
-		NSLog(@"Unity Ads cannot be shown.");
+	else {
+        NSLog(@"Unity Ads cannot be shown.");
+    }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return (interfaceOrientation == UIInterfaceOrientationLandscapeRight);
 }
 
 #pragma mark - UnityAdsDelegate
 
-- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey
-{
+- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey {
 	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
 }
 
-- (void)unityAdsWillShow:(UnityAds *)unityAds
-{
+- (void)unityAdsWillShow:(UnityAds *)unityAds {
 	NSLog(@"unityAdsWillShow");
 }
 
-- (void)unityAdsWillHide:(UnityAds *)unityAds
-{
+- (void)unityAdsWillHide:(UnityAds *)unityAds {
 	NSLog(@"unityAdsWillHide");
 }
 
-- (void)unityAdsVideoStarted:(UnityAds *)unityAds
-{
+- (void)unityAdsVideoStarted:(UnityAds *)unityAds {
 	NSLog(@"unityAdsVideoStarted");
 }
 
-- (void)unityAdsFetchCompleted:(UnityAds *)unityAds
-{
+- (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
 	NSLog(@"unityAdsFetchCompleted");
-
 	[self.buttonView setImage:[UIImage imageNamed:@"unityads_ready"] forState:UIControlStateNormal];
-}
-
-- (UIViewController *)viewControllerForPresentingViewControllersForAds:(UnityAds *)unityAds
-{
-	NSLog(@"viewControllerForPresentingViewControllersForAds");
-	
-	return self;
 }
 
 @end

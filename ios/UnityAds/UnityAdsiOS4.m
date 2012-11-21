@@ -111,6 +111,10 @@
 }
 
 - (void)startWithGameId:(NSString *)gameId {
+  [self startWithGameId:gameId andViewController:nil];
+}
+
+- (void)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController {
   UAAssert([NSThread isMainThread]);
 	
 	if (gameId == nil || [gameId length] == 0) {
@@ -118,13 +122,14 @@
 		return;
 	}
   
-  NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-  [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];
-  
-	if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) {
+  if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) {
     return;
   }
-
+  
+  [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
+  
+  NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+  [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];
 	[[UnityAdsProperties sharedInstance] setAdsGameId:gameId];
 	
   self.queue = dispatch_queue_create("com.unity3d.ads", NULL);
@@ -180,6 +185,25 @@
 	return [self _adViewCanBeShown];
 }
 
+- (BOOL)show {
+  UAAssertV([NSThread mainThread], NO);
+  return [[UnityAdsViewManager sharedInstance] applyAdViewToCurrentViewController];
+}
+
+- (BOOL)hide {
+  UAAssertV([NSThread mainThread], NO);
+  return [[UnityAdsViewManager sharedInstance] removeAdViewFromCurrentViewController];
+}
+
+- (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds {
+  [[UnityAdsViewManager sharedInstance] removeAdViewFromCurrentViewController];
+  [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
+  
+  if (applyAds) {
+    [[UnityAdsViewManager sharedInstance] applyAdViewToCurrentViewController];
+  }
+}
+
 - (void)stopAll{
 	UAAssert([NSThread isMainThread]);
   [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
@@ -198,6 +222,7 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	dispatch_release(self.queue);
 }
+
 
 #pragma mark - UnityAdsCampaignManagerDelegate
 
@@ -222,13 +247,6 @@
 
  
 #pragma mark - UnityAdsViewManagerDelegate
-
-- (UIViewController *)viewControllerForPresentingViewControllersForViewManager:(UnityAdsViewManager *)viewManager {
-	UAAssertV([NSThread isMainThread], nil);
-	UALOG_DEBUG(@"");
-	
-	return [self.delegate viewControllerForPresentingViewControllersForAds:self];
-}
 
 - (void)viewManagerStartedPlayingVideo {
 	UAAssert([NSThread isMainThread]);

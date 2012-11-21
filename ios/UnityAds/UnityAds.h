@@ -32,7 +32,6 @@
 
 @required
 - (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey;
-- (UIViewController *)viewControllerForPresentingViewControllersForAds:(UnityAds *)unityAds;
 
 @optional
 - (void)unityAdsWillShow:(UnityAds *)unityAds;
@@ -48,9 +47,13 @@
 
 + (id)sharedInstance;
 - (void)setTestMode:(BOOL)testModeEnabled;
+- (void)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController;
 - (void)startWithGameId:(NSString *)gameId;
+- (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds;
 - (UIView *)adsView;
 - (BOOL)canShow;
+- (BOOL)show;
+- (BOOL)hide;
 - (void)stopAll;
 - (void)trackInstall;
 

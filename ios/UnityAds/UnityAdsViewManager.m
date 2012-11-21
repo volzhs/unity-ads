@@ -35,7 +35,10 @@
 	[self.delegate viewManagerWillCloseAdView];
 	[[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{}];
 	[self.window addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
-	[self.adContainerView removeFromSuperview];
+  
+  if (self.adContainerView.superview != nil) {
+    [self.adContainerView removeFromSuperview];
+  }
 }
 
 - (BOOL)_canOpenStoreProductViewController {
@@ -98,7 +101,7 @@
       UALOG_DEBUG(@"RESULT: %i", result);
       if (result) {
         [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
-        self.storePresentingViewController = [self.delegate viewControllerForPresentingViewControllersForViewManager:self];
+        self.storePresentingViewController = [[UnityAdsProperties sharedInstance] currentViewController];
         [self.storePresentingViewController presentModalViewController:self.storeController animated:YES];
       }
       else {
@@ -145,6 +148,30 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
 	return self;
 }
 
+- (void)initWebApp {
+	UAAssert([NSThread isMainThread]);
+  
+  NSDictionary *persistingData = @{@"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData], @"platform":@"ios", @"deviceId":[UnityAdsDevice md5DeviceId]};
+  
+  NSDictionary *trackingData = @{@"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice analyticsMachineName]};
+  NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];
+  
+  if ([UnityAdsDevice canUseTracking]) {
+    [webAppValues addEntriesFromDictionary:trackingData];
+  }
+  
+  [[UnityAdsWebAppController sharedInstance] setDelegate:self];
+  [[UnityAdsWebAppController sharedInstance] setupWebApp:_window.bounds];
+  [[UnityAdsWebAppController sharedInstance] loadWebApp:webAppValues];
+}
+
+- (void)dealloc
+{
+	UALOG_DEBUG(@"");
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
 #pragma mark - Notification receiver
 
 - (void)notificationHandler: (id) notification {
@@ -162,80 +189,6 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
     
     [self closeAdView];
   }
-}
-
-
-// FIX: Rename this method to something more descriptive
-- (UIView *)adView
-{
-	UAAssertV([NSThread isMainThread], nil);
-	
-	if ([[UnityAdsWebAppController sharedInstance] webViewInitialized])
-	{
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{}];
-		
-		if (self.adContainerView == nil)
-		{
-			self.adContainerView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-      [self.adContainerView setBackgroundColor:[UIColor blackColor]];
-			
-			self.progressLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-			self.progressLabel.backgroundColor = [UIColor clearColor];
-			self.progressLabel.textColor = [UIColor whiteColor];
-			self.progressLabel.font = [UIFont systemFontOfSize:12.0];
-			self.progressLabel.textAlignment = UITextAlignmentRight;
-			self.progressLabel.shadowColor = [UIColor blackColor];
-			self.progressLabel.shadowOffset = CGSizeMake(0, 1.0);
-			self.progressLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
-			[self.adContainerView addSubview:self.progressLabel];
-		}
-		
-		if ([[UnityAdsWebAppController sharedInstance] webView].superview != self.adContainerView)
-		{
-			[[[UnityAdsWebAppController sharedInstance] webView] setBounds:self.adContainerView.bounds];
-			[self.adContainerView addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
-		}
-		
-		return self.adContainerView;
-	}
-	else
-	{
-		UALOG_DEBUG(@"Web view not initialized.");
-		return nil;
-	}
-}
-
-- (void)initWebApp {
-	UAAssert([NSThread isMainThread]);
- 
-  NSDictionary *persistingData = @{@"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData], @"platform":@"ios", @"deviceId":[UnityAdsDevice md5DeviceId]};
-  
-  NSDictionary *trackingData = @{@"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice analyticsMachineName]};
-  NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];
-  
-  if ([UnityAdsDevice canUseTracking]) {
-    [webAppValues addEntriesFromDictionary:trackingData];
-  }
-  
-  [[UnityAdsWebAppController sharedInstance] setDelegate:self];
-  [[UnityAdsWebAppController sharedInstance] setupWebApp:_window.bounds];
-  [[UnityAdsWebAppController sharedInstance] loadWebApp:webAppValues];
-}
-
-- (BOOL)adViewVisible
-{
-	UAAssertV([NSThread isMainThread], NO);
-	
-	if ([[UnityAdsWebAppController sharedInstance] webView].superview == self.window)
-		return NO;
-	else
-		return YES;
-}
-
-- (void)dealloc
-{
-	UALOG_DEBUG(@"");
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
@@ -309,6 +262,77 @@ static UnityAdsViewManager *sharedUnityAdsInstanceViewManager = nil;
   [self.player playSelectedVideo];
 }
 
+
+#pragma mark - AdView
+
+- (BOOL)applyAdViewToCurrentViewController {
+  UIView *adView = [self adView];
+  UIViewController *currentController = [[UnityAdsProperties sharedInstance] currentViewController];
+  
+  if ([adView superview] == nil || (currentController != nil && ![currentController.view isEqual:[adView superview]])) {
+    if ([adView superview] != nil) {
+      [self removeAdViewFromCurrentViewController];
+    }
+    NSLog(@"Showing Unity Ads.");
+    adView.frame = currentController.view.bounds;
+    [currentController.view addSubview:adView];
+    return YES;
+  }
+  
+  return NO;
+}
+
+- (BOOL)removeAdViewFromCurrentViewController {
+  if ([[self adView] superview] != nil) {
+    [self closeAdView];
+    return YES;
+  }
+  
+  return NO;
+}
+
+- (BOOL)adViewVisible {
+	UAAssertV([NSThread isMainThread], NO);
+	
+	if ([[UnityAdsWebAppController sharedInstance] webView].superview == self.window)
+		return NO;
+	else
+		return YES;
+}
+
+- (UIView *)adView {
+	UAAssertV([NSThread isMainThread], nil);
+	
+	if ([[UnityAdsWebAppController sharedInstance] webViewInitialized]) {
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{}];
+		
+		if (self.adContainerView == nil) {
+			self.adContainerView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+      [self.adContainerView setBackgroundColor:[UIColor blackColor]];
+			
+			self.progressLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+			self.progressLabel.backgroundColor = [UIColor clearColor];
+			self.progressLabel.textColor = [UIColor whiteColor];
+			self.progressLabel.font = [UIFont systemFontOfSize:12.0];
+			self.progressLabel.textAlignment = UITextAlignmentRight;
+			self.progressLabel.shadowColor = [UIColor blackColor];
+			self.progressLabel.shadowOffset = CGSizeMake(0, 1.0);
+			self.progressLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
+			[self.adContainerView addSubview:self.progressLabel];
+		}
+		
+		if ([[UnityAdsWebAppController sharedInstance] webView].superview != self.adContainerView) {
+			[[[UnityAdsWebAppController sharedInstance] webView] setBounds:self.adContainerView.bounds];
+			[self.adContainerView addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
+		}
+		
+		return self.adContainerView;
+	}
+	else {
+		UALOG_DEBUG(@"Web view not initialized.");
+		return nil;
+	}
+}
 
 #pragma mark - WebAppController
 
