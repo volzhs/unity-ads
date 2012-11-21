@@ -36,8 +36,6 @@ NSString * const kGamerIDKey = @"gamerId";
 @property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
 @property (nonatomic, strong) UnityAdsCache *cache;
-@property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
-@property (nonatomic, strong) NSString *gamerID;
 @end
 
 @implementation UnityAdsCampaignManager
@@ -194,17 +192,25 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	
   if (_campaignData != nil && [_campaignData isKindOfClass:[NSDictionary class]]) {
     NSDictionary *jsonDictionary = [(NSDictionary *)_campaignData objectForKey:@"data"];
+    
+    if ([jsonDictionary objectForKey:@"webViewUrl"] == nil) return;
+    if ([jsonDictionary objectForKey:@"analyticsUrl"] == nil) return;
+    if ([jsonDictionary objectForKey:@"impactUrl"] == nil) return;
+    if ([jsonDictionary objectForKey:kGamerIDKey] == nil) return;
+    if ([jsonDictionary objectForKey:@"campaigns"] == nil) return;
+    if ([jsonDictionary objectForKey:@"item"] == nil) return;
+    
     self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
     self.rewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
-    
+
     [[UnityAdsProperties sharedInstance] setWebViewBaseUrl:(NSString *)[jsonDictionary objectForKey:@"webViewUrl"]];
     [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"analyticsUrl"]];
     [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"impactUrl"]];
     
-    NSString *gamerID = [jsonDictionary objectForKey:kGamerIDKey];
-    UAAssert(gamerID != nil);
-    self.gamerID = gamerID;
+    NSString *gamerId = [jsonDictionary objectForKey:kGamerIDKey];
+    UAAssert(gamerId != nil);
     
+    [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
     [self.cache cacheCampaigns:self.campaigns];
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -328,7 +334,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 - (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[self.delegate campaignManager:self updatedWithCampaigns:self.campaigns rewardItem:self.rewardItem gamerID:self.gamerID];
+		[self.delegate campaignManager:self updatedWithCampaigns:self.campaigns rewardItem:self.rewardItem gamerID:[[UnityAdsProperties sharedInstance] gamerId]];
 	});
 }
 

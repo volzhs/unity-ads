@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSArray *campaigns;
 @property (nonatomic, strong) NSDictionary *campaignData;
 @property (nonatomic, strong) UnityAdsCampaign *selectedCampaign;
+@property (nonatomic, strong) UnityAdsRewardItem *rewardItem;
 
 - (void)updateCampaigns;
 - (NSURL *)getVideoURLForCampaign:(UnityAdsCampaign *)campaign;

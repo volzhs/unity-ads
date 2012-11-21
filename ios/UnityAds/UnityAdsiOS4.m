@@ -204,8 +204,6 @@
 - (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
-	
-	[[UnityAdsProperties sharedInstance] setRewardItem:rewardItem];
 	[self _notifyDelegateOfCampaignAvailability];
 }
 
@@ -244,7 +242,7 @@
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
-	[self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsProperties sharedInstance] rewardItem].key];
+	[self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsCampaignManager sharedInstance] rewardItem].key];
 }
 
 - (void)viewManagerWillCloseAdView {
