@@ -14,7 +14,9 @@
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
-#import "../UnityAdsViewManager.h"
+//#import "../UnityAdsViewManager.h"
+#import "../UnityAdsDevice/UnityAdsDevice.h"
+#import "../UnityAdsMainViewController.h"
 
 NSString * const kUnityAdsWebViewPrefix = @"applifierimpact.";
 NSString * const kUnityAdsWebViewJSInit = @"init";
@@ -31,12 +33,16 @@ NSString * const kUnityAdsWebViewViewTypeStart = @"start";
 
 @interface UnityAdsWebAppController ()
   @property (nonatomic, strong) NSDictionary* webAppInitalizationParams;
+  //@property (nonatomic, strong) UIWindow *window;
 @end
 
 @implementation UnityAdsWebAppController
 
 - (UnityAdsWebAppController *)init {
-  return [super init];
+  if (self = [super init]) {
+    //_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+  }
+  return self;
 }
 
 static UnityAdsWebAppController *sharedWebAppController = nil;
@@ -64,6 +70,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)setupWebApp:(CGRect)frame {  
   if (self.webView == nil) {
     self.webView = [[UIWebView alloc] initWithFrame:frame];
+    //[_window addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
     self.webView.delegate = self;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.webView.scalesPageToFit = NO;
@@ -85,8 +92,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   }
 }
 
-- (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data
-{
+- (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data {
 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
@@ -113,7 +119,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
           checkIfWatched = NO;
         }
         
-        [[UnityAdsViewManager sharedInstance] showPlayerAndPlaySelectedVideo:checkIfWatched];
+        [[UnityAdsMainViewController sharedInstance] showPlayerAndPlaySelectedVideo:checkIfWatched];
       }
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo]) {
@@ -124,12 +130,12 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore]) {
       if ([data objectForKey:@"clickUrl"] != nil) {
-        [[UnityAdsViewManager sharedInstance] openAppStoreWithData:data];
+        [[UnityAdsMainViewController sharedInstance] openAppStoreWithData:data];
       }    
 		}
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIClose]) {
-    [[UnityAdsViewManager sharedInstance] closeAdView];
+    [[UnityAdsMainViewController sharedInstance] closeAds];
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete]) {
     self.webViewInitialized = YES;
@@ -189,6 +195,22 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
 }
 
+
+- (void)initWebApp {
+	UAAssert([NSThread isMainThread]);
+  
+  NSDictionary *persistingData = @{@"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData], @"platform":@"ios", @"deviceId":[UnityAdsDevice md5DeviceId]};
+  
+  NSDictionary *trackingData = @{@"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice analyticsMachineName]};
+  NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];
+  
+  if ([UnityAdsDevice canUseTracking]) {
+    [webAppValues addEntriesFromDictionary:trackingData];
+  }
+  
+  [self setupWebApp:[[UIScreen mainScreen] bounds]];
+  [self loadWebApp:webAppValues];
+}
 
 #pragma mark - WebView
 

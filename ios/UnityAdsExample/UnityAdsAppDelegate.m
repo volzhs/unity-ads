@@ -38,8 +38,6 @@
 	}
 	
     [self.window makeKeyAndVisible];
-    [[UnityAds sharedInstance] setTestMode:YES];
-	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self.viewController];
     return YES;
 }
 

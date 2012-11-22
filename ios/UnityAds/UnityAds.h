@@ -50,7 +50,6 @@
 - (void)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController;
 - (void)startWithGameId:(NSString *)gameId;
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds;
-- (UIView *)adsView;
 - (BOOL)canShow;
 - (BOOL)show;
 - (BOOL)hide;

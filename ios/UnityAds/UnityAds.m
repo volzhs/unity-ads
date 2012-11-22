@@ -65,11 +65,6 @@ static UnityAds *sharedAdsInstance = nil;
   UALOG_DEBUG(@"Disabled on older versions of iOS.");
 }
 
-- (UIView *)adsView {
-	UALOG_DEBUG(@"Disabled on older versions of iOS.");
-	return nil;
-}
-
 - (BOOL)canShow {
 	UALOG_DEBUG(@"Disabled on older versions of iOS.");
 	return NO;

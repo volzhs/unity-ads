@@ -31,6 +31,13 @@
 	
     [self.buttonView addTarget:self action:@selector(nextPhase) forControlEvents:UIControlEventTouchUpInside];
 	[self.buttonView setImage:[UIImage imageNamed:@"unityads_waiting"] forState:UIControlStateNormal];
+
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[UnityAds sharedInstance] setTestMode:YES];
+	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];
 }
 
 - (void)nextPhase {
@@ -43,8 +50,13 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    //return (interfaceOrientation == UIInterfaceOrientationLandscapeRight);
-    return YES;
+    NSLog(@"Rotate");
+    return (interfaceOrientation == UIInterfaceOrientationLandscapeRight);
+}
+
+- (NSUInteger) supportedInterfaceOrientations {
+    NSLog(@"Rotate");
+    return UIInterfaceOrientationMaskLandscape | UIInterfaceOrientationMaskPortrait;
 }
 
 #pragma mark - UnityAdsDelegate

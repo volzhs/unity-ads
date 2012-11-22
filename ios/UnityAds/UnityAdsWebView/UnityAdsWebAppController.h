@@ -40,6 +40,7 @@ extern NSString * const kUnityAdsWebViewViewTypeStart;
 - (void)openExternalUrl:(NSString *)urlString;
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data;
 - (void)sendNativeEventToWebApp:(NSString *)eventType data:(NSDictionary *)data;
+- (void)initWebApp;
 
 + (id)sharedInstance;
 @end
