@@ -125,23 +125,31 @@
 	AVPlayerItem *item = [AVPlayerItem playerItemWithURL:videoURL];
 
   if (self.player == nil) {
-    self.player = [[UnityAdsVideo alloc] initWithPlayerItem:item];
+    self.player = [[UnityAdsVideo alloc] initWithPlayerItem:nil];
     self.player.delegate = self;
     [_videoView setPlayer:self.player];
   }
-  else {
-    [self.player replaceCurrentItemWithPlayerItem:item];
-  }
+  
+  [self.player preparePlayer];
+  [self.player replaceCurrentItemWithPlayerItem:item];
   
   [self.view bringSubviewToFront:self.videoView];
   [self.player playSelectedVideo];
 }
 
-- (void)hidePlayer {
+- (void)_hidePlayer {
   if (self.player != nil) {
     self.progressLabel.hidden = YES;
+    [self.view sendSubviewToBack:self.progressLabel];
     [self.view sendSubviewToBack:self.videoView];
   }
+}
+
+- (void)_clearPlayer {
+  [self.player clearPlayer];
+  [self.videoView setPlayer:nil];
+  self.player.delegate = nil;
+  self.player = nil;
 }
 
 - (Float64)_currentVideoDuration {
@@ -164,19 +172,24 @@
 }
 
 - (void)videoPlaybackStarted {
-  [self _displayProgressLabel];
   [self.delegate mainControllerStartedPlayingVideo];
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id, @"text":@"Buffering..."}];
   [[UnityAdsWebAppController sharedInstance] webView].userInteractionEnabled = NO;
+}
+
+- (void)videoStartedPlaying {
+  NSDictionary *data = @{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id};
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id, @"text":@"Buffering..."}];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:data];
+  [self _displayProgressLabel];
 }
 
 - (void)videoPlaybackEnded {
   [[UnityAdsWebAppController sharedInstance] webView].userInteractionEnabled = YES;
   [self.delegate mainControllerVideoEnded];
-	[self hidePlayer];
+  [self _hidePlayer];
+  [self _clearPlayer];
 	
-  NSDictionary *data = @{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id};
-  
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:data];
 	[[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
 }
 
@@ -211,8 +224,8 @@
     [[UnityAdsWebAppController sharedInstance] webView].userInteractionEnabled = YES;
     if (self.player != nil) {
       UALOG_DEBUG(@"Destroying player");
-      [self.player destroyPlayer];
-      [self hidePlayer];
+      [self _hidePlayer];
+      [self _clearPlayer];
     }
     
     [self closeAds];

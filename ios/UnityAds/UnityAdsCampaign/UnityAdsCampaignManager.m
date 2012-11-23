@@ -140,6 +140,13 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			UAAssertV(itunesID != nil && [itunesID length] > 0, nil);
 			campaign.itunesID = itunesID;
 			
+      campaign.shouldCacheVideo = NO;
+      if ([campaignDictionary objectForKey:@"cacheVideo"] != nil) {
+        if ([[campaignDictionary valueForKey:@"cacheVideo"] boolValue] != 0) {
+          campaign.shouldCacheVideo = YES;
+        }
+      }
+      
 			[campaigns addObject:campaign];
 		}
 		else {
@@ -254,13 +261,12 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		}
 		
 		NSURL *videoURL = [self.cache localVideoURLForCampaign:campaign];
-    UALOG_DEBUG(@"%@ and %i", videoURL.absoluteString, [self.cache campaignExistsInQueue:campaign]);
-		if (videoURL == nil || [self.cache campaignExistsInQueue:campaign]) {
+		if (videoURL == nil || [self.cache campaignExistsInQueue:campaign] || ![campaign shouldCacheVideo]) {
       UALOG_DEBUG(@"Campaign is not cached!");
       videoURL = campaign.trailerStreamingURL;
     }
     
-    UALOG_DEBUG(@"%@", videoURL);
+    UALOG_DEBUG(@"%@ and %i", videoURL.absoluteString, [self.cache campaignExistsInQueue:campaign]);
     
 		return videoURL;
 	}
