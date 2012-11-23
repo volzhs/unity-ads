@@ -68,14 +68,14 @@
 #pragma mark - Public
 
 - (BOOL)closeAds {
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
-  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:NO completion:nil];
+  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:YES completion:nil];
   return YES;
 }
 
 - (BOOL)openAds {
   UALOG_DEBUG(@"");
-  [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:NO completion:nil];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+  [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:YES completion:nil];
   
   if (![self.videoView.superview isEqual:self.view]) {
     [self.view addSubview:self.videoView];
