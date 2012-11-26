@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Unity Technologies. All rights reserved.
 //
 
-#import "UnityAdsVideo.h"
+#import "UnityAdsVideoPlayer.h"
 #import "../UnityAds.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
@@ -14,15 +14,13 @@
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
 
-static void *UnityAdsVideoPlayerItemStatusContext = &UnityAdsVideoPlayerItemStatusContext;
-
-@interface UnityAdsVideo ()
+@interface UnityAdsVideoPlayer ()
   @property (nonatomic, assign) id timeObserver;
   @property (nonatomic, assign) id analyticsTimeObserver;
   @property (nonatomic) VideoAnalyticsPosition videoPosition;
 @end
 
-@implementation UnityAdsVideo
+@implementation UnityAdsVideoPlayer
 
 - (void)preparePlayer {
   [self _addObservers];
@@ -31,6 +29,7 @@ static void *UnityAdsVideoPlayerItemStatusContext = &UnityAdsVideoPlayerItemStat
 - (void)clearPlayer {
   [self _removeObservers];
 }
+
 
 #pragma mark Video Playback
 
@@ -59,7 +58,7 @@ static void *UnityAdsVideoPlayerItemStatusContext = &UnityAdsVideoPlayerItemStat
   [self addObserver:self forKeyPath:@"self.currentItem.error" options:0 context:nil];
   [self addObserver:self forKeyPath:@"self.currentItem.asset.duration" options:0 context:nil];
   
-  __block UnityAdsVideo *blockSelf = self;
+  __block UnityAdsVideoPlayer *blockSelf = self;
   if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
     self.timeObserver = [self addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
       [blockSelf _videoPositionChanged:time];
@@ -111,8 +110,8 @@ static void *UnityAdsVideoPlayerItemStatusContext = &UnityAdsVideoPlayerItemStat
     
     AVPlayerStatus playerStatus = self.currentItem.status;
     if (playerStatus == AVPlayerStatusReadyToPlay) {
-      [self play];
       [self.delegate videoStartedPlaying];
+      [self play];
     }
     else if (playerStatus == AVPlayerStatusFailed) {
       UALOG_DEBUG(@"Player failed");
@@ -149,6 +148,5 @@ static void *UnityAdsVideoPlayerItemStatusContext = &UnityAdsVideoPlayerItemStat
 	self.videoPosition++;
   [[UnityAdsAnalyticsUploader sharedInstance] logVideoAnalyticsWithPosition:self.videoPosition campaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 }
-
 
 @end

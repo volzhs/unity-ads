@@ -12,7 +12,6 @@
 #import "UnityAdsCampaign/UnityAdsRewardItem.h"
 #import "UnityAdsOpenUDID/UnityAdsOpenUDID.h"
 #import "UnityAdsData/UnityAdsAnalyticsUploader.h"
-//#import "UnityAdsViewManager.h"
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
 
@@ -166,26 +165,6 @@
   }
 }
 
-/*
-- (UIView *)adsView {
-	UAAssertV([NSThread mainThread], nil);
-	
-  UnityAdsMainViewController *adViewController = nil;
-  adViewController = [[UnityAdsMainViewController alloc] initWithNibName:nil bundle:[NSBundle mainBundle]];
-  [[[UnityAdsProperties sharedInstance] currentViewController].view.window.rootViewController presentViewController:adViewController animated:NO completion:nil];
-	if ([self _adViewCanBeShown]) {
-		UIView *adView = [[UnityAdsViewManager sharedInstance] adView];
-		if (adView != nil) {
-			if ([self.delegate respondsToSelector:@selector(unityAdsWillShow:)])
-				[self.delegate unityAdsWillShow:self];
-
-			return adView;
-		}
-	}
-	
-	return nil;
-}*/
-
 - (BOOL)canShow {
 	UAAssertV([NSThread mainThread], NO);
 	return [self _adViewCanBeShown];
@@ -193,13 +172,7 @@
 
 - (BOOL)show {
   UAAssertV([NSThread mainThread], NO);
-  /*
-  return [[UnityAdsViewManager sharedInstance] applyAdViewToCurrentViewController];
-  */
-  /*
-  [[[UnityAdsProperties sharedInstance] currentViewController].view.window.rootViewController presentViewController:[UnityAdsMainViewController sharedInstance] animated:NO completion:nil];*/
   [[UnityAdsMainViewController sharedInstance] openAds];
-  
   return YES;
 }
 
@@ -231,7 +204,6 @@
   UALOG_DEBUG(@"");
   [[UnityAdsCampaignManager sharedInstance] setDelegate:nil];
   [[UnityAdsMainViewController sharedInstance] setDelegate:nil];
-	//[[UnityAdsViewManager sharedInstance] setDelegate:nil];
   [[UnityAdsWebAppController sharedInstance] setDelegate:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	dispatch_release(self.queue);

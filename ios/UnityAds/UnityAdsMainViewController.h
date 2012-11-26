@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UnityAdsVideo/UnityAdsVideo.h"
 #import "UnityAdsWebView/UnityAdsWebAppController.h"
+#import "UnityAdsVideo/UnityAdsVideoViewController.h"
 
 @protocol UnityAdsMainViewControllerDelegate <NSObject>
 
@@ -19,7 +19,7 @@
 - (void)mainControllerWebViewInitialized;
 @end
 
-@interface UnityAdsMainViewController : UIViewController <UnityAdsVideoDelegate, UnityAdsWebAppControllerDelegate>
+@interface UnityAdsMainViewController : UIViewController <UnityAdsVideoControllerDelegate, UnityAdsWebAppControllerDelegate>
 
 @property (nonatomic, assign) id<UnityAdsMainViewControllerDelegate> delegate;
 //@property (nonatomic) BOOL webViewInitialized;

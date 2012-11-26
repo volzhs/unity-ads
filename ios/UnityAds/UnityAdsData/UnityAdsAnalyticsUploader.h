@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "../UnityAdsVideo/UnityAdsVideo.h"
+#import "../UnityAdsVideo/UnityAdsVideoPlayer.h"
 
 extern NSString * const kUnityAdsQueryDictionaryQueryKey;
 extern NSString * const kUnityAdsQueryDictionaryBodyKey;
