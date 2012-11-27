@@ -54,7 +54,6 @@
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
-  UALOG_DEBUG(@"");
   return UIInterfaceOrientationMaskLandscape;
 }
 
