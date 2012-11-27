@@ -13,7 +13,6 @@
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsMainViewController.h"
 
-
 @interface UnityAds () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate, UnityAdsMainViewControllerDelegate>
 @property (nonatomic, strong) NSThread *backgroundThread;
 @property (nonatomic, assign) dispatch_queue_t queue;
@@ -61,15 +60,8 @@ static UnityAds *sharedUnityAdsInstance = nil;
   UAAssert([NSThread isMainThread]);
   UALOG_DEBUG(@"");
   if (![UnityAds isSupported]) return;
-  
-	if (gameId == nil || [gameId length] == 0) {
-		UALOG_ERROR(@"gameId empty or not set.");
-		return;
-	}
-  
-  if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) {
-    return;
-  }
+  if ([[UnityAdsProperties sharedInstance] adsGameId]) return;
+	if (gameId == nil || [gameId length] == 0) return;
   
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
   
