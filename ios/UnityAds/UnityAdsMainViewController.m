@@ -112,8 +112,6 @@
 
 - (void)videoPlayerPlaybackEnded {
   [self.delegate mainControllerVideoEnded];
-  
-  // FIX DOESN'T WORK ON iOS 4
   [self dismissViewControllerAnimated:NO completion:nil];
 }
 
@@ -177,7 +175,7 @@
       UALOG_DEBUG(@"RESULT: %i", result);
       if (result) {
         [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"loading"}];
-        [[UnityAdsMainViewController sharedInstance] presentModalViewController:self.storeController animated:YES];
+        [[UnityAdsMainViewController sharedInstance] presentViewController:self.storeController animated:YES completion:nil];
       }
       else {
         UALOG_DEBUG(@"Loading product information failed: %@", error);
