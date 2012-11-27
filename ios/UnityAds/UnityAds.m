@@ -60,7 +60,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
   UAAssert([NSThread isMainThread]);
   UALOG_DEBUG(@"");
   if (![UnityAds isSupported]) return;
-  if ([[UnityAdsProperties sharedInstance] adsGameId]) return;
+  if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) return;
 	if (gameId == nil || [gameId length] == 0) return;
   
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
