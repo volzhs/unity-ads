@@ -104,13 +104,10 @@
 #pragma mark - Video
 
 - (void)videoPlayerStartedPlaying {
-  [self presentViewController:self.videoController animated:NO completion:nil];
   [self.delegate mainControllerStartedPlayingVideo];
-  
-  // FIX, DOESN'T WORK ON iOS 4
-  NSDictionary *data = @{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id};
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id, @"text":@"Buffering..."}];
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:data];  
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"buffering"}];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{}];
+  [self presentViewController:self.videoController animated:NO completion:nil];
 }
 
 - (void)videoPlayerPlaybackEnded {
@@ -128,7 +125,7 @@
     return;
   }
 
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id, @"text":@"Buffering your video..."}];
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"textKey":@"buffering"}];
   [self.videoController playCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 }
 
@@ -179,7 +176,7 @@
     void (^storeControllerComplete)(BOOL result, NSError *error) = ^(BOOL result, NSError *error) {
       UALOG_DEBUG(@"RESULT: %i", result);
       if (result) {
-        [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+        [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"loading"}];
         [[UnityAdsMainViewController sharedInstance] presentModalViewController:self.storeController animated:YES];
       }
       else {
@@ -187,7 +184,7 @@
       }
     };
     
-    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"textKey":@"loading"}];
     SEL loadProduct = @selector(loadProductWithParameters:completionBlock:);
     if ([self.storeController respondsToSelector:loadProduct]) {
 #pragma clang diagnostic push

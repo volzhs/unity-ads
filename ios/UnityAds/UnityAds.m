@@ -165,8 +165,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 
 - (void)_notificationHandler: (id) notification {
   NSString *name = [notification name];
-  
-  UALOG_DEBUG(@"notification: %@", name);
+  UALOG_DEBUG(@"Got notification from notificationCenter: %@", name);
   
   if ([name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
     UAAssert([NSThread isMainThread]);
