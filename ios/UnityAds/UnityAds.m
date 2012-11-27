@@ -128,36 +128,18 @@ static UnityAds *sharedUnityAdsInstance = nil;
   [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 }
 
+- (void)trackInstall{
+	UAAssert([NSThread isMainThread]);
+  if (![UnityAds isSupported]) return;
+	[[UnityAdsAnalyticsUploader sharedInstance] sendManualInstallTrackingCall];
+}
+
 - (void)dealloc {
   [[UnityAdsCampaignManager sharedInstance] setDelegate:nil];
   [[UnityAdsMainViewController sharedInstance] setDelegate:nil];
   [[UnityAdsWebAppController sharedInstance] setDelegate:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	dispatch_release(self.queue);
-}
-
-
-#pragma mark - Install tracking
-
-- (void)trackInstall{
-	UAAssert([NSThread isMainThread]);
-  if (![UnityAds isSupported]) return;
-	[self _trackInstall];
-}
-
-- (void)_trackInstall {
-	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil) {
-		UALOG_ERROR(@"Unity Ads has not been started properly. Launch with -startWithGameId: first.");
-		return;
-	}
-	
-	dispatch_async(self.queue, ^{
-    // FIX
-    NSString *queryString = [NSString stringWithFormat:@"%@/install", [[UnityAdsProperties sharedInstance] adsGameId]];
-    NSString *bodyString = [NSString stringWithFormat:@"deviceId=%@", [UnityAdsDevice md5DeviceId]];
-		NSDictionary *queryDictionary = @{ kUnityAdsQueryDictionaryQueryKey : queryString, kUnityAdsQueryDictionaryBodyKey : bodyString };
-    [[UnityAdsAnalyticsUploader sharedInstance] performSelector:@selector(sendInstallTrackingCallWithQueryDictionary:) onThread:self.backgroundThread withObject:queryDictionary waitUntilDone:NO];
-	});
 }
 
 

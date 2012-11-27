@@ -18,6 +18,7 @@ extern NSString * const kUnityAdsQueryDictionaryBodyKey;
 - (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary;
 - (void)retryFailedUploads;
 - (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
+- (void)sendManualInstallTrackingCall;
 
-+ (id)sharedInstance;
++ (UnityAdsAnalyticsUploader *)sharedInstance;
 @end

@@ -8,9 +8,7 @@
 
 #import "UnityAdsMainViewController.h"
 #import "UnityAds.h"
-
 #import "UnityAdsVideo/UnityAdsVideoView.h"
-#import "UnityAdsWebView/UnityAdsWebAppController.h"
 #import "UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "UnityAdsCampaign/UnityAdsCampaign.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
@@ -56,6 +54,9 @@
     [super didReceiveMemoryWarning];
 }
 
+
+#pragma mark - Orientation handling
+// FIX: not following developers orientations
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
   return YES;
 }
@@ -69,7 +70,7 @@
 #pragma mark - Public
 
 - (BOOL)closeAds {
-  // FIX, DOESN'T WORK ON iOS 4
+  UALOG_DEBUG(@"");
   if (self.videoController.view.superview != nil) {
     [self dismissViewControllerAnimated:NO completion:nil];
   }
@@ -80,8 +81,6 @@
 - (BOOL)openAds {
   UALOG_DEBUG(@"");
   [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
-  
-  // FIX, DOESN'T WORK ON iOS 4
   [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:YES completion:nil];
   
   if (![[[[UnityAdsWebAppController sharedInstance] webView] superview] isEqual:self.view]) {
