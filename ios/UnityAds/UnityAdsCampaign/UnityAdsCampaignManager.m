@@ -1,8 +1,5 @@
 //
 //  UnityAdsCampaignManager.m
-//  UnityAdsExample
-//
-//  Created by Johan Halin on 5.9.2012.
 //  Copyright (c) 2012 Unity Technologies. All rights reserved.
 //
 
@@ -36,6 +33,7 @@ NSString * const kGamerIDKey = @"gamerId";
 @property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
 @property (nonatomic, strong) UnityAdsCache *cache;
+@property (nonatomic, assign) dispatch_queue_t testQueue;
 @end
 
 @implementation UnityAdsCampaignManager
@@ -191,6 +189,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 }
 
 - (void)_processCampaignDownloadData {
+
   NSString *jsonString = [[NSString alloc] initWithData:self.campaignDownloadData encoding:NSUTF8StringEncoding];
   _campaignData = [jsonString JSONValue];
   
@@ -220,7 +219,10 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
     [self.cache cacheCampaigns:self.campaigns];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    //self.testQueue = dispatch_queue_create("com.unity3d.ads.testqueue", NULL);
+    
+    dispatch_async(dispatch_get_main_queue(), ^(void) {
+      //UALOG_DEBUG(@"Dispatching campaigndatareceived");
       [self.delegate campaignManagerCampaignDataReceived];
     });
   }

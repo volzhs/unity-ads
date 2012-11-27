@@ -1,8 +1,5 @@
 //
 //  UnityAdsAnalyticsUploader.h
-//  UnityAdsExample
-//
-//  Created by Johan Halin on 13.9.2012.
 //  Copyright (c) 2012 Unity Technologies. All rights reserved.
 //
 

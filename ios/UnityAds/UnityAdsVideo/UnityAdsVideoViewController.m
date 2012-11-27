@@ -8,7 +8,6 @@
 
 #import "../UnityAds.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
-
 #import "UnityAdsVideoViewController.h"
 #import "UnityAdsVideoPlayer.h"
 #import "UnityAdsVideoView.h"
@@ -112,11 +111,13 @@
 #pragma mark - Video player
 
 - (void)forceStopVideoPlayer {
+  UALOG_DEBUG(@"");
   [self _destroyVideoPlayer];
 }
 
 - (void)_createVideoPlayer {
   if (self.videoPlayer == nil) {
+    UALOG_DEBUG(@"");
     self.videoPlayer = [[UnityAdsVideoPlayer alloc] initWithPlayerItem:nil];
     self.videoPlayer.delegate = self;
   }
@@ -130,6 +131,7 @@
 
 - (void)_destroyVideoPlayer {
   if (self.videoPlayer != nil) {
+    UALOG_DEBUG(@"");
     self.currentPlayingVideoUrl = nil;
     [self.videoPlayer clearPlayer];
     self.videoPlayer.delegate = nil;
@@ -167,6 +169,7 @@
 
 - (void)_createProgressLabel {
   if (self.progressLabel == nil) {
+    UALOG_DEBUG(@"");
     self.progressLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     self.progressLabel.backgroundColor = [UIColor clearColor];
     self.progressLabel.textColor = [UIColor whiteColor];
