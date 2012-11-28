@@ -33,14 +33,12 @@ NSString * const kUnityAdsWebViewViewTypeStart = @"start";
 
 @interface UnityAdsWebAppController ()
   @property (nonatomic, strong) NSDictionary* webAppInitalizationParams;
-  //@property (nonatomic, strong) UIWindow *window;
 @end
 
 @implementation UnityAdsWebAppController
 
 - (UnityAdsWebAppController *)init {
   if (self = [super init]) {
-    //_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   }
   return self;
 }
@@ -70,10 +68,10 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)setupWebApp:(CGRect)frame {  
   if (self.webView == nil) {
     self.webView = [[UIWebView alloc] initWithFrame:frame];
-    //[_window addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
     self.webView.delegate = self;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.webView.scalesPageToFit = NO;
+    [self.webView setBackgroundColor:[UIColor blackColor]];
     UIScrollView *scrollView = nil;
     
     if ([self.webView respondsToSelector:@selector(scrollView)]) {
