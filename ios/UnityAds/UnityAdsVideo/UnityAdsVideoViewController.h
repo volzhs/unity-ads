@@ -19,6 +19,7 @@
 
 @interface UnityAdsVideoViewController : UIViewController <UnityAdsVideoPlayerDelegate>
 @property (nonatomic, assign) id<UnityAdsVideoControllerDelegate> delegate;
+@property (nonatomic, assign) BOOL isPlaying;
 - (void)playCampaign:(UnityAdsCampaign *)campaignToPlay;
 - (void)forceStopVideoPlayer;
 @end
