@@ -36,7 +36,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[UnityAds sharedInstance] setTestMode:YES];
+    //[[UnityAds sharedInstance] setTestMode:YES];
 	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];
 }
 
