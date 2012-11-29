@@ -5,7 +5,7 @@ Integration instructions can be found at https://developers.everyplay.com/docume
 
 Unity Ads SDK is licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html)
 
-In any issues, please file in issue with us in this Github repository, or log a ticket with us by emailing suppor@applifier.zendesk.com
+In any issues, please file in issue with us in this Github repository, or log a ticket with us by emailing support@applifier.zendesk.com
 
 Unity Ads SDK Release Notes
 ==================================
