@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		785829E2166764AE00605539 /* unityads_main.png in Resources */ = {isa = PBXBuildFile; fileRef = 785829E1166764AE00605539 /* unityads_main.png */; };
+		785829E41667693400605539 /* unityads_loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 785829E31667693400605539 /* unityads_loading.png */; };
+		785829E616676A2D00605539 /* unityads_loaded.png in Resources */ = {isa = PBXBuildFile; fileRef = 785829E516676A2D00605539 /* unityads_loaded.png */; };
+		785829E81667762600605539 /* unityads_open.png in Resources */ = {isa = PBXBuildFile; fileRef = 785829E71667762600605539 /* unityads_open.png */; };
+		785829EA16677A9D00605539 /* unityads_reward.png in Resources */ = {isa = PBXBuildFile; fileRef = 785829E916677A9D00605539 /* unityads_reward.png */; };
 		78AC205C1622F688007DE419 /* UnityAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78AC205B1622F688007DE419 /* UnityAds.framework */; };
 		78CC133815D3D84A00972EA6 /* icon_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 78CC133715D3D84A00972EA6 /* icon_57.png */; };
 		78CC133A15D3D85400972EA6 /* icon_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 78CC133915D3D85400972EA6 /* icon_114.png */; };
@@ -23,11 +28,14 @@
 		9017B0AB161086A600ACFC04 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9017B0AA161086A600ACFC04 /* SystemConfiguration.framework */; };
 		907454421609C20C00454427 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 907454411609C20C00454427 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F642682F16088B7C0005B83A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F642682E16088B7C0005B83A /* StoreKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		F64268381608A0D70005B83A /* unityads_waiting.png in Resources */ = {isa = PBXBuildFile; fileRef = F64268361608A0D70005B83A /* unityads_waiting.png */; };
-		F64268391608A0D70005B83A /* unityads_ready.png in Resources */ = {isa = PBXBuildFile; fileRef = F64268371608A0D70005B83A /* unityads_ready.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		785829E1166764AE00605539 /* unityads_main.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_main.png"; sourceTree = "<group>"; };
+		785829E31667693400605539 /* unityads_loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_loading.png"; sourceTree = "<group>"; };
+		785829E516676A2D00605539 /* unityads_loaded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_loaded.png"; sourceTree = "<group>"; };
+		785829E71667762600605539 /* unityads_open.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_open.png"; sourceTree = "<group>"; };
+		785829E916677A9D00605539 /* unityads_reward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_reward.png"; sourceTree = "<group>"; };
 		78AC205B1622F688007DE419 /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnityAds.framework; path = "build/Debug-iphoneos/UnityAds.framework"; sourceTree = "<group>"; };
 		78CC133715D3D84A00972EA6 /* icon_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_57.png; path = UnityAdsExample/icon_57.png; sourceTree = "<group>"; };
 		78CC133915D3D85400972EA6 /* icon_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_114.png; path = UnityAdsExample/icon_114.png; sourceTree = "<group>"; };
@@ -49,8 +57,6 @@
 		9017B0AA161086A600ACFC04 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		907454411609C20C00454427 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		F642682E16088B7C0005B83A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		F64268361608A0D70005B83A /* unityads_waiting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_waiting.png"; sourceTree = "<group>"; };
-		F64268371608A0D70005B83A /* unityads_ready.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_ready.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,8 +142,11 @@
 		78ED797315C67398007C5BD5 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				F64268361608A0D70005B83A /* unityads_waiting.png */,
-				F64268371608A0D70005B83A /* unityads_ready.png */,
+				785829E916677A9D00605539 /* unityads_reward.png */,
+				785829E71667762600605539 /* unityads_open.png */,
+				785829E516676A2D00605539 /* unityads_loaded.png */,
+				785829E31667693400605539 /* unityads_loading.png */,
+				785829E1166764AE00605539 /* unityads_main.png */,
 			);
 			name = Assets;
 			path = UnityAdsExample;
@@ -199,8 +208,11 @@
 				78ED796415C66FC6007C5BD5 /* UnityAdsViewController.xib in Resources */,
 				78CC133815D3D84A00972EA6 /* icon_57.png in Resources */,
 				78CC133A15D3D85400972EA6 /* icon_114.png in Resources */,
-				F64268381608A0D70005B83A /* unityads_waiting.png in Resources */,
-				F64268391608A0D70005B83A /* unityads_ready.png in Resources */,
+				785829E2166764AE00605539 /* unityads_main.png in Resources */,
+				785829E41667693400605539 /* unityads_loading.png in Resources */,
+				785829E616676A2D00605539 /* unityads_loaded.png in Resources */,
+				785829E81667762600605539 /* unityads_open.png in Resources */,
+				785829EA16677A9D00605539 /* unityads_reward.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

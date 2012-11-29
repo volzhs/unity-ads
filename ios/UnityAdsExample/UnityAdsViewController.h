@@ -12,6 +12,7 @@
 @interface UnityAdsViewController : UIViewController
 
 @property (nonatomic, retain) IBOutlet UIButton *buttonView;
+@property (nonatomic, retain) IBOutlet UIImageView *loadingImage;
 @property (nonatomic, retain) IBOutlet UIView *contentView;
 @property (nonatomic) int currentPhase;
 @property (nonatomic, retain) AVPlayer *avPlayer;

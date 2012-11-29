@@ -17,6 +17,7 @@
 @implementation UnityAdsViewController
 
 @synthesize buttonView;
+@synthesize loadingImage;
 @synthesize contentView;
 @synthesize currentPhase;
 @synthesize avPlayer;
@@ -28,10 +29,7 @@
     [super viewDidLoad];
 	
 	[[UnityAds sharedInstance] setDelegate:self];
-	
-    [self.buttonView addTarget:self action:@selector(nextPhase) forControlEvents:UIControlEventTouchUpInside];
-	[self.buttonView setImage:[UIImage imageNamed:@"unityads_waiting"] forState:UIControlStateNormal];
-
+    [self.buttonView addTarget:self action:@selector(openAds) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -40,7 +38,7 @@
 	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];
 }
 
-- (void)nextPhase {
+- (void)openAds {
 	if ([[UnityAds sharedInstance] canShow]) {
         [[UnityAds sharedInstance] show];
 	}
@@ -50,12 +48,10 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    NSLog(@"Rotate");
     return YES;
 }
 
 - (NSUInteger) supportedInterfaceOrientations {
-    NSLog(@"Rotate");
     return UIInterfaceOrientationMaskAll;
 }
 
@@ -68,6 +64,7 @@
 
 - (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey {
 	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
+    [self.loadingImage setImage:[UIImage imageNamed:@"unityads_reward"]];
 }
 
 - (void)unityAdsWillShow:(UnityAds *)unityAds {
@@ -84,7 +81,8 @@
 
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
 	NSLog(@"unityAdsFetchCompleted");
-	[self.buttonView setImage:[UIImage imageNamed:@"unityads_ready"] forState:UIControlStateNormal];
+    [self.loadingImage setImage:[UIImage imageNamed:@"unityads_loaded"]];
+	[self.buttonView setEnabled:YES];
 }
 
 @end
