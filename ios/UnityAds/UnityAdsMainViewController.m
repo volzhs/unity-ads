@@ -106,7 +106,9 @@
 #pragma mark - Video
 
 - (void)videoPlayerStartedPlaying {
-  [self.delegate mainControllerStartedPlayingVideo];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self.delegate mainControllerStartedPlayingVideo];
+  });
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"buffering"}];
   [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{}];
   [self presentViewController:self.videoController animated:NO completion:nil];

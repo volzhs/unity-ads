@@ -146,11 +146,13 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 
 - (void)runJavascript:(NSString *)javaScriptString {
   
-  NSString *returnValue = nil;
+  __block NSString *returnValue = nil;
   
   if (javaScriptString != nil) {
     UALOG_DEBUG(@"Running JavaScriptString: %@", javaScriptString);
-    returnValue = [self.webView stringByEvaluatingJavaScriptFromString:javaScriptString];
+    //dispatch_sync(dispatch_get_main_queue(), ^{
+      returnValue = [self.webView stringByEvaluatingJavaScriptFromString:javaScriptString];
+    //});
   }
   
   if (returnValue != nil) {
