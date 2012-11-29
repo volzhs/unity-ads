@@ -31,12 +31,6 @@
       // Start WebAppController
       [UnityAdsWebAppController sharedInstance];
       [[UnityAdsWebAppController sharedInstance] setDelegate:self];
-      
-      // Init VideoController (ios6)
-      if (kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber_iOS_5_1) {
-        UALOG_DEBUG(@"Initializing videoController only once in iOS6");
-        [self _createVideoController];
-      }
     }
   
     return self;
@@ -121,11 +115,7 @@
 - (void)videoPlayerPlaybackEnded {
   [self.delegate mainControllerVideoEnded];
   [self dismissViewControllerAnimated:NO completion:nil];
-  
-  if (kCFCoreFoundationVersionNumber <= kCFCoreFoundationVersionNumber_iOS_5_1) {
-    UALOG_DEBUG(@"Destroying videoController for iOS5 compatibility");
-    [self _destroyVideoController];
-  }
+  [self _destroyVideoController];
 }
 
 - (void)showPlayerAndPlaySelectedVideo:(BOOL)checkIfWatched {
@@ -137,12 +127,7 @@
   }
 
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"textKey":@"buffering"}];
-  
-  if (kCFCoreFoundationVersionNumber <= kCFCoreFoundationVersionNumber_iOS_5_1) {
-    UALOG_DEBUG(@"Creating videoController for iOS5 compatibility");
-    [self _createVideoController];
-  }
-  
+  [self _createVideoController];
   [self.videoController playCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 }
 
@@ -165,6 +150,7 @@
   UALOG_DEBUG(@"notification: %@", name);
   
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
+    [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
     [self.videoController forceStopVideoPlayer];
     [self closeAds];
   }
