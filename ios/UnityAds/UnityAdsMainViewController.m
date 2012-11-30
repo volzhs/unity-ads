@@ -71,26 +71,51 @@
 
 #pragma mark - Public
 
-- (BOOL)closeAds {
+- (BOOL)closeAds:(BOOL)forceMainThread {
   UALOG_DEBUG(@"");
-  if (self.videoController.view.superview != nil) {
-    [self dismissViewControllerAnimated:NO completion:nil];
+  
+  if (forceMainThread) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self _dismissMainViewController:forceMainThread];
+    });
   }
-  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:YES completion:nil];
-  [self.delegate mainControllerWillCloseAdView];
+  else {
+    [self _dismissMainViewController:forceMainThread];
+  }
   
   return YES;
 }
 
+- (void)_dismissMainViewController:(BOOL)forcedToMainThread {
+  if (self.videoController.view.superview != nil) {
+    [self dismissViewControllerAnimated:NO completion:nil];
+  }
+  
+  if (!forcedToMainThread) {
+    UALOG_DEBUG(@"Setting startview right now. No time for block completion");
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+  }
+  
+  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:YES completion:^(void){
+    UALOG_DEBUG(@"Setting start view after close");
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+  }];
+  
+  [self.delegate mainControllerWillCloseAdView];
+}
+
 - (BOOL)openAds {
   UALOG_DEBUG(@"");
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
-  [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:YES completion:nil];
   
-  if (![[[[UnityAdsWebAppController sharedInstance] webView] superview] isEqual:self.view]) {
-    [self.view addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
-    [[[UnityAdsWebAppController sharedInstance] webView] setFrame:self.view.bounds];
-  }
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+    [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:YES completion:nil];
+    
+    if (![[[[UnityAdsWebAppController sharedInstance] webView] superview] isEqual:self.view]) {
+      [self.view addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
+      [[[UnityAdsWebAppController sharedInstance] webView] setFrame:self.view.bounds];
+    }
+  });
   
   return YES;
 }
@@ -165,7 +190,7 @@
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
     [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
     [self.videoController forceStopVideoPlayer];
-    [self closeAds];
+    [self closeAds:NO];
   }
 }
 
@@ -203,7 +228,9 @@
       UALOG_DEBUG(@"RESULT: %i", result);
       if (result) {
         [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"loading"}];
-        [[UnityAdsMainViewController sharedInstance] presentViewController:self.storeController animated:YES completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [[UnityAdsMainViewController sharedInstance] presentViewController:self.storeController animated:YES completion:nil];
+        });
       }
       else {
         UALOG_DEBUG(@"Loading product information failed: %@", error);
@@ -234,6 +261,9 @@
 
 - (void)webAppReady {
   [self.delegate mainControllerWebViewInitialized];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+  });
 }
 
 

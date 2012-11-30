@@ -27,7 +27,7 @@
 + (id)sharedInstance;
 
 - (BOOL)openAds;
-- (BOOL)closeAds;
+- (BOOL)closeAds:(BOOL)forceMainThread;
 - (BOOL)mainControllerVisible;
 - (void)showPlayerAndPlaySelectedVideo:(BOOL)checkIfWatched;
 - (void)openAppStoreWithData:(NSDictionary *)data;

@@ -94,7 +94,9 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
-  [self runJavascript:js];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self runJavascript:js];
+  });
 }
 
 - (void)sendNativeEventToWebApp:(NSString *)eventType data:(NSDictionary *)data {
@@ -135,7 +137,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		}
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIClose]) {
-    [[UnityAdsMainViewController sharedInstance] closeAds];
+    [[UnityAdsMainViewController sharedInstance] closeAds:YES];
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete]) {
     self.webViewInitialized = YES;
@@ -192,7 +194,9 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		return;
 	}
 	
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+  });
 }
 
 

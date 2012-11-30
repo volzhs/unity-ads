@@ -100,13 +100,13 @@ static UnityAds *sharedUnityAdsInstance = nil;
 - (BOOL)hide {
   UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) NO;
-  return [[UnityAdsMainViewController sharedInstance] closeAds];
+  return [[UnityAdsMainViewController sharedInstance] closeAds:YES];
 }
 
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds {
 	UAAssert([NSThread isMainThread]);
   if (![UnityAds isSupported]) return;
-  [[UnityAdsMainViewController sharedInstance] closeAds];
+  [[UnityAdsMainViewController sharedInstance] closeAds:YES];
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
   
   if (applyAds) {
