@@ -186,7 +186,6 @@
 }
 
 - (void)videoPositionChanged:(CMTime)time {
-  UALOG_DEBUG(@"");
   [self _updateTimeRemainingLabelWithTime:time];
 }
 
@@ -197,16 +196,19 @@
 - (void)videoStartedPlaying {
   UALOG_DEBUG(@"");
   self.isPlaying = YES;
-  
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self.delegate videoPlayerStartedPlaying];
-  });
+  [self.delegate videoPlayerStartedPlaying];
 }
 
 - (void)videoPlaybackEnded {
   UALOG_DEBUG(@"");
   self.campaignToPlay.viewed = YES;
   [self.delegate videoPlayerPlaybackEnded];
+  self.isPlaying = NO;
+}
+
+- (void)videoPlaybackError {
+  UALOG_DEBUG(@"");
+  [self.delegate videoPlayerEncounteredError];
   self.isPlaying = NO;
 }
 
@@ -251,7 +253,6 @@
 }
 
 - (void)_updateTimeRemainingLabelWithTime:(CMTime)currentTime {
-  UALOG_DEBUG(@"");
 	Float64 duration = [self _currentVideoDuration];
 	Float64 current = CMTimeGetSeconds(currentTime);
 	NSString *descriptionText = [NSString stringWithFormat:NSLocalizedString(@"This video ends in %.0f seconds.", nil), duration - current];

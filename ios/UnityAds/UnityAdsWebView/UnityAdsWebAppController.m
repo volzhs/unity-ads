@@ -101,7 +101,9 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
  	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
-  [self runJavascript:js];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self runJavascript:js];
+  });
 }
 
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data {
@@ -150,9 +152,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   
   if (javaScriptString != nil) {
     UALOG_DEBUG(@"Running JavaScriptString: %@", javaScriptString);
-    //dispatch_sync(dispatch_get_main_queue(), ^{
-      returnValue = [self.webView stringByEvaluatingJavaScriptFromString:javaScriptString];
-    //});
+    returnValue = [self.webView stringByEvaluatingJavaScriptFromString:javaScriptString];
   }
   
   if (returnValue != nil) {

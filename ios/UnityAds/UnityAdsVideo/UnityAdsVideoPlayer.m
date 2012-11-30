@@ -35,7 +35,9 @@
 
 - (void)playSelectedVideo {
   self.videoPosition = kVideoAnalyticsPositionUnplayed;
-  [self.delegate videoPlaybackStarted];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self.delegate videoPlaybackStarted];
+  });
 	[self _logVideoAnalytics];
 }
 
@@ -47,7 +49,10 @@
   
   [self _logVideoAnalytics];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"videoCompleted" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
-  [self.delegate videoPlaybackEnded];
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self.delegate videoPlaybackEnded];
+  });
 }
 
 
@@ -60,7 +65,6 @@
   
   __block UnityAdsVideoPlayer *blockSelf = self;
   if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
-    UALOG_DEBUG(@"ADDING POSITION OBSERVER");
     self.timeObserver = [self addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
       [blockSelf _videoPositionChanged:time];
     }];
@@ -100,7 +104,10 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if ([keyPath isEqual:@"self.currentItem.error"]) {
+  if ([keyPath isEqual:@"self.currentItem.error"] && self.currentItem.error != nil) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.delegate videoPlaybackError];
+    });
     UALOG_DEBUG(@"VIDEOPLAYER_ERROR: %@", self.currentItem.error);
   }
   else if ([keyPath isEqual:@"self.currentItem.asset.duration"]) {
@@ -111,11 +118,16 @@
     
     AVPlayerStatus playerStatus = self.currentItem.status;
     if (playerStatus == AVPlayerStatusReadyToPlay) {
-      [self.delegate videoStartedPlaying];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate videoStartedPlaying];
+      });
       [self play];
     }
     else if (playerStatus == AVPlayerStatusFailed) {
       UALOG_DEBUG(@"Player failed");
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate videoPlaybackError];
+      });
     }
     else if (playerStatus == AVPlayerStatusUnknown) {
       UALOG_DEBUG(@"Player in unknown state");
@@ -127,7 +139,6 @@
 #pragma mark Video Duration
 
 - (void)_videoPositionChanged:(CMTime)time {
-  UALOG_DEBUG(@"");
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.delegate videoPositionChanged:time];
   });
