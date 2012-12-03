@@ -12,10 +12,12 @@
 #import "UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "UnityAdsCampaign/UnityAdsCampaign.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
+#import "UnityAdsDevice/UnityAdsDevice.h"
 
 @interface UnityAdsMainViewController ()
   @property (nonatomic, strong) UnityAdsVideoViewController *videoController;
   @property (nonatomic, strong) UIViewController *storeController;
+  @property (nonatomic, strong) void (^closeHandler)(void);
 @end
 
 @implementation UnityAdsMainViewController
@@ -96,11 +98,16 @@
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
   }
   
-  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:YES completion:^(void){
-    UALOG_DEBUG(@"Setting start view after close");
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
-  }];
+  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+    if (self.closeHandler == nil) {
+      self.closeHandler = ^(void) {
+        UALOG_DEBUG(@"Setting start view after close");
+        [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+      };
+    }
+  }
   
+  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:YES completion:self.closeHandler];
   [self.delegate mainControllerWillCloseAdView];
 }
 
@@ -154,12 +161,14 @@
 - (void)showPlayerAndPlaySelectedVideo:(BOOL)checkIfWatched {
 	UALOG_DEBUG(@"");
     
+  
   if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed && checkIfWatched) {
     UALOG_DEBUG(@"Trying to watch a campaign that is already viewed!");
     return;
   }
 
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"textKey":@"buffering"}];
+  
   [self _createVideoController];
   [self.videoController playCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
 }

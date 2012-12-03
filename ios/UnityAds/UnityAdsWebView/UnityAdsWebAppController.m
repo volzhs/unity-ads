@@ -94,18 +94,14 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self runJavascript:js];
-  });
+  [self runJavascriptDependingOnPlatform:js];
 }
 
 - (void)sendNativeEventToWebApp:(NSString *)eventType data:(NSDictionary *)data {
  	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self runJavascript:js];
-  });
+  [self runJavascriptDependingOnPlatform:js];
 }
 
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data {
@@ -148,9 +144,19 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	}
 }
 
+- (void)runJavascriptDependingOnPlatform:(NSString *)javaScriptString {
+  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self runJavascript:javaScriptString];
+    });
+  }
+  else {
+    [self runJavascript:javaScriptString];
+  }
+}
+
 - (void)runJavascript:(NSString *)javaScriptString {
-  
-  __block NSString *returnValue = nil;
+  NSString *returnValue = nil;
   
   if (javaScriptString != nil) {
     UALOG_DEBUG(@"Running JavaScriptString: %@", javaScriptString);

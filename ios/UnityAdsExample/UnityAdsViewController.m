@@ -36,6 +36,7 @@
     [super viewDidAppear:animated];
     //[[UnityAds sharedInstance] setTestMode:YES];
 	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];
+    //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
 }
 
 - (void)openAds {

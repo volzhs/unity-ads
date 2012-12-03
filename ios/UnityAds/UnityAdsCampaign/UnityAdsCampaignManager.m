@@ -219,14 +219,12 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
     [self.cache cacheCampaigns:self.campaigns];
     
-    //self.testQueue = dispatch_queue_create("com.unity3d.ads.testqueue", NULL);
-    
     dispatch_async(dispatch_get_main_queue(), ^(void) {
-      //UALOG_DEBUG(@"Dispatching campaigndatareceived");
       [self.delegate campaignManagerCampaignDataReceived];
     });
   }
 }
+
 
 #pragma mark - Public
 
@@ -303,6 +301,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	self.cache.delegate = nil;
 }
 
+
 #pragma mark - NSURLConnectionDelegate
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -334,6 +333,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	else
 		UALOG_DEBUG(@"Not retrying campaign download.");
 }
+
 
 #pragma mark - UnityAdsCacheDelegate
 
