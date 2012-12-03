@@ -14,7 +14,6 @@
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
-//#import "../UnityAdsViewManager.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsMainViewController.h"
 
@@ -133,7 +132,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		}
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIClose]) {
-    [[UnityAdsMainViewController sharedInstance] closeAds:YES];
+    [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES];
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete]) {
     self.webViewInitialized = YES;

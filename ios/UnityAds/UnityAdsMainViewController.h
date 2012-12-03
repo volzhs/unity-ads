@@ -22,12 +22,11 @@
 @interface UnityAdsMainViewController : UIViewController <UnityAdsVideoControllerDelegate, UnityAdsWebAppControllerDelegate>
 
 @property (nonatomic, assign) id<UnityAdsMainViewControllerDelegate> delegate;
-//@property (nonatomic) BOOL webViewInitialized;
 
 + (id)sharedInstance;
 
-- (BOOL)openAds;
-- (BOOL)closeAds:(BOOL)forceMainThread;
+- (BOOL)openAds:(BOOL)animated;
+- (BOOL)closeAds:(BOOL)forceMainThread withAnimations:(BOOL)animated;
 - (BOOL)mainControllerVisible;
 - (void)showPlayerAndPlaySelectedVideo:(BOOL)checkIfWatched;
 - (void)openAppStoreWithData:(NSDictionary *)data;

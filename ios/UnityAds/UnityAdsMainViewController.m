@@ -73,22 +73,24 @@
 
 #pragma mark - Public
 
-- (BOOL)closeAds:(BOOL)forceMainThread {
+- (BOOL)closeAds:(BOOL)forceMainThread withAnimations:(BOOL)animated {
   UALOG_DEBUG(@"");
+  
+  if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) return NO;
   
   if (forceMainThread) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      [self _dismissMainViewController:forceMainThread];
+      [self _dismissMainViewController:forceMainThread withAnimations:animated];
     });
   }
   else {
-    [self _dismissMainViewController:forceMainThread];
+    [self _dismissMainViewController:forceMainThread withAnimations:animated];
   }
   
   return YES;
 }
 
-- (void)_dismissMainViewController:(BOOL)forcedToMainThread {
+- (void)_dismissMainViewController:(BOOL)forcedToMainThread withAnimations:(BOOL)animated {
   if (self.videoController.view.superview != nil) {
     [self dismissViewControllerAnimated:NO completion:nil];
   }
@@ -107,16 +109,18 @@
     }
   }
   
-  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:YES completion:self.closeHandler];
+  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:animated completion:self.closeHandler];
   [self.delegate mainControllerWillCloseAdView];
 }
 
-- (BOOL)openAds {
+- (BOOL)openAds:(BOOL)animated {
   UALOG_DEBUG(@"");
+  
+  if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) return NO;
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
-    [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:YES completion:nil];
+    [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:animated completion:nil];
     
     if (![[[[UnityAdsWebAppController sharedInstance] webView] superview] isEqual:self.view]) {
       [self.view addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
@@ -139,9 +143,7 @@
 #pragma mark - Video
 
 - (void)videoPlayerStartedPlaying {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self.delegate mainControllerStartedPlayingVideo];
-  });
+  [self.delegate mainControllerStartedPlayingVideo];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"buffering"}];
   [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{}];
   [self presentViewController:self.videoController animated:NO completion:nil];
@@ -161,7 +163,6 @@
 - (void)showPlayerAndPlaySelectedVideo:(BOOL)checkIfWatched {
 	UALOG_DEBUG(@"");
     
-  
   if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed && checkIfWatched) {
     UALOG_DEBUG(@"Trying to watch a campaign that is already viewed!");
     return;
@@ -199,7 +200,7 @@
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
     [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
     [self.videoController forceStopVideoPlayer];
-    [self closeAds:NO];
+    [self closeAds:NO withAnimations:NO];
   }
 }
 

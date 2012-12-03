@@ -93,24 +93,31 @@ static UnityAds *sharedUnityAdsInstance = nil;
 - (BOOL)show {
   UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) return NO;
-  [[UnityAdsMainViewController sharedInstance] openAds];
+  if (![self canShow]) return NO;
+  [[UnityAdsMainViewController sharedInstance] openAds:YES];
   return YES;
 }
 
 - (BOOL)hide {
   UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) NO;
-  return [[UnityAdsMainViewController sharedInstance] closeAds:YES];
+  return [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES];
 }
 
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds {
 	UAAssert([NSThread isMainThread]);
   if (![UnityAds isSupported]) return;
-  [[UnityAdsMainViewController sharedInstance] closeAds:YES];
+  
+  BOOL openAnimated = NO;
+  if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) {
+    openAnimated = YES;
+  }
+  
+  [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:NO];
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
   
-  if (applyAds) {
-    [[UnityAdsMainViewController sharedInstance] openAds];
+  if (applyAds && [self canShow]) {
+    [[UnityAdsMainViewController sharedInstance] openAds:openAnimated];
   }
 }
 
