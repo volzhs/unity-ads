@@ -24,7 +24,14 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
 	if ([self.window respondsToSelector:@selector(setRootViewController:)]) {
-		self.viewController = [[UnityAdsViewController alloc] initWithNibName:@"UnityAdsViewController" bundle:nil];
+        NSString *xibName = @"UnityAdsViewController";
+        
+        /*
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPhone) {
+            xibName = @"UnityAds_iPad";
+        }*/
+        
+		self.viewController = [[UnityAdsViewController alloc] initWithNibName:xibName bundle:nil];
 		self.window.rootViewController = self.viewController;
 	}
 	else {
