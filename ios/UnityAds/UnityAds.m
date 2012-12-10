@@ -7,7 +7,6 @@
 #import "UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "UnityAdsCampaign/UnityAdsCampaign.h"
 #import "UnityAdsCampaign/UnityAdsRewardItem.h"
-#import "UnityAdsOpenUDID/UnityAdsOpenUDID.h"
 #import "UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
