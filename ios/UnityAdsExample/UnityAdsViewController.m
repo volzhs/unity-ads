@@ -34,7 +34,11 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    //[[UnityAds sharedInstance] setTestMode:YES];
+    
+    // TEST MODE: Do not use in production apps
+    [[UnityAds sharedInstance] setTestMode:YES];
+    
+    // Initialize Unity Ads
 	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];
 }
 
@@ -66,10 +70,6 @@
 - (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey {
 	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
     [self.loadingImage setImage:[UIImage imageNamed:@"unityads_reward"]];
-}
-
-- (void)unityAdsWillShow:(UnityAds *)unityAds {
-	NSLog(@"unityAdsWillShow");
 }
 
 - (void)unityAdsWillHide:(UnityAds *)unityAds {

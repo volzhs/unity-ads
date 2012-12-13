@@ -82,8 +82,6 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	if (body != nil)
 		[request setHTTPBody:body];
 	
-	UALOG_DEBUG(@"queueing %@", [request URL]);
-	
 	NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	NSDictionary *uploadDictionary = @{ kUnityAdsAnalyticsUploaderRequestKey : request, kUnityAdsAnalyticsUploaderConnectionKey : connection };
 	[self.uploadQueue addObject:uploadDictionary];
@@ -97,7 +95,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	NSData *body = nil;
 	if (queryString != nil)
 		body = [queryString dataUsingEncoding:NSUTF8StringEncoding];
-
+  
 	[self _queueURL:url body:body httpMethod:httpMethod];
 }
 
@@ -177,7 +175,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
-	
+
 	[self _queueWithURLString:[[UnityAdsProperties sharedInstance] analyticsBaseUrl] queryString:queryString httpMethod:@"POST"];
 }
 
@@ -189,7 +187,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 		return;
 	}
   
-	[self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath] queryString:nil httpMethod:@"GET"];
+	[self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath] queryString:queryString httpMethod:@"GET"];
 }
 
 
