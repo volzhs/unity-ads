@@ -18,6 +18,7 @@
   @property (nonatomic, strong) UnityAdsVideoViewController *videoController;
   @property (nonatomic, strong) UIViewController *storeController;
   @property (nonatomic, strong) void (^closeHandler)(void);
+  @property (nonatomic, strong) void (^openHandler)(void);
 @end
 
 @implementation UnityAdsMainViewController
@@ -66,7 +67,7 @@
   return UIInterfaceOrientationMaskAll;
 }
 
-- (BOOL) shouldAutorotate {
+- (BOOL)shouldAutorotate {
   return YES;
 }
 
@@ -100,17 +101,22 @@
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
   }
   
+  [self.delegate mainControllerWillClose];
+
   if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
     if (self.closeHandler == nil) {
       self.closeHandler = ^(void) {
         UALOG_DEBUG(@"Setting start view after close");
         [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+        [self.delegate mainControllerDidClose];
       };
     }
   }
+  else {
+    [self.delegate mainControllerDidClose];
+  }
   
   [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:animated completion:self.closeHandler];
-  [self.delegate mainControllerWillCloseAdView];
 }
 
 - (BOOL)openAds:(BOOL)animated {
@@ -119,8 +125,22 @@
   if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) return NO;
   
   dispatch_async(dispatch_get_main_queue(), ^{
+    [self.delegate mainControllerWillOpen];
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
-    [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:animated completion:nil];
+    
+    if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+      if (self.openHandler == nil) {
+        self.openHandler = ^(void) {
+          UALOG_DEBUG(@"Running openhandler after opening view");
+          [self.delegate mainControllerDidOpen];
+        };
+      }
+    }
+    else {
+      [self.delegate mainControllerDidOpen];
+    }
+    
+    [[[UnityAdsProperties sharedInstance] currentViewController] presentViewController:self animated:animated completion:self.openHandler];
     
     if (![[[[UnityAdsWebAppController sharedInstance] webView] superview] isEqual:self.view]) {
       [self.view addSubview:[[UnityAdsWebAppController sharedInstance] webView]];

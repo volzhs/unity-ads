@@ -67,23 +67,35 @@
 
 #pragma mark - UnityAdsDelegate
 
-- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey {
-	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
-    [self.loadingImage setImage:[UIImage imageNamed:@"unityads_reward"]];
+- (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
+	NSLog(@"unityAdsFetchCompleted");
+    [self.loadingImage setImage:[UIImage imageNamed:@"unityads_loaded"]];
+	[self.buttonView setEnabled:YES];
+}
+
+- (void)unityAdsWillShow:(UnityAds *)unityAds {
+	NSLog(@"unityAdsWillShow");
+}
+
+- (void)unityAdsDidShow:(UnityAds *)unityAds {
+	NSLog(@"unityAdsDidShow");
 }
 
 - (void)unityAdsWillHide:(UnityAds *)unityAds {
 	NSLog(@"unityAdsWillHide");
 }
 
+- (void)unityAdsDidHide:(UnityAds *)unityAds {
+	NSLog(@"unityAdsDidHide");
+}
+
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds {
 	NSLog(@"unityAdsVideoStarted");
 }
 
-- (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
-	NSLog(@"unityAdsFetchCompleted");
-    [self.loadingImage setImage:[UIImage imageNamed:@"unityads_loaded"]];
-	[self.buttonView setEnabled:YES];
+- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey {
+	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
+    [self.loadingImage setImage:[UIImage imageNamed:@"unityads_reward"]];
 }
 
 @end

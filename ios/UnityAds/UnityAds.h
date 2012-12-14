@@ -32,7 +32,9 @@
 
 @optional
 - (void)unityAdsWillShow:(UnityAds *)unityAds;
+- (void)unityAdsDidShow:(UnityAds *)unityAds;
 - (void)unityAdsWillHide:(UnityAds *)unityAds;
+- (void)unityAdsDidHide:(UnityAds *)unityAds;
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds;
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
 

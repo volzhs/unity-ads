@@ -245,6 +245,45 @@ static UnityAds *sharedUnityAdsInstance = nil;
  
 #pragma mark - UnityAdsViewManagerDelegate
 
+- (void)mainControllerWebViewInitialized {
+	UAAssert([NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+  
+	[self _notifyDelegateOfCampaignAvailability];
+}
+
+- (void)mainControllerWillClose {
+	UAAssert([NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+	
+	if ([self.delegate respondsToSelector:@selector(unityAdsWillHide:)])
+		[self.delegate unityAdsWillHide:self];
+}
+
+- (void)mainControllerDidClose {
+	UAAssert([NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+  
+  if ([self.delegate respondsToSelector:@selector(unityAdsDidHide:)])
+		[self.delegate unityAdsDidHide:self];
+}
+
+- (void)mainControllerWillOpen {
+	UAAssert([NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+  
+  if ([self.delegate respondsToSelector:@selector(unityAdsWillShow:)])
+		[self.delegate unityAdsWillShow:self];
+}
+
+- (void)mainControllerDidOpen {
+	UAAssert([NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+  
+  if ([self.delegate respondsToSelector:@selector(unityAdsDidShow:)])
+		[self.delegate unityAdsDidShow:self];
+}
+
 - (void)mainControllerStartedPlayingVideo {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
@@ -258,21 +297,6 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	UALOG_DEBUG(@"");
 	
 	[self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsCampaignManager sharedInstance] rewardItem].key];
-}
-
-- (void)mainControllerWillCloseAdView {
-	UAAssert([NSThread isMainThread]);
-	UALOG_DEBUG(@"");
-	
-	if ([self.delegate respondsToSelector:@selector(unityAdsWillHide:)])
-		[self.delegate unityAdsWillHide:self];
-}
-
-- (void)mainControllerWebViewInitialized {
-	UAAssert([NSThread isMainThread]);	
-	UALOG_DEBUG(@"");
-
-	[self _notifyDelegateOfCampaignAvailability];
 }
 
 
