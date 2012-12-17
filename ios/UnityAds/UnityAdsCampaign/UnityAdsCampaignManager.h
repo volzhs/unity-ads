@@ -14,6 +14,7 @@
 @required
 - (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID;
 - (void)campaignManagerCampaignDataReceived;
+- (void)campaignManagerCampaignDataFailed;
 
 @end
 

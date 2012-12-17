@@ -242,7 +242,15 @@ static UnityAds *sharedUnityAdsInstance = nil;
   }
 }
 
- 
+- (void)campaignManagerCampaignDataFailed {
+  UAAssert([NSThread isMainThread]);
+  UALOG_DEBUG(@"Campaign data failed.");
+  
+  if ([self.delegate respondsToSelector:@selector(unityAdsFetchFailed:)])
+		[self.delegate unityAdsFetchFailed:self];
+}
+
+
 #pragma mark - UnityAdsViewManagerDelegate
 
 - (void)mainControllerWebViewInitialized {

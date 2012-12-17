@@ -198,30 +198,40 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	
   if (_campaignData != nil && [_campaignData isKindOfClass:[NSDictionary class]]) {
     NSDictionary *jsonDictionary = [(NSDictionary *)_campaignData objectForKey:@"data"];
+    BOOL validData = YES;
     
-    if ([jsonDictionary objectForKey:@"webViewUrl"] == nil) return;
-    if ([jsonDictionary objectForKey:@"analyticsUrl"] == nil) return;
-    if ([jsonDictionary objectForKey:@"impactUrl"] == nil) return;
-    if ([jsonDictionary objectForKey:kGamerIDKey] == nil) return;
-    if ([jsonDictionary objectForKey:@"campaigns"] == nil) return;
-    if ([jsonDictionary objectForKey:@"item"] == nil) return;
+    if ([jsonDictionary objectForKey:@"webViewUrl"] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:@"analyticsUrl"] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:@"impactUrl"] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:kGamerIDKey] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:@"campaigns"] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:@"item"] == nil) validData = NO;
     
     self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
+    if (self.campaigns == nil || [self.campaigns count] == 0) validData = NO;
+    
     self.rewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
+    if (self.rewardItem == nil) validData = NO;
 
-    [[UnityAdsProperties sharedInstance] setWebViewBaseUrl:(NSString *)[jsonDictionary objectForKey:@"webViewUrl"]];
-    [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"analyticsUrl"]];
-    [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"impactUrl"]];
-    
-    NSString *gamerId = [jsonDictionary objectForKey:kGamerIDKey];
-    UAAssert(gamerId != nil);
-    
-    [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
-    [self.cache cacheCampaigns:self.campaigns];
-    
-    dispatch_async(dispatch_get_main_queue(), ^(void) {
-      [self.delegate campaignManagerCampaignDataReceived];
-    });
+    if (validData) {
+      [[UnityAdsProperties sharedInstance] setWebViewBaseUrl:(NSString *)[jsonDictionary objectForKey:@"webViewUrl"]];
+      [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"analyticsUrl"]];
+      [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"impactUrl"]];
+      
+      NSString *gamerId = [jsonDictionary objectForKey:kGamerIDKey];
+      
+      [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
+      [self.cache cacheCampaigns:self.campaigns];
+      
+      dispatch_async(dispatch_get_main_queue(), ^(void) {
+        [self.delegate campaignManagerCampaignDataReceived];
+      });
+    }
+    else {
+      dispatch_async(dispatch_get_main_queue(), ^(void) {
+        [self.delegate campaignManagerCampaignDataFailed];
+      });
+    }
   }
 }
 
@@ -229,7 +239,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 #pragma mark - Public
 
 - (id)init {
-	UAAssertV( ! [NSThread isMainThread], nil);
+	UAAssertV(![NSThread isMainThread], nil);
 	
 	if ((self = [super init])) {
 		_cache = [[UnityAdsCache alloc] init];
@@ -240,7 +250,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 }
 
 - (void)updateCampaigns {
-	UAAssert( ! [NSThread isMainThread]);
+	UAAssert(![NSThread isMainThread]);
 	
 	NSString *urlString = [[UnityAdsProperties sharedInstance] campaignDataUrl];
 	
@@ -289,7 +299,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 
 - (void)cancelAllDownloads {
-	UAAssert( ! [NSThread isMainThread]);
+	UAAssert(![NSThread isMainThread]);
 	
 	[self.urlConnection cancel];
 	self.urlConnection = nil;
@@ -315,6 +325,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
   [self _campaignDataReceived];
 }
+
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
 	self.campaignDownloadData = nil;
 	self.urlConnection = nil;
@@ -330,8 +341,10 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		UALOG_DEBUG(@"Retrying campaign download.");
 		[self updateCampaigns];
 	}
-	else
+	else {
 		UALOG_DEBUG(@"Not retrying campaign download.");
+    [self.delegate campaignManagerCampaignDataFailed];
+  }
 }
 
 
