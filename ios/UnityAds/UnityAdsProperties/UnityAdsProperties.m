@@ -45,9 +45,7 @@ static UnityAdsProperties *sharedProperties = nil;
   
   if ([UnityAdsDevice canUseTracking]) {
     queryParams = [NSString stringWithFormat:@"%@&softwareVersion=%@&hardwareVersion=%@&deviceType=%@&apiVersion=%@&connectionType=%@", queryParams, [UnityAdsDevice softwareVersion], @"unknown", [UnityAdsDevice analyticsMachineName], kUnityAdsVersion, [UnityAdsDevice currentConnectionType]];
-    if ([UnityAdsDevice md5AdvertisingIdentifierString] == nil) {
-      queryParams = [NSString stringWithFormat:@"%@&openUdid=%@", queryParams, [UnityAdsDevice md5OpenUDIDString]];
-    }
+    queryParams = [NSString stringWithFormat:@"%@&openUdid=%@", queryParams, [UnityAdsDevice md5OpenUDIDString]];
   }
   
   if ([self testModeEnabled]) {

@@ -85,7 +85,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 	NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	NSDictionary *uploadDictionary = @{ kUnityAdsAnalyticsUploaderRequestKey : request, kUnityAdsAnalyticsUploaderConnectionKey : connection };
 	[self.uploadQueue addObject:uploadDictionary];
-	
+	  
 	if ([self.uploadQueue count] == 1)
 		[self _startNextUpload];
 }
@@ -176,6 +176,8 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 		return;
 	}
 
+  UALOG_DEBUG(@"View report: %@%@", [[UnityAdsProperties sharedInstance] analyticsBaseUrl], queryString);
+  
 	[self _queueWithURLString:[[UnityAdsProperties sharedInstance] analyticsBaseUrl] queryString:queryString httpMethod:@"POST"];
 }
 
@@ -186,6 +188,8 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
+  
+  UALOG_DEBUG(@"Tracking report: %@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], queryString);
   
 	[self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath] queryString:queryString httpMethod:@"GET"];
 }

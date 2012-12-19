@@ -8,6 +8,7 @@
 
 #import "UnityAdsURLProtocol.h"
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
+#import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 
 static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.com";
 
@@ -45,7 +46,7 @@ static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.
 - (void)startLoading {
   NSURLRequest *request = [self request];
   NSData *reqData = [request HTTPBody];
-  
+
   [self actOnJSONResults: reqData];
   
   // Create the response
@@ -74,21 +75,27 @@ static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.
 }
 
 - (void)actOnJSONResults:(NSData *)jsonData {
-  NSError *myError = nil;
-  NSDictionary *results = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&myError];
-  
-  __block NSString *type = [results objectForKey:@"type"];
-  __block NSDictionary *dictData = nil;
-
-  id data = [results objectForKey:@"data"];
-  if ([data isKindOfClass:[NSDictionary class]]) {
-    dictData = (NSDictionary *)data;
+  if (![[jsonData JSONValue] isKindOfClass:[NSDictionary class]]) {
+    UALOG_DEBUG(@"Wrong type of return value");
+    return;
   }
   
-  if (dictData != nil) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [[UnityAdsWebAppController sharedInstance] handleWebEvent:type data:dictData];
-    });
+  NSDictionary *results = [jsonData JSONValue];
+  
+  if (results != nil) {
+    __block NSString *type = [results objectForKey:@"type"];
+    __block NSDictionary *dictData = nil;
+    
+    id data = [results objectForKey:@"data"];
+    if ([data isKindOfClass:[NSDictionary class]]) {
+      dictData = (NSDictionary *)data;
+    }
+    
+    if (dictData != nil) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [[UnityAdsWebAppController sharedInstance] handleWebEvent:type data:dictData];
+      });
+    }
   }
 }
 
