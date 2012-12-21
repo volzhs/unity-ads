@@ -43,13 +43,14 @@ static UnityAdsProperties *sharedProperties = nil;
   NSString *queryParams = @"?";
   
   queryParams = [NSString stringWithFormat:@"%@deviceId=%@&platform=%@&gameId=%@", queryParams, [UnityAdsDevice md5DeviceId], @"ios", [self adsGameId]];
+  queryParams = [NSString stringWithFormat:@"%@&openUdid=%@", queryParams, [UnityAdsDevice md5OpenUDIDString]];
+  queryParams = [NSString stringWithFormat:@"%@&macAddress=%@", queryParams, [UnityAdsDevice md5MACAddressString]];
   
   if ([UnityAdsDevice md5AdvertisingIdentifierString] != nil)
     queryParams = [NSString stringWithFormat:@"%@&advertisingTrackingId=%@", queryParams, [UnityAdsDevice md5AdvertisingIdentifierString]];
   
   if ([UnityAdsDevice canUseTracking]) {
     queryParams = [NSString stringWithFormat:@"%@&softwareVersion=%@&hardwareVersion=%@&deviceType=%@&apiVersion=%@&connectionType=%@", queryParams, [UnityAdsDevice softwareVersion], @"unknown", [UnityAdsDevice analyticsMachineName], kUnityAdsVersion, [UnityAdsDevice currentConnectionType]];
-    queryParams = [NSString stringWithFormat:@"%@&openUdid=%@", queryParams, [UnityAdsDevice md5OpenUDIDString]];
   }
   
   if ([self testModeEnabled]) {

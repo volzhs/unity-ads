@@ -208,7 +208,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)initWebApp {
 	UAAssert([NSThread isMainThread]);
   
-  NSDictionary *persistingData = @{@"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData], @"platform":@"ios", @"deviceId":[UnityAdsDevice md5DeviceId], @"sdkVersion":[[UnityAdsProperties sharedInstance] adsVersion]};
+  NSDictionary *persistingData = @{@"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData], @"platform":@"ios", @"deviceId":[UnityAdsDevice md5DeviceId], @"openUdid":[UnityAdsDevice md5OpenUDIDString], @"macAddress":[UnityAdsDevice md5MACAddressString], @"sdkVersion":[[UnityAdsProperties sharedInstance] adsVersion]};
   
   NSDictionary *trackingData = @{@"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice analyticsMachineName]};
   NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];
