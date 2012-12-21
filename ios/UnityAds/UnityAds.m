@@ -50,17 +50,16 @@ static UnityAds *sharedUnityAdsInstance = nil;
   [[UnityAdsProperties sharedInstance] setTestModeEnabled:testModeEnabled];
 }
 
-- (void)startWithGameId:(NSString *)gameId {
-  if (![UnityAds isSupported]) return;
-  [self startWithGameId:gameId andViewController:nil];
+- (BOOL)startWithGameId:(NSString *)gameId {
+  if (![UnityAds isSupported]) return false;
+  return [self startWithGameId:gameId andViewController:nil];
 }
 
-- (void)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController {
-  UAAssert([NSThread isMainThread]);
+- (BOOL)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController {
   UALOG_DEBUG(@"");
-  if (![UnityAds isSupported]) return;
-  if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) return;
-	if (gameId == nil || [gameId length] == 0) return;
+  if (![UnityAds isSupported]) return false;
+  if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) return false;
+	if (gameId == nil || [gameId length] == 0) return false;
   
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
   
@@ -81,6 +80,16 @@ static UnityAds *sharedUnityAdsInstance = nil;
       [[UnityAdsMainViewController sharedInstance] setDelegate:self];
 		});
 	});
+  
+  return true;
+}
+
+- (BOOL)canShow {
+  if ([self canShow] && [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] count] > 0) {
+    return YES;
+  }
+  
+  return NO;
 }
 
 - (BOOL)canShow {
@@ -124,12 +133,6 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	UAAssert([NSThread isMainThread]);
   if (![UnityAds isSupported]) return;
   [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
-}
-
-- (void)trackInstall{
-	UAAssert([NSThread isMainThread]);
-  if (![UnityAds isSupported]) return;
-	[[UnityAdsAnalyticsUploader sharedInstance] sendManualInstallTrackingCall];
 }
 
 - (void)dealloc {

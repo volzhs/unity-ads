@@ -30,6 +30,7 @@
 - (NSURL *)getVideoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (void)cancelAllDownloads;
 - (UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId;
+- (NSArray *)getViewableCampaigns;
 
 + (id)sharedInstance;
 

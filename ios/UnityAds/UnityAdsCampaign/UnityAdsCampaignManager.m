@@ -67,6 +67,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	for (id campaignDictionary in campaignArray) {
 		if ([campaignDictionary isKindOfClass:[NSDictionary class]]) {
 			UnityAdsCampaign *campaign = [[UnityAdsCampaign alloc] init];
+      campaign.viewed = NO;
 			
 			NSString *endScreenURLString = [campaignDictionary objectForKey:kCampaignEndScreenKey];
       if (endScreenURLString == nil) continue;
@@ -283,6 +284,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 }
 
 - (UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId {
+	UALOG_DEBUG(@"");
 	UAAssertV([NSThread isMainThread], nil);
 	UnityAdsCampaign *foundCampaign = nil;
 	
@@ -293,10 +295,23 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		}
 	}
 	
-	UALOG_DEBUG(@"");
 	return foundCampaign;
 }
 
+- (NSArray *)getViewableCampaigns {
+	UALOG_DEBUG(@"");
+  NSMutableArray *retAr = [[NSMutableArray alloc] init];
+  
+  if (self.campaigns != nil) {
+    for (UnityAdsCampaign* campaign in self.campaigns) {
+      if (!campaign.viewed) {
+        [retAr addObject:campaign];
+      }
+    }
+  }
+  
+  return retAr;
+}
 
 - (void)cancelAllDownloads {
 	UAAssert(![NSThread isMainThread]);

@@ -98,7 +98,7 @@
   
   if (!forcedToMainThread) {
     UALOG_DEBUG(@"Setting startview right now. No time for block completion");
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"close"}];
   }
   
   [self.delegate mainControllerWillClose];
@@ -107,7 +107,7 @@
     if (self.closeHandler == nil) {
       self.closeHandler = ^(void) {
         UALOG_DEBUG(@"Setting start view after close");
-        [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+        [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"close"}];
         [self.delegate mainControllerDidClose];
       };
     }
@@ -126,7 +126,7 @@
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.delegate mainControllerWillOpen];
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"open"}];
     
     if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
       if (self.openHandler == nil) {
@@ -165,7 +165,7 @@
 - (void)videoPlayerStartedPlaying {
   [self.delegate mainControllerStartedPlayingVideo];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"buffering"}];
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{}];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{@"action":@"video_started_playing"}];
   [self presentViewController:self.videoController animated:NO completion:nil];
 }
 
@@ -249,7 +249,20 @@
     NSString *gameId = nil;
     gameId = [data valueForKey:@"iTunesId"];
     if (gameId == nil || [gameId length] < 1) return;
-    NSDictionary *productParams = @{SKStoreProductParameterITunesItemIdentifier:gameId};
+    
+    /*
+      FIX: This _could_ bug someday. The key @"id" is written literally (and 
+      not using SKStoreProductParameterITunesItemIdentifier), so that
+      with some compiler options (or linker flags) you wouldn't get errors.
+      
+      The way this could bug someday is that Apple changes the contents of 
+      SKStoreProductParameterITunesItemIdentifier.
+     
+      HOWTOFIX: Find a way to reflect global constant SKStoreProductParameterITunesItemIdentifier
+      by using string value and not the constant itself.
+    */
+    NSDictionary *productParams = @{@"id":gameId};
+    
     self.storeController = [[storeProductViewControllerClass alloc] init];
     
     if ([self.storeController respondsToSelector:@selector(setDelegate:)]) {
@@ -294,7 +307,7 @@
 - (void)webAppReady {
   [self.delegate mainControllerWebViewInitialized];
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"initComplete"}];
   });
 }
 

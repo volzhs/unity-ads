@@ -10,7 +10,7 @@
 #import "../UnityAds.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 
-NSString * const kUnityAdsVersion = @"1.0";
+NSString * const kUnityAdsVersion = @"1.0.2";
 
 @implementation UnityAdsProperties
 
@@ -33,6 +33,10 @@ static UnityAdsProperties *sharedProperties = nil;
   }
   
   return self;
+}
+
+- (NSString *)adsVersion {
+  return kUnityAdsVersion;
 }
 
 - (NSString *)_createCampaignQueryString {

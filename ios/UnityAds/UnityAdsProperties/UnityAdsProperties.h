@@ -23,5 +23,6 @@
 
 + (UnityAdsProperties *)sharedInstance;
 - (void)refreshCampaignQueryString;
+- (NSString *)adsVersion;
 
 @end
