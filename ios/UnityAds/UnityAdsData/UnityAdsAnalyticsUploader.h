@@ -13,7 +13,7 @@ extern NSString * const kUnityAdsQueryDictionaryBodyKey;
 
 @interface UnityAdsAnalyticsUploader : NSObject
 
-- (void)sendViewReportWithQueryString:(NSString *)queryString;
+- (void)sendOpenAppStoreRequest:(UnityAdsCampaign *)campaign;
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString;
 - (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary;
 - (void)retryFailedUploads;

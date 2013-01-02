@@ -35,6 +35,7 @@
 - (void)unityAdsDidShow:(UnityAds *)unityAds;
 - (void)unityAdsWillHide:(UnityAds *)unityAds;
 - (void)unityAdsDidHide:(UnityAds *)unityAds;
+- (void)unityAdsWillLeaveApplication:(UnityAds *)unityAds;
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds;
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
 - (void)unityAdsFetchFailed:(UnityAds *)unityAds;

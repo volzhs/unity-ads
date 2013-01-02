@@ -13,6 +13,7 @@
 #import "UnityAdsCampaign/UnityAdsCampaign.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsDevice/UnityAdsDevice.h"
+#import "UnityAdsData/UnityAdsAnalyticsUploader.h"
 
 @interface UnityAdsMainViewController ()
   @property (nonatomic, strong) UnityAdsVideoViewController *videoController;
@@ -239,6 +240,12 @@
 		NSString *clickUrl = [data objectForKey:@"clickUrl"];
     if (clickUrl == nil) return;
     UALOG_DEBUG(@"Cannot open store product view controller, falling back to click URL.");
+    [[UnityAdsAnalyticsUploader sharedInstance] sendOpenAppStoreRequest:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+    
+    if (self.delegate != nil) {
+      [self.delegate mainControllerWillLeaveApplication];
+    }
+    
 		[[UnityAdsWebAppController sharedInstance] openExternalUrl:clickUrl];
 		return;
 	}
@@ -275,6 +282,7 @@
         [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"loading"}];
         dispatch_async(dispatch_get_main_queue(), ^{
           [[UnityAdsMainViewController sharedInstance] presentViewController:self.storeController animated:YES completion:nil];
+          [[UnityAdsAnalyticsUploader sharedInstance] sendOpenAppStoreRequest:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
         });
       }
       else {

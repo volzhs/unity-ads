@@ -310,6 +310,13 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	[self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsCampaignManager sharedInstance] rewardItem].key];
 }
 
+- (void)mainControllerWillLeaveApplication {
+	UAAssert([NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+  
+  if ([self.delegate respondsToSelector:@selector(unityAdsWillLeaveApplication:)])
+		[self.delegate unityAdsWillLeaveApplication:self];
+}
 
 #pragma mark - UnityAdsDelegate calling methods
 

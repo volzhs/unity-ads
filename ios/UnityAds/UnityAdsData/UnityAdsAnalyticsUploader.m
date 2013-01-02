@@ -105,8 +105,7 @@ NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBod
 static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 
 + (id)sharedInstance {
-	@synchronized(self)
-	{
+	@synchronized(self) {
 		if (sharedUnityAdsInstanceAnalyticsUploader == nil)
       sharedUnityAdsInstanceAnalyticsUploader = [[UnityAdsAnalyticsUploader alloc] init];
 	}
@@ -127,6 +126,17 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 
 - (void)dealloc {
   dispatch_release(self.analyticsQueue);
+}
+
+
+#pragma mark - Click track
+
+- (void)sendOpenAppStoreRequest:(UnityAdsCampaign *)campaign {
+  if (campaign != nil) {
+    NSString *query = [NSString stringWithFormat:@"gameId=%@&type=%@&trackingId=%@&providerId=%@", [[UnityAdsProperties sharedInstance] adsGameId], @"openAppStore", [[UnityAdsProperties sharedInstance] gamerId], campaign.id];
+    
+    [self performSelector:@selector(sendAnalyticsRequestWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
+  }
 }
 
 
@@ -157,9 +167,9 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 			trackingString = @"view";
 		}
 		
-     NSString *query = [NSString stringWithFormat:@"gameId=%@&type=%@&trackingId=%@&providerId=%@", [[UnityAdsProperties sharedInstance] adsGameId], positionString, [[UnityAdsProperties sharedInstance] gamerId], campaign.id];
+    NSString *query = [NSString stringWithFormat:@"gameId=%@&type=%@&trackingId=%@&providerId=%@", [[UnityAdsProperties sharedInstance] adsGameId], positionString, [[UnityAdsProperties sharedInstance] gamerId], campaign.id];
     
-    [self performSelector:@selector(sendViewReportWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
+    [self performSelector:@selector(sendAnalyticsRequestWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
      
      if (trackingString != nil) {
        NSString *trackingQuery = [NSString stringWithFormat:@"%@/%@/%@?gameId=%@", [[UnityAdsProperties sharedInstance] gamerId], trackingString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId]];
@@ -168,21 +178,20 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 	});
 }
 
-- (void)sendViewReportWithQueryString:(NSString *)queryString {
-	UAAssert( ! [NSThread isMainThread]);
+- (void)sendAnalyticsRequestWithQueryString:(NSString *)queryString {
+	UAAssert(![NSThread isMainThread]);
 	
 	if (queryString == nil || [queryString length] == 0) {
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
 
-  UALOG_DEBUG(@"View report: %@%@", [[UnityAdsProperties sharedInstance] analyticsBaseUrl], queryString);
-  
+  UALOG_DEBUG(@"View report: %@?%@", [[UnityAdsProperties sharedInstance] analyticsBaseUrl], queryString);
 	[self _queueWithURLString:[[UnityAdsProperties sharedInstance] analyticsBaseUrl] queryString:queryString httpMethod:@"POST"];
 }
 
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString {
-	UAAssert( ! [NSThread isMainThread]);
+	UAAssert(![NSThread isMainThread]);
 	
 	if (queryString == nil || [queryString length] == 0) {
 		UALOG_DEBUG(@"Invalid input.");
