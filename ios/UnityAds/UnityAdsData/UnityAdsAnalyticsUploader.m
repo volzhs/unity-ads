@@ -198,9 +198,9 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 		return;
 	}
   
-  UALOG_DEBUG(@"Tracking report: %@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], queryString);
+  UALOG_DEBUG(@"Tracking report: %@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath, queryString);
   
-	[self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath] queryString:queryString httpMethod:@"GET"];
+	[self _queueWithURLString:[NSString stringWithFormat:@"%@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath, queryString] queryString:nil httpMethod:@"GET"];
 }
 
 

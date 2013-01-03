@@ -104,7 +104,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 }
 
 - (void)handleWebEvent:(NSString *)type data:(NSDictionary *)data {
-  UALOG_DEBUG(@"Gotevent: %@  widthData: %@", type, data);
+  UALOG_DEBUG(@"Gotevent: %@ withData: %@", type, data);
   
   if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [type isEqualToString:kUnityAdsWebViewAPINavigateTo] || [type isEqualToString:kUnityAdsWebViewAPIAppStore])
 	{
