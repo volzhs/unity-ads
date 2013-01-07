@@ -211,10 +211,33 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
     if (self.campaigns == nil || [self.campaigns count] == 0) validData = NO;
     
-    self.rewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
-    if (self.rewardItem == nil) validData = NO;
+    self.defaultRewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
+    if (self.defaultRewardItem == nil) validData = NO;
+    
+    if ([jsonDictionary objectForKey:@"items"] != nil) {
+      NSArray *rewardItems = [jsonDictionary objectForKey:@"items"];
+      UALOG_DEBUG(@"Found multiple rewards: %i", [rewardItems count]);
+      NSMutableArray *deserializedRewardItems = [NSMutableArray array];
+      NSMutableArray *tempRewardItemKeys = [NSMutableArray array];
+      UnityAdsRewardItem *rewardItem = nil;
+      
+      for (NSDictionary *itemData in rewardItems) {
+        UALOG_DEBUG(@"%@", itemData);
+        rewardItem = [self _deserializeRewardItem:itemData];
+        if (rewardItem != nil) {
+          [deserializedRewardItems addObject:rewardItem];
+          [tempRewardItemKeys addObject:rewardItem.key];
+        }
+      }
+      
+      self.rewardItems = [[NSMutableArray alloc] initWithArray:deserializedRewardItems];
+      self.rewardItemKeys = [[NSArray alloc] initWithArray:tempRewardItemKeys];
+      UALOG_DEBUG(@"Parsed total of %i reward items, with keys: %@", [self.rewardItems count], self.rewardItemKeys);
+    }
 
     if (validData) {
+      self.currentRewardItemKey = self.defaultRewardItem.key;
+      
       [[UnityAdsProperties sharedInstance] setWebViewBaseUrl:(NSString *)[jsonDictionary objectForKey:@"webViewUrl"]];
       [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"analyticsUrl"]];
       [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"impactUrl"]];
@@ -313,6 +336,31 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
   return retAr;
 }
 
+- (BOOL)setSelectedRewardItemKey:(NSString *)rewardItemKey {
+  if (self.rewardItems != nil && [self.rewardItems count] > 0) {
+    for (UnityAdsRewardItem *rewardItem in self.rewardItems) {
+      if ([rewardItem.key isEqualToString:rewardItemKey]) {
+        self.currentRewardItemKey = rewardItemKey;
+        return YES;
+      }
+    }
+  }
+  
+  return NO;
+}
+
+- (UnityAdsRewardItem *)getCurrentRewardItem {
+  if (self.currentRewardItemKey != nil) {
+    for (UnityAdsRewardItem *rewardItem in self.rewardItems) {
+      if ([rewardItem.key isEqualToString:self.currentRewardItemKey]) {
+        return rewardItem;
+      }
+    }
+  }
+  
+  return nil;
+}
+
 - (void)cancelAllDownloads {
 	UAAssert(![NSThread isMainThread]);
 	
@@ -370,7 +418,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 - (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[self.delegate campaignManager:self updatedWithCampaigns:self.campaigns rewardItem:self.rewardItem gamerID:[[UnityAdsProperties sharedInstance] gamerId]];
+		[self.delegate campaignManager:self updatedWithCampaigns:self.campaigns rewardItem:self.defaultRewardItem gamerID:[[UnityAdsProperties sharedInstance] gamerId]];
 	});
 }
 

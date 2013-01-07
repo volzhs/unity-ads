@@ -57,5 +57,10 @@
 - (BOOL)show;
 - (BOOL)hide;
 - (void)stopAll;
-
+- (BOOL)hasMultipleRewardItems;
+- (NSArray *)getRewardItemKeys;
+- (NSString *)getDefaultRewardItemKey;
+- (NSString *)getCurrentRewardItemKey;
+- (BOOL)setRewardItemKey:(NSString *)rewardItemKey;
+- (void)setDefaultRewardItemAsRewardItem;
 @end

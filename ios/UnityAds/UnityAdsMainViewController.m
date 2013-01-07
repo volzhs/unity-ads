@@ -20,6 +20,7 @@
   @property (nonatomic, strong) UIViewController *storeController;
   @property (nonatomic, strong) void (^closeHandler)(void);
   @property (nonatomic, strong) void (^openHandler)(void);
+  @property (nonatomic, assign) BOOL isOpen;
 @end
 
 @implementation UnityAdsMainViewController
@@ -109,11 +110,13 @@
       self.closeHandler = ^(void) {
         UALOG_DEBUG(@"Setting start view after close");
         [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"close"}];
+        self.isOpen = NO;
         [self.delegate mainControllerDidClose];
       };
     }
   }
   else {
+    self.isOpen = NO;
     [self.delegate mainControllerDidClose];
   }
   
@@ -127,7 +130,7 @@
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.delegate mainControllerWillOpen];
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"open"}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"open", @"itemKey":[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
     
     if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
       if (self.openHandler == nil) {
@@ -149,11 +152,12 @@
     }
   });
   
+  self.isOpen = YES;
   return YES;
 }
 
 - (BOOL)mainControllerVisible {
-  if (self.view.superview != nil) {
+  if (self.view.superview != nil || self.isOpen) {
     return YES;
   }
   
@@ -166,7 +170,7 @@
 - (void)videoPlayerStartedPlaying {
   [self.delegate mainControllerStartedPlayingVideo];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"buffering"}];
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{@"action":@"video_started_playing"}];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{@"action":@"video_started_playing", @"itemKey":[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
   [self presentViewController:self.videoController animated:NO completion:nil];
 }
 
@@ -315,7 +319,7 @@
 - (void)webAppReady {
   [self.delegate mainControllerWebViewInitialized];
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"initComplete"}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"initComplete", @"itemKey":[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
   });
 }
 

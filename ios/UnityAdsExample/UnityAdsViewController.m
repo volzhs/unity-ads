@@ -44,8 +44,19 @@
 
 - (void)openAds {
 	if ([[UnityAds sharedInstance] canShow]) {
+        NSLog(@"REWARD_ITEM_KEYS: %@", [[UnityAds sharedInstance] getRewardItemKeys]);
+        NSLog(@"CURRENT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getCurrentRewardItemKey]);
+        NSLog(@"SETTING_REWARD_ITEM (wrong): %i", [[UnityAds sharedInstance] setRewardItemKey:@"wrong_key"]);
+        NSLog(@"CURRENT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getCurrentRewardItemKey]);
+        NSLog(@"SETTING_REWARD_ITEM (right): %i", [[UnityAds sharedInstance] setRewardItemKey:[[[UnityAds sharedInstance] getRewardItemKeys] objectAtIndex:0]]);
+        NSLog(@"CURRENT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getCurrentRewardItemKey]);
+        NSLog(@"DEFAULT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getDefaultRewardItemKey]);
+
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
         [[UnityAds sharedInstance] show];
+        
+        NSLog(@"SETTING_REWARD_ITEM (while open): %i", [[UnityAds sharedInstance] setRewardItemKey:[[UnityAds sharedInstance] getDefaultRewardItemKey]]);
+
 	}
 	else {
         NSLog(@"Unity Ads cannot be shown.");
