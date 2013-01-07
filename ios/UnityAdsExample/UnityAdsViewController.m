@@ -39,7 +39,7 @@
     [[UnityAds sharedInstance] setTestMode:YES];
     
     // Initialize Unity Ads
-	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];
+	[[UnityAds sharedInstance] startWithGameId:@"11006" andViewController:self];
 }
 
 - (void)openAds {
