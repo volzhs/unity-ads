@@ -104,8 +104,8 @@
   }
   
   [self.delegate mainControllerWillClose];
-
-  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+  
+  if (![UnityAdsDevice isSimulator]) {
     if (self.closeHandler == nil) {
       self.closeHandler = ^(void) {
         UALOG_DEBUG(@"Setting start view after close");
@@ -132,7 +132,7 @@
     [self.delegate mainControllerWillOpen];
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"open", @"itemKey":[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
     
-    if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+    if (![UnityAdsDevice isSimulator]) {
       if (self.openHandler == nil) {
         self.openHandler = ^(void) {
           UALOG_DEBUG(@"Running openhandler after opening view");

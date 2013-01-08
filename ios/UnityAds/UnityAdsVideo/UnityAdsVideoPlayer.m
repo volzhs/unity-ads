@@ -43,7 +43,7 @@
 
 - (void)_videoPlaybackEnded:(NSNotification *)notification {
   UALOG_DEBUG(@"");
-  if ([[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+  if ([UnityAdsDevice isSimulator]) {
     self.videoPosition = kVideoAnalyticsPositionThirdQuartile;
   }
   
@@ -64,7 +64,7 @@
   [self addObserver:self forKeyPath:@"self.currentItem.asset.duration" options:0 context:nil];
   
   __block UnityAdsVideoPlayer *blockSelf = self;
-  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+  if (![UnityAdsDevice isSimulator]) {
     self.timeObserver = [self addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
       [blockSelf _videoPositionChanged:time];
     }];
@@ -118,7 +118,7 @@
       [analyticsTimeValues addObject:[self _valueWithDuration:duration * .5]];
       [analyticsTimeValues addObject:[self _valueWithDuration:duration * .75]];
       
-      if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+      if (![UnityAdsDevice isSimulator]) {
         self.analyticsTimeObserver = [self addBoundaryTimeObserverForTimes:analyticsTimeValues queue:nil usingBlock:^{
           [blockSelf _logVideoAnalytics];
         }];

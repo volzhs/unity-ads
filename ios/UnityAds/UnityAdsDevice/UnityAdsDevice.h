@@ -18,10 +18,12 @@ extern NSString * const kUnityAdsDeviceIpodTouch1gen;
 extern NSString * const kUnityAdsDeviceIpodTouch2gen;
 extern NSString * const kUnityAdsDeviceIpodTouch3gen;
 extern NSString * const kUnityAdsDeviceIpodTouch4gen;
+extern NSString * const kUnityAdsDeviceIpad;
 extern NSString * const kUnityAdsDeviceIpad1;
 extern NSString * const kUnityAdsDeviceIpad2;
 extern NSString * const kUnityAdsDeviceIpad3;
 extern NSString * const kUnityAdsDeviceIosUnknown;
+extern NSString * const kUnityAdsSimulator;
 
 @interface UnityAdsDevice : NSObject
 
@@ -39,5 +41,7 @@ extern NSString * const kUnityAdsDeviceIosUnknown;
 
 + (int)getIOSMajorVersion;
 + (NSNumber *)getIOSExactVersion;
+
++ (BOOL)isSimulator;
 
 @end
