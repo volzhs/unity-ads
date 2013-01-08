@@ -4,8 +4,9 @@
 //
 
 #import "UnityAdsAnalyticsUploader.h"
-#import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAds.h"
+#import "../UnityAdsCampaign/UnityAdsCampaign.h"
+#import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 
@@ -167,12 +168,12 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 			trackingString = @"view";
 		}
 		
-    NSString *query = [NSString stringWithFormat:@"gameId=%@&type=%@&trackingId=%@&providerId=%@", [[UnityAdsProperties sharedInstance] adsGameId], positionString, [[UnityAdsProperties sharedInstance] gamerId], campaign.id];
+    NSString *query = [NSString stringWithFormat:@"gameId=%@&type=%@&trackingId=%@&providerId=%@&rewardItem=%@", [[UnityAdsProperties sharedInstance] adsGameId], positionString, [[UnityAdsProperties sharedInstance] gamerId], campaign.id, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
     
     [self performSelector:@selector(sendAnalyticsRequestWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
      
      if (trackingString != nil) {
-       NSString *trackingQuery = [NSString stringWithFormat:@"%@/%@/%@?gameId=%@", [[UnityAdsProperties sharedInstance] gamerId], trackingString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId]];
+       NSString *trackingQuery = [NSString stringWithFormat:@"%@/%@/%@?gameId=%@&rewardItem=%@", [[UnityAdsProperties sharedInstance] gamerId], trackingString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId], [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
        [self performSelector:@selector(sendTrackingCallWithQueryString:) onThread:self.backgroundThread withObject:trackingQuery waitUntilDone:NO];
      }
 	});
