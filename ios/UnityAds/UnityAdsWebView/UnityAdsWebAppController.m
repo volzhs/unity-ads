@@ -18,14 +18,19 @@
 #import "../UnityAdsMainViewController.h"
 
 NSString * const kUnityAdsWebViewPrefix = @"applifierimpact.";
+
 NSString * const kUnityAdsWebViewJSInit = @"init";
 NSString * const kUnityAdsWebViewJSChangeView = @"setView";
 NSString * const kUnityAdsWebViewJSHandleNativeEvent = @"handleNativeEvent";
+
+NSString * const kUnityAdsWebViewAPIActionKey = @"action";
 NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
 NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
 NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
 NSString * const kUnityAdsWebViewAPIClose = @"close";
+NSString * const kUnityAdsWebViewAPIOpen = @"open";
 NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
+NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_playing";
 
 NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
 NSString * const kUnityAdsWebViewViewTypeStart = @"start";

@@ -12,11 +12,16 @@
 extern NSString * const kUnityAdsWebViewPrefix;
 extern NSString * const kUnityAdsWebViewJSInit;
 extern NSString * const kUnityAdsWebViewJSChangeView;
+
+extern NSString * const kUnityAdsWebViewAPIActionKey;
 extern NSString * const kUnityAdsWebViewAPIPlayVideo;
 extern NSString * const kUnityAdsWebViewAPINavigateTo;
 extern NSString * const kUnityAdsWebViewAPIInitComplete;
 extern NSString * const kUnityAdsWebViewAPIClose;
+extern NSString * const kUnityAdsWebViewAPIOpen;
 extern NSString * const kUnityAdsWebViewAPIAppStore;
+extern NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying;
+
 
 extern NSString * const kUnityAdsWebViewViewTypeCompleted;
 extern NSString * const kUnityAdsWebViewViewTypeStart;

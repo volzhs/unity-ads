@@ -15,6 +15,15 @@
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsData/UnityAdsAnalyticsUploader.h"
 
+NSString * const kUnityAdsNativeEventHideSpinner = @"hideSpinner";
+NSString * const kUnityAdsNativeEventShowSpinner = @"showSpinner";
+
+NSString * const kUnityAdsTextKeyKey = @"textKey";
+NSString * const kUnityAdsTextKeyBuffering = @"buffering";
+NSString * const kUnityAdsTextKeyLoading = @"loading";
+
+NSString * const kUnityAdsItemKeyKey = @"itemKey";
+
 @interface UnityAdsMainViewController ()
   @property (nonatomic, strong) UnityAdsVideoViewController *videoController;
   @property (nonatomic, strong) UIViewController *storeController;
@@ -100,7 +109,7 @@
   
   if (!forcedToMainThread) {
     UALOG_DEBUG(@"Setting startview right now. No time for block completion");
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"close"}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIClose}];
   }
   
   [self.delegate mainControllerWillClose];
@@ -109,7 +118,7 @@
     if (self.closeHandler == nil) {
       self.closeHandler = ^(void) {
         UALOG_DEBUG(@"Setting start view after close");
-        [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"close"}];
+        [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIClose}];
         self.isOpen = NO;
         [self.delegate mainControllerDidClose];
       };
@@ -130,7 +139,7 @@
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.delegate mainControllerWillOpen];
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"open", @"itemKey":[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsTextKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
     
     if (![UnityAdsDevice isSimulator]) {
       if (self.openHandler == nil) {
@@ -169,14 +178,14 @@
 
 - (void)videoPlayerStartedPlaying {
   [self.delegate mainControllerStartedPlayingVideo];
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"buffering"}];
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{@"action":@"video_started_playing", @"itemKey":[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
   [self presentViewController:self.videoController animated:NO completion:nil];
 }
 
 - (void)videoPlayerEncounteredError {
   UALOG_DEBUG(@"");
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"buffering"}];
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
   [self _dismissVideoController];
 }
 
@@ -193,7 +202,7 @@
     return;
   }
 
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"textKey":@"buffering"}];
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
   
   [self _createVideoController];
   [self.videoController playCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
@@ -220,7 +229,7 @@
 - (void)notificationHandler: (id) notification {
   NSString *name = [notification name];
 
-  UALOG_DEBUG(@"notification: %@", name);
+  UALOG_DEBUG(@"Notification: %@", name);
   
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
     [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
@@ -283,7 +292,7 @@
     void (^storeControllerComplete)(BOOL result, NSError *error) = ^(BOOL result, NSError *error) {
       UALOG_DEBUG(@"RESULT: %i", result);
       if (result) {
-        [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"hideSpinner" data:@{@"textKey":@"loading"}];
+        [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyLoading}];
         dispatch_async(dispatch_get_main_queue(), ^{
           [[UnityAdsMainViewController sharedInstance] presentViewController:self.storeController animated:YES completion:nil];
           [[UnityAdsAnalyticsUploader sharedInstance] sendOpenAppStoreRequest:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
@@ -294,7 +303,7 @@
       }
     };
     
-    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"showSpinner" data:@{@"textKey":@"loading"}];
+    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyLoading}];
     SEL loadProduct = @selector(loadProductWithParameters:completionBlock:);
     if ([self.storeController respondsToSelector:loadProduct]) {
 #pragma clang diagnostic push
@@ -319,7 +328,7 @@
 - (void)webAppReady {
   [self.delegate mainControllerWebViewInitialized];
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:@"start" data:@{@"action":@"initComplete", @"itemKey":[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIInitComplete, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
   });
 }
 
