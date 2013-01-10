@@ -175,8 +175,24 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 - (void)_processCampaignDownloadData {
 
+  if (self.campaignDownloadData == nil) {
+    dispatch_async(dispatch_get_main_queue(), ^(void) {
+      [self.delegate campaignManagerCampaignDataFailed];
+    });
+    UALOG_DEBUG(@"Campaign download data is NULL!");
+    return;
+  }
+  
   NSString *jsonString = [[NSString alloc] initWithData:self.campaignDownloadData encoding:NSUTF8StringEncoding];
   _campaignData = [jsonString JSONValue];
+  
+  if (_campaignData == nil) {
+    dispatch_async(dispatch_get_main_queue(), ^(void) {
+      [self.delegate campaignManagerCampaignDataFailed];
+    });
+    UALOG_DEBUG(@"Campaigndata is NULL!");
+    return;
+  }
   
   UALOG_DEBUG(@"%@", [_campaignData JSONRepresentation]);
 	UAAssert([_campaignData isKindOfClass:[NSDictionary class]]);
