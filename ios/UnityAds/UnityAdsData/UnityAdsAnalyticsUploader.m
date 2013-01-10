@@ -7,20 +7,9 @@
 #import "../UnityAds.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
-#import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
-
-NSString * const kUnityAdsTrackingPath = @"gamers/";
-NSString * const kUnityAdsInstallTrackingPath = @"games/";
-NSString * const kUnityAdsAnalyticsUploaderRequestKey = @"kUnityAdsAnalyticsUploaderRequestKey";
-NSString * const kUnityAdsAnalyticsUploaderConnectionKey = @"kUnityAdsAnalyticsUploaderConnectionKey";
-NSString * const kUnityAdsAnalyticsUploaderRetriesKey = @"kUnityAdsAnalyticsUploaderRetriesKey";
-NSString * const kUnityAdsAnalyticsSavedUploadsKey = @"kUnityAdsAnalyticsSavedUploadsKey";
-NSString * const kUnityAdsAnalyticsSavedUploadURLKey = @"kUnityAdsAnalyticsSavedUploadURLKey";
-NSString * const kUnityAdsAnalyticsSavedUploadBodyKey = @"kUnityAdsAnalyticsSavedUploadBodyKey";
-NSString * const kUnityAdsAnalyticsSavedUploadHTTPMethodKey = @"kUnityAdsAnalyticsSavedUploadHTTPMethodKey";
-NSString * const kUnityAdsQueryDictionaryQueryKey = @"kUnityAdsQueryDictionaryQueryKey";
-NSString * const kUnityAdsQueryDictionaryBodyKey = @"kUnityAdsQueryDictionaryBodyKey";
+#import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "../UnityAdsProperties/UnityAdsConstants.h"
 
 @interface UnityAdsAnalyticsUploader () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableArray *uploadQueue;
@@ -132,7 +121,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 
 - (void)sendOpenAppStoreRequest:(UnityAdsCampaign *)campaign {
   if (campaign != nil) {
-    NSString *query = [NSString stringWithFormat:@"gameId=%@&type=%@&trackingId=%@&providerId=%@&rewardItem=%@", [[UnityAdsProperties sharedInstance] adsGameId], @"openAppStore", [[UnityAdsProperties sharedInstance] gamerId], campaign.id, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
+    NSString *query = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@", kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamEventTypeKey, kUnityAdsAnalyticsEventTypeOpenAppStore, kUnityAdsAnalyticsQueryParamTrackingIdKey, [[UnityAdsProperties sharedInstance] gamerId], kUnityAdsAnalyticsQueryParamProviderIdKey, campaign.id, kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
     
     [self performSelector:@selector(sendAnalyticsRequestWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
   }
@@ -152,26 +141,26 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 		NSString *trackingString = nil;
     
 		if (videoPosition == kVideoAnalyticsPositionStart) {
-			positionString = @"video_start";
-			trackingString = @"start";
+			positionString = kUnityAdsAnalyticsEventTypeVideoStart;
+			trackingString = kUnityAdsTrackingEventTypeVideoStart;
 		}
 		else if (videoPosition == kVideoAnalyticsPositionFirstQuartile)
-			positionString = @"first_quartile";
+			positionString = kUnityAdsAnalyticsEventTypeVideoFirstQuartile;
 		else if (videoPosition == kVideoAnalyticsPositionMidPoint)
-			positionString = @"mid_point";
+			positionString = kUnityAdsAnalyticsEventTypeVideoMidPoint;
 		else if (videoPosition == kVideoAnalyticsPositionThirdQuartile)
-			positionString = @"third_quartile";
+			positionString = kUnityAdsAnalyticsEventTypeVideoThirdQuartile;
 		else if (videoPosition == kVideoAnalyticsPositionEnd) {
-			positionString = @"video_end";
-			trackingString = @"view";
+			positionString = kUnityAdsAnalyticsEventTypeVideoEnd;
+			trackingString = kUnityAdsTrackingEventTypeVideoEnd;
 		}
 		
-    NSString *query = [NSString stringWithFormat:@"gameId=%@&type=%@&trackingId=%@&providerId=%@&rewardItem=%@", [[UnityAdsProperties sharedInstance] adsGameId], positionString, [[UnityAdsProperties sharedInstance] gamerId], campaign.id, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
+    NSString *query = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@", kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamEventTypeKey, positionString, kUnityAdsAnalyticsQueryParamTrackingIdKey, [[UnityAdsProperties sharedInstance] gamerId], kUnityAdsAnalyticsQueryParamProviderIdKey, campaign.id, kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
     
     [self performSelector:@selector(sendAnalyticsRequestWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
      
      if (trackingString != nil) {
-       NSString *trackingQuery = [NSString stringWithFormat:@"%@/%@/%@?gameId=%@&rewardItem=%@", [[UnityAdsProperties sharedInstance] gamerId], trackingString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId], [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
+       NSString *trackingQuery = [NSString stringWithFormat:@"%@/%@/%@?%@=%@&%@=%@", [[UnityAdsProperties sharedInstance] gamerId], trackingString, campaign.id, kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId],kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
        [self performSelector:@selector(sendTrackingCallWithQueryString:) onThread:self.backgroundThread withObject:trackingQuery waitUntilDone:NO];
      }
 	});
@@ -197,9 +186,9 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 		return;
 	}
   
-  UALOG_DEBUG(@"Tracking report: %@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath, queryString);
+  UALOG_DEBUG(@"Tracking report: %@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsAnalyticsTrackingPath, queryString);
   
-  [self _queueWithURLString:[NSString stringWithFormat:@"%@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsTrackingPath,queryString] queryString:nil httpMethod:@"GET" retries:[NSNumber numberWithInt:0]];
+  [self _queueWithURLString:[NSString stringWithFormat:@"%@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsAnalyticsTrackingPath,queryString] queryString:nil httpMethod:@"GET" retries:[NSNumber numberWithInt:0]];
 }
 
 
@@ -213,28 +202,15 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 		return;
 	}
 	
-	NSString *query = [queryDictionary objectForKey:kUnityAdsQueryDictionaryQueryKey];
-	NSString *body = [queryDictionary objectForKey:kUnityAdsQueryDictionaryBodyKey];
+	NSString *query = [queryDictionary objectForKey:kUnityAdsAnalyticsQueryDictionaryQueryKey];
+	NSString *body = [queryDictionary objectForKey:kUnityAdsAnalyticsQueryDictionaryBodyKey];
 	
 	if (query == nil || [query length] == 0 || body == nil || [body length] == 0) {
 		UALOG_DEBUG(@"Invalid parameters in query dictionary.");
 		return;
 	}
 	
-  [self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsInstallTrackingPath] queryString:nil httpMethod:@"GET" retries:[NSNumber numberWithInt:0]];
-}
-
-- (void)sendManualInstallTrackingCall {
-	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil) {
-		return;
-	}
-	
-  dispatch_async(self.analyticsQueue, ^{
-    NSString *queryString = [NSString stringWithFormat:@"%@/install", [[UnityAdsProperties sharedInstance] adsGameId]];
-    NSString *bodyString = [NSString stringWithFormat:@"deviceId=%@", [UnityAdsDevice md5DeviceId]];
-		NSDictionary *queryDictionary = @{ kUnityAdsQueryDictionaryQueryKey : queryString, kUnityAdsQueryDictionaryBodyKey : bodyString };
-    [self performSelector:@selector(sendInstallTrackingCallWithQueryDictionary:) onThread:self.backgroundThread withObject:queryDictionary waitUntilDone:NO];
-	});
+  [self _queueWithURLString:[NSString stringWithFormat:@"%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsAnalyticsInstallTrackingPath] queryString:nil httpMethod:@"GET" retries:[NSNumber numberWithInt:0]];
 }
 
 
@@ -311,7 +287,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 #pragma mark - NSURLConnectionDelegate
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-	UALOG_DEBUG(@"Analytics upload didReceiveResponse: %@", response);
+	UALOG_DEBUG(@"");
   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
   
   if ([httpResponse statusCode] >= 400) {
@@ -321,12 +297,11 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-	UALOG_DEBUG(@"Analytics upload didReceiveData: %@", data);
+	UALOG_DEBUG(@"");
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-	UALOG_DEBUG(@"Analytics upload completed");
-	
+	UALOG_DEBUG(@"");
 	self.currentUpload = nil;	
 	[self _startNextUpload];
 }

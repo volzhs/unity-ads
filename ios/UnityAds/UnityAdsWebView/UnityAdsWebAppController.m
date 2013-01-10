@@ -9,31 +9,14 @@
 #import "UnityAdsWebAppController.h"
 #import "../UnityAds.h"
 #import "../UnityAdsURLProtocol/UnityAdsURLProtocol.h"
-#import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsSBJSON/UnityAdsSBJsonWriter.h"
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsMainViewController.h"
-
-NSString * const kUnityAdsWebViewPrefix = @"applifierimpact.";
-
-NSString * const kUnityAdsWebViewJSInit = @"init";
-NSString * const kUnityAdsWebViewJSChangeView = @"setView";
-NSString * const kUnityAdsWebViewJSHandleNativeEvent = @"handleNativeEvent";
-
-NSString * const kUnityAdsWebViewAPIActionKey = @"action";
-NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
-NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
-NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
-NSString * const kUnityAdsWebViewAPIClose = @"close";
-NSString * const kUnityAdsWebViewAPIOpen = @"open";
-NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
-NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_playing";
-
-NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
-NSString * const kUnityAdsWebViewViewTypeStart = @"start";
+#import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "../UnityAdsProperties/UnityAdsConstants.h"
 
 @interface UnityAdsWebAppController ()
   @property (nonatomic, strong) NSDictionary* webAppInitalizationParams;
@@ -95,14 +78,14 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 }
 
 - (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data {
-	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
+	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
   [self runJavascriptDependingOnPlatform:js];
 }
 
 - (void)sendNativeEventToWebApp:(NSString *)eventType data:(NSDictionary *)data {
- 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, [data JSONRepresentation]];
+ 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
   [self runJavascriptDependingOnPlatform:js];
@@ -229,7 +212,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 #pragma mark - WebView
 
 - (void)initWebAppWithValues:(NSDictionary *)values {
-	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSInit, [values JSONRepresentation]];
+	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSInit, [values JSONRepresentation]];
   UALOG_DEBUG(@"");
   [self runJavascript:js];
 }

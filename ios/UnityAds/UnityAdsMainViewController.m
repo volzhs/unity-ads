@@ -11,18 +11,10 @@
 #import "UnityAdsVideo/UnityAdsVideoView.h"
 #import "UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "UnityAdsCampaign/UnityAdsCampaign.h"
-#import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsData/UnityAdsAnalyticsUploader.h"
-
-NSString * const kUnityAdsNativeEventHideSpinner = @"hideSpinner";
-NSString * const kUnityAdsNativeEventShowSpinner = @"showSpinner";
-
-NSString * const kUnityAdsTextKeyKey = @"textKey";
-NSString * const kUnityAdsTextKeyBuffering = @"buffering";
-NSString * const kUnityAdsTextKeyLoading = @"loading";
-
-NSString * const kUnityAdsItemKeyKey = @"itemKey";
+#import "UnityAdsProperties/UnityAdsProperties.h"
+#import "UnityAdsProperties/UnityAdsConstants.h"
 
 @interface UnityAdsMainViewController ()
   @property (nonatomic, strong) UnityAdsVideoViewController *videoController;

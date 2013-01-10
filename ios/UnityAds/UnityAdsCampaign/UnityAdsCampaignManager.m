@@ -4,30 +4,14 @@
 //
 
 #import "UnityAdsCampaignManager.h"
-#import "../UnityAdsSBJSON/UnityAdsSBJsonParser.h"
 #import "UnityAdsCampaign.h"
 #import "UnityAdsRewardItem.h"
-#import "../UnityAdsData/UnityAdsCache.h"
 #import "../UnityAds.h"
-#import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "../UnityAdsSBJSON/UnityAdsSBJsonParser.h"
+#import "../UnityAdsData/UnityAdsCache.h"
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
-
-NSString * const kCampaignEndScreenKey = @"endScreen";
-NSString * const kCampaignClickURLKey = @"clickUrl";
-NSString * const kCampaignPictureKey = @"picture";
-NSString * const kCampaignTrailerDownloadableKey = @"trailerDownloadable";
-NSString * const kCampaignTrailerStreamingKey = @"trailerStreaming";
-NSString * const kCampaignGameIDKey = @"gameId";
-NSString * const kCampaignGameNameKey = @"gameName";
-NSString * const kCampaignIDKey = @"id";
-NSString * const kCampaignTaglineKey = @"tagLine";
-NSString * const kCampaignStoreIDKey = @"iTunesId";
-
-NSString * const kRewardItemKey = @"itemKey";
-NSString * const kRewardNameKey = @"name";
-NSString * const kRewardPictureKey = @"picture";
-
-NSString * const kGamerIDKey = @"gamerId";
+#import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "../UnityAdsProperties/UnityAdsConstants.h"
 
 @interface UnityAdsCampaignManager () <NSURLConnectionDelegate, UnityAdsCacheDelegate>
 @property (nonatomic, strong) NSURLConnection *urlConnection;
@@ -69,70 +53,70 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			UnityAdsCampaign *campaign = [[UnityAdsCampaign alloc] init];
       campaign.viewed = NO;
 			
-			NSString *endScreenURLString = [campaignDictionary objectForKey:kCampaignEndScreenKey];
+			NSString *endScreenURLString = [campaignDictionary objectForKey:kUnityAdsCampaignEndScreenKey];
       if (endScreenURLString == nil) continue;
       UAAssertV([endScreenURLString isKindOfClass:[NSString class]], nil);
 			NSURL *endScreenURL = [NSURL URLWithString:endScreenURLString];
 			UAAssertV(endScreenURL != nil, nil);
 			campaign.endScreenURL = endScreenURL;
 			
-			NSString *clickURLString = [campaignDictionary objectForKey:kCampaignClickURLKey];
+			NSString *clickURLString = [campaignDictionary objectForKey:kUnityAdsCampaignClickURLKey];
       if (clickURLString == nil) continue;
 			UAAssertV([clickURLString isKindOfClass:[NSString class]], nil);
 			NSURL *clickURL = [NSURL URLWithString:clickURLString];
 			UAAssertV(clickURL != nil, nil);
 			campaign.clickURL = clickURL;
 			
-			NSString *pictureURLString = [campaignDictionary objectForKey:kCampaignPictureKey];
+			NSString *pictureURLString = [campaignDictionary objectForKey:kUnityAdsCampaignPictureKey];
       if (pictureURLString == nil) continue;
 			UAAssertV([pictureURLString isKindOfClass:[NSString class]], nil);
 			NSURL *pictureURL = [NSURL URLWithString:pictureURLString];
 			UAAssertV(pictureURL != nil, nil);
 			campaign.pictureURL = pictureURL;
 			
-			NSString *trailerDownloadableURLString = [campaignDictionary objectForKey:kCampaignTrailerDownloadableKey];
+			NSString *trailerDownloadableURLString = [campaignDictionary objectForKey:kUnityAdsCampaignTrailerDownloadableKey];
       if (trailerDownloadableURLString == nil) continue;
 			UAAssertV([trailerDownloadableURLString isKindOfClass:[NSString class]], nil);
 			NSURL *trailerDownloadableURL = [NSURL URLWithString:trailerDownloadableURLString];
 			UAAssertV(trailerDownloadableURL != nil, nil);
 			campaign.trailerDownloadableURL = trailerDownloadableURL;
 			
-			NSString *trailerStreamingURLString = [campaignDictionary objectForKey:kCampaignTrailerStreamingKey];
+			NSString *trailerStreamingURLString = [campaignDictionary objectForKey:kUnityAdsCampaignTrailerStreamingKey];
       if (trailerStreamingURLString == nil) continue;
 			UAAssertV([trailerStreamingURLString isKindOfClass:[NSString class]], nil);
 			NSURL *trailerStreamingURL = [NSURL URLWithString:trailerStreamingURLString];
 			UAAssertV(trailerStreamingURL != nil, nil);
 			campaign.trailerStreamingURL = trailerStreamingURL;
 			
-			id gameIDValue = [campaignDictionary objectForKey:kCampaignGameIDKey];
+			id gameIDValue = [campaignDictionary objectForKey:kUnityAdsCampaignGameIDKey];
       if (gameIDValue == nil) continue;
 			UAAssertV(gameIDValue != nil && ([gameIDValue isKindOfClass:[NSString class]] || [gameIDValue isKindOfClass:[NSNumber class]]), nil);
 			NSString *gameID = [gameIDValue isKindOfClass:[NSNumber class]] ? [gameIDValue stringValue] : gameIDValue;
 			UAAssertV(gameID != nil && [gameID length] > 0, nil);
 			campaign.gameID = gameID;
 			
-			id gameNameValue = [campaignDictionary objectForKey:kCampaignGameNameKey];
+			id gameNameValue = [campaignDictionary objectForKey:kUnityAdsCampaignGameNameKey];
       if (gameNameValue == nil) continue;
 			UAAssertV(gameNameValue != nil && ([gameNameValue isKindOfClass:[NSString class]] || [gameNameValue isKindOfClass:[NSNumber class]]), nil);
 			NSString *gameName = [gameNameValue isKindOfClass:[NSNumber class]] ? [gameNameValue stringValue] : gameNameValue;
 			UAAssertV(gameName != nil && [gameName length] > 0, nil);
 			campaign.gameName = gameName;
 			
-			id idValue = [campaignDictionary objectForKey:kCampaignIDKey];
+			id idValue = [campaignDictionary objectForKey:kUnityAdsCampaignIDKey];
       if (idValue == nil) continue;
 			UAAssertV(idValue != nil && ([idValue isKindOfClass:[NSString class]] || [idValue isKindOfClass:[NSNumber class]]), nil);
 			NSString *idString = [idValue isKindOfClass:[NSNumber class]] ? [idValue stringValue] : idValue;
 			UAAssertV(idString != nil && [idString length] > 0, nil);
 			campaign.id = idString;
 			
-			id tagLineValue = [campaignDictionary objectForKey:kCampaignTaglineKey];
+			id tagLineValue = [campaignDictionary objectForKey:kUnityAdsCampaignTaglineKey];
       if (tagLineValue == nil) continue;
 			UAAssertV(tagLineValue != nil && ([tagLineValue isKindOfClass:[NSString class]] || [tagLineValue isKindOfClass:[NSNumber class]]), nil);
 			NSString *tagline = [tagLineValue isKindOfClass:[NSNumber class]] ? [tagLineValue stringValue] : tagLineValue;
 			UAAssertV(tagline != nil && [tagline length] > 0, nil);
 			campaign.tagLine = tagline;
 			
-			id itunesIDValue = [campaignDictionary objectForKey:kCampaignStoreIDKey];
+			id itunesIDValue = [campaignDictionary objectForKey:kUnityAdsCampaignStoreIDKey];
       if (itunesIDValue == nil) continue;
 			UAAssertV(itunesIDValue != nil && ([itunesIDValue isKindOfClass:[NSString class]] || [itunesIDValue isKindOfClass:[NSNumber class]]), nil);
 			NSString *itunesID = [itunesIDValue isKindOfClass:[NSNumber class]] ? [itunesIDValue stringValue] : itunesIDValue;
@@ -140,8 +124,8 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			campaign.itunesID = itunesID;
 			
       campaign.shouldCacheVideo = NO;
-      if ([campaignDictionary objectForKey:@"cacheVideo"] != nil) {
-        if ([[campaignDictionary valueForKey:@"cacheVideo"] boolValue] != 0) {
+      if ([campaignDictionary objectForKey:kUnityAdsCampaignCacheVideoKey] != nil) {
+        if ([[campaignDictionary valueForKey:kUnityAdsCampaignCacheVideoKey] boolValue] != 0) {
           campaign.shouldCacheVideo = YES;
         }
       }
@@ -162,7 +146,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	
 	UnityAdsRewardItem *item = [[UnityAdsRewardItem alloc] init];
   
-	id keyValue = [itemDictionary objectForKey:kRewardItemKey];
+	id keyValue = [itemDictionary objectForKey:kUnityAdsRewardItemKeyKey];
   if (keyValue == nil) return nil;
 	UAAssertV(keyValue != nil && ([keyValue isKindOfClass:[NSString class]] || [keyValue isKindOfClass:[NSNumber class]]), nil);
 	NSString *key = [keyValue isKindOfClass:[NSNumber class]] ? [keyValue stringValue] : keyValue;
@@ -170,7 +154,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
   if (key == nil || [key length] == 0) return nil;
 	item.key = key;
 	
-	id nameValue = [itemDictionary objectForKey:kRewardNameKey];
+	id nameValue = [itemDictionary objectForKey:kUnityAdsRewardNameKey];
   if (nameValue == nil) return nil;
 	UAAssertV(nameValue != nil && ([nameValue isKindOfClass:[NSString class]] || [nameValue isKindOfClass:[NSNumber class]]), nil);
 	NSString *name = [nameValue isKindOfClass:[NSNumber class]] ? [nameValue stringValue] : nameValue;
@@ -178,7 +162,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
   if (name == nil || [name length] == 0) return nil;
 	item.name = name;
 	
-	NSString *pictureURLString = [itemDictionary objectForKey:kRewardPictureKey];
+	NSString *pictureURLString = [itemDictionary objectForKey:kUnityAdsRewardPictureKey];
   if (pictureURLString == nil) return nil;
 	UAAssertV([pictureURLString isKindOfClass:[NSString class]], nil);
 	NSURL *pictureURL = [NSURL URLWithString:pictureURLString];
@@ -198,24 +182,24 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	UAAssert([_campaignData isKindOfClass:[NSDictionary class]]);
 	
   if (_campaignData != nil && [_campaignData isKindOfClass:[NSDictionary class]]) {
-    NSDictionary *jsonDictionary = [(NSDictionary *)_campaignData objectForKey:@"data"];
+    NSDictionary *jsonDictionary = [(NSDictionary *)_campaignData objectForKey:kUnityAdsJsonDataRootKey];
     BOOL validData = YES;
     
-    if ([jsonDictionary objectForKey:@"webViewUrl"] == nil) validData = NO;
-    if ([jsonDictionary objectForKey:@"analyticsUrl"] == nil) validData = NO;
-    if ([jsonDictionary objectForKey:@"impactUrl"] == nil) validData = NO;
-    if ([jsonDictionary objectForKey:kGamerIDKey] == nil) validData = NO;
-    if ([jsonDictionary objectForKey:@"campaigns"] == nil) validData = NO;
-    if ([jsonDictionary objectForKey:@"item"] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:kUnityAdsWebViewUrlKey] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:kUnityAdsAnalyticsUrlKey] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:kUnityAdsUrlKey] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:kUnityAdsGamerIDKey] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:kUnityAdsCampaignsKey] == nil) validData = NO;
+    if ([jsonDictionary objectForKey:kUnityAdsRewardItemKey] == nil) validData = NO;
     
-    self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:@"campaigns"]];
+    self.campaigns = [self _deserializeCampaigns:[jsonDictionary objectForKey:kUnityAdsCampaignsKey]];
     if (self.campaigns == nil || [self.campaigns count] == 0) validData = NO;
     
-    self.defaultRewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:@"item"]];
+    self.defaultRewardItem = [self _deserializeRewardItem:[jsonDictionary objectForKey:kUnityAdsRewardItemKey]];
     if (self.defaultRewardItem == nil) validData = NO;
     
-    if ([jsonDictionary objectForKey:@"items"] != nil) {
-      NSArray *rewardItems = [jsonDictionary objectForKey:@"items"];
+    if ([jsonDictionary objectForKey:kUnityAdsRewardItemsKey] != nil) {
+      NSArray *rewardItems = [jsonDictionary objectForKey:kUnityAdsRewardItemsKey];
       UALOG_DEBUG(@"Found multiple rewards: %i", [rewardItems count]);
       NSMutableArray *deserializedRewardItems = [NSMutableArray array];
       NSMutableArray *tempRewardItemKeys = [NSMutableArray array];
@@ -238,11 +222,11 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     if (validData) {
       self.currentRewardItemKey = self.defaultRewardItem.key;
       
-      [[UnityAdsProperties sharedInstance] setWebViewBaseUrl:(NSString *)[jsonDictionary objectForKey:@"webViewUrl"]];
-      [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"analyticsUrl"]];
-      [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:@"impactUrl"]];
+      [[UnityAdsProperties sharedInstance] setWebViewBaseUrl:(NSString *)[jsonDictionary objectForKey:kUnityAdsWebViewUrlKey]];
+      [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:kUnityAdsAnalyticsUrlKey]];
+      [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:kUnityAdsUrlKey]];
       
-      NSString *gamerId = [jsonDictionary objectForKey:kGamerIDKey];
+      NSString *gamerId = [jsonDictionary objectForKey:kUnityAdsGamerIDKey];
       
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
       [self.cache cacheCampaigns:self.campaigns];
@@ -351,10 +335,15 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 - (UnityAdsRewardItem *)getCurrentRewardItem {
   if (self.currentRewardItemKey != nil) {
-    for (UnityAdsRewardItem *rewardItem in self.rewardItems) {
-      if ([rewardItem.key isEqualToString:self.currentRewardItemKey]) {
-        return rewardItem;
+    if (self.rewardItems != nil) {
+      for (UnityAdsRewardItem *rewardItem in self.rewardItems) {
+        if ([rewardItem.key isEqualToString:self.currentRewardItemKey]) {
+          return rewardItem;
+        }
       }
+    }
+    else {
+      return self.defaultRewardItem;
     }
   }
   
