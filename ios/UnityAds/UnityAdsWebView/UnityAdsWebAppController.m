@@ -97,10 +97,10 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [type isEqualToString:kUnityAdsWebViewAPINavigateTo] || [type isEqualToString:kUnityAdsWebViewAPIAppStore])
 	{
 		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
-      if ([data objectForKey:@"campaignId"] != nil) {
-        [self _selectCampaignWithID:[data objectForKey:@"campaignId"]];
+      if ([data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey] != nil) {
+        [self _selectCampaignWithID:[data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey]];
         BOOL checkIfWatched = YES;
-        if ([data objectForKey:@"rewatch"] != nil && [[data valueForKey:@"rewatch"] boolValue] == true) {
+        if ([data objectForKey:kUnityAdsWebViewEventDataRewatchKey] != nil && [[data valueForKey:kUnityAdsWebViewEventDataRewatchKey] boolValue] == true) {
           checkIfWatched = NO;
         }
         
@@ -108,13 +108,13 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
       }
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo]) {
-      if ([data objectForKey:@"clickUrl"] != nil) {
-        [self openExternalUrl:[data objectForKey:@"clickUrl"]];
+      if ([data objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
+        [self openExternalUrl:[data objectForKey:kUnityAdsWebViewEventDataClickUrlKey]];
       }
     
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore]) {
-      if ([data objectForKey:@"clickUrl"] != nil) {
+      if ([data objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
         [[UnityAdsMainViewController sharedInstance] openAppStoreWithData:data];
       }    
 		}
@@ -196,9 +196,9 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)initWebApp {
 	UAAssert([NSThread isMainThread]);
   
-  NSDictionary *persistingData = @{@"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData], @"platform":@"ios", @"deviceId":[UnityAdsDevice md5DeviceId], @"openUdid":[UnityAdsDevice md5OpenUDIDString], @"macAddress":[UnityAdsDevice md5MACAddressString], @"sdkVersion":[[UnityAdsProperties sharedInstance] adsVersion]};
+  NSDictionary *persistingData = @{kUnityAdsWebViewDataParamCampaignDataKey:[[UnityAdsCampaignManager sharedInstance] campaignData], kUnityAdsWebViewDataParamPlatformKey:@"ios", kUnityAdsWebViewDataParamDeviceIdKey:[UnityAdsDevice md5DeviceId], kUnityAdsWebViewDataParamOpenUdidIdKey:[UnityAdsDevice md5OpenUDIDString], kUnityAdsWebViewDataParamMacAddressKey:[UnityAdsDevice md5MACAddressString], kUnityAdsWebViewDataParamSdkVersionKey:[[UnityAdsProperties sharedInstance] adsVersion]};
   
-  NSDictionary *trackingData = @{@"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice analyticsMachineName]};
+  NSDictionary *trackingData = @{kUnityAdsWebViewDataParamIosVersionKey:[UnityAdsDevice softwareVersion], kUnityAdsWebViewDataParamDeviceTypeKey:[UnityAdsDevice analyticsMachineName]};
   NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];
   
   if ([UnityAdsDevice canUseTracking]) {

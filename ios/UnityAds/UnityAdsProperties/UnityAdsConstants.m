@@ -28,6 +28,19 @@ NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_
 NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
 NSString * const kUnityAdsWebViewViewTypeStart = @"start";
 
+NSString * const kUnityAdsWebViewDataParamCampaignDataKey = @"campaignData";
+NSString * const kUnityAdsWebViewDataParamPlatformKey = @"platform";
+NSString * const kUnityAdsWebViewDataParamDeviceIdKey = @"deviceId";
+NSString * const kUnityAdsWebViewDataParamDeviceTypeKey = @"deviceType";
+NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey = @"openUdid";
+NSString * const kUnityAdsWebViewDataParamMacAddressKey = @"macAddress";
+NSString * const kUnityAdsWebViewDataParamSdkVersionKey = @"sdkVersion";
+NSString * const kUnityAdsWebViewDataParamIosVersionKey = @"iOSVersion";
+
+NSString * const kUnityAdsWebViewEventDataCampaignIdKey = @"campaignId";
+NSString * const kUnityAdsWebViewEventDataRewatchKey = @"rewatch";
+NSString * const kUnityAdsWebViewEventDataClickUrlKey = @"clickUrl";
+
 
 /* Native Events */
 
@@ -135,6 +148,23 @@ NSString * const kUnityAdsDeviceIpad2 = @"ipad2";
 NSString * const kUnityAdsDeviceIpad3 = @"ipad3";
 NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 NSString * const kUnityAdsDeviceSimulator = @"simulator";
+
+
+/* Init Query Params */
+
+NSString * const kUnityAdsInitQueryParamDeviceIdKey = @"deviceId";
+NSString * const kUnityAdsInitQueryParamDeviceTypeKey = @"deviceType";
+NSString * const kUnityAdsInitQueryParamPlatformKey = @"platform";
+NSString * const kUnityAdsInitQueryParamGameIdKey = @"gameId";
+NSString * const kUnityAdsInitQueryParamOpenUdidKey = @"openUdid";
+NSString * const kUnityAdsInitQueryParamMacAddressKey = @"macAddress";
+NSString * const kUnityAdsInitQueryParamAdvertisingTrackingIdKey = @"advertisingTrackingId";
+NSString * const kUnityAdsInitQueryParamTrackingEnabledKey = @"trackingEnabled";
+NSString * const kUnityAdsInitQueryParamSoftwareVersionKey = @"softwareVersion";
+NSString * const kUnityAdsInitQueryParamHardwareVersionKey = @"hardwareVersion";
+NSString * const kUnityAdsInitQueryParamApiVersionKey = @"apiVersion";
+NSString * const kUnityAdsInitQueryParamConnectionTypeKey = @"connectionType";
+NSString * const kUnityAdsInitQueryParamTestKey = @"test";
 
 @implementation UnityAdsConstants
 

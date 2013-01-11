@@ -27,6 +27,20 @@ extern NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying;
 extern NSString * const kUnityAdsWebViewViewTypeCompleted;
 extern NSString * const kUnityAdsWebViewViewTypeStart;
 
+extern NSString * const kUnityAdsWebViewDataParamCampaignDataKey;
+extern NSString * const kUnityAdsWebViewDataParamPlatformKey;
+extern NSString * const kUnityAdsWebViewDataParamDeviceIdKey;
+extern NSString * const kUnityAdsWebViewDataParamDeviceTypeKey;
+extern NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey;
+extern NSString * const kUnityAdsWebViewDataParamMacAddressKey;
+extern NSString * const kUnityAdsWebViewDataParamSdkVersionKey;
+extern NSString * const kUnityAdsWebViewDataParamIosVersionKey;
+
+extern NSString * const kUnityAdsWebViewEventDataCampaignIdKey;
+extern NSString * const kUnityAdsWebViewEventDataRewatchKey;
+extern NSString * const kUnityAdsWebViewEventDataClickUrlKey;
+
+
 
 /* Native Events */
 
@@ -133,6 +147,24 @@ extern NSString * const kUnityAdsDeviceIpad2;
 extern NSString * const kUnityAdsDeviceIpad3;
 extern NSString * const kUnityAdsDeviceIosUnknown;
 extern NSString * const kUnityAdsDeviceSimulator;
+
+
+/* Init Query Params */
+
+extern NSString * const kUnityAdsInitQueryParamDeviceIdKey;
+extern NSString * const kUnityAdsInitQueryParamDeviceTypeKey;
+extern NSString * const kUnityAdsInitQueryParamPlatformKey;
+extern NSString * const kUnityAdsInitQueryParamGameIdKey;
+extern NSString * const kUnityAdsInitQueryParamOpenUdidKey;
+extern NSString * const kUnityAdsInitQueryParamMacAddressKey;
+extern NSString * const kUnityAdsInitQueryParamAdvertisingTrackingIdKey;
+extern NSString * const kUnityAdsInitQueryParamTrackingEnabledKey;
+extern NSString * const kUnityAdsInitQueryParamSoftwareVersionKey;
+extern NSString * const kUnityAdsInitQueryParamHardwareVersionKey;
+extern NSString * const kUnityAdsInitQueryParamApiVersionKey;
+extern NSString * const kUnityAdsInitQueryParamConnectionTypeKey;
+extern NSString * const kUnityAdsInitQueryParamTestKey;
+
 
 @interface UnityAdsConstants : NSObject
 
