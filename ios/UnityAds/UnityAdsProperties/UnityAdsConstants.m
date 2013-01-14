@@ -163,7 +163,7 @@ NSString * const kUnityAdsInitQueryParamAdvertisingTrackingIdKey = @"advertising
 NSString * const kUnityAdsInitQueryParamTrackingEnabledKey = @"trackingEnabled";
 NSString * const kUnityAdsInitQueryParamSoftwareVersionKey = @"softwareVersion";
 NSString * const kUnityAdsInitQueryParamHardwareVersionKey = @"hardwareVersion";
-NSString * const kUnityAdsInitQueryParamApiVersionKey = @"apiVersion";
+NSString * const kUnityAdsInitQueryParamSdkVersionKey = @"sdkVersion";
 NSString * const kUnityAdsInitQueryParamConnectionTypeKey = @"connectionType";
 NSString * const kUnityAdsInitQueryParamTestKey = @"test";
 

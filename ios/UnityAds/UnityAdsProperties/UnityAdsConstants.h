@@ -162,7 +162,7 @@ extern NSString * const kUnityAdsInitQueryParamAdvertisingTrackingIdKey;
 extern NSString * const kUnityAdsInitQueryParamTrackingEnabledKey;
 extern NSString * const kUnityAdsInitQueryParamSoftwareVersionKey;
 extern NSString * const kUnityAdsInitQueryParamHardwareVersionKey;
-extern NSString * const kUnityAdsInitQueryParamApiVersionKey;
+extern NSString * const kUnityAdsInitQueryParamSdkVersionKey;
 extern NSString * const kUnityAdsInitQueryParamConnectionTypeKey;
 extern NSString * const kUnityAdsInitQueryParamTestKey;
 
