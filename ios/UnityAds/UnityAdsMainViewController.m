@@ -131,7 +131,7 @@
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.delegate mainControllerWillOpen];
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsTextKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
     
     if (![UnityAdsDevice isSimulator]) {
       if (self.openHandler == nil) {
