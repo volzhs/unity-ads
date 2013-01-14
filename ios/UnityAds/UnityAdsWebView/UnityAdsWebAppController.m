@@ -196,7 +196,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)initWebApp {
 	UAAssert([NSThread isMainThread]);
   
-  NSDictionary *persistingData = @{kUnityAdsWebViewDataParamCampaignDataKey:[[UnityAdsCampaignManager sharedInstance] campaignData], kUnityAdsWebViewDataParamPlatformKey:@"ios", kUnityAdsWebViewDataParamDeviceIdKey:[UnityAdsDevice md5DeviceId], kUnityAdsWebViewDataParamOpenUdidIdKey:[UnityAdsDevice md5OpenUDIDString], kUnityAdsWebViewDataParamMacAddressKey:[UnityAdsDevice md5MACAddressString], kUnityAdsWebViewDataParamSdkVersionKey:[[UnityAdsProperties sharedInstance] adsVersion]};
+  NSDictionary *persistingData = @{kUnityAdsWebViewDataParamCampaignDataKey:[[UnityAdsCampaignManager sharedInstance] campaignData], kUnityAdsWebViewDataParamPlatformKey:@"ios", kUnityAdsWebViewDataParamDeviceIdKey:[UnityAdsDevice md5DeviceId], kUnityAdsWebViewDataParamOpenUdidIdKey:[UnityAdsDevice md5OpenUDIDString], kUnityAdsWebViewDataParamMacAddressKey:[UnityAdsDevice md5MACAddressString], kUnityAdsWebViewDataParamSdkVersionKey:[[UnityAdsProperties sharedInstance] adsVersion], kUnityAdsWebViewDataParamGameIdKey:[[UnityAdsProperties sharedInstance] adsGameId]};
   
   NSDictionary *trackingData = @{kUnityAdsWebViewDataParamIosVersionKey:[UnityAdsDevice softwareVersion], kUnityAdsWebViewDataParamDeviceTypeKey:[UnityAdsDevice analyticsMachineName]};
   NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];

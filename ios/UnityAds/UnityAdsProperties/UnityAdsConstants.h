@@ -30,6 +30,7 @@ extern NSString * const kUnityAdsWebViewViewTypeStart;
 extern NSString * const kUnityAdsWebViewDataParamCampaignDataKey;
 extern NSString * const kUnityAdsWebViewDataParamPlatformKey;
 extern NSString * const kUnityAdsWebViewDataParamDeviceIdKey;
+extern NSString * const kUnityAdsWebViewDataParamGameIdKey;
 extern NSString * const kUnityAdsWebViewDataParamDeviceTypeKey;
 extern NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey;
 extern NSString * const kUnityAdsWebViewDataParamMacAddressKey;

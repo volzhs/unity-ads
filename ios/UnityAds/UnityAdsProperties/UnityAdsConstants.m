@@ -31,6 +31,7 @@ NSString * const kUnityAdsWebViewViewTypeStart = @"start";
 NSString * const kUnityAdsWebViewDataParamCampaignDataKey = @"campaignData";
 NSString * const kUnityAdsWebViewDataParamPlatformKey = @"platform";
 NSString * const kUnityAdsWebViewDataParamDeviceIdKey = @"deviceId";
+NSString * const kUnityAdsWebViewDataParamGameIdKey = @"gameId";
 NSString * const kUnityAdsWebViewDataParamDeviceTypeKey = @"deviceType";
 NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey = @"openUdid";
 NSString * const kUnityAdsWebViewDataParamMacAddressKey = @"macAddress";
