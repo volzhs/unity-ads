@@ -10,6 +10,8 @@ import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
@@ -57,7 +59,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public UnityAds (Activity activity, String gameId) {
 		instance = this;
-		UnityAdsProperties.UNITY_ADS_APP_ID = gameId;
+		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
 	}
 		
@@ -80,7 +82,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		cachemanager.setDownloadListener(this);
 		webdata = new UnityAdsWebData();
 		webdata.setWebDataListener(this);
-		
+
 		if (webdata.initVideoPlan()) {
 			_initialized = true;
 		}
@@ -116,7 +118,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public void stopAll () {
-		Log.d(UnityAdsProperties.LOG_NAME, "UnityAds->stopAll()");
+		Log.d(UnityAdsConstants.LOG_NAME, "UnityAds->stopAll()");
 		UnityAdsDownloader.stopAllDownloads();
 		webdata.stopAllRequests();
 	}
@@ -127,14 +129,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsCacheListener
 	@Override
 	public void onCampaignUpdateStarted () {	
-		Log.d(UnityAdsProperties.LOG_NAME, "Campaign updates started.");
+		Log.d(UnityAdsConstants.LOG_NAME, "Campaign updates started.");
 	}
 	
 	@Override
 	public void onCampaignReady (UnityAdsCampaignHandler campaignHandler) {
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 				
-		Log.d(UnityAdsProperties.LOG_NAME, "Got onCampaignReady: " + campaignHandler.getCampaign().toString());
+		Log.d(UnityAdsConstants.LOG_NAME, "Got onCampaignReady: " + campaignHandler.getCampaign().toString());
 		
 		if (canShowAds())
 			sendAdsReadyEvent();
@@ -142,7 +144,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	@Override
 	public void onAllCampaignsReady () {
-		Log.d(UnityAdsProperties.LOG_NAME, "Listener got \"All campaigns ready.\"");
+		Log.d(UnityAdsConstants.LOG_NAME, "Listener got \"All campaigns ready.\"");
 	}
 	
 	// IUnityAdsWebDataListener
@@ -158,7 +160,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsWebViewListener
 	@Override
 	public void onWebAppLoaded () {
-		_webView.setAvailableCampaigns(webdata.getVideoPlan());
+		_webView.initWebApp(webdata.getData());
 	}
 	
 	// IUnityAdsViewListener
@@ -182,7 +184,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				campaignId = data.getString("campaignId");
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "Could not get campaignId");
+				Log.d(UnityAdsConstants.LOG_NAME, "Could not get campaignId");
 			}
 			
 			if (campaignId != null) {
@@ -208,6 +210,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	@Override
 	public void onWebAppInitComplete (JSONObject data) {
+		Log.d(UnityAdsConstants.LOG_NAME, "WebAppInitComplete");
 		_webAppLoaded = true;
 
 		if (canShowAds())
@@ -234,7 +237,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			params = new JSONObject("{\"campaignId\":\"" + _selectedCampaign.getCampaignId() + "\"}");
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Could not create JSON");
+			Log.d(UnityAdsConstants.LOG_NAME, "Could not create JSON");
 		}
 		
 		_webView.setView("completed", params);
@@ -255,7 +258,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private void initCache () {
 		if (_initialized) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Init cache");
+			Log.d(UnityAdsConstants.LOG_NAME, "Init cache");
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
 			cachemanager.updateCache(webdata.getVideoPlanCampaigns());				
 		}
@@ -270,7 +273,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
-					Log.d(UnityAdsProperties.LOG_NAME, "Unity Ads ready!");
+					Log.d(UnityAdsConstants.LOG_NAME, "Unity Ads ready!");
 					_adsReadySent = true;
 					_campaignListener.onFetchCompleted();
 				}
@@ -336,7 +339,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				_vp.playVideo(playUrl);
 			}			
 			else
-				Log.d(UnityAdsProperties.LOG_NAME, "Campaign is null");
+				Log.d(UnityAdsConstants.LOG_NAME, "Campaign is null");
 						
 			if (_videoListener != null)
 				_videoListener.onVideoStarted();

@@ -1,11 +1,13 @@
 package com.unity3d.ads.android.webapp;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.UnityAdsProperties;
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -21,14 +23,15 @@ import android.webkit.WebViewClient;
 
 public class UnityAdsWebView extends WebView {
 
-	private String _url = "http://ads-dev.local/android/index.html";
+	private String _url = null;
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
 	private UnityAdsWebBridge _webBridge = null;
 	
 	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		super(activity);
-		init(activity, _url, listener, webBridge);
+		Log.d(UnityAdsConstants.LOG_NAME, "Loading WebView from URL: " + UnityAdsProperties.WEBVIEW_BASE_URL);
+		init(activity, UnityAdsProperties.WEBVIEW_BASE_URL, listener, webBridge);
 	}
 
 	public UnityAdsWebView(Activity activity, String url, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
@@ -52,19 +55,37 @@ public class UnityAdsWebView extends WebView {
 				dataStr = dataStr.replace("\"", "\\\"");
 			}
 							
-			String jsCommand = UnityAdsProperties.UNITY_ADS_JS_PREFIX + "setView(\"" + view + "\", \"" + dataStr + "\")";
+			String jsCommand = UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX + "setView(\"" + view + "\", \"" + dataStr + "\")";
 			loadUrl(jsCommand);
 		}
 	}
 	
-	public void setAvailableCampaigns (String videoPlan) {
+	public void initWebApp (JSONObject data) {
 		if (isWebAppLoaded()) {
-			videoPlan = videoPlan.replace("\"", "\\\"");
-			JSONObject params = UnityAdsUtils.getPlatformProperties();
-			String paramStr = "";
-			paramStr = params.toString();
-			paramStr = paramStr.replace("\"", "\\\"");
-			loadUrl(UnityAdsProperties.UNITY_ADS_JS_PREFIX + "init(\"" + videoPlan + "\", \"" + paramStr + "\");");
+			JSONObject initData = new JSONObject();
+			
+			try {				
+				// Basic data
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_CAMPAIGNDATA_KEY, data);
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_PLATFORM_KEY, "android");
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_DEVICEID_KEY, UnityAdsDevice.getDeviceId());
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_OPENUDID_KEY, UnityAdsDevice.getOpenUdid());
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY, UnityAdsDevice.getMacAddress());
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY, UnityAdsConstants.UNITY_ADS_VERSION);
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
+				
+				// Tracking data
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY, UnityAdsDevice.getSoftwareVersion());
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
+			}
+			catch (Exception e) {
+				Log.d(UnityAdsConstants.LOG_NAME, "Error creating webview init params");
+				return;
+			}
+			
+			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
+			Log.d(UnityAdsConstants.LOG_NAME, "Initializing WebView with JS call: " + initString);
+			loadUrl(initString);
 		}
 	}
 
@@ -84,7 +105,7 @@ public class UnityAdsWebView extends WebView {
 		
 		if (_url != null && _url.indexOf("_raw.html") != -1) {
 			getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-			Log.d(UnityAdsProperties.LOG_NAME, "startup() -> LOAD_NO_CACHE");
+			Log.d(UnityAdsConstants.LOG_NAME, "startup() -> LOAD_NO_CACHE");
 		}
 		else {
 			getSettings().setCacheMode(WebSettings.LOAD_NORMAL);
@@ -135,7 +156,7 @@ public class UnityAdsWebView extends WebView {
 			layertype.invoke(this, 1, null);
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Could not invoke setLayerType");
+			Log.d(UnityAdsConstants.LOG_NAME, "Could not invoke setLayerType");
 		}
 		
 		addJavascriptInterface(_webBridge, "ApplifierWebBridge");
@@ -161,7 +182,7 @@ public class UnityAdsWebView extends WebView {
 	
 	private class UnityAdsViewChromeClient extends WebChromeClient {
 		public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-			Log.d(UnityAdsProperties.LOG_NAME, "JAVASCRIPT(" + lineNumber + "): " + message);
+			Log.d(UnityAdsConstants.LOG_NAME, "JAVASCRIPT(" + lineNumber + "): " + message);
 		}
 		
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
@@ -173,7 +194,7 @@ public class UnityAdsWebView extends WebView {
 		@Override
 		public void onPageFinished (WebView webview, String url) {
 			super.onPageFinished(webview, url);
-			Log.d(UnityAdsProperties.LOG_NAME, "Finished url: "  + url);
+			Log.d(UnityAdsConstants.LOG_NAME, "Finished url: "  + url);
 			if (_listener != null && !_webAppLoaded) {
 				_webAppLoaded = true;
 				_listener.onWebAppLoaded();
@@ -187,7 +208,7 @@ public class UnityAdsWebView extends WebView {
 		
 		@Override
 		public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {		
-			Log.e(UnityAdsProperties.LOG_NAME, "UnityAdsViewClient.onReceivedError() -> " + errorCode + " (" + failingUrl + ") " + description);
+			Log.e(UnityAdsConstants.LOG_NAME, "UnityAdsViewClient.onReceivedError() -> " + errorCode + " (" + failingUrl + ") " + description);
 			super.onReceivedError(view, errorCode, description, failingUrl);
 		}
 

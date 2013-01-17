@@ -1,8 +1,8 @@
 package com.mycompany.test;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 import com.mycompany.test.R;
 
@@ -24,8 +24,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         ((ImageView)findViewById(R.id.playbtn)).setAlpha(80);
-		Log.d(UnityAdsProperties.LOG_NAME, "Init Unity Ads");
-		ai = new UnityAds(this, "16");
+		Log.d(UnityAdsConstants.LOG_NAME, "Init Unity Ads");
+		ai = new UnityAds(this, "11006");
 		ai.setCampaignListener(this);
 		ai.init();
     }

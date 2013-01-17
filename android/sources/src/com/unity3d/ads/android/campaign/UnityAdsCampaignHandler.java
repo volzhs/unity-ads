@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
-import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsDownloadListener;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	
@@ -36,14 +36,14 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	@Override
 	public void onFileDownloadCompleted (String downloadUrl) {
 		if (finishDownload(downloadUrl))
-			Log.d(UnityAdsProperties.LOG_NAME, "Reporting campaign download completion: " + _campaign.getCampaignId());
+			Log.d(UnityAdsConstants.LOG_NAME, "Reporting campaign download completion: " + _campaign.getCampaignId());
 		
 	}
 	
 	@Override
 	public void onFileDownloadCancelled (String downloadUrl) {	
 		if (finishDownload(downloadUrl)) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Download cancelled: " + _campaign.getCampaignId());
+			Log.d(UnityAdsConstants.LOG_NAME, "Download cancelled: " + _campaign.getCampaignId());
 			_cancelledDownloads = true;
 		}
 	}
@@ -52,10 +52,15 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		// Check video
 		checkFileAndDownloadIfNeeded(_campaign.getVideoUrl());
 		
-		// No downloads, report campaign done
+		if (_handlerListener != null) {
+			_handlerListener.onCampaignHandled(this);
+		}
+		
+		/*
 		if (!hasDownloads() && _handlerListener != null && !_cancelledDownloads) {
 			_handlerListener.onCampaignHandled(this);
 		}
+		*/
 	}
 	
 	
@@ -66,7 +71,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		
 		if (_downloadList != null && _downloadList.size() == 0 && _handlerListener != null) {
 			UnityAdsDownloader.removeListener(this);
-			_handlerListener.onCampaignHandled(this);
+			//_handlerListener.onCampaignHandled(this);
 			return true;
 		}
 		
@@ -74,13 +79,13 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	}
 	
 	private void checkFileAndDownloadIfNeeded (String fileUrl) {
-		if (!UnityAdsUtils.isFileInCache(fileUrl)) {
+		if (_campaign.shouldCacheVideo() && !UnityAdsUtils.isFileInCache(fileUrl)) {
 			if (!hasDownloads())
 				UnityAdsDownloader.addListener(this);
 			
 			addToFileDownloads(fileUrl);
 		}
-		else if (!isFileOk(fileUrl)) {
+		else if (!isFileOk(fileUrl) && _campaign.shouldCacheVideo()) {
 			UnityAdsUtils.removeFile(fileUrl);
 			UnityAdsDownloader.addListener(this);
 			addToFileDownloads(fileUrl);

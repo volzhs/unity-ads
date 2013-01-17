@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.unity3d.ads.android.UnityAdsProperties;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsWebBridge {
 	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView, InitComplete;
@@ -45,6 +45,8 @@ public class UnityAdsWebBridge {
 	}
 	
 	public void handleWebEvent (String data) {
+		Log.d(UnityAdsConstants.LOG_NAME, "handleWebEvent: " + data);
+
 		if (_listener == null || data == null) return;
 		
 		JSONObject jsonData = null;
@@ -57,7 +59,7 @@ public class UnityAdsWebBridge {
 			parameters = jsonData.getJSONObject("data");
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Error while parsing parameters: " + e.getMessage());
+			Log.d(UnityAdsConstants.LOG_NAME, "Error while parsing parameters: " + e.getMessage());
 		}
 		
 		if (jsonData == null || event == null) return;

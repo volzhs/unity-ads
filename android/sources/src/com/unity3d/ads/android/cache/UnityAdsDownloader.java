@@ -15,8 +15,9 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsDownloader {
 	
@@ -54,7 +55,7 @@ public class UnityAdsDownloader {
 	
 	public static void stopAllDownloads () {
 		if (_cacheDownloads != null) {
-			Log.d(UnityAdsProperties.LOG_NAME, "UnityAdsDownloader->stopAllDownloads()");
+			Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsDownloader->stopAllDownloads()");
 			for (CacheDownload cd : _cacheDownloads) {
 				cd.cancel(true);
 			}
@@ -114,13 +115,13 @@ public class UnityAdsDownloader {
 		ConnectivityManager cm = (ConnectivityManager)UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 	    
 		if (cm != null && cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Starting download for: " + url);
+			Log.d(UnityAdsConstants.LOG_NAME, "Starting download for: " + url);
 			CacheDownload cd = new CacheDownload();
 			addToCacheDownloads(cd);
 			cd.execute(url);
 	    }
 		else {
-			Log.d(UnityAdsProperties.LOG_NAME, "No WIFI detected, not downloading: " + url);
+			Log.d(UnityAdsConstants.LOG_NAME, "No WIFI detected, not downloading: " + url);
 			removeDownload(url.toString());
 			sendToListeners(UnityAdsDownloadEventType.DownloadCancelled, url);
 			cacheNextFile(); 
@@ -133,7 +134,7 @@ public class UnityAdsDownloader {
 		}
 		else if (_downloadList != null) {
 			_isDownloading = false;
-			Log.d(UnityAdsProperties.LOG_NAME, "All downloads completed.");
+			Log.d(UnityAdsConstants.LOG_NAME, "All downloads completed.");
 		}
 	}
 	
@@ -146,7 +147,7 @@ public class UnityAdsDownloader {
 			fos = new FileOutputStream(outf);
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Problems creating FOS: " + fileName);
+			Log.d(UnityAdsConstants.LOG_NAME, "Problems creating FOS: " + fileName);
 		}
 		
 		return fos;
@@ -182,7 +183,7 @@ public class UnityAdsDownloader {
 				_downloadUrl = new URL(sUrl[0]);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "Problems with url: " + e.getMessage());
+				Log.d(UnityAdsConstants.LOG_NAME, "Problems with url: " + e.getMessage());
 			}
 			
 			try {
@@ -192,7 +193,7 @@ public class UnityAdsDownloader {
 				_urlConnection.connect();
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "Problems opening connection: " + e.getMessage());
+				Log.d(UnityAdsConstants.LOG_NAME, "Problems opening connection: " + e.getMessage());
 			}
 			
 			if (_urlConnection != null) {
@@ -202,7 +203,7 @@ public class UnityAdsDownloader {
 					_input = new BufferedInputStream(_downloadUrl.openStream());
 				}
 				catch (Exception e) {
-					Log.d(UnityAdsProperties.LOG_NAME, "Problems opening stream: " + e.getMessage());
+					Log.d(UnityAdsConstants.LOG_NAME, "Problems opening stream: " + e.getMessage());
 				}
 				
 				_targetFile = new File(sUrl[0]);
@@ -224,7 +225,7 @@ public class UnityAdsDownloader {
 					}
 				}
 				catch (Exception e) {
-					Log.d(UnityAdsProperties.LOG_NAME, "Problems downloading file: " + e.getMessage());
+					Log.d(UnityAdsConstants.LOG_NAME, "Problems downloading file: " + e.getMessage());
 					cancelDownload();
 					cacheNextFile();
 					return null;
@@ -237,7 +238,7 @@ public class UnityAdsDownloader {
 		}
 		
 		protected void onCancelled (Object result) {
-			Log.d(UnityAdsProperties.LOG_NAME, "Force stopping download!");
+			Log.d(UnityAdsConstants.LOG_NAME, "Force stopping download!");
 			_cancelled = true;
 			cancelDownload();
 		}
@@ -273,12 +274,12 @@ public class UnityAdsDownloader {
 				_input.close();
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsProperties.LOG_NAME, "Problems closing connection: " + e.getMessage());
+				Log.d(UnityAdsConstants.LOG_NAME, "Problems closing connection: " + e.getMessage());
 			}	    	
 	    }
 	    
 	    private void cancelDownload () {
-	    	Log.d(UnityAdsProperties.LOG_NAME, "Download cancelled for: " + _downloadUrl.toString());
+	    	Log.d(UnityAdsConstants.LOG_NAME, "Download cancelled for: " + _downloadUrl.toString());
 			closeAndFlushConnection();
 			UnityAdsUtils.removeFile(_targetFile.toString());
         	removeDownload(_downloadUrl.toString());

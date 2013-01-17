@@ -1,7 +1,6 @@
 package com.mycompany.test;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsProperties;
 import com.unity3d.ads.android.IUnityAdsListener;
 
 import android.app.Activity;
@@ -9,6 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 
 public class UnityAdsGameActivity extends Activity implements IUnityAdsListener, IUnityAdsVideoListener {
@@ -41,20 +43,20 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
     }
     
     public void onHide () {
-    	Log.d(UnityAdsProperties.LOG_NAME, "HOST: Unity Ads close");
+    	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Unity Ads close");
     }
     
     public void onShow () {   	
-    	Log.d(UnityAdsProperties.LOG_NAME, "HOST: Unity Ads open");
+    	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Unity Ads open");
     }
     
 	public void onVideoStarted () {
-		Log.d(UnityAdsProperties.LOG_NAME, "HOST: Video started!");
+		Log.d(UnityAdsConstants.LOG_NAME, "HOST: Video started!");
 	}
 	
 	public void onVideoCompleted () {
     	((ImageView)findViewById(R.id.plissken)).setAlpha(255);
     	((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
-    	Log.d(UnityAdsProperties.LOG_NAME, "HOST: Video completed!");
+    	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Video completed!");
 	}
 }
