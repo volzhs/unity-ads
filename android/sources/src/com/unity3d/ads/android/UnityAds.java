@@ -58,6 +58,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	
 	public UnityAds (Activity activity, String gameId) {
+		// FIX: Prevent second initialization
 		instance = this;
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
@@ -83,7 +84,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		webdata = new UnityAdsWebData();
 		webdata.setWebDataListener(this);
 
-		if (webdata.initVideoPlan()) {
+		if (webdata.initCampaigns()) {
 			_initialized = true;
 		}
 	}
@@ -97,7 +98,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (!_showingAds && canShowAds()) {
 			UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 			focusToView(_webView);
-			_webView.setView("start");
+			_webView.setWebViewCurrentView("start");
 			_showingAds = true;	
 			
 			if (_adsListener != null)
@@ -240,7 +241,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			Log.d(UnityAdsConstants.LOG_NAME, "Could not create JSON");
 		}
 		
-		_webView.setView("completed", params);
+		_webView.setWebViewCurrentView("completed", params);
 		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_webView);
 		onEventPositionReached(UnityAdsVideoPosition.End);
