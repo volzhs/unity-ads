@@ -2,6 +2,7 @@ package com.unity3d.ads.android.data;
 
 import java.lang.reflect.Method;
 
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
@@ -82,7 +83,8 @@ public class UnityAdsDevice {
 		}
 
 		//Log.d(_logName, "DeviceID : " + prefix + "_" + deviceId);
-		return prefix + "_" + deviceId;
+		//return prefix + "_" + deviceId;
+		return UnityAdsUtils.Md5(deviceId);
 	}
 	
 	public static String getMacAddress () {
@@ -94,17 +96,28 @@ public class UnityAdsDevice {
 
 		try {
 			WifiManager wm = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-			deviceId = wm.getConnectionInfo().getMacAddress();
+			
+			Boolean originalStatus = wm.isWifiEnabled();
+			if (!originalStatus)
+				wm.setWifiEnabled(true);
+			
+			deviceId = UnityAdsUtils.Md5(wm.getConnectionInfo().getMacAddress());
+			wm.setWifiEnabled(originalStatus);
 		} 
 		catch (Exception e) {
 			//maybe no permissons or wifi off
 		}
+		
+		if (deviceId == null)
+			deviceId = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		
 		return deviceId;
 	}
 	
 	public static String getOpenUdid () {
 		String deviceId = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
+		UnityAdsOpenUDID.syncContext(UnityAdsProperties.CURRENT_ACTIVITY);
+		deviceId = UnityAdsUtils.Md5(UnityAdsOpenUDID.getOpenUDIDInContext());
 		return deviceId;
 	}
 	
