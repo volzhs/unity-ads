@@ -96,13 +96,29 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public boolean show () {
 		if (!_showingAds && canShowAds()) {
-			UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
-			focusToView(_webView);
-			_webView.setWebViewCurrentView("start");
-			_showingAds = true;	
+			Boolean dataOk = true;			
+			JSONObject data = new JSONObject();
 			
-			if (_adsListener != null)
-				_adsListener.onShow();
+			Log.d(UnityAdsConstants.LOG_NAME, "dataOk: " + dataOk);
+			
+			try  {
+				data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN);
+				data.put(UnityAdsConstants.UNITY_ADS_REWARD_ITEMKEY_KEY, webdata.getCurrentRewardItemKey());
+			}
+			catch (Exception e) {
+				dataOk = false;
+			}
+
+			if (dataOk) {
+				_webView.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
+				UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+				focusToView(_webView);
+
+				_showingAds = true;	
+				
+				if (_adsListener != null)
+					_adsListener.onShow();
+			}
 			
 			return _showingAds;
 		}
@@ -213,9 +229,24 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onWebAppInitComplete (JSONObject data) {
 		Log.d(UnityAdsConstants.LOG_NAME, "WebAppInitComplete");
 		_webAppLoaded = true;
-
-		if (canShowAds())
-			sendAdsReadyEvent();			
+		Boolean dataOk = true;
+		
+		if (canShowAds()) {
+			JSONObject setViewData = new JSONObject();
+			
+			try {
+				setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_INITCOMPLETE);
+				setViewData.put(UnityAdsConstants.UNITY_ADS_REWARD_ITEMKEY_KEY, webdata.getCurrentRewardItemKey());
+			}
+			catch (Exception e) {
+				dataOk = false;
+			}
+			
+			if (dataOk) {
+				_webView.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
+				sendAdsReadyEvent();			
+			}
+		}
 	}
 	
 	// IUnityAdsVideoPlayerListener

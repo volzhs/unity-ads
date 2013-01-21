@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -19,6 +20,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 
 public class UnityAdsWebView extends WebView {
 
@@ -54,8 +56,8 @@ public class UnityAdsWebView extends WebView {
 				dataString = data.toString();
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
 			Log.d(UnityAdsConstants.LOG_NAME, "Send change view to WebApp: " + javascriptString);
-			loadUrl(javascriptString);
 		}
 	}
 	
@@ -68,7 +70,7 @@ public class UnityAdsWebView extends WebView {
 
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
 			Log.d(UnityAdsConstants.LOG_NAME, "Send native event to WebApp: " + javascriptString);
-			loadUrl(javascriptString);
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
 		}
 	}
 	
@@ -97,7 +99,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
 			Log.d(UnityAdsConstants.LOG_NAME, "Initializing WebView with JS call: " + initString);
-			loadUrl(initString);
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(initString));
 		}
 	}
 
@@ -231,5 +233,22 @@ public class UnityAdsWebView extends WebView {
 		public void onLoadResource(WebView view, String url) {
 			super.onLoadResource(view, url);
 		}	
+	}
+
+	
+	/* PRIVATE CLASSES */
+	
+	private class UnityAdsJavascriptRunner implements Runnable {
+		
+		private String _jsString = null;
+		
+		public UnityAdsJavascriptRunner (String jsString) {
+			_jsString = jsString;
+		}
+		
+		@Override
+		public void run() {
+			loadUrl(_jsString);
+		}		
 	}
 }

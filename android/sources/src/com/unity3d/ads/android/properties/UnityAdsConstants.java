@@ -28,6 +28,34 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY = "macAddress";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY = "sdkVersion";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY = "softwareVersion";
+	
+	/*
+	NSString * const kUnityAdsWebViewAPIActionKey = @"action";
+	NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
+	NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
+	NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
+	NSString * const kUnityAdsWebViewAPIClose = @"close";
+	NSString * const kUnityAdsWebViewAPIOpen = @"open";
+	NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
+	NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_playing";
+	*/
+	
+	/*
+	NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
+	NSString * const kUnityAdsWebViewViewTypeStart = @"start";
+	*/
+	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED = "completed";
+	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_START = "start";
+	
+	
+	public static final String UNITY_ADS_WEBVIEW_API_ACTION_KEY = "action";
+	public static final String UNITY_ADS_WEBVIEW_API_PLAYVIDEO = "playVideo";
+	public static final String UNITY_ADS_WEBVIEW_API_NAVIGATETO = "navigateTo";
+	public static final String UNITY_ADS_WEBVIEW_API_INITCOMPLETE = "initComplete";
+	public static final String UNITY_ADS_WEBVIEW_API_CLOSE = "close";
+	public static final String UNITY_ADS_WEBVIEW_API_OPEN = "open";
+	public static final String UNITY_ADS_WEBVIEW_API_APPSTORE = "appStore";
+	public static final String UNITY_ADS_WEBVIEW_API_ACTION_VIDEOSTARTEDPLAYING = "video_started_playing";	
 
 	/* Campaign JSON Properties */
 	public static final String UNITY_ADS_CAMPAIGNS_KEY = "campaigns";
