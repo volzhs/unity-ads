@@ -8,8 +8,7 @@ import android.app.Activity;
 import android.util.Log;
 
 public class UnityAdsProperties {
-	//public static String CAMPAIGN_DATA_URL = "http://192.168.1.152:3500/mobile/campaigns";
-	public static String CAMPAIGN_DATA_URL = "https://impact.applifier.com/mobile/campaigns";
+	public static String CAMPAIGN_DATA_URL = "http://192.168.1.152:3500/mobile/campaigns";
 	public static String WEBVIEW_BASE_URL = null;
 	public static String ANALYTICS_BASE_URL = null;
 	public static String UNITY_ADS_BASE_URL = null;
@@ -24,6 +23,8 @@ public class UnityAdsProperties {
 	
 	private static void createCampaignQueryString () {
 		String queryString = "?";
+		
+		TESTMODE_ENABLED = true;
 		
 		//Mandatory params
 		try {

@@ -10,12 +10,12 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 
 public class UnityAdsGameActivity extends Activity implements IUnityAdsListener, IUnityAdsVideoListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsGameActivity->onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
         
@@ -32,8 +32,10 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
     
     @Override
     public void onResume () {
+    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsGameActivity->onResume()");
     	super.onResume();
-		UnityAds.instance.changeActivity(this);
+    	
+    	UnityAds.instance.changeActivity(this);
 		UnityAds.instance.setListener(this);
 		UnityAds.instance.setVideoListener(this);
 		
@@ -55,6 +57,7 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
 	}
 	
 	public void onVideoCompleted () {
+    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsGameActivity->onVideoCompleted()");
     	((ImageView)findViewById(R.id.plissken)).setAlpha(255);
     	((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
     	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Video completed!");

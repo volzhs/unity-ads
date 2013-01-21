@@ -385,7 +385,7 @@ public class UnityAdsWebData {
 			}
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Malformed JSON!");
+			Log.d(UnityAdsConstants.LOG_NAME, "Malformed JSON: " + json);
 			campaignDataFailed();
 			return;
 		}
