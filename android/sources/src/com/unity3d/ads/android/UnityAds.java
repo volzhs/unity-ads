@@ -3,7 +3,6 @@ package com.unity3d.ads.android;
 import org.json.JSONObject;
 
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
-//import com.unity3d.ads.android.cache.UnityAdsCacheManifest;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
@@ -20,6 +19,7 @@ import com.unity3d.ads.android.webapp.*;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.View;
@@ -58,9 +58,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	
 	public UnityAds (Activity activity, String gameId) {
-		// FIX: Prevent second initialization
 		instance = this;
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
+		UnityAdsProperties.BASE_ACTIVITY = activity;
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
 	}
 		
@@ -91,38 +91,33 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 	public void changeActivity (Activity activity) {
 		if (activity == null) return;
+		
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
+				
+		if (activity.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
+			open();
+			applyAdsToActivity(UnityAdsProperties.CURRENT_ACTIVITY);
+		}
+	}
+	
+	public boolean closeAds () {
+		if (_showingAds) {
+			close();
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean show () {
 		if (!_showingAds && canShowAds()) {
-			Boolean dataOk = true;			
-			JSONObject data = new JSONObject();
-			
-			Log.d(UnityAdsConstants.LOG_NAME, "dataOk: " + dataOk);
-			
-			try  {
-				data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN);
-				data.put(UnityAdsConstants.UNITY_ADS_REWARD_ITEMKEY_KEY, webdata.getCurrentRewardItemKey());
-			}
-			catch (Exception e) {
-				dataOk = false;
-			}
-
-			if (dataOk) {
-				_webView.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
-				UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
-				focusToView(_webView);
-
-				_showingAds = true;	
-				
-				if (_adsListener != null)
-					_adsListener.onShow();
-			}
-			
+			Intent newIntent = new Intent(UnityAdsProperties.CURRENT_ACTIVITY, com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
+			newIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
+			UnityAdsProperties.CURRENT_ACTIVITY.startActivity(newIntent);
+			_showingAds = true;	
 			return _showingAds;
 		}
-		
+
 		return false;
 	}
 		
@@ -179,16 +174,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onWebAppLoaded () {
 		_webView.initWebApp(webdata.getData());
 	}
-	
-	// IUnityAdsViewListener
-	@Override
-	public void onCloseButtonClicked (View view) {
-		closeView(view, true);
-	}
-	
+
 	@Override
 	public void onBackButtonClicked (View view) {
-		closeView(view, true);
+		closeAds();
 	}
 	
 	// IUnityAdsWebBrigeListener
@@ -207,8 +196,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 			if (campaignId != null) {
 				_selectedCampaign = webdata.getCampaignById(campaignId);
 				
-				if (_selectedCampaign != null)
-					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsPlayVideoRunner());
+				if (_selectedCampaign != null) {
+					UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
+					Log.d(UnityAdsConstants.LOG_NAME, "Running threaded");
+					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
+
+				}					
 			}
 		}
 	}
@@ -221,8 +214,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	@Override
 	public void onCloseView(JSONObject data) {
-		UnityAdsCloseViewRunner closeViewRunner = new UnityAdsCloseViewRunner(_webView, true);
-		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeViewRunner);
+		closeAds();
 	}
 	
 	@Override
@@ -262,7 +254,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			_videoListener.onVideoCompleted();
 				
 		_vp.setKeepScreenOn(false);
-		closeView(_vp, false);
+		hideView(_vp);
 		JSONObject params = null;
 		
 		try {
@@ -282,6 +274,35 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	
 	/* PRIVATE METHODS */
+	
+	private void close () {
+		UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
+		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeRunner);
+	}
+	
+	private void open () {
+		Boolean dataOk = true;			
+		JSONObject data = new JSONObject();
+		
+		Log.d(UnityAdsConstants.LOG_NAME, "dataOk: " + dataOk);
+		
+		try  {
+			data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN);
+			data.put(UnityAdsConstants.UNITY_ADS_REWARD_ITEMKEY_KEY, webdata.getCurrentRewardItemKey());
+		}
+		catch (Exception e) {
+			dataOk = false;
+		}
+
+		if (dataOk) {
+			_webView.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
+		}
+	}
+	
+	private void applyAdsToActivity (Activity activity) {
+		activity.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+		focusToView(_webView);
+	}
 	
 	private void setup () {
 		initCache();
@@ -313,18 +334,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 
-	private void closeView (View view, boolean freeView) {
-		view.setFocusable(false);
-		view.setFocusableInTouchMode(false);
+	private void hideView (View view) {
+		if (view != null) {
+			view.setFocusable(false);
+			view.setFocusableInTouchMode(false);
+		}
 		
 		ViewGroup vg = (ViewGroup)view.getParent();
 		if (vg != null)
 			vg.removeView(view);
-		
-		if (_adsListener != null && freeView) {
-			_showingAds = false;
-			_adsListener.onHide();
-		}		
 	}
 	
 	private void focusToView (View view) {
@@ -337,44 +355,60 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_webView = new UnityAdsWebView(UnityAdsProperties.CURRENT_ACTIVITY, this, new UnityAdsWebBridge(this));	
 		_vp = new UnityAdsVideoPlayView(UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext(), this);	
 	}
-	
+
 	
 	/* INTERNAL CLASSES */
-	
-	private class UnityAdsCloseViewRunner implements Runnable {
-		private View _view = null;
-		private boolean _freeView = false;
-		
-		public UnityAdsCloseViewRunner (View view, boolean freeView) {
-			_view = view;
-			_freeView = freeView;
-		}
-		
+
+	private class UnityAdsCloseRunner implements Runnable {
 		@Override
 		public void run() {
-			closeView(_view, _freeView);
+			_showingAds = false;
+			if (UnityAdsProperties.CURRENT_ACTIVITY.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
+				hideView(_webView);
+				hideView(_vp);
+				UnityAdsProperties.CURRENT_ACTIVITY.finish();
+				
+				Boolean dataOk = true;			
+				JSONObject data = new JSONObject();
+				
+				Log.d(UnityAdsConstants.LOG_NAME, "dataOk: " + dataOk);
+				
+				try  {
+					data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_CLOSE);
+				}
+				catch (Exception e) {
+					dataOk = false;
+				}
+
+				if (dataOk) {
+					_webView.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
+				}
+			}
 		}
 	}
 	
 	private class UnityAdsPlayVideoRunner implements Runnable {
 		@Override
 		public void run() {
-			closeView(_webView, false);
-			UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_vp, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
-			focusToView(_vp);
+			hideView(_webView);
 			
-			if (_selectedCampaign != null) {
-				String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + _selectedCampaign.getVideoFilename();
-				if (!UnityAdsUtils.isFileInCache(_selectedCampaign.getVideoFilename()))
-					playUrl = _selectedCampaign.getVideoStreamUrl(); 
+			if (_vp.getParent() == null) {
+				UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_vp, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+				focusToView(_vp);
+				if (_selectedCampaign != null) {
+					String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + _selectedCampaign.getVideoFilename();
+					if (!UnityAdsUtils.isFileInCache(_selectedCampaign.getVideoFilename()))
+						playUrl = _selectedCampaign.getVideoStreamUrl(); 
 
-				_vp.playVideo(playUrl);
-			}			
-			else
-				Log.d(UnityAdsConstants.LOG_NAME, "Campaign is null");
-						
-			if (_videoListener != null)
-				_videoListener.onVideoStarted();
+					_vp.playVideo(playUrl);
+				}			
+				else
+					Log.d(UnityAdsConstants.LOG_NAME, "Campaign is null");
+							
+				if (_videoListener != null) {
+					_videoListener.onVideoStarted();
+				}
+			}
 		}		
 	}
 }

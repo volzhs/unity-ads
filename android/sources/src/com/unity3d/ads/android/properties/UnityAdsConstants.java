@@ -121,4 +121,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_FAILED_URL_METHODTYPE_KEY = "methodType";
 	public static final String UNITY_ADS_FAILED_URL_BODY_KEY = "body";
 	public static final String UNITY_ADS_FAILED_URL_RETRIES_KEY = "retries";
+	
+	public static final String UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME = "com.unity3d.ads.android.view.UnityAdsFullscreenActivity";
 }

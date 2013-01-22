@@ -29,7 +29,12 @@
         
   		<activity 
   		    android:name="UnityAdsGameActivity" 
-          	android:configChanges="keyboardHidden|orientation"/>	
+          	android:configChanges="keyboardHidden|orientation"/>
+  		
+  		 <activity 
+  		    android:name="com.unity3d.ads.android.view.UnityAdsFullscreenActivity" 
+          	android:configChanges="keyboardHidden|orientation"
+          	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>	
     </application>
 
 </manifest>

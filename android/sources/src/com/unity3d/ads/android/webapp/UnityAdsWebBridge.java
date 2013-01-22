@@ -45,7 +45,7 @@ public class UnityAdsWebBridge {
 	}
 	
 	public void handleWebEvent (String type, String data) {
-		Log.d(UnityAdsConstants.LOG_NAME, "handleWebEvent: " + data);
+		Log.d(UnityAdsConstants.LOG_NAME, "handleWebEvent: "+ type + ", " + data);
 
 		if (_listener == null || data == null) return;
 		

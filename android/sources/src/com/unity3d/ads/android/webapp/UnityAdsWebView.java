@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -20,7 +19,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
 
 public class UnityAdsWebView extends WebView {
 
@@ -191,7 +189,7 @@ public class UnityAdsWebView extends WebView {
 		}
     	
     	return false;
-    } 
+    }
 	
 	
 	/* SUBCLASSES */
@@ -213,6 +211,7 @@ public class UnityAdsWebView extends WebView {
 			Log.d(UnityAdsConstants.LOG_NAME, "Finished url: "  + url);
 			if (_listener != null && !_webAppLoaded) {
 				_webAppLoaded = true;
+				addJavascriptInterface(_webBridge, "applifierimpactnative");
 				_listener.onWebAppLoaded();
 			}
 		}
