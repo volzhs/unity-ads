@@ -173,6 +173,7 @@ public class UnityAdsWebView extends WebView {
 			Log.d(UnityAdsConstants.LOG_NAME, "Could not invoke setLayerType");
 		}
 		
+		Log.d(UnityAdsConstants.LOG_NAME, "Adding javascript interface");
 		addJavascriptInterface(_webBridge, "applifierimpactnative");
 	}
 	
@@ -211,6 +212,7 @@ public class UnityAdsWebView extends WebView {
 			Log.d(UnityAdsConstants.LOG_NAME, "Finished url: "  + url);
 			if (_listener != null && !_webAppLoaded) {
 				_webAppLoaded = true;
+				Log.d(UnityAdsConstants.LOG_NAME, "Adding javascript interface");
 				addJavascriptInterface(_webBridge, "applifierimpactnative");
 				_listener.onWebAppLoaded();
 			}

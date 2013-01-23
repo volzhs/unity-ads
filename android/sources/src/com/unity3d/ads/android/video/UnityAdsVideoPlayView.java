@@ -91,10 +91,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				@Override
 				public void run() {
 					_videoView.start();
-					if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
-						_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
-						_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
-					}
 					setKeepScreenOn(true);
 				}
 			});
@@ -128,6 +124,12 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
 				_videoPlayheadPrepared = true;
+				
+				if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
+					_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
+					_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
+				}
+				
 				hideBufferingView();
 			}
 		});
@@ -285,7 +287,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {					
 					@Override
 					public void run() {
-						createAndAddBufferingView();
+						//createAndAddBufferingView();
+
 					}
 				});				
 			}

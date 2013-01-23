@@ -245,6 +245,21 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsVideoPlayerListener
 	@Override
 	public void onEventPositionReached (UnityAdsVideoPosition position) {
+		if (position.equals(UnityAdsVideoPosition.Start)) {
+			JSONObject params = null;
+			
+			try {
+				params = new JSONObject("{\"campaignId\":\"" + _selectedCampaign.getCampaignId() + "\"}");
+			}
+			catch (Exception e) {
+				Log.d(UnityAdsConstants.LOG_NAME, "Could not create JSON");
+			}
+			
+			//_webView.setWebViewCurrentView("completed", params);
+			showVideoPlayer();
+			_webView.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
+		}
+		
 		if (_selectedCampaign != null && !_selectedCampaign.getCampaignStatus().equals(UnityAdsCampaignStatus.VIEWED))
 			webdata.sendCampaignViewProgress(_selectedCampaign, position);
 	}
@@ -259,6 +274,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 		_vp.setKeepScreenOn(false);
 		hideView(_vp);
+		
+		/*
 		JSONObject params = null;
 		
 		try {
@@ -269,6 +286,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 		
 		_webView.setWebViewCurrentView("completed", params);
+		*/
 		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_webView);
 		onEventPositionReached(UnityAdsVideoPosition.End);
@@ -338,6 +356,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 
+	private void showVideoPlayer () {
+		if (_vp.getParent() == null) {
+			hideView(_webView);
+			UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_vp, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+			focusToView(_vp);
+		}
+	}
+	
 	private void hideView (View view) {
 		if (view != null) {
 			view.setFocusable(false);
@@ -393,25 +419,19 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private class UnityAdsPlayVideoRunner implements Runnable {
 		@Override
-		public void run() {
-			hideView(_webView);
-			
-			if (_vp.getParent() == null) {
-				UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_vp, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
-				focusToView(_vp);
-				if (_selectedCampaign != null) {
-					String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + _selectedCampaign.getVideoFilename();
-					if (!UnityAdsUtils.isFileInCache(_selectedCampaign.getVideoFilename()))
-						playUrl = _selectedCampaign.getVideoStreamUrl(); 
+		public void run() {			
+			if (_selectedCampaign != null) {
+				String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + _selectedCampaign.getVideoFilename();
+				if (!UnityAdsUtils.isFileInCache(_selectedCampaign.getVideoFilename()))
+					playUrl = _selectedCampaign.getVideoStreamUrl(); 
 
-					_vp.playVideo(playUrl);
-				}			
-				else
-					Log.d(UnityAdsConstants.LOG_NAME, "Campaign is null");
-							
-				if (_videoListener != null) {
-					_videoListener.onVideoStarted();
-				}
+				_vp.playVideo(playUrl);
+			}			
+			else
+				Log.d(UnityAdsConstants.LOG_NAME, "Campaign is null");
+						
+			if (_videoListener != null) {
+				_videoListener.onVideoStarted();
 			}
 		}		
 	}
