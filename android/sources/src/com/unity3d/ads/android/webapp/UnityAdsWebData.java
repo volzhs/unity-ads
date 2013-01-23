@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
@@ -137,6 +138,26 @@ public class UnityAdsWebData {
 			viewUrl = String.format("%s?%s=%s", viewUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
 			viewUrl = String.format("%s&%s=%s", viewUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
 			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, UnityAdsRequestType.VideoViewed, 0);
+			addLoader(loader);
+			startNextLoader();
+			return true;
+		}
+		else if (position != null && getGamerId() != null) {
+		    /*
+			NSString *query = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@", 
+		                       kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId], 
+		                       kUnityAdsAnalyticsQueryParamEventTypeKey, positionString, 
+		                       kUnityAdsAnalyticsQueryParamTrackingIdKey, [[UnityAdsProperties sharedInstance] gamerId], 
+		                       kUnityAdsAnalyticsQueryParamProviderIdKey, campaign.id, 
+		                       kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];*/
+			
+			String analyticsUrl = String.format("%s", UnityAdsProperties.ANALYTICS_BASE_URL);
+			analyticsUrl = String.format("%s?%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_EVENTTYPE_KEY, position.toString());
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_TRACKINGID_KEY, UnityAdsProperties.UNITY_ADS_GAMER_ID);
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_PROVIDERID_KEY, campaign.getCampaignId());
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
+			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(analyticsUrl, UnityAdsRequestType.VideoViewed, 0);
 			addLoader(loader);
 			startNextLoader();
 			return true;
