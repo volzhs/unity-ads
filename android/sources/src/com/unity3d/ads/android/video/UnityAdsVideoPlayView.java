@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.unity3d.ads.android.UnityAdsProperties;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsBufferingView;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
@@ -56,10 +58,13 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		
 		_videoPlayheadPrepared = false;
 		_videoFileName = fileName;
-		Log.d(UnityAdsProperties.LOG_NAME, "Playing video from: " + _videoFileName);
+		Log.d(UnityAdsConstants.LOG_NAME, "Playing video from: " + _videoFileName);
 		_videoView.setVideoPath(_videoFileName);
 		_timeLeftInSecondsText.setText("" + Math.round(Math.ceil(_videoView.getDuration() / 1000)));
 		startVideo();
+		
+		// Force landscape orientation when video starts
+		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
 
 	public void pauseVideo () {
@@ -86,10 +91,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				@Override
 				public void run() {
 					_videoView.start();
-					if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
-						_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
-						_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
-					}
 					setKeepScreenOn(true);
 				}
 			});
@@ -110,7 +111,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 
 	private void createView () {
-		Log.d(UnityAdsProperties.LOG_NAME, "Creating custom view");
+		Log.d(UnityAdsConstants.LOG_NAME, "Creating custom view");
 		setBackgroundColor(0xFF000000);
 		_videoView = new VideoView(getContext());
 		RelativeLayout.LayoutParams videoLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
@@ -123,6 +124,12 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
 				_videoPlayheadPrepared = true;
+				
+				if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
+					_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
+					_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
+				}
+				
 				hideBufferingView();
 			}
 		});
@@ -280,7 +287,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {					
 					@Override
 					public void run() {
-						createAndAddBufferingView();
+						//createAndAddBufferingView();
+
 					}
 				});				
 			}

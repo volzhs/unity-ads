@@ -22,6 +22,9 @@
 #define UAAssertV(condition, value) do { if ( ! (condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); return value; } } while(0)
 #endif
 
+extern NSString * const kUnityAdsRewardItemPictureKey;
+extern NSString * const kUnityAdsRewardItemNameKey;
+
 @class UnityAds;
 @class SKStoreProductViewController;
 
@@ -57,5 +60,11 @@
 - (BOOL)show;
 - (BOOL)hide;
 - (void)stopAll;
-
+- (BOOL)hasMultipleRewardItems;
+- (NSArray *)getRewardItemKeys;
+- (NSString *)getDefaultRewardItemKey;
+- (NSString *)getCurrentRewardItemKey;
+- (BOOL)setRewardItemKey:(NSString *)rewardItemKey;
+- (void)setDefaultRewardItemAsRewardItem;
+- (NSDictionary *)getRewardItemDetailsWithKey:(NSString *)rewardItemKey;
 @end

@@ -7,10 +7,11 @@
 //
 
 #import "UnityAdsProperties.h"
+#import "UnityAdsConstants.h"
 #import "../UnityAds.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 
-NSString * const kUnityAdsVersion = @"1.0.2";
+NSString * const kUnityAdsVersion = @"1.0.3";
 
 @implementation UnityAdsProperties
 
@@ -27,6 +28,7 @@ static UnityAdsProperties *sharedProperties = nil;
 
 - (UnityAdsProperties *)init {
   if (self = [super init]) {
+    [self setMaxNumberOfAnalyticsRetries:5];
     [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
     //[self setCampaignDataUrl:@"http://192.168.1.152:3500/mobile/campaigns"];
     [self setCampaignQueryString:[self _createCampaignQueryString]];
@@ -42,21 +44,30 @@ static UnityAdsProperties *sharedProperties = nil;
 - (NSString *)_createCampaignQueryString {
   NSString *queryParams = @"?";
   
-  queryParams = [NSString stringWithFormat:@"%@deviceId=%@&platform=%@&gameId=%@", queryParams, [UnityAdsDevice md5DeviceId], @"ios", [self adsGameId]];
-  queryParams = [NSString stringWithFormat:@"%@&openUdid=%@", queryParams, [UnityAdsDevice md5OpenUDIDString]];
-  queryParams = [NSString stringWithFormat:@"%@&macAddress=%@", queryParams, [UnityAdsDevice md5MACAddressString]];
+  // Mandatory params
+  queryParams = [NSString stringWithFormat:@"%@%@=%@", queryParams, kUnityAdsInitQueryParamDeviceIdKey, [UnityAdsDevice md5DeviceId]];
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamPlatformKey, @"ios"];
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamGameIdKey, [self adsGameId]];
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOpenUdidKey, [UnityAdsDevice md5OpenUDIDString]];
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamMacAddressKey, [UnityAdsDevice md5MACAddressString]];
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamSdkVersionKey, kUnityAdsVersion];
   
+  // Add advertisingTrackingId info if identifier is available
   if ([UnityAdsDevice md5AdvertisingIdentifierString] != nil) {
-    queryParams = [NSString stringWithFormat:@"%@&advertisingTrackingId=%@", queryParams, [UnityAdsDevice md5AdvertisingIdentifierString]];
-    queryParams = [NSString stringWithFormat:@"%@&trackingEnabled=%i", queryParams, [UnityAdsDevice canUseTracking]];
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamAdvertisingTrackingIdKey, [UnityAdsDevice md5AdvertisingIdentifierString]];
+    queryParams = [NSString stringWithFormat:@"%@&%@=%i", queryParams, kUnityAdsInitQueryParamTrackingEnabledKey, [UnityAdsDevice canUseTracking]];
   }
   
+  // Add tracking params if canUseTracking (returns always true < ios6)
   if ([UnityAdsDevice canUseTracking]) {
-    queryParams = [NSString stringWithFormat:@"%@&softwareVersion=%@&hardwareVersion=%@&deviceType=%@&apiVersion=%@&connectionType=%@", queryParams, [UnityAdsDevice softwareVersion], @"unknown", [UnityAdsDevice analyticsMachineName], kUnityAdsVersion, [UnityAdsDevice currentConnectionType]];
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamSoftwareVersionKey, [UnityAdsDevice softwareVersion]];
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamHardwareVersionKey, @"unknown"];
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamDeviceTypeKey, [UnityAdsDevice analyticsMachineName]];
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamConnectionTypeKey, [UnityAdsDevice currentConnectionType]];
   }
   
   if ([self testModeEnabled]) {
-    queryParams = [NSString stringWithFormat:@"%@&test=true", queryParams];
+    queryParams = [NSString stringWithFormat:@"%@&%@=true", queryParams, kUnityAdsInitQueryParamTestKey];
   }
   
   return queryParams;

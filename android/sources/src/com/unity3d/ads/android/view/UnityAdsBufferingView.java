@@ -1,6 +1,6 @@
 package com.unity3d.ads.android.view;
 
-import com.unity3d.ads.android.UnityAdsProperties;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -109,7 +109,7 @@ public class UnityAdsBufferingView extends LinearLayout {
 	@Override
 	protected void onAttachedToWindow() {
 		super.onAttachedToWindow();
-		Log.d(UnityAdsProperties.LOG_NAME, "Attached to window");
+		Log.d(UnityAdsConstants.LOG_NAME, "Attached to window");
 		
 		if (_ball1 != null)
 			_ball1.setAnimation(createBlinkAnimation(0));

@@ -12,6 +12,9 @@
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsMainViewController.h"
 
+NSString * const kUnityAdsRewardItemPictureKey = @"picture";
+NSString * const kUnityAdsRewardItemNameKey = @"name";
+
 @interface UnityAds () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate, UnityAdsMainViewControllerDelegate>
 @property (nonatomic, strong) NSThread *backgroundThread;
 @property (nonatomic, assign) dispatch_queue_t queue;
@@ -106,6 +109,47 @@ static UnityAds *sharedUnityAdsInstance = nil;
   return YES;
 }
 
+- (BOOL)hasMultipleRewardItems {
+  if ([[UnityAdsCampaignManager sharedInstance] rewardItems] != nil && [[[UnityAdsCampaignManager sharedInstance] rewardItems] count] > 0) {
+    return YES;
+  }
+  
+  return NO;
+}
+
+- (NSArray *)getRewardItemKeys {
+  return [[UnityAdsCampaignManager sharedInstance] rewardItemKeys];
+}
+
+- (NSString *)getDefaultRewardItemKey {
+  return [[UnityAdsCampaignManager sharedInstance] defaultRewardItem].key;
+}
+
+- (NSString *)getCurrentRewardItemKey {
+  return [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey];
+}
+
+- (BOOL)setRewardItemKey:(NSString *)rewardItemKey {
+  if (![[UnityAdsMainViewController sharedInstance] mainControllerVisible]) {
+    return [[UnityAdsCampaignManager sharedInstance] setSelectedRewardItemKey:rewardItemKey];
+  }
+  
+  return NO;
+}
+
+- (void)setDefaultRewardItemAsRewardItem {
+  [[UnityAdsCampaignManager sharedInstance] setSelectedRewardItemKey:[self getDefaultRewardItemKey]];
+}
+
+- (NSDictionary *)getRewardItemDetailsWithKey:(NSString *)rewardItemKey {
+  if ([self hasMultipleRewardItems] && rewardItemKey != nil) {
+    return [[UnityAdsCampaignManager sharedInstance] getPublicRewardItemDetails:rewardItemKey];
+  }
+  
+  return nil;
+}
+
+
 - (BOOL)hide {
   UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) NO;
@@ -176,7 +220,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 }
 
 - (BOOL)_adViewCanBeShown {
-  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] rewardItem] != nil && [[UnityAdsWebAppController sharedInstance] webViewInitialized])
+  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem] != nil && [[UnityAdsWebAppController sharedInstance] webViewInitialized])
 		return YES;
 	else
 		return NO;
@@ -307,7 +351,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
-	[self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsCampaignManager sharedInstance] rewardItem].key];
+	[self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key];
 }
 
 - (void)mainControllerWillLeaveApplication {

@@ -9,26 +9,14 @@
 #import "UnityAdsWebAppController.h"
 #import "../UnityAds.h"
 #import "../UnityAdsURLProtocol/UnityAdsURLProtocol.h"
-#import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsSBJSON/UnityAdsSBJsonWriter.h"
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsMainViewController.h"
-
-NSString * const kUnityAdsWebViewPrefix = @"applifierimpact.";
-NSString * const kUnityAdsWebViewJSInit = @"init";
-NSString * const kUnityAdsWebViewJSChangeView = @"setView";
-NSString * const kUnityAdsWebViewJSHandleNativeEvent = @"handleNativeEvent";
-NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
-NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
-NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
-NSString * const kUnityAdsWebViewAPIClose = @"close";
-NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
-
-NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
-NSString * const kUnityAdsWebViewViewTypeStart = @"start";
+#import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "../UnityAdsProperties/UnityAdsConstants.h"
 
 @interface UnityAdsWebAppController ()
   @property (nonatomic, strong) NSDictionary* webAppInitalizationParams;
@@ -90,14 +78,14 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 }
 
 - (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data {
-	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
+	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
   [self runJavascriptDependingOnPlatform:js];
 }
 
 - (void)sendNativeEventToWebApp:(NSString *)eventType data:(NSDictionary *)data {
- 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, [data JSONRepresentation]];
+ 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, [data JSONRepresentation]];
   
   UALOG_DEBUG(@"");
   [self runJavascriptDependingOnPlatform:js];
@@ -109,10 +97,10 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [type isEqualToString:kUnityAdsWebViewAPINavigateTo] || [type isEqualToString:kUnityAdsWebViewAPIAppStore])
 	{
 		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
-      if ([data objectForKey:@"campaignId"] != nil) {
-        [self _selectCampaignWithID:[data objectForKey:@"campaignId"]];
+      if ([data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey] != nil) {
+        [self _selectCampaignWithID:[data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey]];
         BOOL checkIfWatched = YES;
-        if ([data objectForKey:@"rewatch"] != nil && [[data valueForKey:@"rewatch"] boolValue] == true) {
+        if ([data objectForKey:kUnityAdsWebViewEventDataRewatchKey] != nil && [[data valueForKey:kUnityAdsWebViewEventDataRewatchKey] boolValue] == true) {
           checkIfWatched = NO;
         }
         
@@ -120,13 +108,13 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
       }
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo]) {
-      if ([data objectForKey:@"clickUrl"] != nil) {
-        [self openExternalUrl:[data objectForKey:@"clickUrl"]];
+      if ([data objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
+        [self openExternalUrl:[data objectForKey:kUnityAdsWebViewEventDataClickUrlKey]];
       }
     
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore]) {
-      if ([data objectForKey:@"clickUrl"] != nil) {
+      if ([data objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
         [[UnityAdsMainViewController sharedInstance] openAppStoreWithData:data];
       }    
 		}
@@ -144,7 +132,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 }
 
 - (void)runJavascriptDependingOnPlatform:(NSString *)javaScriptString {
-  if (![[UnityAdsDevice analyticsMachineName] isEqualToString:kUnityAdsDeviceIosUnknown]) {
+  if (![UnityAdsDevice isSimulator]) {
     dispatch_async(dispatch_get_main_queue(), ^{
       [self runJavascript:javaScriptString];
     });
@@ -208,9 +196,9 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 - (void)initWebApp {
 	UAAssert([NSThread isMainThread]);
   
-  NSDictionary *persistingData = @{@"campaignData":[[UnityAdsCampaignManager sharedInstance] campaignData], @"platform":@"ios", @"deviceId":[UnityAdsDevice md5DeviceId], @"openUdid":[UnityAdsDevice md5OpenUDIDString], @"macAddress":[UnityAdsDevice md5MACAddressString], @"sdkVersion":[[UnityAdsProperties sharedInstance] adsVersion]};
+  NSDictionary *persistingData = @{kUnityAdsWebViewDataParamCampaignDataKey:[[UnityAdsCampaignManager sharedInstance] campaignData], kUnityAdsWebViewDataParamPlatformKey:@"ios", kUnityAdsWebViewDataParamDeviceIdKey:[UnityAdsDevice md5DeviceId], kUnityAdsWebViewDataParamOpenUdidIdKey:[UnityAdsDevice md5OpenUDIDString], kUnityAdsWebViewDataParamMacAddressKey:[UnityAdsDevice md5MACAddressString], kUnityAdsWebViewDataParamSdkVersionKey:[[UnityAdsProperties sharedInstance] adsVersion], kUnityAdsWebViewDataParamGameIdKey:[[UnityAdsProperties sharedInstance] adsGameId]};
   
-  NSDictionary *trackingData = @{@"iOSVersion":[UnityAdsDevice softwareVersion], @"deviceType":[UnityAdsDevice analyticsMachineName]};
+  NSDictionary *trackingData = @{kUnityAdsWebViewDataParamIosVersionKey:[UnityAdsDevice softwareVersion], kUnityAdsWebViewDataParamDeviceTypeKey:[UnityAdsDevice analyticsMachineName]};
   NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];
   
   if ([UnityAdsDevice canUseTracking]) {
@@ -224,7 +212,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 #pragma mark - WebView
 
 - (void)initWebAppWithValues:(NSDictionary *)values {
-	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewPrefix, kUnityAdsWebViewJSInit, [values JSONRepresentation]];
+	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSInit, [values JSONRepresentation]];
   UALOG_DEBUG(@"");
   [self runJavascript:js];
 }

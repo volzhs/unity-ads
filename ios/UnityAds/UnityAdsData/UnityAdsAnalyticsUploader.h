@@ -6,9 +6,6 @@
 #import <Foundation/Foundation.h>
 #import "../UnityAdsVideo/UnityAdsVideoPlayer.h"
 
-extern NSString * const kUnityAdsQueryDictionaryQueryKey;
-extern NSString * const kUnityAdsQueryDictionaryBodyKey;
-
 @class UnityAdsCampaign;
 
 @interface UnityAdsAnalyticsUploader : NSObject
@@ -18,7 +15,6 @@ extern NSString * const kUnityAdsQueryDictionaryBodyKey;
 - (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary;
 - (void)retryFailedUploads;
 - (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
-- (void)sendManualInstallTrackingCall;
 
 + (UnityAdsAnalyticsUploader *)sharedInstance;
 @end

@@ -17,26 +17,11 @@
 #import "UnityAdsDevice.h"
 #import "../UnityAds.h"
 #import "../UnityAdsOpenUDID/UnityAdsOpenUDID.h"
-
-NSString * const kUnityAdsDeviceIphone = @"iphone";
-NSString * const kUnityAdsDeviceIphone3g = @"iphone3g";
-NSString * const kUnityAdsDeviceIphone3gs = @"iphone3gs";
-NSString * const kUnityAdsDeviceIphone4 = @"iphone4";
-NSString * const kUnityAdsDeviceIphone4s = @"iphone4s";
-NSString * const kUnityAdsDeviceIphone5 = @"iphone5";
-NSString * const kUnityAdsDeviceIpodTouch1gen = @"ipodtouch1gen";
-NSString * const kUnityAdsDeviceIpodTouch2gen = @"ipodtouch2gen";
-NSString * const kUnityAdsDeviceIpodTouch3gen = @"ipodtouch3gen";
-NSString * const kUnityAdsDeviceIpodTouch4gen = @"ipodtouch4gen";
-NSString * const kUnityAdsDeviceIpad1 = @"ipad1";
-NSString * const kUnityAdsDeviceIpad2 = @"ipad2";
-NSString * const kUnityAdsDeviceIpad3 = @"ipad3";
-NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
+#import "../UnityAdsProperties/UnityAdsConstants.h"
 
 @implementation UnityAdsDevice
 
-+ (NSString *)_substringOfString:(NSString *)string toIndex:(NSInteger)index
-{
++ (NSString *)_substringOfString:(NSString *)string toIndex:(NSInteger)index {
 	if (index > [string length])
 	{
 		UALOG_DEBUG(@"Index %d out of bounds for string '%@', length %d.", index, string, [string length]);
@@ -46,18 +31,15 @@ NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 	return [string substringToIndex:index];
 }
 
-+ (NSString *)advertisingIdentifier
-{
++ (NSString *)advertisingIdentifier {
 	NSString *identifier = nil;
 	
 	Class advertisingManagerClass = NSClassFromString(@"ASIdentifierManager");
-	if ([advertisingManagerClass respondsToSelector:@selector(sharedManager)])
-	{
+	if ([advertisingManagerClass respondsToSelector:@selector(sharedManager)]) {
 		id advertisingManager = [[advertisingManagerClass class] performSelector:@selector(sharedManager)];
 		BOOL enabled = YES; // Not sure what to do with this value.
     
-		if ([advertisingManager respondsToSelector:@selector(isAdvertisingTrackingEnabled)])
-		{
+		if ([advertisingManager respondsToSelector:@selector(isAdvertisingTrackingEnabled)]) {
 			NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[advertisingManagerClass instanceMethodSignatureForSelector:@selector(isAdvertisingTrackingEnabled)]];
 			[invocation setSelector:@selector(isAdvertisingTrackingEnabled)];
 			[invocation setTarget:advertisingManager];
@@ -67,11 +49,9 @@ NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 		
 		//UALOG_DEBUG(@"Ad tracking %@.", enabled ? @"enabled" : @"disabled");
     
-		if ([advertisingManager respondsToSelector:@selector(advertisingIdentifier)])
-		{
+		if ([advertisingManager respondsToSelector:@selector(advertisingIdentifier)]) {
 			id advertisingIdentifier = [advertisingManager performSelector:@selector(advertisingIdentifier)];
-			if (advertisingIdentifier != nil && [advertisingIdentifier respondsToSelector:@selector(UUIDString)])
-			{
+			if (advertisingIdentifier != nil && [advertisingIdentifier respondsToSelector:@selector(UUIDString)]) {
 				id uuid = [advertisingIdentifier performSelector:@selector(UUIDString)];
 				if ([uuid isKindOfClass:[NSString class]])
 					identifier = uuid;
@@ -82,8 +62,7 @@ NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 	return identifier;
 }
 
-+ (BOOL)canUseTracking
-{
++ (BOOL)canUseTracking {
   Class advertisingManagerClass = NSClassFromString(@"ASIdentifierManager");
 	if ([advertisingManagerClass respondsToSelector:@selector(sharedManager)])
 	{
@@ -105,8 +84,7 @@ NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
   return YES;
 }
 
-+ (NSString *)macAddress
-{
++ (NSString *)macAddress {
 	NSString *interface = @"en0";
 	int mgmtInfoBase[6];
 	char *msgBuffer = NULL;
@@ -165,8 +143,7 @@ NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 	return macAddressString;
 }
 
-+ (NSString *)machineName
-{
++ (NSString *)machineName {
 	size_t size;
   sysctlbyname("hw.machine", NULL, &size, NULL, 0);
   char *answer = malloc(size);
@@ -177,8 +154,37 @@ NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 	return result;
 }
 
++ (NSArray *)getDeviceModelAsStringComponents {
+  NSString *modelString = [[[UIDevice currentDevice] model] lowercaseString];
+  if (modelString != nil) {
+    if ([modelString rangeOfString:@" "].location != NSNotFound) {
+      NSArray *components = [modelString componentsSeparatedByString:@" "];
+      return components;
+    }
+    else {
+      return [[NSArray alloc] initWithObjects:modelString, nil];
+    }
+  }
+  
+  return nil;
+}
+
++ (BOOL)isSimulator {
+  NSArray *components = [UnityAdsDevice getDeviceModelAsStringComponents];
+  if (components != nil && [components count] > 0) {
+    for (NSString *component in components) {
+      if ([component isEqualToString:kUnityAdsDeviceSimulator]) {
+        return YES;
+      }
+    }
+  }
+
+  return NO;
+}
+
 + (NSString *)analyticsMachineName {
 	NSString *machine = [self machineName];
+  
 	if ([machine isEqualToString:@"iPhone1,1"])
 		return kUnityAdsDeviceIphone;
 	else if ([machine isEqualToString:@"iPhone1,2"])
@@ -206,6 +212,25 @@ NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 	else if ([machine length] > 4 && [[self _substringOfString:machine toIndex:5] isEqualToString:@"iPad3"])
 		return kUnityAdsDeviceIpad3;
   
+  // Okay, it's a simulator, detect whether it's iPhone or iPad
+  
+  NSArray *components = [UnityAdsDevice getDeviceModelAsStringComponents];
+  if (components != nil && [components count] > 0) {
+    for (NSString *component in components) {
+      if ([component isEqualToString:kUnityAdsDeviceIpad]) {
+        return kUnityAdsDeviceIpad;
+      }
+      if ([component isEqualToString:kUnityAdsDeviceIphone]) {
+        return kUnityAdsDeviceIphone;
+      }
+      if ([component isEqualToString:kUnityAdsDeviceIpod]) {
+        return kUnityAdsDeviceIpod;
+      }
+    }
+  }
+
+  // If everything else fails..
+  
 	return kUnityAdsDeviceIosUnknown;
 }
 
@@ -225,8 +250,7 @@ NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 	return output;
 }
 
-+ (NSString *)md5MACAddressString
-{
++ (NSString *)md5MACAddressString {
 	return [self _md5StringFromString:[self macAddress]];
 }
 
