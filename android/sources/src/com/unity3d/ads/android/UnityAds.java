@@ -255,7 +255,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 				Log.d(UnityAdsConstants.LOG_NAME, "Could not create JSON");
 			}
 			
-			//_webView.setWebViewCurrentView("completed", params);
+			if (_videoListener != null) {
+				_videoListener.onVideoStarted();
+			}
+			
 			showVideoPlayer();
 			_webView.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
 		}
@@ -275,18 +278,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_vp.setKeepScreenOn(false);
 		hideView(_vp);
 		
-		/*
-		JSONObject params = null;
-		
-		try {
-			params = new JSONObject("{\"campaignId\":\"" + _selectedCampaign.getCampaignId() + "\"}");
-		}
-		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Could not create JSON");
-		}
-		
-		_webView.setWebViewCurrentView("completed", params);
-		*/
 		UnityAdsProperties.CURRENT_ACTIVITY.addContentView(_webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 		focusToView(_webView);
 		onEventPositionReached(UnityAdsVideoPosition.End);
@@ -425,14 +416,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 				if (!UnityAdsUtils.isFileInCache(_selectedCampaign.getVideoFilename()))
 					playUrl = _selectedCampaign.getVideoStreamUrl(); 
 
+				showVideoPlayer();
 				_vp.playVideo(playUrl);
 			}			
 			else
 				Log.d(UnityAdsConstants.LOG_NAME, "Campaign is null");
 						
-			if (_videoListener != null) {
-				_videoListener.onVideoStarted();
-			}
+
 		}		
 	}
 }

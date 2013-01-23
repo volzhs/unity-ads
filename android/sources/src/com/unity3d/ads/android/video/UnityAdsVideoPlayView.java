@@ -123,9 +123,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {			
 			@Override
 			public void onPrepared(MediaPlayer mp) {
+				Log.d(UnityAdsConstants.LOG_NAME, "onPrepared");
 				_videoPlayheadPrepared = true;
-				
+				//Log.d()
 				if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
+					Log.d(UnityAdsConstants.LOG_NAME, "came to event position");
 					_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
 					_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
 				}

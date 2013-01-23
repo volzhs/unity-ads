@@ -134,7 +134,7 @@ public class UnityAdsWebData {
 		
 		if (position != null && getGamerId() != null && (position.equals(UnityAdsVideoPosition.Start)  || position.equals(UnityAdsVideoPosition.End))) {			
 			String viewUrl = String.format("%s%s", UnityAdsProperties.UNITY_ADS_BASE_URL, UnityAdsConstants.UNITY_ADS_ANALYTICS_TRACKING_PATH);
-			viewUrl = String.format("%s/%s/%s/%s", viewUrl, UnityAdsProperties.UNITY_ADS_GAMER_ID, position.toString(), campaign.getCampaignId());
+			viewUrl = String.format("%s%s/%s/%s", viewUrl, UnityAdsProperties.UNITY_ADS_GAMER_ID, position.toString(), campaign.getCampaignId());
 			viewUrl = String.format("%s?%s=%s", viewUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
 			viewUrl = String.format("%s&%s=%s", viewUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
 			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, UnityAdsRequestType.VideoViewed, 0);
@@ -143,14 +143,6 @@ public class UnityAdsWebData {
 			return true;
 		}
 		else if (position != null && getGamerId() != null) {
-		    /*
-			NSString *query = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@", 
-		                       kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId], 
-		                       kUnityAdsAnalyticsQueryParamEventTypeKey, positionString, 
-		                       kUnityAdsAnalyticsQueryParamTrackingIdKey, [[UnityAdsProperties sharedInstance] gamerId], 
-		                       kUnityAdsAnalyticsQueryParamProviderIdKey, campaign.id, 
-		                       kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];*/
-			
 			String analyticsUrl = String.format("%s", UnityAdsProperties.ANALYTICS_BASE_URL);
 			analyticsUrl = String.format("%s?%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
 			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_EVENTTYPE_KEY, position.toString());
