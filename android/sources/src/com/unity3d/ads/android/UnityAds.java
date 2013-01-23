@@ -20,6 +20,7 @@ import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.View;
@@ -201,7 +202,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 					Log.d(UnityAdsConstants.LOG_NAME, "Running threaded");
 					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
 
-				}					
+				}
 			}
 		}
 	}
@@ -252,7 +253,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onCompletion(MediaPlayer mp) {				
 		if (_videoListener != null)
 			_videoListener.onVideoCompleted();
-				
+		
+		// Set unspecified orientation after video ends.
+		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		
 		_vp.setKeepScreenOn(false);
 		hideView(_vp);
 		JSONObject params = null;

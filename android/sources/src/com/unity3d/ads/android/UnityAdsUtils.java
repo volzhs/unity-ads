@@ -124,7 +124,7 @@ public class UnityAdsUtils {
 		File seekFile = new File(fileName);
 		
 		for (UnityAdsCampaign campaign : campaigns) {
-			File matchFile = new File(campaign.getVideoUrl());
+			File matchFile = new File(campaign.getVideoFilename());
 			if (seekFile.getName().equals(matchFile.getName()))
 				return true;
 		}

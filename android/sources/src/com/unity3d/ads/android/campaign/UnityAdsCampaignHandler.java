@@ -79,16 +79,16 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	}
 	
 	private void checkFileAndDownloadIfNeeded (String fileUrl) {
-		if (_campaign.shouldCacheVideo() && !UnityAdsUtils.isFileInCache(fileUrl)) {
+		if (_campaign.shouldCacheVideo() && !UnityAdsUtils.isFileInCache(_campaign.getVideoFilename())) {
 			if (!hasDownloads())
 				UnityAdsDownloader.addListener(this);
 			
-			addToFileDownloads(fileUrl);
+			addCampaignToDownloads();
 		}
 		else if (!isFileOk(fileUrl) && _campaign.shouldCacheVideo()) {
 			UnityAdsUtils.removeFile(fileUrl);
 			UnityAdsDownloader.addListener(this);
-			addToFileDownloads(fileUrl);
+			addCampaignToDownloads();
 		}		
 	}
 	
@@ -97,12 +97,12 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		return true;
 	}
 	
-	private void addToFileDownloads (String fileUrl) {
-		if (fileUrl == null) return;
+	private void addCampaignToDownloads () {
+		if (_campaign == null) return;
 		if (_downloadList == null) _downloadList = new ArrayList<String>();
 		
-		_downloadList.add(fileUrl);
-		UnityAdsDownloader.addDownload(fileUrl);
+		_downloadList.add(_campaign.getVideoUrl());
+		UnityAdsDownloader.addDownload(_campaign);
 	}
 
 	private void removeDownload (String downloadUrl) {

@@ -84,7 +84,7 @@ public class UnityAdsDevice {
 
 		//Log.d(_logName, "DeviceID : " + prefix + "_" + deviceId);
 		//return prefix + "_" + deviceId;
-		return UnityAdsUtils.Md5(deviceId);
+		return UnityAdsUtils.Md5(deviceId).toLowerCase();
 	}
 	
 	public static String getMacAddress () {
@@ -111,14 +111,14 @@ public class UnityAdsDevice {
 		if (deviceId == null)
 			deviceId = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		
-		return deviceId;
+		return deviceId.toLowerCase();
 	}
 	
 	public static String getOpenUdid () {
 		String deviceId = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		UnityAdsOpenUDID.syncContext(UnityAdsProperties.CURRENT_ACTIVITY);
 		deviceId = UnityAdsUtils.Md5(UnityAdsOpenUDID.getOpenUDIDInContext());
-		return deviceId;
+		return deviceId.toLowerCase();
 	}
 	
 	public static String getConnectionType () {

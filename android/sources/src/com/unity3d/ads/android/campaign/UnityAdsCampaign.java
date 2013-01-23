@@ -187,7 +187,7 @@ public class UnityAdsCampaign {
 		if (checkDataIntegrity()) {
 			try {
 				File videoFile = new File(_campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_DOWNLOADABLE_KEY));
-				return videoFile.getName();
+				return getCampaignId() + "-" + videoFile.getName();
 			}
 			catch (Exception e) {
 				Log.d(UnityAdsConstants.LOG_NAME, "getVideoFilename: This should not happen!");
