@@ -12,6 +12,9 @@
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsMainViewController.h"
 
+NSString * const kUnityAdsRewardItemPictureKey = @"picture";
+NSString * const kUnityAdsRewardItemNameKey = @"name";
+
 @interface UnityAds () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate, UnityAdsMainViewControllerDelegate>
 @property (nonatomic, strong) NSThread *backgroundThread;
 @property (nonatomic, assign) dispatch_queue_t queue;
@@ -136,6 +139,14 @@ static UnityAds *sharedUnityAdsInstance = nil;
 
 - (void)setDefaultRewardItemAsRewardItem {
   [[UnityAdsCampaignManager sharedInstance] setSelectedRewardItemKey:[self getDefaultRewardItemKey]];
+}
+
+- (NSDictionary *)getRewardItemDetailsWithKey:(NSString *)rewardItemKey {
+  if ([self hasMultipleRewardItems] && rewardItemKey != nil) {
+    return [[UnityAdsCampaignManager sharedInstance] getPublicRewardItemDetails:rewardItemKey];
+  }
+  
+  return nil;
 }
 
 

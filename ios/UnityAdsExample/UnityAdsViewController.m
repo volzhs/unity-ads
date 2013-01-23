@@ -56,7 +56,7 @@
         [[UnityAds sharedInstance] show];
         
         NSLog(@"SETTING_REWARD_ITEM (while open): %i", [[UnityAds sharedInstance] setRewardItemKey:[[UnityAds sharedInstance] getDefaultRewardItemKey]]);
-
+        NSLog(@"GETTING_REWARD_ITEM_DETAILS: %@", [[UnityAds sharedInstance] getRewardItemDetailsWithKey:[[UnityAds sharedInstance] getCurrentRewardItemKey]]);
 	}
 	else {
         NSLog(@"Unity Ads cannot be shown.");

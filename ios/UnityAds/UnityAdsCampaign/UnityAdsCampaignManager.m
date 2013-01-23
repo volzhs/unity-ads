@@ -366,6 +366,19 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
   return nil;
 }
 
+- (NSDictionary *)getPublicRewardItemDetails:(NSString *)rewardItemKey {
+  if (rewardItemKey != nil) {
+    for (UnityAdsRewardItem *rewardItem in self.rewardItems) {
+      if ([rewardItem.key isEqualToString:rewardItemKey]) {
+        NSDictionary *retDict = @{kUnityAdsRewardItemNameKey:rewardItem.name, kUnityAdsRewardItemPictureKey:rewardItem.pictureURL};
+        return retDict;
+      }
+    }
+  }
+  
+  return nil;
+}
+
 - (void)cancelAllDownloads {
 	UAAssert(![NSThread isMainThread]);
 	

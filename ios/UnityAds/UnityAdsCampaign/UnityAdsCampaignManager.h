@@ -36,6 +36,7 @@
 - (NSArray *)getViewableCampaigns;
 - (BOOL)setSelectedRewardItemKey:(NSString *)rewardItemKey;
 - (UnityAdsRewardItem *)getCurrentRewardItem;
+- (NSDictionary *)getPublicRewardItemDetails:(NSString *)rewardItemKey;
 
 + (id)sharedInstance;
 
