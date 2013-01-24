@@ -75,7 +75,7 @@ public class UnityAdsWebBridge {
 				_listener.onPauseVideo(parameters);
 				break;
 			case CloseView:
-				_listener.onCloseView(parameters);
+				_listener.onCloseAdsView(parameters);
 				break;
 			case InitComplete:
 				_listener.onWebAppInitComplete(parameters);

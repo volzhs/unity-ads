@@ -2,6 +2,7 @@ package com.unity3d.ads.android.properties;
 
 import java.net.URLEncoder;
 
+import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
 
 import android.app.Activity;
@@ -18,6 +19,7 @@ public class UnityAdsProperties {
 	public static Boolean TESTMODE_ENABLED = false;
 	public static Activity BASE_ACTIVITY = null;
 	public static Activity CURRENT_ACTIVITY = null;
+	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static final int MAX_NUMBER_OF_ANALYTICS_RETRIES = 5;
 	
 	private static String _campaignQueryString = null; 

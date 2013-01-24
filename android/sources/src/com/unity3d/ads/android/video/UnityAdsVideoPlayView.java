@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsBufferingView;
@@ -123,16 +124,19 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {			
 			@Override
 			public void onPrepared(MediaPlayer mp) {
-				Log.d(UnityAdsConstants.LOG_NAME, "onPrepared");
+				UnityAdsUtils.Log("onPrepared", this);
 				_videoPlayheadPrepared = true;
-				//Log.d()
+				
 				if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
-					Log.d(UnityAdsConstants.LOG_NAME, "came to event position");
 					_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
 					_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
 				}
 				
 				hideBufferingView();
+				
+				// FIX: Move this to actually check buffer status before sending playback started, with streams, screen can go black
+				if (_listener != null)
+					_listener.onVideoPlaybackStarted();
 			}
 		});
 		
@@ -289,8 +293,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {					
 					@Override
 					public void run() {
-						//createAndAddBufferingView();
-
+						createAndAddBufferingView();
 					}
 				});				
 			}

@@ -10,4 +10,5 @@ public interface IUnityAdsVideoPlayerListener extends IUnityAdsViewListener,
 		OnCompletionListener {
 	
 	public void onEventPositionReached (UnityAdsVideoPosition position);
+	public void onVideoPlaybackStarted ();
 }

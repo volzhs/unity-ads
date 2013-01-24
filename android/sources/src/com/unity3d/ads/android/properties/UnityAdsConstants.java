@@ -8,6 +8,7 @@ public class UnityAdsConstants {
 	public static final String PENDING_REQUESTS_FILENAME = "pendingrequests.dat";
 
 	/* Unity Ads */
+	public static final Boolean UNITY_ADS_DEBUG_MODE = true; 
 	public static final String UNITY_ADS_VERSION = "1.0.3";
 	
 	/* JSON Data Root */	
@@ -28,22 +29,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY = "macAddress";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY = "sdkVersion";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY = "softwareVersion";
-	
-	/*
-	NSString * const kUnityAdsWebViewAPIActionKey = @"action";
-	NSString * const kUnityAdsWebViewAPIPlayVideo = @"playVideo";
-	NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
-	NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
-	NSString * const kUnityAdsWebViewAPIClose = @"close";
-	NSString * const kUnityAdsWebViewAPIOpen = @"open";
-	NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
-	NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_playing";
-	*/
-	
-	/*
-	NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
-	NSString * const kUnityAdsWebViewViewTypeStart = @"start";
-	*/
+
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED = "completed";
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_START = "start";
 	
@@ -56,6 +42,15 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_API_OPEN = "open";
 	public static final String UNITY_ADS_WEBVIEW_API_APPSTORE = "appStore";
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_VIDEOSTARTEDPLAYING = "video_started_playing";	
+		
+	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY = "campaignId";	
+	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY = "rewatch";	
+	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY = "clickUrl";	
+	/*
+	NSString * const kUnityAdsWebViewEventDataCampaignIdKey = @"campaignId";
+	NSString * const kUnityAdsWebViewEventDataRewatchKey = @"rewatch";
+	NSString * const kUnityAdsWebViewEventDataClickUrlKey = @"clickUrl";
+	*/
 
 	/* Campaign JSON Properties */
 	public static final String UNITY_ADS_CAMPAIGNS_KEY = "campaigns";

@@ -218,6 +218,13 @@ public class UnityAdsCampaign {
 		_campaignStatus = status;
 	}
 	
+	public Boolean isViewed () {
+		if (_campaignStatus == UnityAdsCampaignStatus.VIEWED)
+			return true;
+		
+		return false;
+	}
+	
 	public boolean hasValidData () {
 		return checkDataIntegrity();
 	}
