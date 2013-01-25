@@ -27,6 +27,7 @@ NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_
 
 NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
 NSString * const kUnityAdsWebViewViewTypeStart = @"start";
+NSString * const kUnityAdsWebViewViewTypeNone = @"none";
 
 NSString * const kUnityAdsWebViewDataParamCampaignDataKey = @"campaignData";
 NSString * const kUnityAdsWebViewDataParamPlatformKey = @"platform";

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UnityAdsWebView/UnityAdsWebAppController.h"
 #import "UnityAdsVideo/UnityAdsVideoViewController.h"
+#import "UnityAdsProperties/UnityAdsConstants.h"
 
 @protocol UnityAdsMainViewControllerDelegate <NSObject>
 
@@ -29,7 +30,7 @@
 
 + (id)sharedInstance;
 
-- (BOOL)openAds:(BOOL)animated;
+- (BOOL)openAds:(BOOL)animated inState:(UnityAdsViewState)state;
 - (BOOL)closeAds:(BOOL)forceMainThread withAnimations:(BOOL)animated;
 - (BOOL)mainControllerVisible;
 - (void)showPlayerAndPlaySelectedVideo:(BOOL)checkIfWatched;

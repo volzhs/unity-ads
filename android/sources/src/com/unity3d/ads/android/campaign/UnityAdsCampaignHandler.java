@@ -2,12 +2,9 @@ package com.unity3d.ads.android.campaign;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsDownloadListener;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	
@@ -36,14 +33,14 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	@Override
 	public void onFileDownloadCompleted (String downloadUrl) {
 		if (finishDownload(downloadUrl))
-			Log.d(UnityAdsConstants.LOG_NAME, "Reporting campaign download completion: " + _campaign.getCampaignId());
+			UnityAdsUtils.Log("Reporting campaign download completion: " + _campaign.getCampaignId(), this);
 		
 	}
 	
 	@Override
 	public void onFileDownloadCancelled (String downloadUrl) {	
 		if (finishDownload(downloadUrl)) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Download cancelled: " + _campaign.getCampaignId());
+			UnityAdsUtils.Log("Download cancelled: " + _campaign.getCampaignId(), this);
 			_cancelledDownloads = true;
 		}
 	}

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -16,6 +17,14 @@ import android.util.Log;
 
 public class UnityAdsUtils {
 
+	public static void Log (String message, Class cls) {
+		Log.d(UnityAdsConstants.LOG_NAME, cls.getName() + " :: " +  message);
+	}
+	
+	public static void Log (String message, Object obj) {
+		Log.d(UnityAdsConstants.LOG_NAME, obj.getClass().getName() + " :: " +  message);
+	}
+	
 	public static String Md5 (String input) {
 		MessageDigest m = null;
 		try {
@@ -54,7 +63,7 @@ public class UnityAdsUtils {
 				}
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "Problem reading file: " + e.getMessage());
+				Log("Problem reading file: " + e.getMessage(), UnityAdsUtils.class);
 				return null;
 			}
 			
@@ -62,13 +71,13 @@ public class UnityAdsUtils {
 				br.close();
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "Problem closing reader: " + e.getMessage());
+				Log("Problem closing reader: " + e.getMessage(), UnityAdsUtils.class);
 			}
 						
 			return fileContent;
 		}
 		else {
-			Log.d(UnityAdsConstants.LOG_NAME, "File did not exist or couldn't be read");
+			Log("File did not exist or couldn't be read", UnityAdsUtils.class);
 		}
 		
 		return null;
@@ -84,11 +93,11 @@ public class UnityAdsUtils {
 			fos.close();
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Could not write file: " + e.getMessage());
+			Log("Could not write file: " + e.getMessage(), UnityAdsUtils.class);
 			return false;
 		}
 		
-		Log.d(UnityAdsConstants.LOG_NAME, "Wrote file: " + fileToWrite.getAbsolutePath());
+		Log("Wrote file: " + fileToWrite.getAbsolutePath(), UnityAdsUtils.class);
 		
 		return true;
 	}
@@ -99,12 +108,12 @@ public class UnityAdsUtils {
 		
 		if (cachedVideoFile.exists()) {
 			if (!cachedVideoFile.delete())
-				Log.d(UnityAdsConstants.LOG_NAME, "Could not delete: " + cachedVideoFile.getAbsolutePath());
+				Log("Could not delete: " + cachedVideoFile.getAbsolutePath(), UnityAdsUtils.class);
 			else
-				Log.d(UnityAdsConstants.LOG_NAME, "Deleted: " + cachedVideoFile.getAbsolutePath());
+				Log("Deleted: " + cachedVideoFile.getAbsolutePath(), UnityAdsUtils.class);
 		}
 		else {
-			Log.d(UnityAdsConstants.LOG_NAME, "File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.");
+			Log("File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.", UnityAdsUtils.class);
 		}
 	}
 	

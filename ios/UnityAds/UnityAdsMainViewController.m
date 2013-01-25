@@ -14,7 +14,6 @@
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
-#import "UnityAdsProperties/UnityAdsConstants.h"
 
 @interface UnityAdsMainViewController ()
   @property (nonatomic, strong) UnityAdsVideoViewController *videoController;
@@ -124,14 +123,18 @@
   [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:animated completion:self.closeHandler];
 }
 
-- (BOOL)openAds:(BOOL)animated {
+- (BOOL)openAds:(BOOL)animated inState:(UnityAdsViewState)state {
   UALOG_DEBUG(@"");
   
   if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) return NO;
   
   dispatch_async(dispatch_get_main_queue(), ^{
+    NSString *openingViewForWebView = kUnityAdsWebViewViewTypeStart;
+    if (state == kUnityAdsViewStateVideoPlayer)
+      openingViewForWebView = kUnityAdsWebViewViewTypeNone;
+    
     [self.delegate mainControllerWillOpen];
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:openingViewForWebView data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
     
     if (![UnityAdsDevice isSimulator]) {
       if (self.openHandler == nil) {
@@ -150,6 +153,10 @@
     if (![[[[UnityAdsWebAppController sharedInstance] webView] superview] isEqual:self.view]) {
       [self.view addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
       [[[UnityAdsWebAppController sharedInstance] webView] setFrame:self.view.bounds];
+    }
+    
+    if (state == kUnityAdsViewStateVideoPlayer) {
+      [self showPlayerAndPlaySelectedVideo:YES];
     }
   });
   
@@ -171,7 +178,8 @@
 - (void)videoPlayerStartedPlaying {
   [self.delegate mainControllerStartedPlayingVideo];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key,
+      kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   [self presentViewController:self.videoController animated:NO completion:nil];
 }
 
@@ -320,7 +328,7 @@
 - (void)webAppReady {
   [self.delegate mainControllerWebViewInitialized];
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIInitComplete, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIInitComplete, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
   });
 }
 

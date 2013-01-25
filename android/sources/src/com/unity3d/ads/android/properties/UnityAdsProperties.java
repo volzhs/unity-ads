@@ -2,13 +2,15 @@ package com.unity3d.ads.android.properties;
 
 import java.net.URLEncoder;
 
+import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
 
 import android.app.Activity;
-import android.util.Log;
 
 public class UnityAdsProperties {
-	public static String CAMPAIGN_DATA_URL = "http://192.168.1.152:3500/mobile/campaigns";
+	//public static String CAMPAIGN_DATA_URL = "http://192.168.1.152:3500/mobile/campaigns";
+	public static String CAMPAIGN_DATA_URL = "https://impact.applifier.com/mobile/campaigns";
 	public static String WEBVIEW_BASE_URL = null;
 	public static String ANALYTICS_BASE_URL = null;
 	public static String UNITY_ADS_BASE_URL = null;
@@ -18,6 +20,7 @@ public class UnityAdsProperties {
 	public static Boolean TESTMODE_ENABLED = false;
 	public static Activity BASE_ACTIVITY = null;
 	public static Activity CURRENT_ACTIVITY = null;
+	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static final int MAX_NUMBER_OF_ANALYTICS_RETRIES = 5;
 	
 	private static String _campaignQueryString = null; 
@@ -41,7 +44,7 @@ public class UnityAdsProperties {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY, URLEncoder.encode(UnityAdsDevice.getConnectionType(), "UTF-8"));
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Problems creating campaigns query");
+			UnityAdsUtils.Log("Problems creating campaigns query", UnityAdsProperties.class);
 		}
 		
 		if (TESTMODE_ENABLED) {

@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
@@ -118,7 +119,7 @@ public class UnityAdsWebData {
 	public boolean initCampaigns () {
 		String url = UnityAdsProperties.getCampaignQueryUrl();
 		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(url, UnityAdsRequestType.VideoPlan, 0);
-		Log.d(UnityAdsConstants.LOG_NAME, "VIDEOPLAN_URL: " + loader.getUrl());
+		UnityAdsUtils.Log("VIDEOPLAN_URL: " + loader.getUrl(), this);
 		addLoader(loader);
 		startNextLoader();
 		checkFailedUrls();
@@ -129,14 +130,26 @@ public class UnityAdsWebData {
 	public boolean sendCampaignViewProgress (UnityAdsCampaign campaign, UnityAdsVideoPosition position) {
 		if (campaign == null) return false;
 
-		Log.d(UnityAdsConstants.LOG_NAME, "VP: " + position.toString() + ", " + getGamerId());
+		UnityAdsUtils.Log("VP: " + position.toString() + ", " + getGamerId(), this);
 		
 		if (position != null && getGamerId() != null && (position.equals(UnityAdsVideoPosition.Start)  || position.equals(UnityAdsVideoPosition.End))) {			
 			String viewUrl = String.format("%s%s", UnityAdsProperties.UNITY_ADS_BASE_URL, UnityAdsConstants.UNITY_ADS_ANALYTICS_TRACKING_PATH);
-			viewUrl = String.format("%s/%s/%s/%s", viewUrl, UnityAdsProperties.UNITY_ADS_GAMER_ID, position.toString(), campaign.getCampaignId());
+			viewUrl = String.format("%s%s/%s/%s", viewUrl, UnityAdsProperties.UNITY_ADS_GAMER_ID, position.toString(), campaign.getCampaignId());
 			viewUrl = String.format("%s?%s=%s", viewUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
 			viewUrl = String.format("%s&%s=%s", viewUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
 			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, UnityAdsRequestType.VideoViewed, 0);
+			addLoader(loader);
+			startNextLoader();
+			return true;
+		}
+		else if (position != null && getGamerId() != null) {
+			String analyticsUrl = String.format("%s", UnityAdsProperties.ANALYTICS_BASE_URL);
+			analyticsUrl = String.format("%s?%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_EVENTTYPE_KEY, position.toString());
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_TRACKINGID_KEY, UnityAdsProperties.UNITY_ADS_GAMER_ID);
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_PROVIDERID_KEY, campaign.getCampaignId());
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
+			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(analyticsUrl, UnityAdsRequestType.VideoViewed, 0);
 			addLoader(loader);
 			startNextLoader();
 			return true;
@@ -171,7 +184,7 @@ public class UnityAdsWebData {
 					dataObj = _campaignJson.getJSONObject("data");
 				}
 				catch (Exception e) {
-					Log.d(UnityAdsConstants.LOG_NAME, "Malformed JSON");
+					UnityAdsUtils.Log("Malformed JSON", this);
 					return null;
 				}
 				
@@ -180,7 +193,7 @@ public class UnityAdsWebData {
 						return dataObj.getString("gamerId");
 					}
 					catch (Exception e) {
-						Log.d(UnityAdsConstants.LOG_NAME, "Malformed JSON");
+						UnityAdsUtils.Log("Malformed JSON", this);
 					}
 				}
 			}
@@ -268,7 +281,7 @@ public class UnityAdsWebData {
 				}
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "Problems while sending some of the failed urls.");
+				UnityAdsUtils.Log("Problems while sending some of the failed urls.", this);
 			}
 
 			UnityAdsUtils.removeFile(pendingRequestFile.toString());
@@ -305,7 +318,7 @@ public class UnityAdsWebData {
 			failedUrlsJson.put("data", failedUrlsArray);
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Error collecting failed urls");
+			UnityAdsUtils.Log("Error collecting failed urls", this);
 		}
 		
 		if (_failedUrlLoaders != null && _failedUrlLoaders.size() > 0) {
@@ -326,7 +339,7 @@ public class UnityAdsWebData {
 					data = _campaignJson.getJSONObject(UnityAdsConstants.UNITY_ADS_JSON_DATA_ROOTKEY);
 				}
 				catch (Exception e) {
-					Log.d(UnityAdsConstants.LOG_NAME, "Malformed data JSON");
+					UnityAdsUtils.Log("Malformed data JSON", this);
 				}
 				
 				if (!data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_URL_KEY)) validData = false;
@@ -349,7 +362,7 @@ public class UnityAdsWebData {
 						_campaigns = deserializeCampaigns(campaigns);
 				}
 				
-				Log.d(UnityAdsConstants.LOG_NAME, "Parsed total of " + _campaigns.size() + " campaigns");
+				UnityAdsUtils.Log("Parsed total of " + _campaigns.size() + " campaigns", this);
 
 				
 				// Parse default reward item
@@ -376,7 +389,7 @@ public class UnityAdsWebData {
 						}
 					}
 					
-					Log.d(UnityAdsConstants.LOG_NAME, "Parsed total of " + _rewardItems.size() + " reward items");
+					UnityAdsUtils.Log("Parsed total of " + _rewardItems.size() + " reward items", this);
 				}
 			}
 			else {
@@ -385,16 +398,16 @@ public class UnityAdsWebData {
 			}
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Malformed JSON: " + json);
+			UnityAdsUtils.Log("Malformed JSON: " + json, this);
 			campaignDataFailed();
 			return;
 		}
 			
 		if (_campaigns != null)
-			Log.d(UnityAdsConstants.LOG_NAME, _campaigns.toString());
+			UnityAdsUtils.Log(_campaigns.toString(), this);
 		
 		if (_listener != null && validData && _campaigns != null && _campaigns.size() > 0) {
-			Log.d(UnityAdsConstants.LOG_NAME, "WebDataCompleted: " + json);
+			UnityAdsUtils.Log("WebDataCompleted: " + json, this);
 			_listener.onWebDataCompleted();
 			return;
 		}
@@ -420,12 +433,12 @@ public class UnityAdsWebData {
 					campaign = new UnityAdsCampaign(jsonCampaign);
 					
 					if (campaign.hasValidData()) {
-						Log.d(UnityAdsConstants.LOG_NAME, "Adding campaign to cache");
+						UnityAdsUtils.Log("Adding campaign to cache", this);
 						retList.add(campaign);
 					}
 				}
 				catch (Exception e) {
-					Log.d(UnityAdsConstants.LOG_NAME, "Problem with the campaign, skipping.");
+					UnityAdsUtils.Log("Problem with the campaign, skipping.", this);
 				}
 			}
 			
@@ -453,7 +466,7 @@ public class UnityAdsWebData {
 				_url = new URL(url);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "Problems with url: " + e.getMessage());
+				UnityAdsUtils.Log("Problems with url: " + e.getMessage(), this);
 			}
 			_requestType = requestType;
 			_retries = existingRetries;
@@ -484,7 +497,7 @@ public class UnityAdsWebData {
 				_urlConnection.connect();
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "Problems opening connection: " + e.getMessage());
+				UnityAdsUtils.Log("Problems opening connection: " + e.getMessage(), this);
 			}
 			
 			if (_urlConnection != null) {
@@ -494,7 +507,7 @@ public class UnityAdsWebData {
 					_input = new BufferedInputStream(_url.openStream());
 				}
 				catch (Exception e) {
-					Log.d(UnityAdsConstants.LOG_NAME, "Problems opening stream: " + e.getMessage());
+					UnityAdsUtils.Log("Problems opening stream: " + e.getMessage(), this);
 				}
 				
 				byte data[] = new byte[1024];
@@ -502,7 +515,7 @@ public class UnityAdsWebData {
 				int count = 0;
 				
 				try {
-					Log.d(UnityAdsConstants.LOG_NAME, "Reading data from: " + _url.toString());
+					UnityAdsUtils.Log("Reading data from: " + _url.toString(), this);
 					while ((count = _input.read(data)) != -1) {
 						total += count;
 						publishProgress((int)(total * 100 / _downloadLength));
@@ -513,7 +526,7 @@ public class UnityAdsWebData {
 					}
 				}
 				catch (Exception e) {
-					Log.d(UnityAdsConstants.LOG_NAME, "Problems loading url: " + e.getMessage());
+					UnityAdsUtils.Log("Problems loading url: " + e.getMessage(), this);
 					cancel(true);
 					return null;
 				}
@@ -547,7 +560,7 @@ public class UnityAdsWebData {
 				_input.close();
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "Problems closing connection: " + e.getMessage());
+				UnityAdsUtils.Log("Problems closing connection: " + e.getMessage(), this);
 			}	
 		}
 	}

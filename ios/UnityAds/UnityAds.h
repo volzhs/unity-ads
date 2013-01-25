@@ -25,6 +25,9 @@
 extern NSString * const kUnityAdsRewardItemPictureKey;
 extern NSString * const kUnityAdsRewardItemNameKey;
 
+extern NSString * const kUnityAdsOptionNoOfferscreenKey;
+extern NSString * const kUnityAdsOptionOpenAnimatedKey;
+
 @class UnityAds;
 @class SKStoreProductViewController;
 
@@ -57,6 +60,7 @@ extern NSString * const kUnityAdsRewardItemNameKey;
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds;
 - (BOOL)canShow;
 - (BOOL)canShow;
+- (BOOL)show:(NSDictionary *)options;
 - (BOOL)show;
 - (BOOL)hide;
 - (void)stopAll;
