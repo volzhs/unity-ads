@@ -349,6 +349,24 @@ public class UnityAds implements IUnityAdsCacheListener,
 		@Override
 		public void run() {			
 			if (UnityAdsProperties.SELECTED_CAMPAIGN != null) {
+				
+				/*
+				[[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner 
+				data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
+				*/
+				
+				JSONObject data = new JSONObject();
+				
+				try {
+					data.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
+				}
+				catch (Exception e) {
+					UnityAdsUtils.Log("Couldn't create data JSON", this);
+					return;
+				}
+				
+				_mainView.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
+				
 				String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
 				if (!UnityAdsUtils.isFileInCache(UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename()))
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl(); 
