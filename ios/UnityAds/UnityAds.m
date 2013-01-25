@@ -117,6 +117,9 @@ static UnityAds *sharedUnityAdsInstance = nil;
     state = kUnityAdsViewStateVideoPlayer;
     // FIX: Select campaign or return NO
     [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
+    
+    if (![self canShow]) return NO;
+    
     UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];
     
     if (campaign != nil) {
