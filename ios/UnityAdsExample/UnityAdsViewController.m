@@ -54,7 +54,8 @@
         NSLog(@"DEFAULT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getDefaultRewardItemKey]); */
 
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
-        [[UnityAds sharedInstance] show];
+        [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@true, kUnityAdsOptionOpenAnimatedKey:@false}];
+        //[[UnityAds sharedInstance] show];
         
         /*
         NSLog(@"SETTING_REWARD_ITEM (while open): %i", [[UnityAds sharedInstance] setRewardItemKey:[[UnityAds sharedInstance] getDefaultRewardItemKey]]);

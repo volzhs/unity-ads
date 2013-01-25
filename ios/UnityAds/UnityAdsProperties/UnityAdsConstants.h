@@ -10,6 +10,12 @@
 
 /* WebView */
 
+typedef enum {
+  kUnityAdsViewStateWebView,
+  kUnityAdsViewStateVideoPlayer,
+  kUnityAdsViewStateNone
+} UnityAdsViewState;
+
 extern NSString * const kUnityAdsWebViewJSPrefix;
 extern NSString * const kUnityAdsWebViewJSInit;
 extern NSString * const kUnityAdsWebViewJSChangeView;
@@ -26,6 +32,7 @@ extern NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying;
 
 extern NSString * const kUnityAdsWebViewViewTypeCompleted;
 extern NSString * const kUnityAdsWebViewViewTypeStart;
+extern NSString * const kUnityAdsWebViewViewTypeNone;
 
 extern NSString * const kUnityAdsWebViewDataParamCampaignDataKey;
 extern NSString * const kUnityAdsWebViewDataParamPlatformKey;

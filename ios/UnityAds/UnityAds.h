@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
-#define UNITY_ADS_DEBUG_MODE_ENABLED 0
+#define UNITY_ADS_DEBUG_MODE_ENABLED 1
 
 #define UALOG_LOG(levelName, fmt, ...) NSLog((@"%@ [T:0x%x %@] %s:%d " fmt), levelName, (unsigned int)[NSThread currentThread], ([[NSThread currentThread] isMainThread] ? @"M" : @"S"), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 
@@ -24,6 +24,9 @@
 
 extern NSString * const kUnityAdsRewardItemPictureKey;
 extern NSString * const kUnityAdsRewardItemNameKey;
+
+extern NSString * const kUnityAdsOptionNoOfferscreenKey;
+extern NSString * const kUnityAdsOptionOpenAnimatedKey;
 
 @class UnityAds;
 @class SKStoreProductViewController;
@@ -57,6 +60,7 @@ extern NSString * const kUnityAdsRewardItemNameKey;
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds;
 - (BOOL)canShow;
 - (BOOL)canShow;
+- (BOOL)show:(NSDictionary *)options;
 - (BOOL)show;
 - (BOOL)hide;
 - (void)stopAll;
