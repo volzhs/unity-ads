@@ -36,6 +36,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private Map<UnityAdsVideoPosition, Boolean> _sentPositionEvents = new HashMap<UnityAdsVideoPosition, Boolean>();
 	private RelativeLayout _countDownText = null;
 	private TextView _timeLeftInSecondsText = null;
+	private boolean _videoPlaybackStartedSent = false;
 	
 	public UnityAdsVideoPlayView(Context context, IUnityAdsVideoPlayerListener listener) {
 		super(context);
@@ -59,7 +60,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		
 		_videoPlayheadPrepared = false;
 		_videoFileName = fileName;
-		Log.d(UnityAdsConstants.LOG_NAME, "Playing video from: " + _videoFileName);
+		UnityAdsUtils.Log("Playing video from: " + _videoFileName, this);
 		_videoView.setVideoPath(_videoFileName);
 		_timeLeftInSecondsText.setText("" + Math.round(Math.ceil(_videoView.getDuration() / 1000)));
 		startVideo();
@@ -112,7 +113,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 
 	private void createView () {
-		Log.d(UnityAdsConstants.LOG_NAME, "Creating custom view");
+		UnityAdsUtils.Log("Creating custom view", this);
 		setBackgroundColor(0xFF000000);
 		_videoView = new VideoView(getContext());
 		RelativeLayout.LayoutParams videoLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
@@ -133,10 +134,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				}
 				
 				hideBufferingView();
-				
-				// FIX: Move this to actually check buffer status before sending playback started, with streams, screen can go black
-				if (_listener != null)
-					_listener.onVideoPlaybackStarted();
 			}
 		});
 		
@@ -301,7 +298,17 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						UnityAdsUtils.Log("run", this);
 						hideBufferingView();
+						
+						if (!_videoPlaybackStartedSent) {
+							// FIX: Move this to actually check buffer status before sending playback started, with streams, screen can go black
+							if (_listener != null) {
+								UnityAdsUtils.Log("onVideoPlaybackStarted to listener", this);
+								_listener.onVideoPlaybackStarted();
+								_videoPlaybackStartedSent = true;
+							}
+						}
 					}
 				});
 			}

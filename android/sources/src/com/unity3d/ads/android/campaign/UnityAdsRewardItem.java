@@ -2,8 +2,7 @@ package com.unity3d.ads.android.campaign;
 
 import org.json.JSONObject;
 
-import android.util.Log;
-
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsRewardItem {
@@ -47,7 +46,7 @@ public class UnityAdsRewardItem {
 			_pictureURL = _rewardItemJSON.getString(UnityAdsConstants.UNITY_ADS_REWARD_PICTURE_KEY);
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Problem parsing campaign values");
+			UnityAdsUtils.Log("Problem parsing campaign values", this);
 		}
 	}
 	

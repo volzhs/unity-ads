@@ -22,7 +22,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	
 	public UnityAdsCacheManager () {
 		UnityAdsUtils.createCacheDir();
-		Log.d(UnityAdsConstants.LOG_NAME, "External storagedir: " + UnityAdsUtils.getCacheDirectory());
+		UnityAdsUtils.Log("External storagedir: " + UnityAdsUtils.getCacheDirectory(), this);
 	}
 	
 	public void setDownloadListener (IUnityAdsCacheListener listener) {
@@ -43,7 +43,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		
 		_amountPrepared = 0;
 		
-		Log.d(UnityAdsConstants.LOG_NAME, activeList.toString());
+		UnityAdsUtils.Log(activeList.toString(), this);
 		
 		// Check cache directory and delete all files that don't match the current files in campaigns
 		if (UnityAdsUtils.getCacheDirectory() != null) {
@@ -52,7 +52,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 			
 			if (fileList != null) {
 				for (File currentFile : fileList) {
-					Log.d(UnityAdsConstants.LOG_NAME, "Checking file: " + currentFile.getName());
+					UnityAdsUtils.Log("Checking file: " + currentFile.getName(), this);
 					if (!currentFile.getName().equals(UnityAdsConstants.PENDING_REQUESTS_FILENAME) && 
 						!currentFile.getName().equals(UnityAdsConstants.CACHE_MANIFEST_FILENAME) && 
 						!UnityAdsUtils.isFileRequiredByCampaigns(currentFile.getName(), activeList)) {
@@ -65,7 +65,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		// Active -list contains campaigns that came with the videoPlan
 		if (activeList != null) {
 			_totalCampaigns = activeList.size();
-			Log.d(UnityAdsConstants.LOG_NAME, "Updating cache: Going through active campaigns");			
+			UnityAdsUtils.Log("Updating cache: Going through active campaigns", this);			
 			for (UnityAdsCampaign campaign : activeList) {
 				UnityAdsCampaignHandler campaignHandler = new UnityAdsCampaignHandler(campaign);
 				addToUpdatingHandlers(campaignHandler);

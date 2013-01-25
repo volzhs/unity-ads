@@ -46,11 +46,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY = "campaignId";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY = "rewatch";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY = "clickUrl";	
-	/*
-	NSString * const kUnityAdsWebViewEventDataCampaignIdKey = @"campaignId";
-	NSString * const kUnityAdsWebViewEventDataRewatchKey = @"rewatch";
-	NSString * const kUnityAdsWebViewEventDataClickUrlKey = @"clickUrl";
-	*/
 
 	/* Campaign JSON Properties */
 	public static final String UNITY_ADS_CAMPAIGNS_KEY = "campaigns";

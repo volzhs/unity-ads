@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -29,7 +30,7 @@ public class UnityAdsWebView extends WebView {
 	
 	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		super(activity);
-		Log.d(UnityAdsConstants.LOG_NAME, "Loading WebView from URL: " + UnityAdsProperties.WEBVIEW_BASE_URL);
+		UnityAdsUtils.Log("Loading WebView from URL: " + UnityAdsProperties.WEBVIEW_BASE_URL, this);
 		init(activity, UnityAdsProperties.WEBVIEW_BASE_URL, listener, webBridge);
 	}
 
@@ -55,7 +56,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
-			Log.d(UnityAdsConstants.LOG_NAME, "Send change view to WebApp: " + javascriptString);
+			UnityAdsUtils.Log("Send change view to WebApp: " + javascriptString, this);
 		}
 	}
 	
@@ -67,7 +68,7 @@ public class UnityAdsWebView extends WebView {
 				dataString = data.toString();
 
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
-			Log.d(UnityAdsConstants.LOG_NAME, "Send native event to WebApp: " + javascriptString);
+			UnityAdsUtils.Log("Send native event to WebApp: " + javascriptString, this);
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
 		}
 	}
@@ -91,12 +92,12 @@ public class UnityAdsWebView extends WebView {
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "Error creating webview init params");
+				UnityAdsUtils.Log("Error creating webview init params", this);
 				return;
 			}
 			
 			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
-			Log.d(UnityAdsConstants.LOG_NAME, "Initializing WebView with JS call: " + initString);
+			UnityAdsUtils.Log("Initializing WebView with JS call: " + initString, this);
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(initString));
 		}
 	}
@@ -117,7 +118,7 @@ public class UnityAdsWebView extends WebView {
 		
 		if (_url != null && _url.indexOf("_raw.html") != -1) {
 			getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-			Log.d(UnityAdsConstants.LOG_NAME, "startup() -> LOAD_NO_CACHE");
+			UnityAdsUtils.Log("startup() -> LOAD_NO_CACHE", this);
 		}
 		else {
 			getSettings().setCacheMode(WebSettings.LOAD_NORMAL);
@@ -171,10 +172,10 @@ public class UnityAdsWebView extends WebView {
 			layertype.invoke(this, 1, null);
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Could not invoke setLayerType");
+			UnityAdsUtils.Log("Could not invoke setLayerType", this);
 		}
 		
-		Log.d(UnityAdsConstants.LOG_NAME, "Adding javascript interface");
+		UnityAdsUtils.Log("Adding javascript interface", this);
 		addJavascriptInterface(_webBridge, "applifierimpactnative");
 	}
 	
@@ -198,7 +199,7 @@ public class UnityAdsWebView extends WebView {
 	
 	private class UnityAdsViewChromeClient extends WebChromeClient {
 		public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-			Log.d(UnityAdsConstants.LOG_NAME, "JAVASCRIPT(" + lineNumber + "): " + message);
+			UnityAdsUtils.Log("JavaScript (line: " + lineNumber + "): " + message, this);
 		}
 		
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
@@ -210,10 +211,10 @@ public class UnityAdsWebView extends WebView {
 		@Override
 		public void onPageFinished (WebView webview, String url) {
 			super.onPageFinished(webview, url);
-			Log.d(UnityAdsConstants.LOG_NAME, "Finished url: "  + url);
+			UnityAdsUtils.Log("Finished url: "  + url, this);
 			if (_listener != null && !_webAppLoaded) {
 				_webAppLoaded = true;
-				Log.d(UnityAdsConstants.LOG_NAME, "Adding javascript interface");
+				UnityAdsUtils.Log("Adding javascript interface", this);
 				addJavascriptInterface(_webBridge, "applifierimpactnative");
 				_listener.onWebAppLoaded();
 			}
@@ -221,13 +222,13 @@ public class UnityAdsWebView extends WebView {
 		
 		@Override
 		public boolean shouldOverrideUrlLoading (WebView view, String url) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Trying to load url: " + url);
+			UnityAdsUtils.Log("Trying to load url: " + url, this);
 			return false;
 		}
 		
 		@Override
 		public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {		
-			Log.e(UnityAdsConstants.LOG_NAME, "UnityAdsViewClient.onReceivedError() -> " + errorCode + " (" + failingUrl + ") " + description);
+			UnityAdsUtils.Log("UnityAdsViewClient.onReceivedError() -> " + errorCode + " (" + failingUrl + ") " + description, this);
 			super.onReceivedError(view, errorCode, description, failingUrl);
 		}
 

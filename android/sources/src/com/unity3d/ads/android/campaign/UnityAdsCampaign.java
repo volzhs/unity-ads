@@ -4,9 +4,8 @@ import java.io.File;
 
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
-
-import android.util.Log;
 
 public class UnityAdsCampaign {
 	
@@ -49,7 +48,7 @@ public class UnityAdsCampaign {
 	
 	@Override
 	public String toString () {
-		return "(ID: " + getCampaignId() + ", STATUS: " + getCampaignStatus().toString() + ", URL: " + getVideoUrl() + ")"; 
+		return "<ID: " + getCampaignId() + ", STATUS: " + getCampaignStatus().toString() + ", URL: " + getVideoUrl() + ">"; 
 	}
 	
 	public JSONObject toJson () {
@@ -59,7 +58,7 @@ public class UnityAdsCampaign {
 			retObject.put("status", getCampaignStatus().toString());
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Error creating campaign JSON");
+			UnityAdsUtils.Log("Error creating campaign JSON", this);
 			return null;
 		}
 		
@@ -67,13 +66,12 @@ public class UnityAdsCampaign {
 	}
 	
 	public Boolean shouldCacheVideo () {
-		Log.d(UnityAdsConstants.LOG_NAME, "shouldCacheVideo");
 		if (checkDataIntegrity()) {
 			try {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "shouldCacheVideo: This should not happen!");
+				UnityAdsUtils.Log("shouldCacheVideo: This should not happen!", this);
 			}			
 		}
 		return false;
@@ -85,7 +83,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ENDSCREEN_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getEndScreenUrl: This should not happen!");
+				UnityAdsUtils.Log("getEndScreenUrl: This should not happen!", this);
 			}
 		}
 		
@@ -98,7 +96,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_PICTURE_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getPicture: This should not happen!");
+				UnityAdsUtils.Log("getPicture: This should not happen!", this);
 			}
 		}
 		
@@ -111,7 +109,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ID_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getCampaignId: This should not happen!");
+				UnityAdsUtils.Log("getCampaignId: This should not happen!", this);
 			}
 		}
 		
@@ -124,7 +122,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_ID_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getGameId: This should not happen!");
+				UnityAdsUtils.Log("getGameId: This should not happen!", this);
 			}
 		}
 		
@@ -137,7 +135,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_NAME_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getGameName: This should not happen!");
+				UnityAdsUtils.Log("getGameName: This should not happen!", this);
 			}
 		}
 		
@@ -150,7 +148,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_DOWNLOADABLE_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getVideoUrl: This should not happen!");
+				UnityAdsUtils.Log("getVideoUrl: This should not happen!", this);
 			}
 		}
 		
@@ -163,7 +161,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_STREAMING_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getVideoStreamUrl: This should not happen!");
+				UnityAdsUtils.Log("getVideoStreamUrl: This should not happen!", this);
 			}
 		}
 		
@@ -176,7 +174,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CLICKURL_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getClickUrl: This should not happen!");
+				UnityAdsUtils.Log("getClickUrl: This should not happen!", this);
 			}
 		}
 		
@@ -190,7 +188,7 @@ public class UnityAdsCampaign {
 				return getCampaignId() + "-" + videoFile.getName();
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getVideoFilename: This should not happen!");
+				UnityAdsUtils.Log("getVideoFilename: This should not happen!", this);
 			}
 		}
 		
@@ -203,7 +201,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TAGLINE_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "getTagLine: This should not happen!");
+				UnityAdsUtils.Log("getTagLine: This should not happen!", this);
 			}
 		}
 		

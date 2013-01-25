@@ -173,13 +173,15 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	// IUnityAdsVideoPlayerListener
 	@Override
 	public void onVideoPlaybackStarted () {
+		UnityAdsUtils.Log("onVideoPlaybackStarted", this);
+		
 		JSONObject params = null;
 		
 		try {
 			params = new JSONObject("{\"campaignId\":\"" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + "\"}");
 		}
 		catch (Exception e) {
-			Log.d(UnityAdsConstants.LOG_NAME, "Could not create JSON");
+			UnityAdsUtils.Log("Could not create JSON", this);
 		}
 		
 		sendActionToListener(UnityAdsMainViewAction.VideoStart);

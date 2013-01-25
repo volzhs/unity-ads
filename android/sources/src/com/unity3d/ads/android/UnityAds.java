@@ -55,9 +55,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private IUnityAdsCampaignListener _campaignListener = null;
 	private IUnityAdsVideoListener _videoListener = null;
 	
-	// Currently Selected Campaign (for viewing)
-	//private UnityAdsCampaign _selectedCampaign = null;	
-	
 	
 	public UnityAds (Activity activity, String gameId) {
 		instance = this;
@@ -134,7 +131,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public void stopAll () {
-		Log.d(UnityAdsConstants.LOG_NAME, "UnityAds->stopAll()");
+		UnityAdsUtils.Log("stopAll()", this);
 		UnityAdsDownloader.stopAllDownloads();
 		webdata.stopAllRequests();
 	}
@@ -202,7 +199,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				campaignId = data.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY);
 			}
 			catch (Exception e) {
-				Log.d(UnityAdsConstants.LOG_NAME, "Could not get campaignId");
+				UnityAdsUtils.Log("Could not get campaignId", this);
 			}
 			
 			if (campaignId != null) {
@@ -217,7 +214,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 				if (UnityAdsProperties.SELECTED_CAMPAIGN != null && (rewatch || !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed())) {
 					UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
-					Log.d(UnityAdsConstants.LOG_NAME, "Running threaded");
+					UnityAdsUtils.Log("Running threaded", this);
 					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
 				}
 			}
@@ -269,7 +266,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		Boolean dataOk = true;			
 		JSONObject data = new JSONObject();
 		
-		Log.d(UnityAdsConstants.LOG_NAME, "dataOk: " + dataOk);
+		UnityAdsUtils.Log("dataOk: " + dataOk, this);
 		
 		try  {
 			data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN);
@@ -306,7 +303,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
-					Log.d(UnityAdsConstants.LOG_NAME, "Unity Ads ready!");
+					UnityAdsUtils.Log("Unity Ads ready!", this);
 					_adsReadySent = true;
 					_campaignListener.onFetchCompleted();
 				}
@@ -360,7 +357,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				_mainView.videoplayerview.playVideo(playUrl);
 			}			
 			else
-				Log.d(UnityAdsConstants.LOG_NAME, "Campaign is null");
+				UnityAdsUtils.Log("Campaign is null", this);
 		}		
 	}
 }
