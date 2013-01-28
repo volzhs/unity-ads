@@ -167,12 +167,11 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	public void onVideoPlaybackStarted () {
 		UnityAdsUtils.Log("onVideoPlaybackStarted", this);
 		
-		JSONObject params = null;
-		JSONObject spinnerParams = null;
+		JSONObject params = new JSONObject();
+		JSONObject spinnerParams = new JSONObject();
 		
 		try {
-			params = new JSONObject("{\"campaignId\":\"" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + "\"}");
-			spinnerParams = new JSONObject();
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
 			spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
 		}
 		catch (Exception e) {
@@ -182,7 +181,6 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		sendActionToListener(UnityAdsMainViewAction.VideoStart);
 		bringChildToFront(videoplayerview);
 		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		//removeFromMainView(webview);
 		focusToView(videoplayerview);
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
 		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
@@ -201,9 +199,23 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		destroyVideoPlayerView();
 		setViewState(UnityAdsMainViewState.WebView);
 		onEventPositionReached(UnityAdsVideoPosition.End);
+		
+		JSONObject params = new JSONObject();
+		
+		try {
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+		}
+		catch (Exception e) {
+			UnityAdsUtils.Log("Could not create JSON", this);
+		}
+		
+		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
+
+		
 		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 		UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 		UnityAdsProperties.SELECTED_CAMPAIGN = null;
+		
 		sendActionToListener(UnityAdsMainViewAction.VideoEnd);
 	}
 	

@@ -87,6 +87,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 			if (activity.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
 				open();
 			}
+			else {
+				UnityAdsProperties.BASE_ACTIVITY = activity;
+			}
 		}
 	}
 	
@@ -103,7 +106,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (!_showingAds && canShowAds()) {
 			Intent newIntent = new Intent(UnityAdsProperties.CURRENT_ACTIVITY, com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
 			newIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
-			UnityAdsProperties.CURRENT_ACTIVITY.startActivity(newIntent);
+			UnityAdsProperties.BASE_ACTIVITY.startActivity(newIntent);
 			_showingAds = true;	
 			return _showingAds;
 		}
@@ -331,6 +334,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				if (dataOk) {
 					_mainView.closeAds(data);
 					UnityAdsProperties.CURRENT_ACTIVITY.finish();
+					UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
 					if (_adsListener != null)
 						_adsListener.onHide();
 				}

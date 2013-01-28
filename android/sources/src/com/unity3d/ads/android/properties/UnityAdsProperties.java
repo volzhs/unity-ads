@@ -7,6 +7,8 @@ import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
 
 import android.app.Activity;
+import android.content.pm.FeatureInfo;
+import android.content.pm.PackageManager;
 
 public class UnityAdsProperties {
 	public static String CAMPAIGN_DATA_URL = "http://192.168.1.152:3500/mobile/campaigns";
@@ -39,8 +41,10 @@ public class UnityAdsProperties {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SDKVERSION_KEY, URLEncoder.encode(UnityAdsConstants.UNITY_ADS_VERSION, "UTF-8"));
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SOFTWAREVERSION_KEY, URLEncoder.encode(UnityAdsDevice.getSoftwareVersion(), "UTF-8"));
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_HARDWAREVERSION_KEY, URLEncoder.encode(UnityAdsDevice.getHardwareVersion(), "UTF-8"));
-			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_DEVICETYPE_KEY, URLEncoder.encode(UnityAdsDevice.getDeviceType(), "UTF-8"));
+			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY, URLEncoder.encode(UnityAdsDevice.getConnectionType(), "UTF-8"));
+			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
+			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
 		}
 		catch (Exception e) {
 			UnityAdsUtils.Log("Problems creating campaigns query", UnityAdsProperties.class);
@@ -51,6 +55,17 @@ public class UnityAdsProperties {
 		}
 		
 		_campaignQueryString = queryString;
+		
+		/*
+		PackageManager manager = UnityAdsProperties.CURRENT_ACTIVITY.getPackageManager();
+		FeatureInfo[] features = manager.getSystemAvailableFeatures();
+		for (FeatureInfo feature : features) {
+			if (feature.name != null)
+				UnityAdsUtils.Log("Feature:" + feature.name, UnityAdsProperties.class);
+			else
+				UnityAdsUtils.Log("Feature:" + feature.getGlEsVersion(), UnityAdsProperties.class);
+		}
+		*/
 	}
 	
 	public static String getCampaignQueryUrl () {

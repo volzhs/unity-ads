@@ -48,6 +48,8 @@ public class UnityAdsConstants {
 
 	public static final String UNITY_ADS_NATIVEEVENT_HIDESPINNER = "hideSpinner";	
 	public static final String UNITY_ADS_NATIVEEVENT_SHOWSPINNER = "showSpinner";	
+	public static final String UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED = "videoCompleted";
+	public static final String UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY = "campaignId";
 
 	/* Campaign JSON Properties */
 	public static final String UNITY_ADS_CAMPAIGNS_KEY = "campaigns";
@@ -92,6 +94,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SDKVERSION_KEY = "sdkVersion";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY = "connectionType";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_TEST_KEY = "test";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY = "screenDensity";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY = "screenSize";
 	
 	/* Device types */
 	public static final String UNITY_ADS_DEVICEID_UNKNOWN = "unknown";
