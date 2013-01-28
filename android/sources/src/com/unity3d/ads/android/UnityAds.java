@@ -5,31 +5,20 @@ import org.json.JSONObject;
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
-import com.unity3d.ads.android.campaign.UnityAdsCampaign;
-import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.video.IUnityAdsVideoListener;
-import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 import com.unity3d.ads.android.view.UnityAdsMainView;
 import com.unity3d.ads.android.view.IUnityAdsMainViewListener;
-import com.unity3d.ads.android.view.IUnityAdsViewListener;
 import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewAction;
 import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewState;
 import com.unity3d.ads.android.webapp.*;
-import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.media.MediaPlayer;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+
 
 public class UnityAds implements IUnityAdsCacheListener, 
 										IUnityAdsWebDataListener, 
@@ -278,6 +267,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 		if (dataOk) {
 			_mainView.openAds(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
+			if (_adsListener != null)
+				_adsListener.onShow();
 		}
 	}
 
@@ -340,6 +331,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 				if (dataOk) {
 					_mainView.closeAds(data);
 					UnityAdsProperties.CURRENT_ACTIVITY.finish();
+					if (_adsListener != null)
+						_adsListener.onHide();
 				}
 			}
 		}
@@ -349,12 +342,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		@Override
 		public void run() {			
 			if (UnityAdsProperties.SELECTED_CAMPAIGN != null) {
-				
-				/*
-				[[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner 
-				data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-				*/
-				
 				JSONObject data = new JSONObject();
 				
 				try {

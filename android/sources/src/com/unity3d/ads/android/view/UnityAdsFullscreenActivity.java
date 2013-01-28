@@ -2,11 +2,9 @@ package com.unity3d.ads.android.view;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 
 public class UnityAdsFullscreenActivity extends Activity {
     @Override
