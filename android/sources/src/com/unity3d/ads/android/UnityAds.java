@@ -6,10 +6,8 @@ import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
-import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 import com.unity3d.ads.android.view.UnityAdsMainView;
 import com.unity3d.ads.android.view.IUnityAdsMainViewListener;
 import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewAction;
@@ -41,42 +39,20 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	// Listeners
 	private IUnityAdsListener _adsListener = null;
-	private IUnityAdsCampaignListener _campaignListener = null;
-	private IUnityAdsVideoListener _videoListener = null;
 	
 	
 	public UnityAds (Activity activity, String gameId) {
-		instance = this;
-		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
-		UnityAdsProperties.BASE_ACTIVITY = activity;
-		UnityAdsProperties.CURRENT_ACTIVITY = activity;
+		init(activity, gameId, null);
+	}
+	
+	public UnityAds (Activity activity, String gameId, IUnityAdsListener listener) {
+		init(activity, gameId, listener);
 	}
 		
 	public void setListener (IUnityAdsListener listener) {
 		_adsListener = listener;
 	}
-	
-	public void setCampaignListener (IUnityAdsCampaignListener listener) {
-		_campaignListener = listener;
-	}
-	
-	public void setVideoListener (IUnityAdsVideoListener listener) {
-		_videoListener = listener;
-	}
-	
-	public void init () {
-		if (_initialized) return; 
-		
-		cachemanager = new UnityAdsCacheManager();
-		cachemanager.setDownloadListener(this);
-		webdata = new UnityAdsWebData();
-		webdata.setWebDataListener(this);
 
-		if (webdata.initCampaigns()) {
-			_initialized = true;
-		}
-	}
-		
 	public void changeActivity (Activity activity) {
 		if (activity == null) return;
 		
@@ -138,12 +114,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 				close();
 				break;
 			case VideoStart:
-				if (_videoListener != null)
-					_videoListener.onVideoStarted();
+				if (_adsListener != null)
+					_adsListener.onVideoStarted();
 				break;
 			case VideoEnd:
-				if (_videoListener != null)
-					_videoListener.onVideoCompleted();
+				if (_adsListener != null)
+					_adsListener.onVideoCompleted();
 				break;
 		}
 	}
@@ -249,6 +225,24 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	/* PRIVATE METHODS */
 	
+	private void init (Activity activity, String gameId, IUnityAdsListener listener) {
+		instance = this;
+		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
+		UnityAdsProperties.BASE_ACTIVITY = activity;
+		UnityAdsProperties.CURRENT_ACTIVITY = activity;
+		
+		if (_initialized) return; 
+		
+		cachemanager = new UnityAdsCacheManager();
+		cachemanager.setDownloadListener(this);
+		webdata = new UnityAdsWebData();
+		webdata.setWebDataListener(this);
+
+		if (webdata.initCampaigns()) {
+			_initialized = true;
+		}
+	}
+	
 	private void close () {
 		UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeRunner);
@@ -293,13 +287,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private void sendAdsReadyEvent () {
-		if (!_adsReadySent && _campaignListener != null) {
+		if (!_adsReadySent && _adsListener != null) {
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
 					UnityAdsUtils.Log("Unity Ads ready!", this);
 					_adsReadySent = true;
-					_campaignListener.onFetchCompleted();
+					_adsListener.onFetchCompleted();
 				}
 			});
 		}

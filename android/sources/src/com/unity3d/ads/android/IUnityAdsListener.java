@@ -1,6 +1,14 @@
 package com.unity3d.ads.android;
 
 public interface IUnityAdsListener {
+	// Unity Ads view events
 	public void onHide ();
 	public void onShow ();
+	
+	// Unity Ads video events
+	public void onVideoStarted ();
+	public void onVideoCompleted ();
+	
+	// Unity Ads campaign events
+	public void onFetchCompleted ();
 }

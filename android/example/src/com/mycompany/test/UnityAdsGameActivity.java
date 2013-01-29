@@ -10,9 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 
-public class UnityAdsGameActivity extends Activity implements IUnityAdsListener, IUnityAdsVideoListener {
+public class UnityAdsGameActivity extends Activity implements IUnityAdsListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsGameActivity->onCreate()");
@@ -37,7 +36,6 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
     	
     	UnityAds.instance.changeActivity(this);
 		UnityAds.instance.setListener(this);
-		UnityAds.instance.setVideoListener(this);
 		
 		if (!UnityAds.instance.hasCampaigns()) {
 			((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
@@ -61,5 +59,9 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
     	((ImageView)findViewById(R.id.plissken)).setAlpha(255);
     	((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
     	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Video completed!");
+	}
+	
+    @Override
+	public void onFetchCompleted () {
 	}
 }
