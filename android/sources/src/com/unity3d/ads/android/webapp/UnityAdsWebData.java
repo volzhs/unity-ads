@@ -126,7 +126,8 @@ public class UnityAdsWebData {
 	}
 	
 	public boolean sendCampaignViewProgress (UnityAdsCampaign campaign, UnityAdsVideoPosition position) {
-		if (campaign == null) return false;
+		boolean progressSent = false;
+		if (campaign == null) return progressSent;
 
 		UnityAdsUtils.Log("VP: " + position.toString() + ", " + getGamerId(), this);
 		
@@ -138,9 +139,10 @@ public class UnityAdsWebData {
 			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, UnityAdsRequestType.VideoViewed, 0);
 			addLoader(loader);
 			startNextLoader();
-			return true;
+			progressSent = true;
 		}
-		else if (position != null && getGamerId() != null) {
+		
+		if (position != null && getGamerId() != null) {
 			String analyticsUrl = String.format("%s", UnityAdsProperties.ANALYTICS_BASE_URL);
 			analyticsUrl = String.format("%s?%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
 			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_EVENTTYPE_KEY, position.toString());
@@ -150,10 +152,10 @@ public class UnityAdsWebData {
 			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(analyticsUrl, UnityAdsRequestType.VideoViewed, 0);
 			addLoader(loader);
 			startNextLoader();
-			return true;
+			progressSent = true;
 		}
 		
-		return false;
+		return progressSent;
 	}
 	
 	public void stopAllRequests () {

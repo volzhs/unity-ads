@@ -16,6 +16,7 @@ import com.unity3d.ads.android.webapp.*;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 
 
 public class UnityAds implements IUnityAdsCacheListener, 
@@ -53,6 +54,18 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_adsListener = listener;
 	}
 
+	public static boolean isSupported () {
+		if (Build.VERSION.SDK_INT < 7) {
+			return false;
+		}
+		
+		return false;
+	}
+	
+	public void setTestMode (boolean testModeEnabled) {
+		UnityAdsProperties.TESTMODE_ENABLED = testModeEnabled;
+	}
+	
 	public void changeActivity (Activity activity) {
 		if (activity == null) return;
 		
@@ -69,7 +82,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	public boolean closeAds () {
+	public boolean hide () {
 		if (_showingAds) {
 			close();
 			return true;
@@ -79,7 +92,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public boolean show () {
-		if (!_showingAds && canShowAds()) {
+		if (canShow()) {
 			Intent newIntent = new Intent(UnityAdsProperties.CURRENT_ACTIVITY, com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
 			newIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
 			UnityAdsProperties.BASE_ACTIVITY.startActivity(newIntent);
@@ -89,15 +102,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 		return false;
 	}
-		
-	public boolean hasCampaigns () {
-		if (webdata != null && canShowAds()) {
-			return webdata.getViewableVideoPlanCampaigns().size() > 0;
-		}
-		
-		return false;
+	
+	public boolean canShowAds () {
+		return _mainView != null && _mainView.webview != null && _mainView.webview.isWebAppLoaded() && _webAppLoaded && webdata != null && webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
 	
+	public boolean canShow () {
+		return !_showingAds && _mainView != null && _mainView.webview != null && _mainView.webview.isWebAppLoaded() && _webAppLoaded && webdata != null && webdata.getVideoPlanCampaigns().size() > 0;
+	}
+
 	public void stopAll () {
 		UnityAdsUtils.Log("stopAll()", this);
 		UnityAdsDownloader.stopAllDownloads();
@@ -195,7 +208,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	@Override
 	public void onCloseAdsView(JSONObject data) {
-		closeAds();
+		hide();
 	}
 	
 	@Override
@@ -280,10 +293,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
 			cachemanager.updateCache(webdata.getVideoPlanCampaigns());				
 		}
-	}
-	
-	private boolean canShowAds () {
-		return _mainView != null && _mainView.webview != null && _mainView.webview.isWebAppLoaded() && _webAppLoaded && webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
 	
 	private void sendAdsReadyEvent () {

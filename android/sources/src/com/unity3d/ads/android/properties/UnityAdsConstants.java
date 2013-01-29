@@ -39,7 +39,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_API_INITCOMPLETE = "initComplete";
 	public static final String UNITY_ADS_WEBVIEW_API_CLOSE = "close";
 	public static final String UNITY_ADS_WEBVIEW_API_OPEN = "open";
-	public static final String UNITY_ADS_WEBVIEW_API_APPSTORE = "appStore";
+	public static final String UNITY_ADS_WEBVIEW_API_PLAYSTORE = "playStore";
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_VIDEOSTARTEDPLAYING = "video_started_playing";	
 		
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY = "campaignId";	
