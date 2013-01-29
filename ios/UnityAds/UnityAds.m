@@ -116,7 +116,6 @@ static UnityAds *sharedUnityAdsInstance = nil;
     [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
     
     state = kUnityAdsViewStateVideoPlayer;
-    // FIX: Select campaign or return NO
     [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
     
     UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];

@@ -141,6 +141,10 @@
         self.openHandler = ^(void) {
           UALOG_DEBUG(@"Running openhandler after opening view");
           [self.delegate mainControllerDidOpen];
+          
+          if (state == kUnityAdsViewStateVideoPlayer) {
+            [[UnityAdsMainViewController sharedInstance] showPlayerAndPlaySelectedVideo:YES];
+          }
         };
       }
     }
@@ -155,7 +159,7 @@
       [[[UnityAdsWebAppController sharedInstance] webView] setFrame:self.view.bounds];
     }
     
-    if (state == kUnityAdsViewStateVideoPlayer) {
+    if (state == kUnityAdsViewStateVideoPlayer && [UnityAdsDevice isSimulator]) {
       [self showPlayerAndPlaySelectedVideo:YES];
     }
   });
