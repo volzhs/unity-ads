@@ -43,7 +43,8 @@
 }
 
 - (void)openAds {
-	if ([[UnityAds sharedInstance] canShow]) {
+	NSLog(@"canShow: %i",[[UnityAds sharedInstance] canShow]);
+    if ([[UnityAds sharedInstance] canShow]) {
         /*
         NSLog(@"REWARD_ITEM_KEYS: %@", [[UnityAds sharedInstance] getRewardItemKeys]);
         NSLog(@"CURRENT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getCurrentRewardItemKey]);
@@ -54,7 +55,7 @@
         NSLog(@"DEFAULT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getDefaultRewardItemKey]); */
 
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
-        [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@true, kUnityAdsOptionOpenAnimatedKey:@false}];
+        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@true, kUnityAdsOptionOpenAnimatedKey:@true}]);
         //[[UnityAds sharedInstance] show];
         
         /*

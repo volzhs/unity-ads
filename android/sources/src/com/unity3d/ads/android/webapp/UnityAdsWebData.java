@@ -11,10 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsRewardItem;

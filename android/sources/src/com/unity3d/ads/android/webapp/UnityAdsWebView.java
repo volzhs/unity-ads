@@ -12,7 +12,6 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -111,6 +110,14 @@ public class UnityAdsWebView extends WebView {
 		_webBridge = webBridge;
 		setupUnityAdsView();
 		loadUrl(_url);
+		
+		setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+			    return true;
+			}
+		});
+		setLongClickable(false);
 	}
 	
 	private void setupUnityAdsView ()  {
@@ -141,7 +148,8 @@ public class UnityAdsWebView extends WebView {
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 		setInitialScale(0);
-		setLongClickable(false);
+		
+
 		
 		setBackgroundColor(Color.BLACK);
 		setBackgroundDrawable(null);
@@ -149,7 +157,7 @@ public class UnityAdsWebView extends WebView {
 		
 		setWebViewClient(new UnityAdsViewClient());
 		setWebChromeClient(new UnityAdsViewChromeClient());
-			
+
 		if (appCachePath != null) {
 			boolean appCache = true;
   

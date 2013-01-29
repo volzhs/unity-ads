@@ -33,7 +33,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED = "completed";
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_START = "start";
 	
-	
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_KEY = "action";
 	public static final String UNITY_ADS_WEBVIEW_API_PLAYVIDEO = "playVideo";
 	public static final String UNITY_ADS_WEBVIEW_API_NAVIGATETO = "navigateTo";
@@ -46,6 +45,11 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY = "campaignId";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY = "rewatch";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY = "clickUrl";	
+
+	public static final String UNITY_ADS_NATIVEEVENT_HIDESPINNER = "hideSpinner";	
+	public static final String UNITY_ADS_NATIVEEVENT_SHOWSPINNER = "showSpinner";	
+	public static final String UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED = "videoCompleted";
+	public static final String UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY = "campaignId";
 
 	/* Campaign JSON Properties */
 	public static final String UNITY_ADS_CAMPAIGNS_KEY = "campaigns";
@@ -90,6 +94,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SDKVERSION_KEY = "sdkVersion";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY = "connectionType";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_TEST_KEY = "test";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY = "screenDensity";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY = "screenSize";
 	
 	/* Device types */
 	public static final String UNITY_ADS_DEVICEID_UNKNOWN = "unknown";
@@ -113,4 +119,9 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_FAILED_URL_RETRIES_KEY = "retries";
 	
 	public static final String UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME = "com.unity3d.ads.android.view.UnityAdsFullscreenActivity";
+	
+	public static final String UNITY_ADS_TEXTKEY_KEY = "textKey";
+	public static final String UNITY_ADS_TEXTKEY_BUFFERING = "buffering";
+	public static final String UNITY_ADS_TEXTKEY_LOADING = "loading";
+	public static final String UNITY_ADS_ITEMKEY_KEY = "itemKey";
 }
