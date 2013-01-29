@@ -9,20 +9,21 @@ import android.os.Bundle;
 public class UnityAdsFullscreenActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onCreate()", this);
         super.onCreate(savedInstanceState);
+    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onCreate()", this);
 		UnityAds.instance.changeActivity(this);
     }
     
     @Override
     public void onResume () {
-    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onResume()", this);
     	super.onResume();
+    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onResume()", this);
+		UnityAds.instance.changeActivity(this);
     }
     
     @Override
 	protected void onDestroy() {
-    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onDestroy()", this);
     	super.onDestroy();		
+    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onDestroy()", this);
 	}
 }

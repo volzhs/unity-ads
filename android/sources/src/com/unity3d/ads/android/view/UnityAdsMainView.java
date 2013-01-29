@@ -65,7 +65,10 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	public void openAds (String view, JSONObject data) {
 		if (UnityAdsProperties.CURRENT_ACTIVITY != null && UnityAdsProperties.CURRENT_ACTIVITY.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
 			webview.setWebViewCurrentView(view, data);
-						
+			
+			if (this.getParent() != null && (ViewGroup)this.getParent() != null)
+				((ViewGroup)this.getParent()).removeView(this);
+			
 			if (this.getParent() == null)
 				UnityAdsProperties.CURRENT_ACTIVITY.addContentView(this, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 			

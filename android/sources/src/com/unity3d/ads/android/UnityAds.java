@@ -16,6 +16,7 @@ import com.unity3d.ads.android.webapp.*;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 
 
@@ -34,6 +35,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _showingAds = false;
 	private boolean _adsReadySent = false;
 	private boolean _webAppLoaded = false;
+	private boolean _openRequestFromDeveloper = false;
 		
 	// Main View
 	private UnityAdsMainView _mainView = null;
@@ -74,7 +76,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 			
 			// Not the most pretty way to detect when the fullscreen activity is ready
 			if (activity.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
-				open();
+				String view = _mainView.webview.getWebViewCurrentView();
+				if (_openRequestFromDeveloper) {
+					view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
+					UnityAdsUtils.Log("changeActivity: This open request is from the developer, setting start view", this);
+				}
+				
+				open(view);
+				_openRequestFromDeveloper = false;
 			}
 			else {
 				UnityAdsProperties.BASE_ACTIVITY = activity;
@@ -96,7 +105,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 			Intent newIntent = new Intent(UnityAdsProperties.CURRENT_ACTIVITY, com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
 			newIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
 			UnityAdsProperties.BASE_ACTIVITY.startActivity(newIntent);
-			_showingAds = true;	
+			_showingAds = true;
+			_openRequestFromDeveloper = true;
 			return _showingAds;
 		}
 
@@ -235,6 +245,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
+	public void onOpenPlayStore (JSONObject data) {
+		try {
+		    UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.PandoraTV")));
+		} 
+		catch (android.content.ActivityNotFoundException anfe) {
+			UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.PandoraTV")));
+		}
+	}
+	
 
 	/* PRIVATE METHODS */
 	
@@ -261,11 +280,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeRunner);
 	}
 	
-	private void open () {
+	private void open (String view) {
 		Boolean dataOk = true;			
 		JSONObject data = new JSONObject();
-		
-		UnityAdsUtils.Log("dataOk: " + dataOk, this);
 		
 		try  {
 			data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN);
@@ -275,8 +292,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 			dataOk = false;
 		}
 
-		if (dataOk) {
-			_mainView.openAds(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
+		UnityAdsUtils.Log("open() dataOk: " + dataOk, this);
+		
+		if (dataOk && view != null) {
+			UnityAdsUtils.Log("open() opening with view:" + view + " and data:" + data.toString(), this);
+			_mainView.openAds(view, data);
 			if (_adsListener != null)
 				_adsListener.onShow();
 		}
@@ -325,8 +345,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 				Boolean dataOk = true;			
 				JSONObject data = new JSONObject();
 				
-				UnityAdsUtils.Log("dataOk: " + dataOk, this);
-				
 				try  {
 					data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_CLOSE);
 				}
@@ -334,6 +352,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 					dataOk = false;
 				}
 
+				UnityAdsUtils.Log("dataOk: " + dataOk, this);
+				
 				if (dataOk) {
 					_mainView.closeAds(data);
 					UnityAdsProperties.CURRENT_ACTIVITY.finish();

@@ -26,6 +26,7 @@ public class UnityAdsWebView extends WebView {
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
 	private UnityAdsWebBridge _webBridge = null;
+	private String _currentWebView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
 	
 	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		super(activity);
@@ -42,6 +43,10 @@ public class UnityAdsWebView extends WebView {
 		return _webAppLoaded;
 	}
 	
+	public String getWebViewCurrentView () {
+		return _currentWebView;
+	}
+	
 	public void setWebViewCurrentView (String view) {
 		setWebViewCurrentView(view, null);
 	}
@@ -54,6 +59,7 @@ public class UnityAdsWebView extends WebView {
 				dataString = data.toString();
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
+			_currentWebView = view;
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
 			UnityAdsUtils.Log("Send change view to WebApp: " + javascriptString, this);
 		}
