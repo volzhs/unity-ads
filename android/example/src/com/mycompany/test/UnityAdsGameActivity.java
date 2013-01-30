@@ -1,6 +1,7 @@
 package com.mycompany.test;
 
 import com.unity3d.ads.android.UnityAds;
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.IUnityAdsListener;
 
 import android.app.Activity;
@@ -22,6 +23,7 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener 
         ((ImageView)findViewById(R.id.unlock)).setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
+				UnityAdsUtils.Log("Opened with key: " + UnityAds.instance.getCurrentRewardItemKey(), this);
 				UnityAds.instance.show();
 			}
 		});

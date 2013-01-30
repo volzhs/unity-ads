@@ -29,6 +29,8 @@ public class UnityAdsWebData {
 	private UnityAdsUrlLoader _currentLoader = null;
 	private UnityAdsRewardItem _defaultRewardItem = null;
 	private ArrayList<UnityAdsRewardItem> _rewardItems = null;
+	private UnityAdsRewardItem _currentRewardItem = null;
+	
 	private boolean _isLoading = false;
 	
 	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
@@ -202,8 +204,41 @@ public class UnityAdsWebData {
 		return null;
 	}
 	
+	
+	// Multiple reward items
+	
+	public ArrayList<UnityAdsRewardItem> getRewardItems () {
+		return _rewardItems;
+	}
+	
+	public UnityAdsRewardItem getDefaultRewardItem () {
+		return _defaultRewardItem;
+	}
+	
 	public String getCurrentRewardItemKey () {
-		return _defaultRewardItem.getKey();
+		if (_currentRewardItem != null)
+			return _currentRewardItem.getKey();
+		
+		return null;
+	}
+	
+	public UnityAdsRewardItem getRewardItemByKey (String rewardItemKey) {
+		if (_rewardItems != null) {
+			for (UnityAdsRewardItem rewardItem : _rewardItems) {
+				if (rewardItem.getKey().equals(rewardItemKey))
+					return rewardItem;
+			}
+		}
+		
+		if (_defaultRewardItem != null && _defaultRewardItem.getKey().equals(rewardItemKey))
+			return _defaultRewardItem;
+		
+		return null;
+	}
+	
+	public void setCurrentRewardItem (UnityAdsRewardItem rewardItem) {
+		if (_currentRewardItem != null && !_currentRewardItem.equals(_currentRewardItem))
+			_currentRewardItem = rewardItem;
 	}
 	
 	
@@ -372,6 +407,8 @@ public class UnityAdsWebData {
 						campaignDataFailed();
 						return;
 					}
+					
+					_currentRewardItem = _defaultRewardItem;
 				}
 				
 				// Parse possible multiple reward items

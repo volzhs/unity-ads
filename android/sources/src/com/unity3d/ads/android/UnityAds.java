@@ -1,11 +1,15 @@
 package com.unity3d.ads.android;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.json.JSONObject;
 
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
+import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsMainView;
@@ -24,6 +28,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 										IUnityAdsWebDataListener, 
 										IUnityAdsWebBrigeListener,
 										IUnityAdsMainViewListener {
+	
+	// Reward item HashMap keys
+	public static final String UNITY_ADS_REWARDITEM_PICTURE_KEY = "picture";
+	public static final String UNITY_ADS_REWARDITEM_NAME_KEY = "name";	
 	
 	// Unity Ads components
 	public static UnityAds instance = null;
@@ -57,14 +65,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	public static boolean isSupported () {
-		if (Build.VERSION.SDK_INT < 7) {
+		if (Build.VERSION.SDK_INT < 9) {
 			return false;
 		}
 		
 		return false;
 	}
 	
-	public void setTestMode (boolean testModeEnabled) {
+	public static void setTestMode (boolean testModeEnabled) {
 		UnityAdsProperties.TESTMODE_ENABLED = testModeEnabled;
 	}
 	
@@ -125,6 +133,70 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsUtils.Log("stopAll()", this);
 		UnityAdsDownloader.stopAllDownloads();
 		webdata.stopAllRequests();
+	}
+	
+	
+	// Public multiple reward item support
+	
+	public boolean hasMultipleRewardItems () {
+		if (webdata.getRewardItems() != null && webdata.getRewardItems().size() > 0)
+			return true;
+		
+		return false;
+	}
+	
+	public ArrayList<String> getRewardItemKeys () {
+		if (webdata.getRewardItems() != null && webdata.getRewardItems().size() > 0) {
+			ArrayList<UnityAdsRewardItem> rewardItems = webdata.getRewardItems();
+			ArrayList<String> rewardItemKeys = new ArrayList<String>();
+			for (UnityAdsRewardItem rewardItem : rewardItems) {
+				rewardItemKeys.add(rewardItem.getKey());
+			}
+			
+			return rewardItemKeys;
+		}
+		
+		return null;
+	}
+	
+	public String getDefaultRewardItemKey () {
+		if (webdata != null && webdata.getDefaultRewardItem() != null)
+			return webdata.getDefaultRewardItem().getKey();
+		
+		return null;
+	}
+	
+	public String getCurrentRewardItemKey () {
+		if (webdata != null && webdata.getCurrentRewardItemKey() != null)
+			return webdata.getCurrentRewardItemKey();
+			
+		return null;
+	}
+	
+	public boolean setRewardItemKey (String rewardItemKey) {
+		UnityAdsRewardItem rewardItem = webdata.getRewardItemByKey(rewardItemKey);
+		
+		if (rewardItem != null) {
+			webdata.setCurrentRewardItem(rewardItem);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void setDefaultRewardItemAsRewardItem () {
+		if (webdata != null && webdata.getDefaultRewardItem() != null) {
+			webdata.setCurrentRewardItem(webdata.getDefaultRewardItem());
+		}
+	}
+	
+	public Map<String, String> getRewardItemDetailsWithKey (String rewardItemKey) {
+		UnityAdsRewardItem rewardItem = webdata.getRewardItemByKey(rewardItemKey);
+		if (rewardItem != null) {
+			return rewardItem.getDetails();
+		}
+		
+		return null;
 	}
 	
 	

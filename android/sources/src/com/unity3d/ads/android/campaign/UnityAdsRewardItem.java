@@ -1,7 +1,11 @@
 package com.unity3d.ads.android.campaign;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
@@ -35,6 +39,13 @@ public class UnityAdsRewardItem {
 	
 	public boolean hasValidData () {
 		return checkDataIntegrity();
+	}
+	
+	public Map<String, String> getDetails () {
+		Map<String, String> returnMap = new HashMap<String, String>();
+		returnMap.put(UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY, getName());
+		returnMap.put(UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY, getPictureUrl());
+		return null;
 	}
 	
 	/* INTERNAL METHODS */

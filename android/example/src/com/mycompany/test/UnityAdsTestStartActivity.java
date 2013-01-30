@@ -26,7 +26,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
         setContentView(R.layout.main);
         ((ImageView)findViewById(R.id.playbtn)).setAlpha(80);
 		Log.d(UnityAdsConstants.LOG_NAME, "Init Unity Ads");
-		ai = new UnityAds(this, "16", this);
+		UnityAds.setTestMode(true);
+		ai = new UnityAds(this, "11006", this);
     }
     
     @Override
