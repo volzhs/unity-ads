@@ -46,7 +46,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY = "rewatch";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY = "clickUrl";	
 
-	public static final String UNITY_ADS_NATIVEEVENT_HIDESPINNER = "hideSpinner";	
+	public static final String UNITY_ADS_NATIVEEVENT_SHOWERROR = "showError";
+	public static final String UNITY_ADS_NATIVEEVENT_HIDESPINNER = "hideSpinner";
 	public static final String UNITY_ADS_NATIVEEVENT_SHOWSPINNER = "showSpinner";	
 	public static final String UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED = "videoCompleted";
 	public static final String UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY = "campaignId";
@@ -123,5 +124,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_TEXTKEY_KEY = "textKey";
 	public static final String UNITY_ADS_TEXTKEY_BUFFERING = "buffering";
 	public static final String UNITY_ADS_TEXTKEY_LOADING = "loading";
+	public static final String UNITY_ADS_TEXTKEY_VIDEOPLAYBACKERROR = "videoPlaybackError";
 	public static final String UNITY_ADS_ITEMKEY_KEY = "itemKey";
 }

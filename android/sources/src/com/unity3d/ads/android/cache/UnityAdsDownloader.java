@@ -147,6 +147,7 @@ public class UnityAdsDownloader {
 		}
 		catch (Exception e) {
 			UnityAdsUtils.Log("Problems creating FOS: " + fileName, UnityAdsDownloader.class);
+			return null;
 		}
 		
 		return fos;
@@ -212,6 +213,9 @@ public class UnityAdsDownloader {
 				
 				_targetFile = new File(sUrl[0]);
 				_output = getOutputStreamFor(_campaign.getVideoFilename());
+				
+				if (_output == null)
+					onCancelled(this);
 				
 				byte data[] = new byte[1024];
 				long total = 0;
@@ -285,7 +289,7 @@ public class UnityAdsDownloader {
 	    private void cancelDownload () {
 	    	UnityAdsUtils.Log("Download cancelled for: " + _downloadUrl.toString(), this);
 			closeAndFlushConnection();
-			UnityAdsUtils.removeFile(_targetFile.toString());
+			UnityAdsUtils.removeFile(_campaign.getVideoFilename());
         	removeDownload(_campaign);
         	removeFromCacheDownloads(this);
         	sendToListeners(UnityAdsDownloadEventType.DownloadCancelled, _downloadUrl.toString());
