@@ -66,4 +66,8 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener 
     @Override
 	public void onFetchCompleted () {
 	}
+    
+    @Override
+    public void onFetchFailed () {
+    }
 }

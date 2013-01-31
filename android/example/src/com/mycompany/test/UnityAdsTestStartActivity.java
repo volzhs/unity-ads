@@ -99,4 +99,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 			}
 		});  
 	}
+    
+    @Override
+    public void onFetchFailed () {
+    }
 }

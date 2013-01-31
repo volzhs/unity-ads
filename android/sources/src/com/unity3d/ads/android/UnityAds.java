@@ -249,6 +249,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	@Override
 	public void onWebDataFailed () {
+		if (_adsListener != null)
+			_adsListener.onFetchFailed();
 	}
 	
 	

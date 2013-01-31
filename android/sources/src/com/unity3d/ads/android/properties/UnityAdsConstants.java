@@ -10,6 +10,8 @@ public class UnityAdsConstants {
 	/* Unity Ads */
 	public static final Boolean UNITY_ADS_DEBUG_MODE = true; 
 	public static final String UNITY_ADS_VERSION = "1.0.3";
+	public static final String UNITY_ADS_REQUEST_METHOD_POST = "POST";
+	public static final String UNITY_ADS_REQUEST_METHOD_GET = "GET";
 	
 	/* JSON Data Root */	
 	public static final String UNITY_ADS_JSON_DATA_ROOTKEY = "data";
