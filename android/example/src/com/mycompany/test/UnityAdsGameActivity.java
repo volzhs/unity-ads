@@ -1,5 +1,8 @@
 package com.mycompany.test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.IUnityAdsListener;
@@ -24,7 +27,15 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener 
 			@Override
 			public void onClick(View v) {
 				UnityAdsUtils.Log("Opened with key: " + UnityAds.instance.getCurrentRewardItemKey(), this);
-				UnityAds.instance.show();
+				
+				// Open with options test
+				Map<String, Boolean> optionsMap = new HashMap<String, Boolean>();
+				optionsMap.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, false);
+				optionsMap.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, false);
+				UnityAds.instance.show(optionsMap);
+				
+				// Open without options (defaults)
+				//UnityAds.instance.show();
 			}
 		});
         

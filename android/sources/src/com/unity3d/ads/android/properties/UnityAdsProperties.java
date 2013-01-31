@@ -23,6 +23,8 @@ public class UnityAdsProperties {
 	public static Activity BASE_ACTIVITY = null;
 	public static Activity CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
+	public static Boolean UNITY_ADS_DEBUG_MODE = false; 
+
 	public static final int MAX_NUMBER_OF_ANALYTICS_RETRIES = 5;
 	
 	private static String _campaignQueryString = null; 
@@ -62,7 +64,7 @@ public class UnityAdsProperties {
 			if (feature.name != null)
 				UnityAdsUtils.Log("Feature:" + feature.name, UnityAdsProperties.class);
 			else
-				UnityAdsUtils.Log("Feature:" + feature.getGlEsVersion(), UnityAdsProperties.class);
+				UnityAdsUtils.Log("Feature: OpenGLES " + feature.getGlEsVersion(), UnityAdsProperties.class);
 		}
 		*/
 	}

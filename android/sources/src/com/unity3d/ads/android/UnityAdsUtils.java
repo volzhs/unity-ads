@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 import android.os.Environment;
 import android.util.Log;
@@ -17,11 +18,15 @@ import android.util.Log;
 public class UnityAdsUtils {
 
 	public static void Log (String message, Class cls) {
-		Log.d(UnityAdsConstants.LOG_NAME, cls.getName() + " :: " +  message);
+		if (UnityAdsProperties.UNITY_ADS_DEBUG_MODE) {
+			Log.d(UnityAdsConstants.LOG_NAME, cls.getName() + " :: " +  message);
+		}
 	}
 	
 	public static void Log (String message, Object obj) {
-		Log.d(UnityAdsConstants.LOG_NAME, obj.getClass().getName() + " :: " +  message);
+		if (UnityAdsProperties.UNITY_ADS_DEBUG_MODE) {
+			Log.d(UnityAdsConstants.LOG_NAME, obj.getClass().getName() + " :: " +  message);
+		}
 	}
 	
 	public static String Md5 (String input) {
