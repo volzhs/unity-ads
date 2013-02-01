@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.sax.StartElementListener;
 
 
 public class UnityAds implements IUnityAdsCacheListener, 
@@ -38,6 +37,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// Unity Ads developer options keys
 	public static final String UNITY_ADS_OPTION_NOOFFERSCREEN_KEY = "noOfferScreen";
 	public static final String UNITY_ADS_OPTION_OPENANIMATED_KEY = "openAnimated";
+	public static final String UNITY_ADS_OPTION_GAMERSID_KEY = "sid";
+	
 	
 	
 	// Unity Ads components
@@ -51,7 +52,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _adsReadySent = false;
 	private boolean _webAppLoaded = false;
 	private boolean _openRequestFromDeveloper = false;
-	private Map<String, Boolean> _developerOptions = null;
+	private Map<String, Object> _developerOptions = null;
 		
 	// Main View
 	private UnityAdsMainView _mainView = null;
@@ -130,14 +131,19 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 	
-	public boolean show (Map<String, Boolean> options) {
+	public boolean show (Map<String, Object> options) {
 		if (canShow()) {
 			_developerOptions = options;
 			
-			if (_developerOptions != null && _developerOptions.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY) && _developerOptions.get(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY).equals(true)) {
-				if (webdata.getViewableVideoPlanCampaigns().size() > 0) {
-					UnityAdsCampaign selectedCampaign = webdata.getViewableVideoPlanCampaigns().get(0);
-					UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
+			if (_developerOptions != null) {
+				if (_developerOptions.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY) && _developerOptions.get(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY).equals(true)) {
+					if (webdata.getViewableVideoPlanCampaigns().size() > 0) {
+						UnityAdsCampaign selectedCampaign = webdata.getViewableVideoPlanCampaigns().get(0);
+						UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
+					}
+				}
+				if (_developerOptions.containsKey(UNITY_ADS_OPTION_GAMERSID_KEY) && _developerOptions.get(UNITY_ADS_OPTION_GAMERSID_KEY) != null) {
+					UnityAdsProperties.GAMER_SID = "" + _developerOptions.get(UNITY_ADS_OPTION_GAMERSID_KEY);
 				}
 			}
 			
@@ -355,11 +361,19 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public void onOpenPlayStore (JSONObject data) {
-		try {
-		    UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.PandoraTV")));
-		} 
-		catch (android.content.ActivityNotFoundException anfe) {
-			UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.PandoraTV")));
+	    UnityAdsUtils.Log("onOpenPlayStore", this);
+		if (UnityAdsProperties.SELECTED_CAMPAIGN != null && UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId() != null) {
+			try {
+			    UnityAdsUtils.Log("Opening playstore activity with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
+				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId())));
+			} 
+			catch (android.content.ActivityNotFoundException anfe) {
+			    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
+				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId())));
+			}
+		}
+		else {
+		    UnityAdsUtils.Log("Selected campaign (" + UnityAdsProperties.SELECTED_CAMPAIGN + ") or couldn't get storeId", this);
 		}
 	}
 	

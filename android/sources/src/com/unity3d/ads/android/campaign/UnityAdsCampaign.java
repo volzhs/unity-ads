@@ -37,6 +37,7 @@ public class UnityAdsCampaign {
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_NAME_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_ID_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TAGLINE_KEY};
+	
 	private UnityAdsCampaignStatus _campaignStatus = UnityAdsCampaignStatus.READY;
 	
 	public UnityAdsCampaign () {		
@@ -202,6 +203,27 @@ public class UnityAdsCampaign {
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("getTagLine: This should not happen!", this);
+			}
+		}
+		
+		return null;
+	}
+	
+	public String getStoreId () {
+		if (_campaignJson.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_STOREID_KEY)) {
+			try {
+				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_STOREID_KEY);
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("getStoreId: Was supposed to use UnityAdsConstants.UNITY_ADS_CAMPAIGN_STOREID_KEY but " + e.getMessage() + " occured", this);
+			}
+		}
+		if (_campaignJson.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ITUNESID_KEY)) {
+			try {
+				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ITUNESID_KEY);
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("getStoreId: Was supposed to use UnityAdsConstants.UNITY_ADS_CAMPAIGN_ITUNESID_KEY but " + e.getMessage() + " occured", this);
 			}
 		}
 		

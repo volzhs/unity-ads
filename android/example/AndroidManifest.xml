@@ -34,7 +34,8 @@
   		 <activity 
   		    android:name="com.unity3d.ads.android.view.UnityAdsFullscreenActivity" 
           	android:configChanges="keyboardHidden|orientation"
-          	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>	
+          	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+          	android:hardwareAccelerated="true" />	
     </application>
 
 </manifest>

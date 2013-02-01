@@ -29,9 +29,10 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener 
 				UnityAdsUtils.Log("Opening with key: " + UnityAds.instance.getCurrentRewardItemKey(), this);
 				
 				// Open with options test
-				Map<String, Boolean> optionsMap = new HashMap<String, Boolean>();
+				Map<String, Object> optionsMap = new HashMap<String, Object>();
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, false);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, false);
+				optionsMap.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, "gom");
 				UnityAds.instance.show(optionsMap);
 				
 				// Open without options (defaults)

@@ -92,6 +92,8 @@ public class UnityAdsWebView extends WebView {
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY, UnityAdsDevice.getMacAddress());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY, UnityAdsConstants.UNITY_ADS_VERSION);
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
 				
 				// Tracking data
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY, UnityAdsDevice.getSoftwareVersion());
@@ -144,7 +146,7 @@ public class UnityAdsWebView extends WebView {
 		
 		getSettings().setSupportZoom(false);
 		getSettings().setBuiltInZoomControls(false);
-		//getSettings().setLightTouchEnabled(false);
+		getSettings().setLightTouchEnabled(false);
 		getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
 		getSettings().setSupportMultipleWindows(false);
 		getSettings().setPluginsEnabled(false);

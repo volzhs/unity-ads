@@ -154,6 +154,9 @@ public class UnityAdsWebData {
 			
 			String queryParams = String.format("%s=%s", UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
 			
+			if (UnityAdsProperties.GAMER_SID != null)
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMERSID_KEY, UnityAdsProperties.GAMER_SID);
+			
 			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, queryParams, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_POST, UnityAdsRequestType.VideoViewed, 0);
 			addLoader(loader);
 			startNextLoader();
@@ -574,7 +577,7 @@ public class UnityAdsWebData {
 				}
 				
 				try {
-					UnityAdsUtils.Log("Connection response: " + _connection.getResponseCode() + ", " + _connection.getResponseMessage() + ", " + _connection.getURL().toString(), this);
+					UnityAdsUtils.Log("Connection response: " + _connection.getResponseCode() + ", " + _connection.getResponseMessage() + ", " + _connection.getURL().toString() + " : " + _queryParams, this);
 					_input = _connection.getInputStream();
 				}
 				catch (Exception e) {

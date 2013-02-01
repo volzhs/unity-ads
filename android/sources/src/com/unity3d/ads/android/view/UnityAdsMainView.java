@@ -89,6 +89,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		
 		destroyVideoPlayerView();
 		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
+		UnityAdsProperties.SELECTED_CAMPAIGN = null;
 	}
 	
 	public void setViewState (UnityAdsMainViewState state) {
@@ -217,7 +218,6 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		
 		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 		UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
-		UnityAdsProperties.SELECTED_CAMPAIGN = null;
 		
 		sendActionToListener(UnityAdsMainViewAction.VideoEnd);
 	}
