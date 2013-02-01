@@ -138,57 +138,45 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 	
 	dispatch_async(self.analyticsQueue, ^{
 		NSString *positionString = nil;
-		NSString *trackingString = nil;
     
-		if (videoPosition == kVideoAnalyticsPositionStart) {
+		if (videoPosition == kVideoAnalyticsPositionStart)
 			positionString = kUnityAdsAnalyticsEventTypeVideoStart;
-			trackingString = kUnityAdsTrackingEventTypeVideoStart;
-		}
 		else if (videoPosition == kVideoAnalyticsPositionFirstQuartile)
 			positionString = kUnityAdsAnalyticsEventTypeVideoFirstQuartile;
 		else if (videoPosition == kVideoAnalyticsPositionMidPoint)
 			positionString = kUnityAdsAnalyticsEventTypeVideoMidPoint;
 		else if (videoPosition == kVideoAnalyticsPositionThirdQuartile)
 			positionString = kUnityAdsAnalyticsEventTypeVideoThirdQuartile;
-		else if (videoPosition == kVideoAnalyticsPositionEnd) {
+		else if (videoPosition == kVideoAnalyticsPositionEnd)
 			positionString = kUnityAdsAnalyticsEventTypeVideoEnd;
-			trackingString = kUnityAdsTrackingEventTypeVideoEnd;
-		}
 		
-    NSString *query = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@", kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamEventTypeKey, positionString, kUnityAdsAnalyticsQueryParamTrackingIdKey, [[UnityAdsProperties sharedInstance] gamerId], kUnityAdsAnalyticsQueryParamProviderIdKey, campaign.id, kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
-    
-    [self performSelector:@selector(sendAnalyticsRequestWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
-     
-     if (trackingString != nil) {
-       NSString *trackingQuery = [NSString stringWithFormat:@"%@/%@/%@?%@=%@&%@=%@", [[UnityAdsProperties sharedInstance] gamerId], trackingString, campaign.id, kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId],kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
-       [self performSelector:@selector(sendTrackingCallWithQueryString:) onThread:self.backgroundThread withObject:trackingQuery waitUntilDone:NO];
+    if (positionString != nil) {
+      NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?%@=%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
+      
+      if ([[UnityAdsProperties sharedInstance] gamerSID] != nil) {
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsProperties sharedInstance] gamerSID]];
+      }
+      
+      [self performSelector:@selector(sendTrackingCallWithQueryString:) onThread:self.backgroundThread withObject:trackingQuery waitUntilDone:NO];
      }
 	});
-}
-
-- (void)sendAnalyticsRequestWithQueryString:(NSString *)queryString {
-	UAAssert(![NSThread isMainThread]);
-	
-	if (queryString == nil || [queryString length] == 0) {
-		UALOG_DEBUG(@"Invalid input.");
-		return;
-	}
-
-  UALOG_DEBUG(@"View report: %@?%@", [[UnityAdsProperties sharedInstance] analyticsBaseUrl], queryString);
-	[self _queueWithURLString:[[UnityAdsProperties sharedInstance] analyticsBaseUrl] queryString:queryString httpMethod:@"POST" retries:[NSNumber numberWithInt:0]];
 }
 
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString {
 	UAAssert(![NSThread isMainThread]);
 	
+  NSArray *queryStringComponents = [queryString componentsSeparatedByString:@"?"];
+  NSString *trackingPath = [queryStringComponents objectAtIndex:0];
+  queryString = [queryStringComponents objectAtIndex:1];
+  
 	if (queryString == nil || [queryString length] == 0) {
 		UALOG_DEBUG(@"Invalid input.");
 		return;
 	}
   
-  UALOG_DEBUG(@"Tracking report: %@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsAnalyticsTrackingPath, queryString);
+  UALOG_DEBUG(@"Tracking report: %@%@%@ : %@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsAnalyticsTrackingPath, trackingPath, queryString);
   
-  [self _queueWithURLString:[NSString stringWithFormat:@"%@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsAnalyticsTrackingPath,queryString] queryString:nil httpMethod:@"GET" retries:[NSNumber numberWithInt:0]];
+  [self _queueWithURLString:[NSString stringWithFormat:@"%@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsAnalyticsTrackingPath,trackingPath] queryString:queryString httpMethod:@"POST" retries:[NSNumber numberWithInt:0]];
 }
 
 

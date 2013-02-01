@@ -119,6 +119,7 @@ NSString * const kUnityAdsAnalyticsQueryParamEventTypeKey = @"type";
 NSString * const kUnityAdsAnalyticsQueryParamTrackingIdKey = @"trackingId";
 NSString * const kUnityAdsAnalyticsQueryParamProviderIdKey = @"providerId";
 NSString * const kUnityAdsAnalyticsQueryParamRewardItemKey = @"rewardItem";
+NSString * const kUnityAdsAnalyticsQueryParamGamerSIDKey = @"sid";
 
 NSString * const kUnityAdsAnalyticsEventTypeVideoStart = @"video_start";
 NSString * const kUnityAdsAnalyticsEventTypeVideoFirstQuartile = @"first_quartile";
