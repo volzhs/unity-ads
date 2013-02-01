@@ -27,6 +27,7 @@ extern NSString * const kUnityAdsRewardItemNameKey;
 
 extern NSString * const kUnityAdsOptionNoOfferscreenKey;
 extern NSString * const kUnityAdsOptionOpenAnimatedKey;
+extern NSString * const kUnityAdsOptionGamerSIDKey;
 
 @class UnityAds;
 @class SKStoreProductViewController;
@@ -54,6 +55,7 @@ extern NSString * const kUnityAdsOptionOpenAnimatedKey;
 
 + (UnityAds *)sharedInstance;
 + (BOOL)isSupported;
++ (NSString *)getSDKVersion;
 - (void)setTestMode:(BOOL)testModeEnabled;
 - (BOOL)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController;
 - (BOOL)startWithGameId:(NSString *)gameId;

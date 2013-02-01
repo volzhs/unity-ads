@@ -16,6 +16,7 @@ NSString * const kUnityAdsRewardItemPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemNameKey = @"name";
 NSString * const kUnityAdsOptionNoOfferscreenKey = @"noOfferScreen";
 NSString * const kUnityAdsOptionOpenAnimatedKey = @"openAnimated";
+NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
 
 @interface UnityAds () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate, UnityAdsMainViewControllerDelegate>
 @property (nonatomic, strong) NSThread *backgroundThread;
@@ -33,6 +34,10 @@ NSString * const kUnityAdsOptionOpenAnimatedKey = @"openAnimated";
   }
   
   return YES;
+}
+
++ (NSString *)getSDKVersion {
+  return [[UnityAdsProperties sharedInstance] adsVersion];
 }
 
 static UnityAds *sharedUnityAdsInstance = nil;
@@ -111,22 +116,28 @@ static UnityAds *sharedUnityAdsInstance = nil;
   BOOL animated = YES;
   UnityAdsViewState state = kUnityAdsViewStateWebView;
   
-  if ([options objectForKey:kUnityAdsOptionNoOfferscreenKey] != nil && [[options objectForKey:kUnityAdsOptionNoOfferscreenKey] boolValue] == YES) {
-    if (![self canShow]) return NO;
-    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-    
-    state = kUnityAdsViewStateVideoPlayer;
-    [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
-    
-    UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];
-    
-    if (campaign != nil) {
-      [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
+  if (options != nil) {
+    if ([options objectForKey:kUnityAdsOptionNoOfferscreenKey] != nil && [[options objectForKey:kUnityAdsOptionNoOfferscreenKey] boolValue] == YES) {
+      if (![self canShow]) return NO;
+      [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
+      
+      state = kUnityAdsViewStateVideoPlayer;
+      [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
+      
+      UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];
+      
+      if (campaign != nil) {
+        [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
+      }
     }
-  }
-  
-  if ([options objectForKey:kUnityAdsOptionOpenAnimatedKey] != nil && [[options objectForKey:kUnityAdsOptionOpenAnimatedKey] boolValue] == NO) {
-    animated = NO;
+    
+    if ([options objectForKey:kUnityAdsOptionOpenAnimatedKey] != nil && [[options objectForKey:kUnityAdsOptionOpenAnimatedKey] boolValue] == NO) {
+      animated = NO;
+    }
+    
+    if ([options objectForKey:kUnityAdsOptionGamerSIDKey] != nil) {
+      [[UnityAdsProperties sharedInstance] setGamerSID:[options objectForKey:kUnityAdsOptionGamerSIDKey]];
+    }
   }
   
   [[UnityAdsMainViewController sharedInstance] openAds:animated inState:state];

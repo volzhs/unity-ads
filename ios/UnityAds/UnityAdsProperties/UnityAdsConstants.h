@@ -124,6 +124,7 @@ extern NSString * const kUnityAdsAnalyticsQueryParamEventTypeKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamTrackingIdKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamProviderIdKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamRewardItemKey;
+extern NSString * const kUnityAdsAnalyticsQueryParamGamerSIDKey;
 
 extern NSString * const kUnityAdsAnalyticsEventTypeVideoStart;
 extern NSString * const kUnityAdsAnalyticsEventTypeVideoFirstQuartile;

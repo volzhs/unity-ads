@@ -55,7 +55,9 @@
         NSLog(@"DEFAULT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getDefaultRewardItemKey]); */
 
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
-        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@true, kUnityAdsOptionOpenAnimatedKey:@true}]);
+        
+        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@false, kUnityAdsOptionOpenAnimatedKey:@true, kUnityAdsOptionGamerSIDKey:@"gom"}]);
+        
         //[[UnityAds sharedInstance] show];
         
         /*

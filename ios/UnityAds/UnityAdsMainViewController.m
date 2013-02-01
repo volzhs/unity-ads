@@ -238,7 +238,9 @@
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
     [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
     [self.videoController forceStopVideoPlayer];
-    [self closeAds:NO withAnimations:NO];
+    
+    if (self.isOpen)
+      [self closeAds:NO withAnimations:NO];
   }
 }
 
