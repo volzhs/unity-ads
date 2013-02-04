@@ -20,6 +20,8 @@ import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewState;
 import com.unity3d.ads.android.webapp.*;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -51,6 +53,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _webAppLoaded = false;
 	private boolean _openRequestFromDeveloper = false;
 	private Map<String, Object> _developerOptions = null;
+	private AlertDialog _alertDialog = null;
 		
 	// Main View
 	private UnityAdsMainView _mainView = null;
@@ -285,6 +288,46 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsWebDataListener
 	@Override
 	public void onWebDataCompleted () {
+		JSONObject jsonData = null;
+		boolean dataFetchFailed = false;
+		String nativeSdkVersion = null;
+		
+		if (webdata.getData() != null && webdata.getData().has(UnityAdsConstants.UNITY_ADS_JSON_DATA_ROOTKEY)) {
+			try {
+				jsonData = webdata.getData().getJSONObject(UnityAdsConstants.UNITY_ADS_JSON_DATA_ROOTKEY);
+			}
+			catch (Exception e) {
+				dataFetchFailed = true;
+			}
+			
+			if (!dataFetchFailed) {
+				if (jsonData.has(UnityAdsConstants.UNITY_ADS_NATIVESDKVERSION_KEY)) {
+					try {
+						nativeSdkVersion = jsonData.getString(UnityAdsConstants.UNITY_ADS_NATIVESDKVERSION_KEY);
+					}
+					catch (Exception e) {
+						dataFetchFailed = true;
+					}
+				}
+			}
+		}
+		
+		if (nativeSdkVersion != null && !dataFetchFailed && UnityAdsUtils.isDebuggable(UnityAdsProperties.CURRENT_ACTIVITY)) {
+			if (!nativeSdkVersion.equals(UnityAdsConstants.UNITY_ADS_VERSION)) {
+				_alertDialog = new AlertDialog.Builder(UnityAdsProperties.CURRENT_ACTIVITY).create();
+				_alertDialog.setTitle("Unity Ads");
+				_alertDialog.setMessage("You are not running the latest version of Unity Ads android. Please update your version (this dialog won't appear in release builds).");
+				_alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						_alertDialog.dismiss();
+					}
+				});
+				
+				_alertDialog.show();
+			}
+		}
+		
 		setup();
 	}
 	
@@ -384,7 +427,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.BASE_ACTIVITY = activity;
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
 		
-		UnityAdsUtils.Log(Build.FINGERPRINT, this);
+		//UnityAdsUtils.Log("Is debuggable=" + UnityAdsUtils.isDebuggable(activity), this);
 		
 		if (_initialized) return; 
 		

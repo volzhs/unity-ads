@@ -80,6 +80,9 @@ public class UnityAdsConstants {
 	/* Gamer JSON Properties */
 	public static final String UNITY_ADS_GAMER_ID_KEY = "gamerId";
 
+	/* SDK Sanity check properties */	
+	public static final String UNITY_ADS_NATIVESDKVERSION_KEY = "nativeSdkVersion";
+	
 	/* Unity Ads Base JSON Properties */
 	public static final String UNITY_ADS_URL_KEY = "impactUrl";
 	public static final String UNITY_ADS_WEBVIEW_URL_KEY = "webViewUrl";	
