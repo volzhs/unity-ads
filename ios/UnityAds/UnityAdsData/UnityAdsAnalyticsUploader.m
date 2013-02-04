@@ -179,6 +179,17 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
   [self _queueWithURLString:[NSString stringWithFormat:@"%@%@%@", [[UnityAdsProperties sharedInstance] adsBaseUrl], kUnityAdsAnalyticsTrackingPath,trackingPath] queryString:queryString httpMethod:@"POST" retries:[NSNumber numberWithInt:0]];
 }
 
+- (void)sendAnalyticsRequestWithQueryString:(NSString *)queryString {
+	UAAssert(![NSThread isMainThread]);
+	
+	if (queryString == nil || [queryString length] == 0) {
+		UALOG_DEBUG(@"Invalid input.");
+		return;
+	}
+  
+  UALOG_DEBUG(@"View report: %@?%@", [[UnityAdsProperties sharedInstance] analyticsBaseUrl], queryString);
+	[self _queueWithURLString:[[UnityAdsProperties sharedInstance] analyticsBaseUrl] queryString:queryString httpMethod:@"POST" retries:[NSNumber numberWithInt:0]];
+}
 
 #pragma mark - Install tracking
 
