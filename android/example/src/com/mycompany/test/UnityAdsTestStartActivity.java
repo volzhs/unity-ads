@@ -83,7 +83,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     }
     
     @Override
-	public void onVideoCompleted () {    	
+	public void onVideoCompleted () {
     }
 	
 	// Unity Ads campaign events

@@ -38,9 +38,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static final String UNITY_ADS_OPTION_NOOFFERSCREEN_KEY = "noOfferScreen";
 	public static final String UNITY_ADS_OPTION_OPENANIMATED_KEY = "openAnimated";
 	public static final String UNITY_ADS_OPTION_GAMERSID_KEY = "sid";
-	
-	
-	
+
 	// Unity Ads components
 	public static UnityAds instance = null;
 	public static UnityAdsCacheManager cachemanager = null;
@@ -385,6 +383,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
 		UnityAdsProperties.BASE_ACTIVITY = activity;
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
+		
+		UnityAdsUtils.Log(Build.FINGERPRINT, this);
 		
 		if (_initialized) return; 
 		
