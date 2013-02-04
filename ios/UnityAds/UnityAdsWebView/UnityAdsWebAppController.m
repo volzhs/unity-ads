@@ -201,9 +201,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   NSDictionary *trackingData = @{kUnityAdsWebViewDataParamIosVersionKey:[UnityAdsDevice softwareVersion], kUnityAdsWebViewDataParamDeviceTypeKey:[UnityAdsDevice analyticsMachineName]};
   NSMutableDictionary *webAppValues = [NSMutableDictionary dictionaryWithDictionary:persistingData];
   
-  if ([UnityAdsDevice canUseTracking]) {
-    [webAppValues addEntriesFromDictionary:trackingData];
-  }
+  [webAppValues addEntriesFromDictionary:trackingData];
   
   [self setupWebApp:[[UIScreen mainScreen] bounds]];
   [self loadWebApp:webAppValues];
