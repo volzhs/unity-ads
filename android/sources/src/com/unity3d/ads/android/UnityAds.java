@@ -568,6 +568,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 									
 									if (_adsListener != null)
 										_adsListener.onHide();
+									
+									_developerOptions = null;
 								}
 							});
 						}
@@ -576,7 +578,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 			
 			// Reset developer options when Unity Ads closes
-			_developerOptions = null;
 		}
 	}
 	

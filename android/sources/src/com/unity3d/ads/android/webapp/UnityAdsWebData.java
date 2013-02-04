@@ -1,5 +1,6 @@
 package com.unity3d.ads.android.webapp;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -167,7 +169,10 @@ public class UnityAdsWebData {
 	}
 	
 	public void stopAllRequests () {
-		_urlLoaders.clear();
+		if (_urlLoaders != null)
+			_urlLoaders.clear();
+		if (_failedUrlLoaders != null)
+			_failedUrlLoaders.clear();
 		
 		if (_currentLoader != null)
 			_currentLoader.cancel(true);
@@ -423,7 +428,7 @@ public class UnityAdsWebData {
 			}
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Malformed JSON: " + json, this);
+			UnityAdsUtils.Log("Malformed JSON: " + e.getMessage(), this);
 			campaignDataFailed();
 			return;
 		}
@@ -481,6 +486,7 @@ public class UnityAdsWebData {
 		private HttpURLConnection _connection = null;
 		private int _downloadLength = 0;
 		private InputStream _input = null;
+		private BufferedInputStream _binput = null;
 		private String _urlData = "";
 		private UnityAdsRequestType _requestType = null;
 		private String _finalUrl = null;
@@ -579,28 +585,33 @@ public class UnityAdsWebData {
 				try {
 					UnityAdsUtils.Log("Connection response: " + _connection.getResponseCode() + ", " + _connection.getResponseMessage() + ", " + _connection.getURL().toString() + " : " + _queryParams, this);
 					_input = _connection.getInputStream();
+					_binput = new BufferedInputStream(_input);
 				}
 				catch (Exception e) {
 					UnityAdsUtils.Log("Problems opening stream: " + e.getMessage(), this);
 				}
 				
-				byte data[] = new byte[1024];
 				long total = 0;
-				int count = 0;
+				
+				_downloadLength = _connection.getContentLength();
 				
 				try {
 					_totalLoadersHaveRun++;
-					_downloadLength = _connection.getContentLength();
 					UnityAdsUtils.Log("Total urlLoaders that have started running: " + _totalLoadersHaveRun, this);
-					UnityAdsUtils.Log("Reading data from: " + _url.toString(), this);
-					while ((count = _input.read(data)) != -1) {
-						total += count;
-						publishProgress((int)(total * 100 / _downloadLength));
-						_urlData = _urlData.concat(new String(data));
+					UnityAdsUtils.Log("Reading data from: " + _url.toString() + " Content-length: " + _downloadLength, this);
+					
+					ByteArrayBuffer baf = new ByteArrayBuffer(1024);
+					int current = 0;
+					
+					while ((current = _binput.read()) != -1) {
+						baf.append((byte)current);
 						
 						if (isCancelled())
 							return null;
 					}
+					
+					_urlData = new String(baf.toByteArray());
+					UnityAdsUtils.Log("Read total of: " + total, this);
 				}
 				catch (Exception e) {
 					UnityAdsUtils.Log("Problems loading url: " + e.getMessage(), this);
