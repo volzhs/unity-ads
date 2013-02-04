@@ -2,6 +2,8 @@ package com.unity3d.ads.android;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONObject;
 
@@ -177,6 +179,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsUtils.Log("stopAll()", this);
 		UnityAdsDownloader.stopAllDownloads();
 		webdata.stopAllRequests();
+		UnityAdsProperties.BASE_ACTIVITY = null;
+		UnityAdsProperties.CURRENT_ACTIVITY = null;
+		UnityAdsProperties.SELECTED_CAMPAIGN = null;
 	}
 	
 	
@@ -341,6 +346,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsWebBrigeListener
 	@Override
 	public void onPlayVideo(JSONObject data) {
+		UnityAdsUtils.Log("onPlayVideo", this);
 		if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY)) {
 			String campaignId = null;
 			
@@ -361,6 +367,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				catch (Exception e) {
 				}
 				
+				UnityAdsUtils.Log("onPlayVideo: Selected campaign=" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + " isViewed: " + UnityAdsProperties.SELECTED_CAMPAIGN.isViewed(), this);
 				if (UnityAdsProperties.SELECTED_CAMPAIGN != null && (rewatch || !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed())) {
 					playVideo();
 				}
@@ -525,9 +532,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// FIX: Could these 2 classes be moved to MainView
 	
 	private class UnityAdsCloseRunner implements Runnable {
+		JSONObject _data = null;
 		@Override
 		public void run() {
 			_showingAds = false;
+			
 			if (UnityAdsProperties.CURRENT_ACTIVITY.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
 				Boolean dataOk = true;			
 				JSONObject data = new JSONObject();
@@ -542,14 +551,27 @@ public class UnityAds implements IUnityAdsCacheListener,
 				UnityAdsUtils.Log("dataOk: " + dataOk, this);
 				
 				if (dataOk) {
-					_mainView.closeAds(data);
-					UnityAdsProperties.CURRENT_ACTIVITY.finish();
-					
-					if (_developerOptions == null || !_developerOptions.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) || _developerOptions.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(false))
-						UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
-					
-					if (_adsListener != null)
-						_adsListener.onHide();
+					_data = data;
+					_mainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+					Timer testTimer = new Timer();
+					testTimer.schedule(new TimerTask() {
+						@Override
+						public void run() {
+							UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									_mainView.closeAds(_data);
+									UnityAdsProperties.CURRENT_ACTIVITY.finish();
+									
+									if (_developerOptions == null || !_developerOptions.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) || _developerOptions.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(false))
+										UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
+									
+									if (_adsListener != null)
+										_adsListener.onHide();
+								}
+							});
+						}
+					}, 100);
 				}
 			}
 			
@@ -561,7 +583,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private class UnityAdsPlayVideoRunner implements Runnable {
 		@Override
 		public void run() {			
+			UnityAdsUtils.Log("Running videoplayrunner", this);
 			if (UnityAdsProperties.SELECTED_CAMPAIGN != null) {
+				UnityAdsUtils.Log("Selected campaign found", this);
 				JSONObject data = new JSONObject();
 				
 				try {
@@ -579,6 +603,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl(); 
 
 				_mainView.setViewState(UnityAdsMainViewState.VideoPlayer);
+				UnityAdsUtils.Log("Start videoplayback with: " + playUrl, this);
 				_mainView.videoplayerview.playVideo(playUrl);
 			}			
 			else

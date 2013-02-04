@@ -181,21 +181,22 @@ public class UnityAdsWebView extends WebView {
 			getSettings().setAllowFileAccess(true);
 		}
 		
+		UnityAdsUtils.Log("Adding javascript interface", this);
+		addJavascriptInterface(_webBridge, "applifierimpactnative");
+	}
+	
+	public void setRenderMode (int mode) {
 		// WebView background will go white in SDK >= 11 if you don't set webview's
 		// layer-type to software.
 		try
 		{
 			Method layertype = View.class.getMethod("setLayerType", Integer.TYPE, Paint.class);
-			layertype.invoke(this, 1, null);
+			layertype.invoke(this, mode, null);
 		}
 		catch (Exception e) {
 			UnityAdsUtils.Log("Could not invoke setLayerType", this);
-		}
-		
-		UnityAdsUtils.Log("Adding javascript interface", this);
-		addJavascriptInterface(_webBridge, "applifierimpactnative");
+		}		
 	}
-	
 	
 	/* OVERRIDE METHODS */
 	

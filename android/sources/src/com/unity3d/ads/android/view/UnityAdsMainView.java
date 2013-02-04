@@ -15,7 +15,6 @@ import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
@@ -80,15 +79,15 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		}
 	}
 	
-	public void closeAds (JSONObject data) {
+	public void closeAds (JSONObject data) {		
 		if (this.getParent() != null) {
 			ViewGroup vg = (ViewGroup)this.getParent();
 			if (vg != null)
 				vg.removeView(this);
 		}
 		
-		destroyVideoPlayerView();
 		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
+		destroyVideoPlayerView();
 		UnityAdsProperties.SELECTED_CAMPAIGN = null;
 	}
 	
@@ -187,6 +186,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		bringChildToFront(videoplayerview);
 		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		focusToView(videoplayerview);
+
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
 		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
 	}
