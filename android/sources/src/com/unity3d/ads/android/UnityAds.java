@@ -255,7 +255,32 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onMainViewAction (UnityAdsMainViewAction action) {
 		switch (action) {
 			case BackButtonPressed:
-				close();
+				UnityAdsUtils.Log("onMainViewAction: BackButtonPressed: " + _mainView.getViewState().toString() + ", " + _mainView.webview.getWebViewCurrentView(), this);
+				if (_mainView.getViewState().equals(UnityAdsMainViewState.WebView)) {
+					if (_mainView.webview.getWebViewCurrentView().equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED)) {
+						JSONObject spinnerParams = new JSONObject();
+						
+						try {
+							spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
+						}
+						catch (Exception e) {
+							UnityAdsUtils.Log("Could not create JSON", this);
+						}
+						
+						_mainView.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
+						_mainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START);
+						UnityAdsUtils.Log("onMainViewAction: Setting startscreen", this);
+					}
+					else {
+						UnityAdsUtils.Log("onMainViewAction: Closing Unity Ads", this);
+						close();
+					}
+				}
+				else if (_mainView.getViewState().equals(UnityAdsMainViewState.VideoPlayer)) {
+					UnityAdsUtils.Log("onMainViewAction: Removing player and setting WebView state", this);
+					_mainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START);
+					_mainView.afterVideoPlaybackOperations();
+				}
 				break;
 			case VideoStart:
 				if (_adsListener != null)
@@ -419,6 +444,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 			    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
 				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId())));
 			}
+			
+			webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_OPENAPPSTORE, UnityAdsProperties.SELECTED_CAMPAIGN);
 		}
 		else {
 		    UnityAdsUtils.Log("Selected campaign (" + UnityAdsProperties.SELECTED_CAMPAIGN + ") or couldn't get storeId", this);

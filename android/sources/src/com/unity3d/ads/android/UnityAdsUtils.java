@@ -178,6 +178,14 @@ public class UnityAdsUtils {
 		return Environment.getExternalStorageDirectory().toString() + "/" + UnityAdsConstants.CACHE_DIR_NAME;
 	}
 	
+	public static boolean canUseExternalStorage () {
+		String state = Environment.getExternalStorageState();
+		if (state.equals(Environment.MEDIA_MOUNTED))
+			return true;
+		
+		return false;
+	}
+	
 	public static File createCacheDir () {
 		File tdir = new File (getCacheDirectory());
 		tdir.mkdirs();

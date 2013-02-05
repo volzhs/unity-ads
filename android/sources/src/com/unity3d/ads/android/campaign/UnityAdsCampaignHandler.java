@@ -76,13 +76,13 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	}
 	
 	private void checkFileAndDownloadIfNeeded (String fileUrl) {
-		if (_campaign.shouldCacheVideo() && !UnityAdsUtils.isFileInCache(_campaign.getVideoFilename())) {
+		if (_campaign.shouldCacheVideo() && !UnityAdsUtils.isFileInCache(_campaign.getVideoFilename()) && UnityAdsUtils.canUseExternalStorage()) {
 			if (!hasDownloads())
 				UnityAdsDownloader.addListener(this);
 			
 			addCampaignToDownloads();
 		}
-		else if (!isFileOk(fileUrl) && _campaign.shouldCacheVideo()) {
+		else if (!isFileOk(fileUrl) && _campaign.shouldCacheVideo() && UnityAdsUtils.canUseExternalStorage()) {
 			UnityAdsUtils.removeFile(fileUrl);
 			UnityAdsDownloader.addListener(this);
 			addCampaignToDownloads();

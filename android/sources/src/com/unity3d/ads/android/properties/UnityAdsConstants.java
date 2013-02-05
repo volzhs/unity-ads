@@ -135,4 +135,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_TEXTKEY_LOADING = "loading";
 	public static final String UNITY_ADS_TEXTKEY_VIDEOPLAYBACKERROR = "videoPlaybackError";
 	public static final String UNITY_ADS_ITEMKEY_KEY = "itemKey";
+	
+	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_OPENAPPSTORE = "openAppStore";
+	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR = "videoError";
 }

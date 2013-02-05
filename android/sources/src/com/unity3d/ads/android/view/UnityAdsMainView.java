@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -35,6 +36,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 
 	// Listener
 	private IUnityAdsMainViewListener _listener = null;
+	private UnityAdsMainViewState _currentState = UnityAdsMainViewState.WebView;
 
 	public UnityAdsMainView(Context context, IUnityAdsMainViewListener listener) {
 		super(context);
@@ -92,27 +94,59 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	}
 	
 	public void setViewState (UnityAdsMainViewState state) {
-		switch (state) {
-			case WebView:
-				removeFromMainView(webview);
-				addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
-				focusToView(webview);
-				break;
-			case VideoPlayer:
-				if (videoplayerview == null) {
-					createVideoPlayerView();
+		if (!_currentState.equals(state)) {
+			_currentState = state;
+			
+			switch (state) {
+				case WebView:
 					removeFromMainView(webview);
 					addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
-				}
-				break;
+					focusToView(webview);
+					break;
+				case VideoPlayer:
+					if (videoplayerview == null) {
+						createVideoPlayerView();
+						removeFromMainView(webview);
+						addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+					}
+					break;
+			}
 		}
 	}
 	
+	public UnityAdsMainViewState getViewState () {
+		return _currentState;
+	}
+	
+	public void afterVideoPlaybackOperations () {
+		videoplayerview.setKeepScreenOn(false);
+		destroyVideoPlayerView();
+		setViewState(UnityAdsMainViewState.WebView);		
+		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+	}
+	
+	@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_BACK:
+				UnityAdsUtils.Log("onKeyDown", this);
+				sendActionToListener(UnityAdsMainViewAction.BackButtonPressed);
+		    	return true;
+		}
+    	
+    	return false;
+    }
+	
+    protected void onAttachedToWindow() {
+    	super.onAttachedToWindow();
+    	focusToView(this);
+    }
 	
 	/* PRIVATE METHODS */
 	
 	private void init () {
 		UnityAdsUtils.Log("Init", this);
+		this.setId(1001);
 		createVideoPlayerView();
 		createWebView();
 	}
@@ -126,11 +160,13 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	private void createVideoPlayerView () {
 		videoplayerview = new UnityAdsVideoPlayView(UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext(), this);
 		videoplayerview.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+		videoplayerview.setId(1002);
 		addView(videoplayerview);
 	}
 	
 	private void createWebView () {
 		webview = new UnityAdsWebView(UnityAdsProperties.CURRENT_ACTIVITY, this, new UnityAdsWebBridge(UnityAds.instance));
+		webview.setId(1003);
 		addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 	}
 	
@@ -200,9 +236,10 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	@Override
 	public void onCompletion(MediaPlayer mp) {
 		UnityAdsUtils.Log("onCompletion", this);
-		videoplayerview.setKeepScreenOn(false);
-		destroyVideoPlayerView();
-		setViewState(UnityAdsMainViewState.WebView);
+		afterVideoPlaybackOperations();
+		//videoplayerview.setKeepScreenOn(false);
+		//destroyVideoPlayerView();
+		//setViewState(UnityAdsMainViewState.WebView);
 		onEventPositionReached(UnityAdsVideoPosition.End);
 		
 		JSONObject params = new JSONObject();
@@ -216,14 +253,16 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 		
-		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		//UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 		UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 		
 		sendActionToListener(UnityAdsMainViewAction.VideoEnd);
 	}
 	
 	public void onVideoPlaybackError () {
-		UnityAdsUtils.Log("onVideoPlaybackError", this);
+		UnityAdsUtils.Log("onVideoPlaybackError", this);		
+		UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
+		
 		videoplayerview.setKeepScreenOn(false);
 		destroyVideoPlayerView();
 		setViewState(UnityAdsMainViewState.WebView);

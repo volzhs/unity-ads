@@ -18,8 +18,10 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
+import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -70,7 +72,7 @@ public class UnityAdsWebData {
 		}
 	};
 	
-	private static enum UnityAdsRequestType { VideoPlan, VideoViewed, Unsent;
+	private static enum UnityAdsRequestType { Analytics, VideoPlan, VideoViewed, Unsent;
 		@Override
 		public String toString () {
 			String output = name().toString().toLowerCase();
@@ -168,6 +170,24 @@ public class UnityAdsWebData {
 		return progressSent;
 	}
 	
+	public void sendAnalyticsRequest (String eventType, UnityAdsCampaign campaign) {
+		if (campaign != null) {
+			String viewUrl = String.format("%s",  UnityAdsProperties.ANALYTICS_BASE_URL);
+			String analyticsUrl = String.format("%s=%s", UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_EVENTTYPE_KEY, eventType);
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_TRACKINGID_KEY, UnityAdsProperties.UNITY_ADS_GAMER_ID);
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_PROVIDERID_KEY, campaign.getCampaignId());
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
+			
+			if (UnityAdsProperties.GAMER_SID != null)
+				analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMERSID_KEY, UnityAdsProperties.GAMER_SID);
+			
+			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, analyticsUrl, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.Analytics, 0);
+			addLoader(loader);
+			startNextLoader();
+		}
+	}
+	
 	public void stopAllRequests () {
 		if (_urlLoaders != null)
 			_urlLoaders.clear();
@@ -254,6 +274,8 @@ public class UnityAdsWebData {
 				break;
 			case Unsent:
 				break;
+			case Analytics:
+				break;
 		}
 		
 		_totalUrlsSent++;
@@ -266,6 +288,7 @@ public class UnityAdsWebData {
 	
 	private void urlLoadFailed (UnityAdsUrlLoader loader) {
 		switch (loader.getRequestType()) {
+			case Analytics:
 			case VideoViewed:
 			case Unsent:
 				writeFailedUrl(loader);

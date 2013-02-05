@@ -72,7 +72,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("shouldCacheVideo: This should not happen!", this);
+				UnityAdsUtils.Log("shouldCacheVideo: key not found, returning false", this);
 			}			
 		}
 		return false;
