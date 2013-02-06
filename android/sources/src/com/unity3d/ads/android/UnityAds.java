@@ -183,7 +183,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 			_mainView.webview.clearWebView();
 		
 		UnityAdsDownloader.stopAllDownloads();
+		UnityAdsDownloader.clearData();
 		webdata.stopAllRequests();
+		webdata.setWebDataListener(null);
+		webdata.clearData();
 		UnityAdsProperties.BASE_ACTIVITY = null;
 		UnityAdsProperties.CURRENT_ACTIVITY = null;
 		UnityAdsProperties.SELECTED_CAMPAIGN = null;
@@ -438,6 +441,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private void init (Activity activity, String gameId, IUnityAdsListener listener) {
 		instance = this;
+		setListener(listener);
+		
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
 		UnityAdsProperties.BASE_ACTIVITY = activity;
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
