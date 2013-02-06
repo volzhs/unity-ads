@@ -184,6 +184,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 		UnityAdsDownloader.stopAllDownloads();
 		UnityAdsDownloader.clearData();
+		cachemanager.setDownloadListener(null);
+		cachemanager.clearData();
 		webdata.stopAllRequests();
 		webdata.setWebDataListener(null);
 		webdata.clearData();

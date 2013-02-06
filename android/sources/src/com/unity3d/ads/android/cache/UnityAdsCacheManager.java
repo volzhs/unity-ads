@@ -80,6 +80,33 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 			}
 		}
 	}
+	
+	public void clearData () {
+		if (_downloadListener != null)
+			_downloadListener = null;
+		
+		if (_downloadingHandlers != null) {
+			for (UnityAdsCampaignHandler ch : _downloadingHandlers) {
+				ch.setListener(null);
+				ch.clearData();
+				ch = null;	
+			}
+			
+			_downloadingHandlers.clear();
+			_downloadingHandlers = null;
+		}
+		
+		if (_handlers != null) {
+			for (UnityAdsCampaignHandler ch : _handlers) {
+				ch.setListener(null);
+				ch.clearData();
+				ch = null;
+			}
+			
+			_handlers.clear();
+			_handlers = null;
+		}
+	}
 
 	
 	// EVENT METHDOS

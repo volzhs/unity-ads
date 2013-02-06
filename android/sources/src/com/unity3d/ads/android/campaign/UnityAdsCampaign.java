@@ -249,6 +249,10 @@ public class UnityAdsCampaign {
 		return checkDataIntegrity();
 	}
 	
+	public void clearData () {
+		_campaignJson = null;
+	}
+	
 	/* INTERNAL METHODS */
 	
 	private boolean checkDataIntegrity () {
