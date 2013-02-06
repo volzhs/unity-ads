@@ -5,6 +5,7 @@ import com.unity3d.ads.android.UnityAdsUtils;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 public class UnityAdsFullscreenActivity extends Activity {
     @Override
@@ -26,4 +27,9 @@ public class UnityAdsFullscreenActivity extends Activity {
     	super.onDestroy();		
     	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onDestroy()", this);
 	}
+    
+	@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+    	return false;
+    }
 }

@@ -11,7 +11,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	private ArrayList<String> _downloadList = null;
 	private UnityAdsCampaign _campaign = null;
 	private IUnityAdsCampaignHandlerListener _handlerListener = null;
-	private boolean _cancelledDownloads = false;
+	//private boolean _cancelledDownloads = false;
 	
 	
 	public UnityAdsCampaignHandler (UnityAdsCampaign campaign) {
@@ -41,7 +41,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	public void onFileDownloadCancelled (String downloadUrl) {	
 		if (finishDownload(downloadUrl)) {
 			UnityAdsUtils.Log("Download cancelled: " + _campaign.getCampaignId(), this);
-			_cancelledDownloads = true;
+			//_cancelledDownloads = true;
 		}
 	}
 	

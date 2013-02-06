@@ -18,10 +18,8 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 
 import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
-import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;

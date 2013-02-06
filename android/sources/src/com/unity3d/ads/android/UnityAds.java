@@ -177,6 +177,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	public void stopAll () {
 		UnityAdsUtils.Log("stopAll()", this);
+		if (_mainView != null && _mainView.videoplayerview != null)
+			_mainView.videoplayerview.clearVideoPlayer();
+		if (_mainView != null && _mainView.webview != null)
+			_mainView.webview.clearWebView();
+		
 		UnityAdsDownloader.stopAllDownloads();
 		webdata.stopAllRequests();
 		UnityAdsProperties.BASE_ACTIVITY = null;
@@ -255,32 +260,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onMainViewAction (UnityAdsMainViewAction action) {
 		switch (action) {
 			case BackButtonPressed:
-				UnityAdsUtils.Log("onMainViewAction: BackButtonPressed: " + _mainView.getViewState().toString() + ", " + _mainView.webview.getWebViewCurrentView(), this);
-				if (_mainView.getViewState().equals(UnityAdsMainViewState.WebView)) {
-					if (_mainView.webview.getWebViewCurrentView().equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED)) {
-						JSONObject spinnerParams = new JSONObject();
-						
-						try {
-							spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
-						}
-						catch (Exception e) {
-							UnityAdsUtils.Log("Could not create JSON", this);
-						}
-						
-						_mainView.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
-						_mainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START);
-						UnityAdsUtils.Log("onMainViewAction: Setting startscreen", this);
-					}
-					else {
-						UnityAdsUtils.Log("onMainViewAction: Closing Unity Ads", this);
-						close();
-					}
-				}
-				else if (_mainView.getViewState().equals(UnityAdsMainViewState.VideoPlayer)) {
-					UnityAdsUtils.Log("onMainViewAction: Removing player and setting WebView state", this);
-					_mainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START);
-					_mainView.afterVideoPlaybackOperations();
-				}
+				if (_showingAds)
+					close();
 				break;
 			case VideoStart:
 				if (_adsListener != null)
@@ -562,7 +543,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		JSONObject _data = null;
 		@Override
 		public void run() {
-			_showingAds = false;
 			
 			if (UnityAdsProperties.CURRENT_ACTIVITY.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
 				Boolean dataOk = true;			
@@ -597,6 +577,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 										_adsListener.onHide();
 									
 									_developerOptions = null;
+									_showingAds = false;
 								}
 							});
 						}
