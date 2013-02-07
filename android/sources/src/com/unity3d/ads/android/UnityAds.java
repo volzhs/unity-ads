@@ -423,12 +423,16 @@ public class UnityAds implements IUnityAdsCacheListener,
 	    UnityAdsUtils.Log("onOpenPlayStore", this);
 		if (UnityAdsProperties.SELECTED_CAMPAIGN != null && UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId() != null) {
 			try {
-			    UnityAdsUtils.Log("Opening playstore activity with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
-				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId())));
+				if (!UnityAdsProperties.SELECTED_CAMPAIGN.shouldBypassAppSheet()) {
+					UnityAdsUtils.Log("Opening playstore activity with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
+					UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId())));
+				}
+				else {
+					openPlayStoreInBrowser();
+				}
 			} 
 			catch (android.content.ActivityNotFoundException anfe) {
-			    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
-				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId())));
+				openPlayStoreInBrowser();
 			}
 			
 			webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_OPENAPPSTORE, UnityAdsProperties.SELECTED_CAMPAIGN);
@@ -440,6 +444,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 
 	/* PRIVATE METHODS */
+	
+	private void openPlayStoreInBrowser () {
+	    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
+		UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId())));
+	}
 	
 	private void init (Activity activity, String gameId, IUnityAdsListener listener) {
 		instance = this;

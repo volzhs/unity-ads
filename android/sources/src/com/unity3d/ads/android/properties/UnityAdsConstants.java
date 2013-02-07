@@ -71,6 +71,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_ITUNESID_KEY = "iTunesId";
 	public static final String UNITY_ADS_CAMPAIGN_STOREID_KEY = "storeId";
 	public static final String UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY = "cacheVideo";
+	public static final String UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY = "bypassAppSheet";
 	
 	/* Reward Item JSON Properties */
 	public static final String UNITY_ADS_REWARD_ITEMKEY_KEY = "itemKey";

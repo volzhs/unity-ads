@@ -488,9 +488,6 @@ public class UnityAdsWebData {
 			campaignDataFailed();
 			return;
 		}
-			
-		if (_campaigns != null)
-			UnityAdsUtils.Log(_campaigns.toString(), this);
 		
 		if (_listener != null && validData && _campaigns != null && _campaigns.size() > 0) {
 			UnityAdsUtils.Log("WebDataCompleted: " + json, this);

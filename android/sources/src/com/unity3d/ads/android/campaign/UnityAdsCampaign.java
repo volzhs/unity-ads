@@ -39,6 +39,8 @@ public class UnityAdsCampaign {
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_ID_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TAGLINE_KEY};
 	
+	//bypassAppSheet
+	
 	private UnityAdsCampaignStatus _campaignStatus = UnityAdsCampaignStatus.READY;
 	
 	public UnityAdsCampaign () {		
@@ -78,6 +80,21 @@ public class UnityAdsCampaign {
 		}
 		return false;
 	}
+	
+	public Boolean shouldBypassAppSheet () {
+		if (checkDataIntegrity()) {
+			try {
+				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY);
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("shouldBypassAppSheet: key not found for campaign: " + getCampaignId() + ", returning false", this);
+			}			
+		}
+		
+		return false;
+	}
+	
+	//UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY
 
 	public String getEndScreenUrl () {
 		if (checkDataIntegrity()) {

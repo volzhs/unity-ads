@@ -97,8 +97,10 @@ public class UnityAdsDownloader {
 	private static boolean isInDownloads (String downloadUrl) {
 		if (_downloadList != null) {
 			for (UnityAdsCampaign download : _downloadList) {
-				if (download.getVideoUrl().equals(downloadUrl))
+				if (download != null && download.getVideoUrl() != null && download.getVideoUrl().equals(downloadUrl))
 					return true;
+				else if (download == null || download.getVideoUrl() == null)
+					_downloadList.remove(download);
 			}
 		}
 		
