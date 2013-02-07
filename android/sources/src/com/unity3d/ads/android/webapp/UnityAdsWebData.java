@@ -132,8 +132,6 @@ public class UnityAdsWebData {
 		
 		String[] parts = url.split("\\?");
 		
-		UnityAdsUtils.Log(parts.toString(), this);
-		
 		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(parts[0], parts[1], UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.VideoPlan, 0);
 		UnityAdsUtils.Log("VIDEOPLAN_URL: " + loader.getUrl(), this);
 		addLoader(loader);
@@ -445,8 +443,11 @@ public class UnityAdsWebData {
 						_campaigns = deserializeCampaigns(campaigns);
 				}
 				
+				// Fall back, if campaigns were not found just set it to size 0
+				if (_campaigns == null)
+					_campaigns = new ArrayList<UnityAdsCampaign>();
+				
 				UnityAdsUtils.Log("Parsed total of " + _campaigns.size() + " campaigns", this);
-
 				
 				// Parse default reward item
 				if (validData) {
@@ -485,6 +486,13 @@ public class UnityAdsWebData {
 		}
 		catch (Exception e) {
 			UnityAdsUtils.Log("Malformed JSON: " + e.getMessage(), this);
+			
+			if (e.getStackTrace() != null) {
+				for (StackTraceElement element : e.getStackTrace()) {
+					UnityAdsUtils.Log("Malformed JSON: " + element.toString(), this);
+				}
+			}
+			
 			campaignDataFailed();
 			return;
 		}

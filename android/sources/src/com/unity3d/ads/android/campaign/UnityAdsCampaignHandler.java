@@ -106,7 +106,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	
 	private boolean isFileOk (String fileUrl) {
 		long localSize = UnityAdsUtils.getSizeForLocalFile(_campaign.getVideoFilename());
-		long expectedSize = _campaign.getVidoFileExpectedSize();
+		long expectedSize = _campaign.getVideoFileExpectedSize();
 		
 		UnityAdsUtils.Log("isFileOk: localSize=" + localSize + ", expectedSize=" + expectedSize, this);
 				
