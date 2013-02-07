@@ -33,6 +33,7 @@ public class UnityAdsCampaign {
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_PICTURE_KEY, 
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_DOWNLOADABLE_KEY, 
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_STREAMING_KEY,
+			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_SIZE_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_ID_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_NAME_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_ID_KEY,
@@ -72,7 +73,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("shouldCacheVideo: key not found, returning false", this);
+				UnityAdsUtils.Log("shouldCacheVideo: key not found for campaign: " + getCampaignId() + ", returning false", this);
 			}			
 		}
 		return false;
@@ -194,6 +195,31 @@ public class UnityAdsCampaign {
 		}
 		
 		return null;
+	}
+	
+	public long getVidoFileExpectedSize () {
+		long size = -1;
+		if (checkDataIntegrity()) {
+			try {
+				String fileSize = _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_SIZE_KEY);
+				
+				try {
+					size = Long.parseLong(fileSize);
+				}
+				catch (Exception e) {
+					UnityAdsUtils.Log("getVidoFileExpectedSize: Error parsing expected filesize: " + e.getMessage(), this);
+					return size;
+				}
+				
+				return size;
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("getVidoFileExpectedSize: This should not happen!", this);
+				return size;
+			}
+		}
+		
+		return size;
 	}
 	
 	public String getTagLine () {

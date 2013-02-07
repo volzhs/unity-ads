@@ -197,6 +197,9 @@ public class UnityAdsDownloader {
 		
 		@Override
 	    protected String doInBackground(String... sUrl) {
+			long startTime = System.currentTimeMillis();
+			long duration = 0;
+			
 			try {
 				_downloadUrl = new URL(sUrl[0]);
 			}
@@ -251,6 +254,8 @@ public class UnityAdsDownloader {
 				}
 				
 				closeAndFlushConnection();
+				duration = System.currentTimeMillis() - startTime;
+				UnityAdsUtils.Log("File: " + _campaign.getVideoFilename() + " of size: " + total + " downloaded in: " + duration + "ms", this);
 			}
 						
 			return null;

@@ -96,16 +96,30 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 			
 			addCampaignToDownloads();
 		}
-		else if (!isFileOk(fileUrl) && _campaign.shouldCacheVideo() && UnityAdsUtils.canUseExternalStorage()) {
-			UnityAdsUtils.removeFile(fileUrl);
+		else if (_campaign.shouldCacheVideo() && !isFileOk(fileUrl) && UnityAdsUtils.canUseExternalStorage()) {
+			UnityAdsUtils.Log("The file was not okay, redownloading", this);
+			UnityAdsUtils.removeFile(_campaign.getVideoFilename());
 			UnityAdsDownloader.addListener(this);
 			addCampaignToDownloads();
 		}		
 	}
 	
 	private boolean isFileOk (String fileUrl) {
-		// TODO: Implement isFileOk
-		return true;
+		long localSize = UnityAdsUtils.getSizeForLocalFile(_campaign.getVideoFilename());
+		long expectedSize = _campaign.getVidoFileExpectedSize();
+		
+		UnityAdsUtils.Log("isFileOk: localSize=" + localSize + ", expectedSize=" + expectedSize, this);
+				
+		if (localSize == -1)
+			return false;
+		
+		if (expectedSize == -1)
+			return true;
+		
+		if (localSize > 0 && expectedSize > 0 && localSize == expectedSize)
+			return true;
+			
+		return false;
 	}
 	
 	private void addCampaignToDownloads () {

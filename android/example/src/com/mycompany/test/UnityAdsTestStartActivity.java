@@ -50,8 +50,12 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	public boolean onOptionsItemSelected (MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.kill:
+		    	ai.stopAll();
+		    	System.runFinalizersOnExit(true);		
 				finish();
-				break;
+		    	Log.d(UnityAdsConstants.LOG_NAME, "Quitting");
+
+		    	break;
 		}
 		
 		return true;
@@ -60,9 +64,6 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     @Override
 	protected void onDestroy() {
     	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onDestroy()");
-    	ai.stopAll();
-    	System.runFinalizersOnExit(true);		
-		//android.os.Process.killProcess(android.os.Process.myPid());
     	super.onDestroy();		
 	}
 	
