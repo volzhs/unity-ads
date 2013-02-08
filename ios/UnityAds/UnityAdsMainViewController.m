@@ -255,7 +255,7 @@
 - (void)openAppStoreWithData:(NSDictionary *)data {
 	UALOG_DEBUG(@"");
 	
-  if (![self _canOpenStoreProductViewController]) {
+  if (![self _canOpenStoreProductViewController] || [[UnityAdsCampaignManager sharedInstance] selectedCampaign].bypassAppSheet == YES) {
 		NSString *clickUrl = [data objectForKey:@"clickUrl"];
     if (clickUrl == nil) return;
     UALOG_DEBUG(@"Cannot open store product view controller, falling back to click URL.");
