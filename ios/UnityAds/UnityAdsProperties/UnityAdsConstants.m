@@ -77,6 +77,7 @@ NSString * const kUnityAdsCampaignIDKey = @"id";
 NSString * const kUnityAdsCampaignTaglineKey = @"tagLine";
 NSString * const kUnityAdsCampaignStoreIDKey = @"iTunesId";
 NSString * const kUnityAdsCampaignCacheVideoKey = @"cacheVideo";
+NSString * const kUnityAdsCampaignBypassAppSheet = @"bypassAppSheet";
 
 
 /* Reward Item JSON Properties */

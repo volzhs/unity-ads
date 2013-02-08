@@ -130,6 +130,13 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
         }
       }
       
+      campaign.bypassAppSheet = NO;
+      if ([campaignDictionary objectForKey:kUnityAdsCampaignBypassAppSheet] != nil) {
+        if ([[campaignDictionary valueForKey:kUnityAdsCampaignBypassAppSheet] boolValue] != 0) {
+          campaign.bypassAppSheet = YES;
+        }
+      }
+      
 			[campaigns addObject:campaign];
 		}
 		else {

@@ -83,6 +83,7 @@ extern NSString * const kUnityAdsCampaignIDKey;
 extern NSString * const kUnityAdsCampaignTaglineKey;
 extern NSString * const kUnityAdsCampaignStoreIDKey;
 extern NSString * const kUnityAdsCampaignCacheVideoKey;
+extern NSString * const kUnityAdsCampaignBypassAppSheet;
 
 
 /* Reward Item JSON Properties */
