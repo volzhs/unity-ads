@@ -54,6 +54,9 @@ extern NSString * const kUnityAdsWebViewEventDataClickUrlKey;
 
 extern NSString * const kUnityAdsNativeEventHideSpinner;
 extern NSString * const kUnityAdsNativeEventShowSpinner;
+extern NSString * const kUnityAdsNativeEventShowError;
+extern NSString * const kUnityAdsNativeEventVideoCompleted;
+extern NSString * const kUnityAdsNativeEventCampaignIdKey;
 
 
 /* Native Event Params */
@@ -62,6 +65,7 @@ extern NSString * const kUnityAdsTextKeyKey;
 extern NSString * const kUnityAdsTextKeyBuffering;
 extern NSString * const kUnityAdsTextKeyLoading;
 extern NSString * const kUnityAdsItemKeyKey;
+extern NSString * const kUnityAdsTextKeyVideoPlaybackError;
 
 
 /* JSON Data Root */
@@ -84,7 +88,7 @@ extern NSString * const kUnityAdsCampaignTaglineKey;
 extern NSString * const kUnityAdsCampaignStoreIDKey;
 extern NSString * const kUnityAdsCampaignCacheVideoKey;
 extern NSString * const kUnityAdsCampaignBypassAppSheet;
-
+extern NSString * const kUnityAdsCampaignExpectedFileSize;
 
 /* Reward Item JSON Properties */
 
