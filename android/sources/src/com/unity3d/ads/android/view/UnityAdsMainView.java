@@ -17,6 +17,7 @@ import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
@@ -225,9 +226,13 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		
 		sendActionToListener(UnityAdsMainViewAction.VideoStart);
 		bringChildToFront(videoplayerview);
-		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		
+		if (Build.VERSION.SDK_INT < 9) 
+			UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		else
+			UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(6);
+		
 		focusToView(videoplayerview);
-
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
 		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
 	}
