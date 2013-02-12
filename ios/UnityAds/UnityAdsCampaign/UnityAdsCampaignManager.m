@@ -80,7 +80,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			NSURL *trailerDownloadableURL = [NSURL URLWithString:trailerDownloadableURLString];
 			UAAssertV(trailerDownloadableURL != nil, nil);
 			campaign.trailerDownloadableURL = trailerDownloadableURL;
-      //campaign.trailerDownloadableURL = [NSURL URLWithString:@"http://nanananna.lol"];
 			
 			NSString *trailerStreamingURLString = [campaignDictionary objectForKey:kUnityAdsCampaignTrailerStreamingKey];
       if (trailerStreamingURLString == nil) continue;
@@ -88,7 +87,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			NSURL *trailerStreamingURL = [NSURL URLWithString:trailerStreamingURLString];
 			UAAssertV(trailerStreamingURL != nil, nil);
 			campaign.trailerStreamingURL = trailerStreamingURL;
-			campaign.trailerStreamingURL = [NSURL URLWithString:@"http://lolololo.nanana.hihi"];
       
 			id gameIDValue = [campaignDictionary objectForKey:kUnityAdsCampaignGameIDKey];
       if (gameIDValue == nil) continue;
