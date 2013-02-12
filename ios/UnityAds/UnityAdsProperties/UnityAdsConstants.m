@@ -48,6 +48,9 @@ NSString * const kUnityAdsWebViewEventDataClickUrlKey = @"clickUrl";
 
 NSString * const kUnityAdsNativeEventHideSpinner = @"hideSpinner";
 NSString * const kUnityAdsNativeEventShowSpinner = @"showSpinner";
+NSString * const kUnityAdsNativeEventShowError = @"showError";
+NSString * const kUnityAdsNativeEventVideoCompleted = @"videoCompleted";
+NSString * const kUnityAdsNativeEventCampaignIdKey = @"campaignId";
 
 
 /* Native Event Params */
@@ -55,6 +58,7 @@ NSString * const kUnityAdsNativeEventShowSpinner = @"showSpinner";
 NSString * const kUnityAdsTextKeyKey = @"textKey";
 NSString * const kUnityAdsTextKeyBuffering = @"buffering";
 NSString * const kUnityAdsTextKeyLoading = @"loading";
+NSString * const kUnityAdsTextKeyVideoPlaybackError = @"videoPlaybackError";
 NSString * const kUnityAdsItemKeyKey = @"itemKey";
 
 
@@ -77,7 +81,8 @@ NSString * const kUnityAdsCampaignIDKey = @"id";
 NSString * const kUnityAdsCampaignTaglineKey = @"tagLine";
 NSString * const kUnityAdsCampaignStoreIDKey = @"iTunesId";
 NSString * const kUnityAdsCampaignCacheVideoKey = @"cacheVideo";
-
+NSString * const kUnityAdsCampaignBypassAppSheet = @"bypassAppSheet";
+NSString * const kUnityAdsCampaignExpectedFileSize = @"trailerSize";
 
 /* Reward Item JSON Properties */
 

@@ -87,7 +87,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			NSURL *trailerStreamingURL = [NSURL URLWithString:trailerStreamingURLString];
 			UAAssertV(trailerStreamingURL != nil, nil);
 			campaign.trailerStreamingURL = trailerStreamingURL;
-			
+      
 			id gameIDValue = [campaignDictionary objectForKey:kUnityAdsCampaignGameIDKey];
       if (gameIDValue == nil) continue;
 			UAAssertV(gameIDValue != nil && ([gameIDValue isKindOfClass:[NSString class]] || [gameIDValue isKindOfClass:[NSNumber class]]), nil);
@@ -127,6 +127,20 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       if ([campaignDictionary objectForKey:kUnityAdsCampaignCacheVideoKey] != nil) {
         if ([[campaignDictionary valueForKey:kUnityAdsCampaignCacheVideoKey] boolValue] != 0) {
           campaign.shouldCacheVideo = YES;
+        }
+      }
+      
+      campaign.bypassAppSheet = NO;
+      if ([campaignDictionary objectForKey:kUnityAdsCampaignBypassAppSheet] != nil) {
+        if ([[campaignDictionary valueForKey:kUnityAdsCampaignBypassAppSheet] boolValue] != 0) {
+          campaign.bypassAppSheet = YES;
+        }
+      }
+      
+      campaign.expectedTrailerSize = -1;
+      if ([campaignDictionary objectForKey:kUnityAdsCampaignExpectedFileSize] != nil) {
+        if ([[campaignDictionary valueForKey:kUnityAdsCampaignExpectedFileSize] longLongValue] != 0) {
+          campaign.expectedTrailerSize = [[campaignDictionary valueForKey:kUnityAdsCampaignExpectedFileSize] longLongValue];
         }
       }
       

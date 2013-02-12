@@ -190,6 +190,8 @@
 - (void)videoPlayerEncounteredError {
   UALOG_DEBUG(@"");
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowError data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyVideoPlaybackError}];
   [self _dismissVideoController];
 }
 
@@ -218,12 +220,18 @@
 }
 
 - (void)_destroyVideoController {
-  self.videoController.delegate = nil;
+  if (self.videoController != nil) {
+    [self.videoController forceStopVideoPlayer];
+    self.videoController.delegate = nil;
+  }
+  
   self.videoController = nil;
 }
 
 - (void)_dismissVideoController {
-  [self dismissViewControllerAnimated:NO completion:nil];
+  if ([self.presentedViewController isEqual:self.videoController])
+    [self dismissViewControllerAnimated:NO completion:nil];
+  
   [self _destroyVideoController];
 }
 
@@ -255,7 +263,7 @@
 - (void)openAppStoreWithData:(NSDictionary *)data {
 	UALOG_DEBUG(@"");
 	
-  if (![self _canOpenStoreProductViewController]) {
+  if (![self _canOpenStoreProductViewController] || [[UnityAdsCampaignManager sharedInstance] selectedCampaign].bypassAppSheet == YES) {
 		NSString *clickUrl = [data objectForKey:@"clickUrl"];
     if (clickUrl == nil) return;
     UALOG_DEBUG(@"Cannot open store product view controller, falling back to click URL.");
