@@ -438,7 +438,9 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	}
 	else {
 		UALOG_DEBUG(@"Not retrying campaign download.");
-    [self.delegate campaignManagerCampaignDataFailed];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.delegate campaignManagerCampaignDataFailed];
+    });
   }
 }
 

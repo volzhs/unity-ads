@@ -36,6 +36,7 @@
     [super viewDidAppear:animated];
     
     // TEST MODE: Do not use in production apps
+    [[UnityAds sharedInstance] setDebugMode:YES];
     [[UnityAds sharedInstance] setTestMode:YES];
     
     // Initialize Unity Ads

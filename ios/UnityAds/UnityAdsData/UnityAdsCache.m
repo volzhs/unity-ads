@@ -39,7 +39,6 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 }
 
 - (NSString *)_videoFilenameForCampaign:(UnityAdsCampaign *)campaign {
-  UALOG_DEBUG(@"PAAAATH: %@", [campaign.trailerDownloadableURL lastPathComponent]);
   if ([campaign.trailerDownloadableURL lastPathComponent] == nil || [campaign.trailerDownloadableURL lastPathComponent].length < 3) {
     return [NSString stringWithFormat:@"%@-%@", campaign.id, @"failed.mp4"];
   }
