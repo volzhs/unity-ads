@@ -1,5 +1,6 @@
 package com.unity3d.ads.android.webapp;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 import org.json.JSONObject;
@@ -225,7 +226,12 @@ public class UnityAdsWebView extends WebView {
 	
 	private class UnityAdsViewChromeClient extends WebChromeClient {
 		public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-			UnityAdsUtils.Log("JavaScript (line: " + lineNumber + "): " + message, this);
+			String sourceFile = sourceID;
+			File tmp = new File(sourceID);
+			if (tmp != null && tmp.getName() != null)
+				sourceFile = tmp.getName();
+			
+			UnityAdsUtils.Log("JavaScript (sourceId=" + sourceFile + ", line=" + lineNumber + "): " + message, this);
 		}
 		
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
