@@ -108,7 +108,7 @@ extern NSString * const kUnityAdsGamerIDKey;
 extern NSString * const kUnityAdsUrlKey;
 extern NSString * const kUnityAdsWebViewUrlKey;
 extern NSString * const kUnityAdsAnalyticsUrlKey;
-
+extern NSString * const kUnityAdsSdkVersionKey;
 
 /* Analytics Uploader */
 

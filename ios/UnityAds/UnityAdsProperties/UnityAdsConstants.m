@@ -103,6 +103,7 @@ NSString * const kUnityAdsGamerIDKey = @"gamerId";
 NSString * const kUnityAdsUrlKey = @"impactUrl";
 NSString * const kUnityAdsWebViewUrlKey = @"webViewUrl";
 NSString * const kUnityAdsAnalyticsUrlKey = @"analyticsUrl";
+NSString * const kUnityAdsSdkVersionKey = @"nativeSdkVersion";
 
 
 /* Analytics Uploader */

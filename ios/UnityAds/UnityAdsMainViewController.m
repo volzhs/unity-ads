@@ -342,10 +342,33 @@
 - (void)webAppReady {
   [self.delegate mainControllerWebViewInitialized];
   dispatch_async(dispatch_get_main_queue(), ^{
+    [self checkForVersionAndShowAlertDialog];
+    
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIInitComplete, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
   });
 }
 
+- (void)checkForVersionAndShowAlertDialog {
+  if ([[UnityAdsProperties sharedInstance] expectedSdkVersion] != nil && ![[[UnityAdsProperties sharedInstance] expectedSdkVersion] isEqualToString:[[UnityAdsProperties sharedInstance] adsVersion]]) {
+    UALOG_DEBUG(@"Got different sdkVersions, checking further.");
+    
+    if (![UnityAdsDevice isEncrypted]) {
+      if ([UnityAdsDevice isJailbroken]) {
+        UALOG_DEBUG(@"Build is not encrypted, but device seems to be jailbroken. Not showing version alert");
+        return;
+      }
+      else {
+        // Build is not encrypted and device is not jailbroken, alert dialog is shown that SDK is not the latest version.
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unity Ads SDK"
+                                                        message:@"The Unity Ads SDK you are running is not the current version, please update your SDK"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+      }
+    }
+  }
+}
 
 #pragma mark - Shared Instance
 
