@@ -6,21 +6,13 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
-#define UNITY_ADS_DEBUG_MODE_ENABLED 0
-
-#define UALOG_LOG(levelName, fmt, ...) NSLog((@"%@ [T:0x%x %@] %s:%d " fmt), levelName, (unsigned int)[NSThread currentThread], ([[NSThread currentThread] isMainThread] ? @"M" : @"S"), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define UALOG_LOG(levelName, fmt, ...) if ([[UnityAds sharedInstance] isDebugMode]) NSLog((@"%@ [T:0x%x %@] %s:%d " fmt), levelName, (unsigned int)[NSThread currentThread], ([[NSThread currentThread] isMainThread] ? @"M" : @"S"), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 #define UALOG_ERROR(fmt, ...) UALOG_LOG(@"ERROR", fmt, ##__VA_ARGS__)
 
-#if UNITY_ADS_DEBUG_MODE_ENABLED
 #define UALOG_DEBUG(fmt, ...) UALOG_LOG(@"DEBUG", fmt, ##__VA_ARGS__)
 #define UAAssert(condition) do { if ( ! (condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); abort(); } } while(0)
 #define UAAssertV(condition, value) do { if ( ! (condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); abort(); } } while(0)
-#else
-#define UALOG_DEBUG(...)
-#define UAAssert(condition) do { if ( ! (condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); return; } } while(0)
-#define UAAssertV(condition, value) do { if ( ! (condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); return value; } } while(0)
-#endif
 
 extern NSString * const kUnityAdsRewardItemPictureKey;
 extern NSString * const kUnityAdsRewardItemNameKey;
@@ -56,6 +48,8 @@ extern NSString * const kUnityAdsOptionGamerSIDKey;
 + (UnityAds *)sharedInstance;
 + (BOOL)isSupported;
 + (NSString *)getSDKVersion;
+- (void)setDebugMode:(BOOL)debugMode;
+- (BOOL)isDebugMode;
 - (void)setTestMode:(BOOL)testModeEnabled;
 - (BOOL)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController;
 - (BOOL)startWithGameId:(NSString *)gameId;

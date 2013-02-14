@@ -21,6 +21,7 @@ NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
 @interface UnityAds () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate, UnityAdsMainViewControllerDelegate>
 @property (nonatomic, strong) NSThread *backgroundThread;
 @property (nonatomic, assign) dispatch_queue_t queue;
+@property (nonatomic, assign) Boolean debug;
 @end
 
 @implementation UnityAds
@@ -40,12 +41,21 @@ NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
   return [[UnityAdsProperties sharedInstance] adsVersion];
 }
 
+- (void)setDebugMode:(BOOL)debugMode {
+  self.debug = debugMode;
+}
+
+- (BOOL)isDebugMode {
+  return self.debug;
+}
+
 static UnityAds *sharedUnityAdsInstance = nil;
 
 + (UnityAds *)sharedInstance {
 	@synchronized(self) {
 		if (sharedUnityAdsInstance == nil) {
       sharedUnityAdsInstance = [[UnityAds alloc] init];
+      sharedUnityAdsInstance.debug = NO;
 		}
 	}
 	

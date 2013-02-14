@@ -256,6 +256,11 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:kUnityAdsAnalyticsUrlKey]];
       [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:kUnityAdsUrlKey]];
       
+      if ([jsonDictionary objectForKey:kUnityAdsSdkVersionKey] != nil) {
+        [[UnityAdsProperties sharedInstance] setExpectedSdkVersion:[jsonDictionary objectForKey:kUnityAdsSdkVersionKey]];
+        UALOG_DEBUG(@"Got SDK Version: %@", [[UnityAdsProperties sharedInstance] expectedSdkVersion]);
+      }
+      
       NSString *gamerId = [jsonDictionary objectForKey:kUnityAdsGamerIDKey];
       
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
@@ -309,7 +314,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		}
 		
 		NSURL *videoURL = [self.cache localVideoURLForCampaign:campaign];
-		if (videoURL == nil || [self.cache campaignExistsInQueue:campaign] || ![campaign shouldCacheVideo]) {
+		if (videoURL == nil || [self.cache campaignExistsInQueue:campaign] || ![campaign shouldCacheVideo] || ![self.cache isCampaignVideoCached:campaign]) {
       UALOG_DEBUG(@"Campaign is not cached!");
       videoURL = campaign.trailerStreamingURL;
     }
@@ -438,7 +443,9 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	}
 	else {
 		UALOG_DEBUG(@"Not retrying campaign download.");
-    [self.delegate campaignManagerCampaignDataFailed];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.delegate campaignManagerCampaignDataFailed];
+    });
   }
 }
 
