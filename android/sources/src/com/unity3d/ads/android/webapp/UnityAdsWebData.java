@@ -128,6 +128,11 @@ public class UnityAdsWebData {
 	}
 
 	public boolean initCampaigns () {
+		if (UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) && UnityAdsProperties.TEST_DATA != null) {
+			campaignDataReceived(UnityAdsProperties.TEST_DATA);
+			return true;
+		}
+		
 		String url = UnityAdsProperties.getCampaignQueryUrl();
 		
 		String[] parts = url.split("\\?");

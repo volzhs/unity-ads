@@ -28,6 +28,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		Log.d(UnityAdsConstants.LOG_NAME, "Init Unity Ads");
 		UnityAds.setDebugMode(true);
 		UnityAds.setTestMode(true);
+		
 		ai = new UnityAds(this, "16", this);
     }
     

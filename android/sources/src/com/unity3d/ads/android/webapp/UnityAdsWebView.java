@@ -71,6 +71,23 @@ public class UnityAdsWebView extends WebView {
 			_currentWebView = view;
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
 			UnityAdsUtils.Log("Send change view to WebApp: " + javascriptString, this);
+			
+			if (data != null) {
+				String action = "test";
+				try {
+					action = data.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY);
+				}
+				catch (Exception e) {
+				}
+				
+				if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) &&
+					action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) &&
+					UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) &&
+					!UnityAdsProperties.TEST_JAVASCRIPT_RAN &&
+					UnityAdsProperties.TEST_JAVASCRIPT != null) {
+					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT));
+				}
+			}
 		}
 	}
 	

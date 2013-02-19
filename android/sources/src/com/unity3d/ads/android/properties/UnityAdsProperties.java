@@ -1,6 +1,7 @@
 package com.unity3d.ads.android.properties;
 
 import java.net.URLEncoder;
+import java.util.Map;
 
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
@@ -9,7 +10,8 @@ import com.unity3d.ads.android.data.UnityAdsDevice;
 import android.app.Activity;
 
 public class UnityAdsProperties {
-	public static String CAMPAIGN_DATA_URL = "http://192.168.1.152:3500/mobile/campaigns";
+	//public static String CAMPAIGN_DATA_URL = "http://192.168.1.152:3500/mobile/campaigns";
+	public static String CAMPAIGN_DATA_URL = "https://impact.applifier.com/mobile/campaigns";
 	public static String WEBVIEW_BASE_URL = null;
 	public static String ANALYTICS_BASE_URL = null;
 	public static String UNITY_ADS_BASE_URL = null;
@@ -21,7 +23,13 @@ public class UnityAdsProperties {
 	public static Activity BASE_ACTIVITY = null;
 	public static Activity CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
-	public static Boolean UNITY_ADS_DEBUG_MODE = false; 
+	public static Boolean UNITY_ADS_DEBUG_MODE = false;
+	
+	public static String TEST_DATA = null;
+	public static String TEST_URL = null;
+	public static String TEST_JAVASCRIPT = null;	
+	public static Boolean TEST_JAVASCRIPT_RAN = false;
+	private static Map<String, String> TEST_EXTRA_PARAMS = null; 
 
 	public static final int MAX_NUMBER_OF_ANALYTICS_RETRIES = 5;
 	
@@ -72,6 +80,25 @@ public class UnityAdsProperties {
 			createCampaignQueryString();
 		}
 		
-		return String.format("%s%s", UnityAdsProperties.CAMPAIGN_DATA_URL, _campaignQueryString);
+		String url = CAMPAIGN_DATA_URL;
+		
+		if (UnityAdsUtils.isDebuggable(BASE_ACTIVITY) && TEST_URL != null)
+			url = TEST_URL;
+			
+		return String.format("%s%s", url, _campaignQueryString);
+	}
+	
+	public static void setExtraParams (Map<String, String> params) {
+		if (params.containsKey("testData")) {
+			TEST_DATA = params.get("testData");
+		}
+		
+		if (params.containsKey("testUrl")) {
+			TEST_URL = params.get("testUrl");
+		}
+		
+		if (params.containsKey("testJavaScript")) {
+			TEST_JAVASCRIPT = params.get("testJavaScript");
+		}
 	}
 }

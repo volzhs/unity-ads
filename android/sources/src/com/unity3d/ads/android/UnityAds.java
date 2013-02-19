@@ -72,6 +72,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 		init(activity, gameId, listener);
 	}
 	
+	public UnityAds (Activity activity, String gameId, IUnityAdsListener listener, Map<String, String> extraParameters) {
+		init(activity, gameId, listener);
+	}
+	
 	
 	/* PUBLIC STATIC METHODS */
 	
@@ -233,19 +237,23 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public boolean setRewardItemKey (String rewardItemKey) {
-		UnityAdsRewardItem rewardItem = webdata.getRewardItemByKey(rewardItemKey);
-		
-		if (rewardItem != null) {
-			webdata.setCurrentRewardItem(rewardItem);
-			return true;
+		if (canShow()) {
+			UnityAdsRewardItem rewardItem = webdata.getRewardItemByKey(rewardItemKey);
+			
+			if (rewardItem != null) {
+				webdata.setCurrentRewardItem(rewardItem);
+				return true;
+			}
 		}
 		
 		return false;
 	}
 	
 	public void setDefaultRewardItemAsRewardItem () {
-		if (webdata != null && webdata.getDefaultRewardItem() != null) {
-			webdata.setCurrentRewardItem(webdata.getDefaultRewardItem());
+		if (canShow()) {
+			if (webdata != null && webdata.getDefaultRewardItem() != null) {
+				webdata.setCurrentRewardItem(webdata.getDefaultRewardItem());
+			}
 		}
 	}
 	
@@ -458,7 +466,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.BASE_ACTIVITY = activity;
 		UnityAdsProperties.CURRENT_ACTIVITY = activity;
 		
-		//UnityAdsUtils.Log("Is debuggable=" + UnityAdsUtils.isDebuggable(activity), this);
+		UnityAdsUtils.Log("Is debuggable=" + UnityAdsUtils.isDebuggable(activity), this);
 		
 		if (_initialized) return; 
 		
