@@ -1,7 +1,7 @@
 package com.mycompany.test;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.campaign.IUnityAdsCampaignListener;
+import com.unity3d.ads.android.IUnityAdsListener;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 import com.mycompany.test.R;
@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCampaignListener {
+public class UnityAdsTestStartActivity extends Activity implements IUnityAdsListener {
 	private UnityAds ai = null;
 	
     @Override
@@ -26,9 +26,10 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
         setContentView(R.layout.main);
         ((ImageView)findViewById(R.id.playbtn)).setAlpha(80);
 		Log.d(UnityAdsConstants.LOG_NAME, "Init Unity Ads");
-		ai = new UnityAds(this, "16");
-		ai.setCampaignListener(this);
-		ai.init();
+		UnityAds.setDebugMode(true);
+		UnityAds.setTestMode(true);
+		
+		ai = new UnityAds(this, "16", this);
     }
     
     @Override
@@ -36,6 +37,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
     	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onResume()");
     	super.onResume();
 		UnityAds.instance.changeActivity(this);
+		UnityAds.instance.setListener(this);
     }
     
 	@Override
@@ -49,8 +51,12 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
 	public boolean onOptionsItemSelected (MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.kill:
+		    	ai.stopAll();
+		    	System.runFinalizersOnExit(true);		
 				finish();
-				break;
+		    	Log.d(UnityAdsConstants.LOG_NAME, "Quitting");
+
+		    	break;
 		}
 		
 		return true;
@@ -59,12 +65,30 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
     @Override
 	protected void onDestroy() {
     	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onDestroy()");
-    	//ai.stopAll();
-    	//System.runFinalizersOnExit(true);		
-		//android.os.Process.killProcess(android.os.Process.myPid());
     	super.onDestroy();		
 	}
 	
+    @Override
+	public void onHide () {
+    	
+    }
+    
+    @Override
+	public void onShow () {
+    	
+    }
+	
+	// Unity Ads video events
+    @Override
+	public void onVideoStarted () {
+    	
+    }
+    
+    @Override
+	public void onVideoCompleted () {
+    }
+	
+	// Unity Ads campaign events
     @Override
 	public void onFetchCompleted () {
     	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onFetchCompleted()");
@@ -78,4 +102,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsCamp
 			}
 		});  
 	}
+    
+    @Override
+    public void onFetchFailed () {
+    }
 }

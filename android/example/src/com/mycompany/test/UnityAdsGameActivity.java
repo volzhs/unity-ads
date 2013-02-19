@@ -1,6 +1,10 @@
 package com.mycompany.test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.unity3d.ads.android.UnityAds;
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.IUnityAdsListener;
 
 import android.app.Activity;
@@ -10,9 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.video.IUnityAdsVideoListener;
 
-public class UnityAdsGameActivity extends Activity implements IUnityAdsListener, IUnityAdsVideoListener {
+public class UnityAdsGameActivity extends Activity implements IUnityAdsListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsGameActivity->onCreate()");
@@ -23,7 +26,17 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
         ((ImageView)findViewById(R.id.unlock)).setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				UnityAds.instance.show();
+				UnityAdsUtils.Log("Opening with key: " + UnityAds.instance.getCurrentRewardItemKey(), this);
+				
+				// Open with options test
+				Map<String, Object> optionsMap = new HashMap<String, Object>();
+				optionsMap.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, false);
+				optionsMap.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, false);
+				optionsMap.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, "gom");
+				UnityAds.instance.show(optionsMap);
+				
+				// Open without options (defaults)
+				//UnityAds.instance.show();
 			}
 		});
         
@@ -37,9 +50,8 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
     	
     	UnityAds.instance.changeActivity(this);
 		UnityAds.instance.setListener(this);
-		UnityAds.instance.setVideoListener(this);
 		
-		if (!UnityAds.instance.hasCampaigns()) {
+		if (!UnityAds.instance.canShowAds()) {
 			((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
 		}
     }
@@ -62,4 +74,12 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener,
     	((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
     	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Video completed!");
 	}
+	
+    @Override
+	public void onFetchCompleted () {
+	}
+    
+    @Override
+    public void onFetchFailed () {
+    }
 }

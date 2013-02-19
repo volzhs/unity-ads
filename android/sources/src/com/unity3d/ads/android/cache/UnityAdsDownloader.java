@@ -61,6 +61,20 @@ public class UnityAdsDownloader {
 		}
 	}
 	
+	public static void clearData () {
+		if (_cacheDownloads != null) {
+			_cacheDownloads.clear();
+			_cacheDownloads = null;
+		}
+		
+		_isDownloading = false;
+		
+		if (_downloadListeners != null) {
+			_downloadListeners.clear();
+			_downloadListeners = null;
+		}
+	}
+	
 	
 	/* INTERNAL METHODS */
 	
@@ -83,8 +97,10 @@ public class UnityAdsDownloader {
 	private static boolean isInDownloads (String downloadUrl) {
 		if (_downloadList != null) {
 			for (UnityAdsCampaign download : _downloadList) {
-				if (download.getVideoUrl().equals(downloadUrl))
+				if (download != null && download.getVideoUrl() != null && download.getVideoUrl().equals(downloadUrl))
 					return true;
+				else if (download == null || download.getVideoUrl() == null)
+					_downloadList.remove(download);
 			}
 		}
 		
@@ -147,6 +163,7 @@ public class UnityAdsDownloader {
 		}
 		catch (Exception e) {
 			UnityAdsUtils.Log("Problems creating FOS: " + fileName, UnityAdsDownloader.class);
+			return null;
 		}
 		
 		return fos;
@@ -171,7 +188,6 @@ public class UnityAdsDownloader {
 		private URL _downloadUrl = null;
 		private InputStream _input = null;
 		private OutputStream _output = null;
-		private File _targetFile = null;
 		private int _downloadLength = 0;
 		private URLConnection _urlConnection = null;
 		private boolean _cancelled = false;
@@ -183,6 +199,9 @@ public class UnityAdsDownloader {
 		
 		@Override
 	    protected String doInBackground(String... sUrl) {
+			long startTime = System.currentTimeMillis();
+			long duration = 0;
+			
 			try {
 				_downloadUrl = new URL(sUrl[0]);
 			}
@@ -210,8 +229,9 @@ public class UnityAdsDownloader {
 					UnityAdsUtils.Log("Problems opening stream: " + e.getMessage(), this);
 				}
 				
-				_targetFile = new File(sUrl[0]);
 				_output = getOutputStreamFor(_campaign.getVideoFilename());
+				if (_output == null)
+					onCancelled(this);
 				
 				byte data[] = new byte[1024];
 				long total = 0;
@@ -236,6 +256,8 @@ public class UnityAdsDownloader {
 				}
 				
 				closeAndFlushConnection();
+				duration = System.currentTimeMillis() - startTime;
+				UnityAdsUtils.Log("File: " + _campaign.getVideoFilename() + " of size: " + total + " downloaded in: " + duration + "ms", this);
 			}
 						
 			return null;
@@ -285,7 +307,7 @@ public class UnityAdsDownloader {
 	    private void cancelDownload () {
 	    	UnityAdsUtils.Log("Download cancelled for: " + _downloadUrl.toString(), this);
 			closeAndFlushConnection();
-			UnityAdsUtils.removeFile(_targetFile.toString());
+			UnityAdsUtils.removeFile(_campaign.getVideoFilename());
         	removeDownload(_campaign);
         	removeFromCacheDownloads(this);
         	sendToListeners(UnityAdsDownloadEventType.DownloadCancelled, _downloadUrl.toString());

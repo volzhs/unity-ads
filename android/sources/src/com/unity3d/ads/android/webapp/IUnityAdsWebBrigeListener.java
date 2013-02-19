@@ -7,4 +7,5 @@ public interface IUnityAdsWebBrigeListener {
 	public void onPauseVideo (JSONObject data);
 	public void onCloseAdsView (JSONObject data);
 	public void onWebAppInitComplete (JSONObject data);
+	public void onOpenPlayStore (JSONObject data);
 }

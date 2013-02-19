@@ -11,7 +11,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	private ArrayList<String> _downloadList = null;
 	private UnityAdsCampaign _campaign = null;
 	private IUnityAdsCampaignHandlerListener _handlerListener = null;
-	private boolean _cancelledDownloads = false;
+	//private boolean _cancelledDownloads = false;
 	
 	
 	public UnityAdsCampaignHandler (UnityAdsCampaign campaign) {
@@ -41,7 +41,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	public void onFileDownloadCancelled (String downloadUrl) {	
 		if (finishDownload(downloadUrl)) {
 			UnityAdsUtils.Log("Download cancelled: " + _campaign.getCampaignId(), this);
-			_cancelledDownloads = true;
+			//_cancelledDownloads = true;
 		}
 	}
 	
@@ -60,6 +60,20 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		*/
 	}
 	
+	public void clearData () {
+		if (_handlerListener != null)
+			_handlerListener = null;
+		
+		if (_downloadList != null) {
+			_downloadList.clear();
+		}
+		
+		if (_campaign != null) {
+			_campaign.clearData();
+			_campaign = null;
+		}
+	}
+	
 	
 	/* INTERNAL METHODS */
 	
@@ -76,22 +90,36 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	}
 	
 	private void checkFileAndDownloadIfNeeded (String fileUrl) {
-		if (_campaign.shouldCacheVideo() && !UnityAdsUtils.isFileInCache(_campaign.getVideoFilename())) {
+		if (_campaign.shouldCacheVideo() && !UnityAdsUtils.isFileInCache(_campaign.getVideoFilename()) && UnityAdsUtils.canUseExternalStorage()) {
 			if (!hasDownloads())
 				UnityAdsDownloader.addListener(this);
 			
 			addCampaignToDownloads();
 		}
-		else if (!isFileOk(fileUrl) && _campaign.shouldCacheVideo()) {
-			UnityAdsUtils.removeFile(fileUrl);
+		else if (_campaign.shouldCacheVideo() && !isFileOk(fileUrl) && UnityAdsUtils.canUseExternalStorage()) {
+			UnityAdsUtils.Log("The file was not okay, redownloading", this);
+			UnityAdsUtils.removeFile(_campaign.getVideoFilename());
 			UnityAdsDownloader.addListener(this);
 			addCampaignToDownloads();
 		}		
 	}
 	
 	private boolean isFileOk (String fileUrl) {
-		// TODO: Implement isFileOk
-		return true;
+		long localSize = UnityAdsUtils.getSizeForLocalFile(_campaign.getVideoFilename());
+		long expectedSize = _campaign.getVideoFileExpectedSize();
+		
+		UnityAdsUtils.Log("isFileOk: localSize=" + localSize + ", expectedSize=" + expectedSize, this);
+				
+		if (localSize == -1)
+			return false;
+		
+		if (expectedSize == -1)
+			return true;
+		
+		if (localSize > 0 && expectedSize > 0 && localSize == expectedSize)
+			return true;
+			
+		return false;
 	}
 	
 	private void addCampaignToDownloads () {

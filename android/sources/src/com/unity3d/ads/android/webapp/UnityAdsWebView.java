@@ -1,5 +1,6 @@
 package com.unity3d.ads.android.webapp;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -26,6 +28,7 @@ public class UnityAdsWebView extends WebView {
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
 	private UnityAdsWebBridge _webBridge = null;
+	private String _currentWebView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
 	
 	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		super(activity);
@@ -38,8 +41,19 @@ public class UnityAdsWebView extends WebView {
 		init(activity, url, listener, webBridge);
 	}
 	
+	public void clearWebView () {
+		_webAppLoaded = false;
+		_listener = null;
+		setWebViewClient(null);
+		setWebChromeClient(null);
+	}
+	
 	public boolean isWebAppLoaded () {
 		return _webAppLoaded;
+	}
+	
+	public String getWebViewCurrentView () {
+		return _currentWebView;
 	}
 	
 	public void setWebViewCurrentView (String view) {
@@ -54,8 +68,26 @@ public class UnityAdsWebView extends WebView {
 				dataString = data.toString();
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
+			_currentWebView = view;
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
 			UnityAdsUtils.Log("Send change view to WebApp: " + javascriptString, this);
+			
+			if (data != null) {
+				String action = "test";
+				try {
+					action = data.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY);
+				}
+				catch (Exception e) {
+				}
+				
+				if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) &&
+					action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) &&
+					UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) &&
+					!UnityAdsProperties.TEST_JAVASCRIPT_RAN &&
+					UnityAdsProperties.TEST_JAVASCRIPT != null) {
+					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT));
+				}
+			}
 		}
 	}
 	
@@ -85,6 +117,8 @@ public class UnityAdsWebView extends WebView {
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY, UnityAdsDevice.getMacAddress());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY, UnityAdsConstants.UNITY_ADS_VERSION);
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
 				
 				// Tracking data
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY, UnityAdsDevice.getSoftwareVersion());
@@ -111,13 +145,15 @@ public class UnityAdsWebView extends WebView {
 		setupUnityAdsView();
 		loadUrl(_url);
 		
-		setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-			    return true;
-			}
-		});
-		setLongClickable(false);
+		if (Build.VERSION.SDK_INT > 8) {
+			setOnLongClickListener(new OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+				    return true;
+				}
+			});
+			setLongClickable(false);
+		}
 	}
 	
 	private void setupUnityAdsView ()  {
@@ -148,9 +184,7 @@ public class UnityAdsWebView extends WebView {
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 		setInitialScale(0);
-		
 
-		
 		setBackgroundColor(Color.BLACK);
 		setBackgroundDrawable(null);
 		setBackgroundResource(0);
@@ -172,21 +206,22 @@ public class UnityAdsWebView extends WebView {
 			getSettings().setAllowFileAccess(true);
 		}
 		
+		UnityAdsUtils.Log("Adding javascript interface", this);
+		addJavascriptInterface(_webBridge, "applifierimpactnative");
+	}
+	
+	public void setRenderMode (int mode) {
 		// WebView background will go white in SDK >= 11 if you don't set webview's
 		// layer-type to software.
 		try
 		{
 			Method layertype = View.class.getMethod("setLayerType", Integer.TYPE, Paint.class);
-			layertype.invoke(this, 1, null);
+			layertype.invoke(this, mode, null);
 		}
 		catch (Exception e) {
 			UnityAdsUtils.Log("Could not invoke setLayerType", this);
-		}
-		
-		UnityAdsUtils.Log("Adding javascript interface", this);
-		addJavascriptInterface(_webBridge, "applifierimpactnative");
+		}		
 	}
-	
 	
 	/* OVERRIDE METHODS */
 	
@@ -194,6 +229,7 @@ public class UnityAdsWebView extends WebView {
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
+				UnityAdsUtils.Log("onKeyDown", this);
 		    	if (_listener != null)
 		    		_listener.onBackButtonClicked(this);
 		    	return true;
@@ -207,7 +243,12 @@ public class UnityAdsWebView extends WebView {
 	
 	private class UnityAdsViewChromeClient extends WebChromeClient {
 		public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-			UnityAdsUtils.Log("JavaScript (line: " + lineNumber + "): " + message, this);
+			String sourceFile = sourceID;
+			File tmp = new File(sourceID);
+			if (tmp != null && tmp.getName() != null)
+				sourceFile = tmp.getName();
+			
+			UnityAdsUtils.Log("JavaScript (sourceId=" + sourceFile + ", line=" + lineNumber + "): " + message, this);
 		}
 		
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {

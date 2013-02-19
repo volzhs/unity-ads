@@ -9,8 +9,6 @@ import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.IUnityAdsCampaignHandlerListener;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
-import android.util.Log;
-
 public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	
 	private IUnityAdsCacheListener _downloadListener = null;	
@@ -21,8 +19,12 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	
 	
 	public UnityAdsCacheManager () {
-		UnityAdsUtils.createCacheDir();
-		UnityAdsUtils.Log("External storagedir: " + UnityAdsUtils.getCacheDirectory(), this);
+		if (UnityAdsUtils.canUseExternalStorage()) {
+			UnityAdsUtils.Log("External storagedir: " + UnityAdsUtils.getCacheDirectory() + " created with result: " + UnityAdsUtils.createCacheDir(), this);
+		}
+		else {
+			UnityAdsUtils.Log("Could not create cache, no external memory present", this);
+		}
 	}
 	
 	public void setDownloadListener (IUnityAdsCacheListener listener) {
@@ -76,6 +78,33 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 					addToDownloadingHandlers(campaignHandler);
 				}					
 			}
+		}
+	}
+	
+	public void clearData () {
+		if (_downloadListener != null)
+			_downloadListener = null;
+		
+		if (_downloadingHandlers != null) {
+			for (UnityAdsCampaignHandler ch : _downloadingHandlers) {
+				ch.setListener(null);
+				ch.clearData();
+				ch = null;	
+			}
+			
+			_downloadingHandlers.clear();
+			_downloadingHandlers = null;
+		}
+		
+		if (_handlers != null) {
+			for (UnityAdsCampaignHandler ch : _handlers) {
+				ch.setListener(null);
+				ch.clearData();
+				ch = null;
+			}
+			
+			_handlers.clear();
+			_handlers = null;
 		}
 	}
 
