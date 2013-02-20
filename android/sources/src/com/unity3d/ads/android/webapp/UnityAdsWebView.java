@@ -80,11 +80,18 @@ public class UnityAdsWebView extends WebView {
 				catch (Exception e) {
 				}
 				
+				UnityAdsUtils.Log("dataHasApiActionKey=" + data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) , this);
+				UnityAdsUtils.Log("actionEqualsWebViewApiOpen=" + action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) , this);
+				UnityAdsUtils.Log("isDebuggable=" + UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) , this);
+				UnityAdsUtils.Log("testJavaScriptHasRunned=" + UnityAdsProperties.TEST_JAVASCRIPT_RAN , this);
+				UnityAdsUtils.Log("testJavaScriptContents=" + UnityAdsProperties.TEST_JAVASCRIPT , this);
+				
 				if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) &&
 					action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) &&
 					UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) &&
 					!UnityAdsProperties.TEST_JAVASCRIPT_RAN &&
 					UnityAdsProperties.TEST_JAVASCRIPT != null) {
+					UnityAdsUtils.Log("Running test-javascript: " + UnityAdsProperties.TEST_JAVASCRIPT , this);
 					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT));
 				}
 			}
