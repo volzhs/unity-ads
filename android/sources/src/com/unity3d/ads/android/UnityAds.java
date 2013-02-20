@@ -73,6 +73,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public UnityAds (Activity activity, String gameId, IUnityAdsListener listener, Map<String, String> extraParameters) {
+		UnityAdsProperties.setExtraParams(extraParameters);
 		init(activity, gameId, listener);
 	}
 	
