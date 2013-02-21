@@ -71,12 +71,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public UnityAds (Activity activity, String gameId, IUnityAdsListener listener) {
 		init(activity, gameId, listener);
 	}
-	
-	public UnityAds (Activity activity, String gameId, IUnityAdsListener listener, Map<String, String> extraParameters) {
-		UnityAdsProperties.setExtraParams(extraParameters);
-		init(activity, gameId, listener);
-	}
-	
+
 	
 	/* PUBLIC STATIC METHODS */
 	
@@ -598,11 +593,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 									if (_developerOptions == null || !_developerOptions.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) || _developerOptions.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(false))
 										UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
 									
-									if (_adsListener != null)
-										_adsListener.onHide();
-									
 									_developerOptions = null;
 									_showingAds = false;
+									
+									if (_adsListener != null)
+										_adsListener.onHide();
 								}
 							});
 						}
