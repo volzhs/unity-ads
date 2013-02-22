@@ -16,7 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
-import android.os.Looper;
 
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
@@ -141,15 +140,6 @@ public class UnityAdsWebData {
 		if (UnityAdsProperties.CURRENT_ACTIVITY != null)
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(ulc);
 		
-
-		/*
-		UnityAdsUrlLoader loader = new UnityAdsUrlLoader(parts[0], parts[1], UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.VideoPlan, 0);
-		UnityAdsUtils.Log("VIDEOPLAN_URL: " + loader.getUrl(), this);
-		addLoader(loader);
-		startNextLoader();
-		checkFailedUrls();
-		*/
-		
 		checkFailedUrls();			
 
 		return true;
@@ -175,12 +165,6 @@ public class UnityAdsWebData {
 			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(ulc);
 			
-			/*
-			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, queryParams, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_POST, UnityAdsRequestType.VideoViewed, 0);
-			addLoader(loader);
-			startNextLoader();
-			*/
-			
 			progressSent = true;
 		}
 		
@@ -202,12 +186,6 @@ public class UnityAdsWebData {
 			UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(viewUrl, analyticsUrl, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.Analytics, 0);
 			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(ulc);
-			
-			/*
-			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(viewUrl, analyticsUrl, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.Analytics, 0);
-			addLoader(loader);
-			startNextLoader();*/
-			
 		}
 	}
 	
@@ -385,18 +363,6 @@ public class UnityAdsWebData {
 						
 						if (UnityAdsProperties.CURRENT_ACTIVITY != null)
 							UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(ulc);
-						
-						/*
-						loader = new UnityAdsUrlLoader(
-								failedUrl.getString(UnityAdsConstants.UNITY_ADS_FAILED_URL_URL_KEY), 
-								failedUrl.getString(UnityAdsConstants.UNITY_ADS_FAILED_URL_BODY_KEY),
-								failedUrl.getString(UnityAdsConstants.UNITY_ADS_FAILED_URL_METHODTYPE_KEY),
-								UnityAdsRequestType.getValueOf(failedUrl.getString(UnityAdsConstants.UNITY_ADS_FAILED_URL_REQUESTTYPE_KEY)), 
-								failedUrl.getInt(UnityAdsConstants.UNITY_ADS_FAILED_URL_RETRIES_KEY) + 1
-								);
-						
-						if (loader.getRetries() <= UnityAdsProperties.MAX_NUMBER_OF_ANALYTICS_RETRIES)
-							addLoader(loader);*/
 					}
 				}
 			}
