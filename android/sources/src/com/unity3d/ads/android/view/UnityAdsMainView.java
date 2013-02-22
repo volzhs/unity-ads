@@ -29,7 +29,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 																		IUnityAdsVideoPlayerListener {
 
 	public static enum UnityAdsMainViewState { WebView, VideoPlayer };
-	public static enum UnityAdsMainViewAction { VideoStart, VideoEnd, BackButtonPressed };
+	public static enum UnityAdsMainViewAction { VideoStart, VideoEnd, BackButtonPressed, RequestRetryVideoPlay };
 	
 	// Views
 	public UnityAdsVideoPlayView videoplayerview = null;
@@ -38,6 +38,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	// Listener
 	private IUnityAdsMainViewListener _listener = null;
 	private UnityAdsMainViewState _currentState = UnityAdsMainViewState.WebView;
+	private Boolean _retriedVideoPlaybackOnce = false;
 
 	public UnityAdsMainView(Context context, IUnityAdsMainViewListener listener) {
 		super(context);
@@ -245,6 +246,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	
 	@Override
 	public void onCompletion(MediaPlayer mp) {
+		_retriedVideoPlaybackOnce = false;
 		UnityAdsUtils.Log("onCompletion", this);
 		afterVideoPlaybackOperations();
 		onEventPositionReached(UnityAdsVideoPosition.End);
@@ -264,33 +266,43 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	}
 	
 	public void onVideoPlaybackError () {
-		UnityAdsUtils.Log("onVideoPlaybackError", this);		
-		UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
+		afterVideoPlaybackOperations();
 		
-		videoplayerview.setKeepScreenOn(false);
-		destroyVideoPlayerView();
-		setViewState(UnityAdsMainViewState.WebView);
-		
-		JSONObject errorParams = new JSONObject();
-		JSONObject spinnerParams = new JSONObject();
-		JSONObject params = new JSONObject();
-		
-		try {
-			errorParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_VIDEOPLAYBACKERROR);
-			spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
-			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+		if (_retriedVideoPlaybackOnce) {
+			UnityAdsUtils.Log("onVideoPlaybackError", this);		
+			UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
+			
+			// FIX: Replace with afterVideoPlaybackOperations?
+			//videoplayerview.setKeepScreenOn(false);
+			//destroyVideoPlayerView();
+			//setViewState(UnityAdsMainViewState.WebView);
+			
+			JSONObject errorParams = new JSONObject();
+			JSONObject spinnerParams = new JSONObject();
+			JSONObject params = new JSONObject();
+			
+			try {
+				errorParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_VIDEOPLAYBACKERROR);
+				spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
+				params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("Could not create JSON", this);
+			}
+			
+			webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWERROR, errorParams);
+			webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
+			webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
+			webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START);
+			//UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
+			UnityAdsProperties.SELECTED_CAMPAIGN = null;
+			_retriedVideoPlaybackOnce = false;
 		}
-		catch (Exception e) {
-			UnityAdsUtils.Log("Could not create JSON", this);
+		else {
+			_retriedVideoPlaybackOnce = true;
+			sendActionToListener(UnityAdsMainViewAction.RequestRetryVideoPlay);
 		}
-		
-		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWERROR, errorParams);
-		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
-		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
-		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START);
-		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-		UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
-		UnityAdsProperties.SELECTED_CAMPAIGN = null;
 	}
 	
 	// IUnityAdsWebViewListener

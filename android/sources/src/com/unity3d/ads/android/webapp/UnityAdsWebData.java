@@ -581,6 +581,7 @@ public class UnityAdsWebData {
 		public void run () {
 			try {
 				_loader.cancel(true);
+				_loader.clear();
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);

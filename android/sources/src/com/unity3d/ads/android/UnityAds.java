@@ -280,6 +280,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 				if (_adsListener != null)
 					_adsListener.onVideoCompleted();
 				break;
+			case RequestRetryVideoPlay:
+				playVideo();
+				break;
 		}
 	}
 	
