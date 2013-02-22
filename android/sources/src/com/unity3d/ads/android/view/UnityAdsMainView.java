@@ -300,6 +300,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			_retriedVideoPlaybackOnce = false;
 		}
 		else {
+			UnityAdsUtils.Log("Sending RequestRetryVideoPlay Something went wrong", this);
 			_retriedVideoPlaybackOnce = true;
 			sendActionToListener(UnityAdsMainViewAction.RequestRetryVideoPlay);
 		}
