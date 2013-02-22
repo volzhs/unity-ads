@@ -556,13 +556,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 				public void run() {
 					UnityAdsUtils.Log("Delayed video start", this);
 					UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
-					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
+					if (UnityAdsProperties.CURRENT_ACTIVITY != null)
+						UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
 				}
 			}, delay);
 		}
 		else {
 			UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
+			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
+				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
 		}
 	}
 	
