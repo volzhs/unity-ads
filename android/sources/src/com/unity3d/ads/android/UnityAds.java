@@ -282,7 +282,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				break;
 			case RequestRetryVideoPlay:
 				UnityAdsUtils.Log("Retrying video play, because something went wrong.", this);
-				playVideo();
+				playVideo(100);
 				break;
 		}
 	}
@@ -543,9 +543,27 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	private void playVideo () {
-		UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
+		playVideo(0);
+	}
+	
+	private void playVideo (long delay) {
 		UnityAdsUtils.Log("Running threaded", this);
-		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
+		
+		if (delay > 0) {
+			Timer delayTimer = new Timer();
+			delayTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					UnityAdsUtils.Log("Delayed video start", this);
+					UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
+					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
+				}
+			}, delay);
+		}
+		else {
+			UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
+		}
 	}
 	
 	private void startAdsFullscreenActivity () {
