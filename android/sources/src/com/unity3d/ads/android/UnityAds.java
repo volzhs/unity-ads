@@ -282,7 +282,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				break;
 			case RequestRetryVideoPlay:
 				UnityAdsUtils.Log("Retrying video play, because something went wrong.", this);
-				playVideo(100);
+				playVideo(250);
 				break;
 		}
 	}
