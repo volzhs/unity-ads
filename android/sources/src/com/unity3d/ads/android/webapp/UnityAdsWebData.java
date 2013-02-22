@@ -344,7 +344,7 @@ public class UnityAdsWebData {
 			String contents = UnityAdsUtils.readFile(pendingRequestFile, true);
 			JSONObject pendingRequestsJson = null;
 			JSONArray pendingRequestsArray = null;
-			UnityAdsUrlLoader loader = null;
+			//UnityAdsUrlLoader loader = null;
 			
 			try {
 				pendingRequestsJson = new JSONObject(contents);

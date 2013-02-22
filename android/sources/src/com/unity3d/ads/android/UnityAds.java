@@ -455,6 +455,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private void init (Activity activity, String gameId, IUnityAdsListener listener) {
+		if (_initialized) return; 
+		
 		instance = this;
 		setListener(listener);
 		
@@ -464,7 +466,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 		UnityAdsUtils.Log("Is debuggable=" + UnityAdsUtils.isDebuggable(activity), this);
 		
-		if (_initialized) return; 
 		
 		cachemanager = new UnityAdsCacheManager();
 		cachemanager.setDownloadListener(this);

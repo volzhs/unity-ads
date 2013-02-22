@@ -45,7 +45,8 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		
 		_amountPrepared = 0;
 		
-		UnityAdsUtils.Log(activeList.toString(), this);
+		if (activeList != null)
+			UnityAdsUtils.Log(activeList.toString(), this);
 		
 		// Check cache directory and delete all files that don't match the current files in campaigns
 		if (UnityAdsUtils.getCacheDirectory() != null) {
