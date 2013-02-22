@@ -291,8 +291,7 @@ public class UnityAdsWebData {
 		_urlLoaders.add(loader);
 	}
 	
-	private void startNextLoader () {
-		
+	private void startNextLoader () {		
 		if (_urlLoaders.size() > 0 && !_isLoading) {
 			UnityAdsUtils.Log("Starting next URL loader", this);
 			_isLoading = true;
@@ -301,17 +300,23 @@ public class UnityAdsWebData {
 	}
 	
 	private void urlLoadCompleted (UnityAdsUrlLoader loader) {
-		switch (loader.getRequestType()) {
-			case VideoPlan:
-				campaignDataReceived(loader.getData());
-				loader.clear();
-				break;
-			case VideoViewed:
-				break;
-			case Unsent:
-				break;
-			case Analytics:
-				break;
+		if (loader != null && loader.getRequestType() != null) {
+			switch (loader.getRequestType()) {
+				case VideoPlan:
+					campaignDataReceived(loader.getData());
+					break;
+				case VideoViewed:
+					break;
+				case Unsent:
+					break;
+				case Analytics:
+					break;
+			}
+			
+			loader.clear();
+		}
+		else {
+			UnityAdsUtils.Log("Got broken urlLoader!", this);
 		}
 		
 		_totalUrlsSent++;
@@ -323,15 +328,22 @@ public class UnityAdsWebData {
 	}
 	
 	private void urlLoadFailed (UnityAdsUrlLoader loader) {
-		switch (loader.getRequestType()) {
-			case Analytics:
-			case VideoViewed:
-			case Unsent:
-				writeFailedUrl(loader);
-				break;
-			case VideoPlan:
-				campaignDataFailed();
-				break;
+		if (loader != null && loader.getRequestType() != null) {
+			switch (loader.getRequestType()) {
+				case Analytics:
+				case VideoViewed:
+				case Unsent:
+					writeFailedUrl(loader);
+					break;
+				case VideoPlan:
+					campaignDataFailed();
+					break;
+			}
+			
+			loader.clear();
+		}
+		else {
+			UnityAdsUtils.Log("Got broken urlLoader!", this);
 		}
 		
 		_isLoading = false;
@@ -581,7 +593,7 @@ public class UnityAdsWebData {
 		public void run () {
 			try {
 				_loader.cancel(true);
-				_loader.clear();
+				//_loader.clear();
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
@@ -602,6 +614,7 @@ public class UnityAdsWebData {
 		private String _httpMethod = UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET;
 		private String _queryParams = null;
 		private String _baseUrl = null;
+		private Boolean _done = false;
 		
 		public UnityAdsUrlLoader (String url, String queryParams, String httpMethod, UnityAdsRequestType requestType, int existingRetries) {
 			super();
@@ -774,13 +787,15 @@ public class UnityAdsWebData {
 		}
 
 		protected void onCancelled(Object result) {
+			_done = true;
 			closeAndFlushConnection();
 			urlLoadFailed(this);
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (!isCancelled()) {
+			if (!isCancelled() && !_done) {
+				_done = true;
 				closeAndFlushConnection();
 				urlLoadCompleted(this);
  			}
