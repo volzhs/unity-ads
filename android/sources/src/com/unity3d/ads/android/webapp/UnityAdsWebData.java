@@ -304,6 +304,7 @@ public class UnityAdsWebData {
 		switch (loader.getRequestType()) {
 			case VideoPlan:
 				campaignDataReceived(loader.getData());
+				loader.clear();
 				break;
 			case VideoViewed:
 				break;
@@ -653,6 +654,17 @@ public class UnityAdsWebData {
 			return _requestType;
 		}
 		
+		public void clear () {
+			_downloadLength = 0;
+			_urlData = "";
+			_requestType = null;
+			_finalUrl = null;
+			_retries = 0;
+			_httpMethod = null;
+			_queryParams = null;
+			_baseUrl = null;
+		}
+		
 		private void cancelInMainThread () {
 			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsCancelUrlLoaderRunner(this));
@@ -789,16 +801,7 @@ public class UnityAdsWebData {
 			catch (Exception e) {
 				UnityAdsUtils.Log("Problems closing connection: " + e.getMessage(), this);
 			}
-			
-			_downloadLength = 0;
-			_urlData = "";
-			_requestType = null;
-			_finalUrl = null;
-			_retries = 0;
-			_httpMethod = null;
-			_queryParams = null;
-			_baseUrl = null;
-			
+				
 			try {
 				_input.close();
 				_input = null;
