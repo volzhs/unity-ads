@@ -640,6 +640,8 @@ public class UnityAdsWebData {
 		
 		@Override
 		protected String doInBackground(String... params) {
+			Boolean panicCancel = false;
+
 			try {
 				if (_url.toString().startsWith("https://")) {
 					_connection = (HttpsURLConnection)_url.openConnection();
@@ -659,6 +661,17 @@ public class UnityAdsWebData {
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Problems opening connection: " + e.getMessage(), this);
+				panicCancel = true;
+			}
+			
+			if (panicCancel) {
+				try {
+					cancel(true);
+				}
+				catch (Exception e) {
+					UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
+					panicCancel = false;
+				}
 			}
 			
 			if (_connection != null) {				
@@ -670,6 +683,17 @@ public class UnityAdsWebData {
 					}
 					catch (Exception e) {
 						UnityAdsUtils.Log("Problems writing post-data: " + e.getMessage() + ", " + e.getStackTrace(), this);
+						panicCancel = true;
+					}
+					
+					if (panicCancel) {
+						try {
+							cancel(true);
+						}
+						catch (Exception e) {
+							UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
+							panicCancel = false;
+						}
 					}
 				}
 				
@@ -680,13 +704,21 @@ public class UnityAdsWebData {
 				}
 				catch (Exception e) {
 					UnityAdsUtils.Log("Problems opening stream: " + e.getMessage(), this);
+					panicCancel = true;
+				}
+				
+				if (panicCancel) {
+					try {
+						cancel(true);
+					}
+					catch (Exception e) {
+						UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
+						panicCancel = false;
+					}
 				}
 				
 				long total = 0;
-				
 				_downloadLength = _connection.getContentLength();
-				
-				Boolean panicCancel = false;
 				
 				try {
 					_totalLoadersHaveRun++;
@@ -708,7 +740,7 @@ public class UnityAdsWebData {
 					UnityAdsUtils.Log("Read total of: " + total, this);
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Problems loading url: " + e.getMessage(), this);
+					UnityAdsUtils.Log("Problems loading url! Error-message: " + e.getMessage(), this);
 					panicCancel = true;
 					return null;
 				}
