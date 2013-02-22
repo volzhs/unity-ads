@@ -572,6 +572,21 @@ public class UnityAdsWebData {
 		}
 	}
 	
+	private class UnityAdsCancelUrlLoaderRunner implements Runnable {
+		private UnityAdsUrlLoader _loader = null;
+		public UnityAdsCancelUrlLoaderRunner (UnityAdsUrlLoader loader) {
+			_loader = loader;
+		}
+		public void run () {
+			try {
+				_loader.cancel(true);
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
+			}
+		}
+	}
+	
 	private class UnityAdsUrlLoader extends AsyncTask<String, Integer, String> {
 		private URL _url = null;
 		private HttpURLConnection _connection = null;
@@ -638,6 +653,11 @@ public class UnityAdsWebData {
 			return _requestType;
 		}
 		
+		private void cancelInMainThread () {
+			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
+				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsCancelUrlLoaderRunner(this));
+		}
+		
 		@Override
 		protected String doInBackground(String... params) {
 			Boolean panicCancel = false;
@@ -665,13 +685,8 @@ public class UnityAdsWebData {
 			}
 			
 			if (panicCancel) {
-				try {
-					cancel(true);
-				}
-				catch (Exception e) {
-					UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
-					panicCancel = false;
-				}
+				cancelInMainThread();
+				panicCancel = false;
 			}
 			
 			if (_connection != null) {				
@@ -687,13 +702,8 @@ public class UnityAdsWebData {
 					}
 					
 					if (panicCancel) {
-						try {
-							cancel(true);
-						}
-						catch (Exception e) {
-							UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
-							panicCancel = false;
-						}
+						cancelInMainThread();
+						panicCancel = false;
 					}
 				}
 				
@@ -708,13 +718,8 @@ public class UnityAdsWebData {
 				}
 				
 				if (panicCancel) {
-					try {
-						cancel(true);
-					}
-					catch (Exception e) {
-						UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
-						panicCancel = false;
-					}
+					cancelInMainThread();
+					panicCancel = false;
 				}
 				
 				long total = 0;
@@ -746,15 +751,9 @@ public class UnityAdsWebData {
 				}
 				
 				if (panicCancel) {
-					try {
-						cancel(true);
-					}
-					catch (Exception e) {
-						UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
-						panicCancel = false;
-					}
+					cancelInMainThread();
+					panicCancel = false;
 				}
-
 			}
 			
 			return null;
@@ -781,11 +780,33 @@ public class UnityAdsWebData {
 		}
 		
 		private void closeAndFlushConnection () {
+			_url = null;
+			
 			try {
-				_input.close();
+				_connection.disconnect();
+				_connection = null;
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Problems closing connection: " + e.getMessage(), this);
+			}
+			
+			_downloadLength = 0;
+			_urlData = "";
+			_requestType = null;
+			_finalUrl = null;
+			_retries = 0;
+			_httpMethod = null;
+			_queryParams = null;
+			_baseUrl = null;
+			
+			try {
+				_input.close();
+				_input = null;
+				_binput.close();
+				_binput = null;
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("Problems closing streams: " + e.getMessage(), this);
 			}	
 		}
 	}
