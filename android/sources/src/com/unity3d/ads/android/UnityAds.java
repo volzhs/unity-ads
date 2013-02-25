@@ -390,18 +390,26 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 			
 			if (campaignId != null) {
-				UnityAdsProperties.SELECTED_CAMPAIGN = webdata.getCampaignById(campaignId);
-				Boolean rewatch = false;
-				
-				try {
-					rewatch = data.getBoolean(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY);
-				}
-				catch (Exception e) {
+				if (webdata != null && webdata.getCampaignById(campaignId) != null) {
+					UnityAdsProperties.SELECTED_CAMPAIGN = webdata.getCampaignById(campaignId);
 				}
 				
-				UnityAdsUtils.Log("onPlayVideo: Selected campaign=" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + " isViewed: " + UnityAdsProperties.SELECTED_CAMPAIGN.isViewed(), this);
-				if (UnityAdsProperties.SELECTED_CAMPAIGN != null && (rewatch || !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed())) {
-					playVideo();
+				if (UnityAdsProperties.SELECTED_CAMPAIGN != null && 
+					UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() != null && 
+					UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId().equals(campaignId)) {
+					
+					Boolean rewatch = false;
+					
+					try {
+						rewatch = data.getBoolean(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY);
+					}
+					catch (Exception e) {
+					}
+					
+					UnityAdsUtils.Log("onPlayVideo: Selected campaign=" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + " isViewed: " + UnityAdsProperties.SELECTED_CAMPAIGN.isViewed(), this);
+					if (UnityAdsProperties.SELECTED_CAMPAIGN != null && (rewatch || !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed())) {
+						playVideo();
+					}
 				}
 			}
 		}
