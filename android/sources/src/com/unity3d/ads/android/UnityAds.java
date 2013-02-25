@@ -105,18 +105,29 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void changeActivity (Activity activity) {
 		if (activity == null) return;
 		
-		if (!activity.equals(UnityAdsProperties.CURRENT_ACTIVITY)) {
+		if (activity != null && !activity.equals(UnityAdsProperties.CURRENT_ACTIVITY)) {
 			UnityAdsProperties.CURRENT_ACTIVITY = activity;
 			
 			// Not the most pretty way to detect when the fullscreen activity is ready
-			if (activity.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
-				String view = _mainView.webview.getWebViewCurrentView();
-				if (_openRequestFromDeveloper) {
-					view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
-					UnityAdsUtils.Log("changeActivity: This open request is from the developer, setting start view", this);
+			if (activity != null &&
+				activity.getClass() != null &&
+				activity.getClass().getName() != null &&
+				activity.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
+				
+				String view = null;
+				
+				if (_mainView != null && _mainView.webview != null) {
+					view = _mainView.webview.getWebViewCurrentView();
+					
+					if (_openRequestFromDeveloper) {
+						view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
+						UnityAdsUtils.Log("changeActivity: This open request is from the developer, setting start view", this);
+					}
+					
+					if (view != null)
+						open(view);
 				}
 				
-				open(view);
 				_openRequestFromDeveloper = false;
 			}
 			else {
@@ -523,13 +534,16 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 		if (dataOk && view != null) {
 			UnityAdsUtils.Log("open() opening with view:" + view + " and data:" + data.toString(), this);
-			_mainView.openAds(view, data);
 			
-			if (_developerOptions != null && _developerOptions.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY)  && _developerOptions.get(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY).equals(true))
-				playVideo();
-			
-			if (_adsListener != null)
-				_adsListener.onShow();
+			if (_mainView != null) {
+				_mainView.openAds(view, data);
+				
+				if (_developerOptions != null && _developerOptions.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY)  && _developerOptions.get(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY).equals(true))
+					playVideo();
+				
+				if (_adsListener != null)
+					_adsListener.onShow();
+			}
 		}
 	}
 
