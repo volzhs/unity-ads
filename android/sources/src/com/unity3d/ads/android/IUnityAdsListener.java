@@ -7,7 +7,7 @@ public interface IUnityAdsListener {
 	
 	// Unity Ads video events
 	public void onVideoStarted ();
-	public void onVideoCompleted ();
+	public void onVideoCompleted (String rewardItemKey);
 	
 	// Unity Ads campaign events
 	public void onFetchCompleted ();

@@ -302,7 +302,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				break;
 			case VideoEnd:
 				if (_adsListener != null)
-					_adsListener.onVideoCompleted();
+					_adsListener.onVideoCompleted(getCurrentRewardItemKey());
 				break;
 			case RequestRetryVideoPlay:
 				UnityAdsUtils.Log("Retrying video play, because something went wrong.", this);
