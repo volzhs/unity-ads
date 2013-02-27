@@ -1,7 +1,10 @@
 Welcome to the repository for Unity Ads. To get started, make sure you have an account registered with Applifier.
 If you don't have one, you can create an account at https://my.applfier.com/.
 
-Integration instructions can be found at https://developers.everyplay.com/documentation/GameAds-Integration-Guide-for-iOS
+Integration instructions can be found here:
+
+For iOS: https://developers.everyplay.com/documentation/GameAds-Integration-Guide-for-iOS
+For Android: https://developers.everyplay.com/documentation/GameAds-Integration-Guide-for-Android
 
 Unity Ads SDK is licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -9,6 +12,18 @@ In any issues, please file in issue with us in this Github repository, or log a 
 
 Unity Ads SDK Release Notes
 ==================================
+
+v1.0.3.1 February 27, 2013
+--------------------------
+
+*Android:*
+
+- Android support is now officially released, get it while it's hot!
+
+*iOS:*
+
+- Bugfixes
+
 v1.0.3 January 23, 2013
 --------------------------
 
