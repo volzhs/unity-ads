@@ -4,6 +4,7 @@ If you don't have one, you can create an account at https://my.applfier.com/.
 Integration instructions can be found here:
 
 For iOS: https://developers.everyplay.com/documentation/GameAds-Integration-Guide-for-iOS
+
 For Android: https://developers.everyplay.com/documentation/GameAds-Integration-Guide-for-Android
 
 Unity Ads SDK is licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html)
