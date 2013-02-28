@@ -53,7 +53,7 @@ public class UnityAdsRewardItem {
 		Map<String, String> returnMap = new HashMap<String, String>();
 		returnMap.put(UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY, getName());
 		returnMap.put(UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY, getPictureUrl());
-		return null;
+		return returnMap;
 	}
 	
 	/* INTERNAL METHODS */

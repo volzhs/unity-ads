@@ -282,6 +282,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (rewardItem != null) {
 			return rewardItem.getDetails();
 		}
+		else {
+			UnityAdsUtils.Log("Could not fetch reward item: " + rewardItemKey, this);
+		}
 		
 		return null;
 	}

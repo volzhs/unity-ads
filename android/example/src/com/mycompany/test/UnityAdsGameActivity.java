@@ -68,7 +68,7 @@ public class UnityAdsGameActivity extends Activity implements IUnityAdsListener 
 		Log.d(UnityAdsConstants.LOG_NAME, "HOST: Video started!");
 	}
 	
-	public void onVideoCompleted () {
+	public void onVideoCompleted (String rewardItemKey) {
     	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsGameActivity->onVideoCompleted()");
     	((ImageView)findViewById(R.id.plissken)).setAlpha(255);
     	((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
