@@ -84,7 +84,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 			params.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, openAnimated);
 			params.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, noOfferscreen);
 			
-			if (gamerSID != null)
+			if (gamerSID != null && gamerSID.length() > 0)
 				params.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, gamerSID);
 			
 			UnityAdsUtils.Log("Opening with: openAnimated=" + openAnimated + ", noOfferscreen=" + noOfferscreen + ", gamerSID=" + gamerSID, this);

@@ -16,7 +16,7 @@ public class UnityAds : MonoBehaviour {
 	private static bool _adsOpen = false;
 	private static string _gameObjectName = null;
 	private static float _savedTimeScale = 1f;
-	private static string _gamerSID = null;
+	private static string _gamerSID = "";
 	
 	public void Awake () {
 		this.init(this.gameId, this.testModeEnabled, this.debugModeEnabled);
@@ -144,7 +144,7 @@ public class UnityAds : MonoBehaviour {
 				noOfferscreen = instance.noOfferscreen;
 			}
 			
-			UnityAdsExternal.show(animated, noOfferscreen, "");
+			UnityAdsExternal.show(animated, noOfferscreen, gamerSID);
 		}
 	}
 	
