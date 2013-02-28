@@ -79,7 +79,6 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	}
 	
 	public void show (boolean openAnimated, boolean noOfferscreen, final String gamerSID) {
-		//(boolean openAnimated, boolean noOfferscreen, String gamerSID)
 		if (_unityAds != null && _unityAds.canShowAds() && _unityAds.canShow()) {
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, openAnimated);
