@@ -5,6 +5,9 @@ using System.Collections.Generic;
 public class UnityAdsOpenButton : MonoBehaviour {
 	private bool _canOpen = false;
 	
+	void Awake () {
+	}
+
 	void OnGUI () {
 		if (UnityAds.getTestButtonVisibility()) {
 			string buttonText = "Waiting...";

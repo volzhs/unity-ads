@@ -16,8 +16,9 @@ public class UnityAdsExternal : MonoBehaviour {
 		Log ("UnityEditor: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName + ", debugModeEnabled=" + debugModeEnabled);
 	}
 	
-	public static void show (bool openAnimated, bool noOfferscreen, string gamerSID) {
+	public static bool show (bool openAnimated, bool noOfferscreen, string gamerSID) {
 		Log ("UnityEditor: show()");
+		return false;
 	}
 	
 	public static void hide () {
@@ -97,9 +98,9 @@ public class UnityAdsExternal : MonoBehaviour {
 		unityAdsUnity.Call("init", gameId, activity, testModeEnabled, debugModeEnabled, gameObjectName);
 	}
 	
-	public static void show (bool openAnimated, bool noOfferscreen, string gamerSID) {
+	public static bool show (bool openAnimated, bool noOfferscreen, string gamerSID) {
 		Log ("UnityAndroid: show()");
-		unityAdsUnity.Call("show", openAnimated, noOfferscreen, gamerSID);
+		return unityAdsUnity.Call<bool>("show", openAnimated, noOfferscreen, gamerSID);
 	}
 	
 	public static void hide () {

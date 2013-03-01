@@ -78,7 +78,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		}
 	}
 	
-	public void show (boolean openAnimated, boolean noOfferscreen, final String gamerSID) {
+	public boolean show (boolean openAnimated, boolean noOfferscreen, final String gamerSID) {
 		if (_unityAds != null && _unityAds.canShowAds() && _unityAds.canShow()) {
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, openAnimated);
@@ -88,8 +88,10 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 				params.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, gamerSID);
 			
 			UnityAdsUtils.Log("Opening with: openAnimated=" + openAnimated + ", noOfferscreen=" + noOfferscreen + ", gamerSID=" + gamerSID, this);
-			_unityAds.show(params);
+			return _unityAds.show(params);
 		}
+		
+		return false;
 	}
 	
 	public void hide () {
@@ -209,7 +211,6 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	public void onFetchFailed() {
 		sendMessageToUnity3D("onFetchFailed", null);
 	}
-	
 	
     public void sendMessageToUnity3D(String methodName, String parameter) {
         // Unity Development build crashes if parameter is NULL

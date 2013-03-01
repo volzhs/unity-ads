@@ -18,8 +18,54 @@ public class UnityAds : MonoBehaviour {
 	private static float _savedTimeScale = 1f;
 	private static string _gamerSID = "";
 	
+	public delegate void UnityAdsCampaignsAvailable();
+	private static UnityAdsCampaignsAvailable _campaignsAvailableDelegate;
+	public static void setCampaignsAvailableDelegate (UnityAdsCampaignsAvailable action) {
+		_campaignsAvailableDelegate = action;
+	}
+
+	public delegate void UnityAdsCampaignsFetchFailed();
+	private static UnityAdsCampaignsFetchFailed _campaignsFetchFailedDelegate;
+	public static void setCampaignsFetchFailedDelegate (UnityAdsCampaignsFetchFailed action) {
+		_campaignsFetchFailedDelegate = action;
+	}
+
+	public delegate void UnityAdsOpen();
+	private static UnityAdsOpen _adsOpenDelegate;
+	public static void setOpenDelegate (UnityAdsOpen action) {
+		_adsOpenDelegate = action;
+	}
+	
+	public delegate void UnityAdsClose();
+	private static UnityAdsClose _adsCloseDelegate;
+	public static void setCloseDelegate (UnityAdsClose action) {
+		_adsCloseDelegate = action;
+	}
+
+	public delegate void UnityAdsVideoCompleted();
+	private static UnityAdsVideoCompleted _videoCompletedDelegate;
+	public static void setVideoCompletedDelegate (UnityAdsVideoCompleted action) {
+		_videoCompletedDelegate = action;
+	}
+	
+	public delegate void UnityAdsVideoStarted();
+	private static UnityAdsVideoStarted _videoStartedDelegate;
+	public static void setVideoStartedDelegate (UnityAdsVideoStarted action) {
+		_videoStartedDelegate = action;
+	}
+	
+	
 	public void Awake () {
 		this.init(this.gameId, this.testModeEnabled, this.debugModeEnabled);
+	}
+	
+	public void OnDestroy () {
+		_campaignsAvailableDelegate = null;
+		_campaignsFetchFailedDelegate = null;
+		_adsOpenDelegate = null;
+		_adsCloseDelegate = null;
+		_videoCompletedDelegate = null;
+		_videoStartedDelegate = null;
 	}
 	
 	public void init (string gameId, bool testModeEnabled, bool debugModeEnabled) {
@@ -38,6 +84,7 @@ public class UnityAds : MonoBehaviour {
 		UnityAds unityAdsMobile = unityAds.GetComponent<UnityAds>();
 		return unityAdsMobile;
 	}
+	
 	
 	public static bool getTestButtonVisibility () {
 		return getCurrentInstance().showTestButton;
@@ -131,7 +178,7 @@ public class UnityAds : MonoBehaviour {
 		return retDict;
 	}
 	
-	public static void show () {
+	public static bool show () {
 		if (!_adsOpen && _campaignsAvailable) {
 			UnityAds instance = getCurrentInstance();
 			
@@ -144,8 +191,18 @@ public class UnityAds : MonoBehaviour {
 				noOfferscreen = instance.noOfferscreen;
 			}
 			
-			UnityAdsExternal.show(animated, noOfferscreen, gamerSID);
+			if (UnityAdsExternal.show(animated, noOfferscreen, gamerSID)) {				
+				if (_adsOpenDelegate != null)
+					_adsOpenDelegate();
+				
+				_adsOpen = true;
+				_savedTimeScale = Time.timeScale;
+				AudioListener.pause = true;
+				Time.timeScale = 0;
+			}
 		}
+		
+		return false;
 	}
 	
 	public static void hide () {
@@ -161,32 +218,44 @@ public class UnityAds : MonoBehaviour {
 		_adsOpen = false;
 		AudioListener.pause = false;
 		Time.timeScale = _savedTimeScale;
+		
+		if (_adsCloseDelegate != null)
+			_adsCloseDelegate();
+		
 		UnityAdsExternal.Log("onHide");
 	}
 	
 	public void onShow () {
-		_adsOpen = true;
-		_savedTimeScale = Time.timeScale;
-		AudioListener.pause = true;
-		Time.timeScale = 0;
 		UnityAdsExternal.Log("onShow");
 	}
 	
 	public void onVideoStarted () {
+		if (_videoStartedDelegate != null)
+			_videoStartedDelegate();
+		
 		UnityAdsExternal.Log("onVideoStarted");
 	}
 	
 	public void onVideoCompleted (string rewardItemKey) {
+		if (_videoCompletedDelegate != null)
+			_videoCompletedDelegate();
+		
 		UnityAdsExternal.Log("onVideoCompleted: " + rewardItemKey);
 	}
 	
 	public void onFetchCompleted () {
 		_campaignsAvailable = true;
+		if (_campaignsAvailableDelegate != null)
+			_campaignsAvailableDelegate();
+			
 		UnityAdsExternal.Log("onFetchCompleted");
 	}
 
 	public void onFetchFailed () {
 		_campaignsAvailable = false;
+		if (_campaignsFetchFailedDelegate != null)
+			_campaignsFetchFailedDelegate();
+		
 		UnityAdsExternal.Log("onFetchFailed");
 	}
 }
