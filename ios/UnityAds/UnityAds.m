@@ -404,7 +404,8 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
-	[self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key];
+  if (![[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed)
+    [self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key];
 }
 
 - (void)mainControllerWillLeaveApplication {
