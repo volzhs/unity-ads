@@ -42,7 +42,7 @@ public class UnityAds : MonoBehaviour {
 		_adsCloseDelegate = action;
 	}
 
-	public delegate void UnityAdsVideoCompleted();
+	public delegate void UnityAdsVideoCompleted(string rewardItemKey);
 	private static UnityAdsVideoCompleted _videoCompletedDelegate;
 	public static void setVideoCompletedDelegate (UnityAdsVideoCompleted action) {
 		_videoCompletedDelegate = action;
@@ -238,7 +238,7 @@ public class UnityAds : MonoBehaviour {
 	
 	public void onVideoCompleted (string rewardItemKey) {
 		if (_videoCompletedDelegate != null)
-			_videoCompletedDelegate();
+			_videoCompletedDelegate(rewardItemKey);
 		
 		UnityAdsExternal.Log("onVideoCompleted: " + rewardItemKey);
 	}
