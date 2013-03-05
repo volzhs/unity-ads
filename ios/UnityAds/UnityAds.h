@@ -11,8 +11,8 @@
 #define UALOG_ERROR(fmt, ...) UALOG_LOG(@"ERROR", fmt, ##__VA_ARGS__)
 
 #define UALOG_DEBUG(fmt, ...) UALOG_LOG(@"DEBUG", fmt, ##__VA_ARGS__)
-#define UAAssert(condition) do { if ( ! (condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); abort(); } } while(0)
-#define UAAssertV(condition, value) do { if ( ! (condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); abort(); } } while(0)
+#define UAAssert(condition) do { if ([[UnityAds sharedInstance] isDebugMode] && !(condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); abort(); } } while(0)
+#define UAAssertV(condition, value) do { if ([[UnityAds sharedInstance] isDebugMode] && !(condition)) { UALOG_ERROR(@"Expected condition '%s' to be true.", #condition); abort(); } } while(0)
 
 extern NSString * const kUnityAdsRewardItemPictureKey;
 extern NSString * const kUnityAdsRewardItemNameKey;
