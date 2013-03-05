@@ -2,6 +2,8 @@ package com.unity3d.ads.android.webapp;
 
 import org.json.JSONObject;
 
+import android.webkit.JavascriptInterface;
+
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
@@ -46,7 +48,7 @@ public class UnityAdsWebBridge {
 		_listener = listener;
 	}
 	
-	//@JavascriptInterface
+	@JavascriptInterface
 	public boolean handleWebEvent (String type, String data) {
 		UnityAdsUtils.Log("handleWebEvent: "+ type + ", " + data, this);
 
