@@ -46,6 +46,7 @@ public class UnityAdsWebBridge {
 		_listener = listener;
 	}
 	
+	//@JavascriptInterface
 	public boolean handleWebEvent (String type, String data) {
 		UnityAdsUtils.Log("handleWebEvent: "+ type + ", " + data, this);
 

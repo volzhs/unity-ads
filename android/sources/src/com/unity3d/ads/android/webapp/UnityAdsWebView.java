@@ -2,6 +2,8 @@ package com.unity3d.ads.android.webapp;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONObject;
 
@@ -281,8 +283,6 @@ public class UnityAdsWebView extends WebView {
 			UnityAdsUtils.Log("Finished url: "  + url, this);
 			if (_listener != null && !_webAppLoaded) {
 				_webAppLoaded = true;
-				UnityAdsUtils.Log("Adding javascript interface", this);
-				addJavascriptInterface(_webBridge, "applifierimpactnative");
 				_listener.onWebAppLoaded();
 			}
 		}

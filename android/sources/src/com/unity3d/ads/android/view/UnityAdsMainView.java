@@ -90,7 +90,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 				vg.removeView(this);
 		}
 		
-		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
+		//webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
 		destroyVideoPlayerView();
 		UnityAdsProperties.SELECTED_CAMPAIGN = null;
 	}

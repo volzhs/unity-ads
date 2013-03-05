@@ -667,7 +667,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 								}
 							});
 						}
-					}, 100);
+					}, 250);
 				}
 			}
 			
