@@ -231,7 +231,7 @@ public class UnityAdsDownloader {
 				
 				_output = getOutputStreamFor(_campaign.getVideoFilename());
 				if (_output == null)
-					onCancelled(this);
+					onCancelled();
 				
 				byte data[] = new byte[1024];
 				long total = 0;
@@ -263,7 +263,8 @@ public class UnityAdsDownloader {
 			return null;
 		}
 		
-		protected void onCancelled (Object result) {
+		@Override
+		protected void onCancelled () {
 			UnityAdsUtils.Log("Force stopping download!", this);
 			_cancelled = true;
 			cancelDownload();

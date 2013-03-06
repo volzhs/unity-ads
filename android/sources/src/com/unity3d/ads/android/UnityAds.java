@@ -13,6 +13,7 @@ import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsMainView;
@@ -282,6 +283,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (rewardItem != null) {
 			return rewardItem.getDetails();
 		}
+		else {
+			UnityAdsUtils.Log("Could not fetch reward item: " + rewardItemKey, this);
+		}
 		
 		return null;
 	}
@@ -301,8 +305,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 					_adsListener.onVideoStarted();
 				break;
 			case VideoEnd:
-				if (_adsListener != null)
+				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
+					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey());
+				}
 				break;
 			case RequestRetryVideoPlay:
 				UnityAdsUtils.Log("Retrying video play, because something went wrong.", this);
@@ -661,7 +667,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 								}
 							});
 						}
-					}, 100);
+					}, 250);
 				}
 			}
 			

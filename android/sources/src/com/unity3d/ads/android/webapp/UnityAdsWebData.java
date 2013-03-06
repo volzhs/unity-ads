@@ -21,6 +21,7 @@ import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
+import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
@@ -420,7 +421,7 @@ public class UnityAdsWebData {
 			UnityAdsUtils.Log("Error collecting failed urls", this);
 		}
 		
-		if (_failedUrlLoaders != null && _failedUrlLoaders.size() > 0) {
+		if (_failedUrlLoaders != null && _failedUrlLoaders.size() > 0 && UnityAdsUtils.canUseExternalStorage()) {
 			File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
 			UnityAdsUtils.writeFile(pendingRequestFile, failedUrlsJson.toString());
 		}
@@ -786,7 +787,8 @@ public class UnityAdsWebData {
 			return null;
 		}
 
-		protected void onCancelled(Object result) {
+		@Override
+		protected void onCancelled() {
 			_done = true;
 			closeAndFlushConnection();
 			urlLoadFailed(this);
