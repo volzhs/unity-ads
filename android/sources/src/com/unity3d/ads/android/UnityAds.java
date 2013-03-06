@@ -170,9 +170,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public boolean show () {
 		if (canShow()) {
-			startAdsFullscreenActivity();
-			_showingAds = true;
 			_openRequestFromDeveloper = true;
+			_showingAds = true;
+			startAdsFullscreenActivity();
 			return _showingAds;
 		}
 
