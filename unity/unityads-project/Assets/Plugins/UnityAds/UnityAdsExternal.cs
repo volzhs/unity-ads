@@ -84,6 +84,51 @@ public class UnityAdsExternal : MonoBehaviour {
 	}
 	
 #elif UNITY_IPHONE
+	[DllImport ("__Internal")]
+	public static extern void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName);
+	
+	[DllImport ("__Internal")]
+	public static extern bool show (bool openAnimated, bool noOfferscreen, string gamerSID);
+	
+	[DllImport ("__Internal")]
+	public static extern void hide ();
+	
+	[DllImport ("__Internal")]
+	public static extern bool isSupported ();
+	
+	[DllImport ("__Internal")]
+	public static extern string getSDKVersion ();
+
+	[DllImport ("__Internal")]
+	public static extern bool canShowAds ();
+
+	[DllImport ("__Internal")]
+	public static extern bool canShow ();
+	
+	[DllImport ("__Internal")]
+	public static extern void stopAll ();
+
+	[DllImport ("__Internal")]
+	public static extern bool hasMultipleRewardItems ();
+	
+	[DllImport ("__Internal")]
+	public static extern string getRewardItemKeys ();
+
+	[DllImport ("__Internal")]
+	public static extern string getDefaultRewardItemKey ();
+	
+	[DllImport ("__Internal")]
+	public static extern string getCurrentRewardItemKey ();
+
+	[DllImport ("__Internal")]
+	public static extern bool setRewardItemKey (string rewardItemKey);
+	
+	[DllImport ("__Internal")]
+	public static void setDefaultRewardItemAsRewardItem ();
+
+	[DllImport ("__Internal")]
+	public static string getRewardItemDetailsWithKey (string rewardItemKey);
+
 	
 #elif UNITY_ANDROID
 	private static AndroidJavaObject unityAds;
