@@ -28,6 +28,8 @@ public class UnityAdsProperties {
 	public static String TEST_URL = null;
 	public static String TEST_JAVASCRIPT = null;
 	public static Boolean RUN_WEBVIEW_TESTS = false;
+	
+	@SuppressWarnings("unused")
 	private static Map<String, String> TEST_EXTRA_PARAMS = null; 
 
 	public static final int MAX_NUMBER_OF_ANALYTICS_RETRIES = 5;

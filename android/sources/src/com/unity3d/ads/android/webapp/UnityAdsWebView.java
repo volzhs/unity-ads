@@ -2,8 +2,6 @@ package com.unity3d.ads.android.webapp;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.json.JSONObject;
 
@@ -12,6 +10,7 @@ import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -177,6 +176,7 @@ public class UnityAdsWebView extends WebView {
 		}
 	}
 	
+	@SuppressLint("SetJavaScriptEnabled")
 	private void setupUnityAdsView ()  {
 		getSettings().setJavaScriptEnabled(true);
 		

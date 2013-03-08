@@ -15,13 +15,13 @@ import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
-import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
@@ -43,6 +43,7 @@ public class UnityAdsWebData {
 	private boolean _isLoading = false;
 	
 	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
+		@SuppressLint("DefaultLocale")
 		@Override
 		public String toString () {
 			String output = null;
@@ -72,6 +73,7 @@ public class UnityAdsWebData {
 	};
 	
 	private static enum UnityAdsRequestType { Analytics, VideoPlan, VideoViewed, Unsent;
+		@SuppressLint("DefaultLocale")
 		@Override
 		public String toString () {
 			String output = name().toString().toLowerCase();

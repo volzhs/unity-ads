@@ -162,6 +162,8 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		if (_unityAds == null) return "";
 		if (_unityAds.getRewardItemDetailsWithKey(rewardItemKey) != null) {
 			UnityAdsUtils.Log("Fetching reward data", this);
+			
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			HashMap<String, String> rewardMap = (HashMap)_unityAds.getRewardItemDetailsWithKey(rewardItemKey);
 			
 			if (rewardMap != null) {

@@ -110,6 +110,7 @@ public class UnityAdsDownloader {
 	private static void sendToListeners (UnityAdsDownloadEventType type, String downloadUrl) {
 		if (_downloadListeners == null) return;
 
+		@SuppressWarnings("unchecked")
 		ArrayList<IUnityAdsDownloadListener> tmpListeners = (ArrayList<IUnityAdsDownloadListener>)_downloadListeners.clone();
 		
 		for (IUnityAdsDownloadListener listener : tmpListeners) {

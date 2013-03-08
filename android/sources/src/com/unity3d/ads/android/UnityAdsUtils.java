@@ -18,6 +18,7 @@ import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -31,6 +32,7 @@ public class UnityAdsUtils {
 
 	private static final X500Principal DEBUG_DN = new X500Principal("CN=Android Debug,O=Android,C=US");
 	
+	@SuppressWarnings("rawtypes")
 	public static void Log (String message, Class cls) {
 		if (UnityAdsProperties.UNITY_ADS_DEBUG_MODE) {
 			Log.d(UnityAdsConstants.LOG_NAME, cls.getName() + " :: " +  message);
@@ -82,6 +84,7 @@ public class UnityAdsUtils {
 	    return debuggable;
 	}
 	
+	@SuppressLint("DefaultLocale")
 	public static String Md5 (String input) {
 		MessageDigest m = null;
 		try {
