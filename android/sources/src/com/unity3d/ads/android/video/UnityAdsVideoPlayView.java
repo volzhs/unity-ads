@@ -383,14 +383,14 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 						hideBufferingView();
 						if (!_videoPlaybackStartedSent) {
 							if (_listener != null) {
+								_videoPlaybackStartedSent = true;
 								UnityAdsUtils.Log("onVideoPlaybackStarted sent to listener", this);
 								_listener.onVideoPlaybackStarted();
-								_videoPlaybackStartedSent = true;
 							}
 							
 							if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
-								_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
 								_sentPositionEvents.put(UnityAdsVideoPosition.Start, true);
+								_listener.onEventPositionReached(UnityAdsVideoPosition.Start);
 							}
 						}
 					}

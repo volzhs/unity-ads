@@ -181,6 +181,11 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return "";
 	}
 	
+    public String getRewardItemDetailsKeys () {
+    	return String.format("%s;%s", UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY, UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY);
+    }
+
+	
 	
 	// IUnityAdsListener
 	
@@ -231,4 +236,5 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
         	UnityAdsUtils.Log("Can't invoke UnitySendMessage method. Error = "  + e.getLocalizedMessage(), this);
         }
     }
+    
 }
