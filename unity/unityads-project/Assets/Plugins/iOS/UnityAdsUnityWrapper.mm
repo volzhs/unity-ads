@@ -18,6 +18,14 @@ extern "C" {
     NSString* UnityAdsCreateNSString (const char* string) {
         return string ? [NSString stringWithUTF8String: string] : [NSString stringWithUTF8String: ""];
     }
+    
+    char* UnityAdsMakeStringCopy (const char* string) {
+        if (string == NULL)
+            return NULL;
+        char* res = (char*)malloc(strlen(string) + 1);
+        strcpy(res, string);
+        return res;
+    }
 }
 
 @interface UnityAdsUnityWrapper () <UnityAdsDelegate>
@@ -45,7 +53,7 @@ extern "C" {
 
 - (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey {
     NSLog(@"unityAds");
-    UnitySendMessage([self.gameObjectName UTF8String], "onVideoCompleted", [rewardItemKey UTF8String]);
+    UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onVideoCompleted", [rewardItemKey UTF8String]);
 }
 
 - (void)unityAdsWillShow:(UnityAds *)unityAds {
@@ -54,7 +62,7 @@ extern "C" {
 
 - (void)unityAdsDidShow:(UnityAds *)unityAds {
     NSLog(@"unityAdsDidShow");
-    UnitySendMessage([self.gameObjectName UTF8String], "onShow", "");
+    UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onShow", "");
     UnityPause(true);
 }
 
@@ -65,7 +73,7 @@ extern "C" {
 - (void)unityAdsDidHide:(UnityAds *)unityAds {
     NSLog(@"unityAdsDidHide");
     UnityPause(false);
-    UnitySendMessage([self.gameObjectName UTF8String], "onHide", "");
+    UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onHide", "");
 }
 
 - (void)unityAdsWillLeaveApplication:(UnityAds *)unityAds {
@@ -74,17 +82,17 @@ extern "C" {
 
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds {
     NSLog(@"unityAdsVideoStarted");
-    UnitySendMessage([self.gameObjectName UTF8String], "onVideoStarted", "");
+    UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onVideoStarted", "");
 }
 
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
     NSLog(@"unityAdsFetchCompleted");
-    UnitySendMessage([self.gameObjectName UTF8String], "onFetchCompleted", "");
+    UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onFetchCompleted", "");
 }
 
 - (void)unityAdsFetchFailed:(UnityAds *)unityAds {
     NSLog(@"unityAdsFetchFailed");
-    UnitySendMessage([self.gameObjectName UTF8String], "onFetchFailed", "");
+    UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onFetchFailed", "");
 }
 
 
@@ -99,21 +107,30 @@ extern "C" {
     
 	bool show (bool openAnimated, bool noOfferscreen, const char *gamerSID) {
         NSLog(@"show");
+        NSNumber *noOfferscreenObjectiveC = [NSNumber numberWithBool:noOfferscreen];
+        NSNumber *openAnimatedObjectiveC = [NSNumber numberWithBool:openAnimated];
+        
+        if ([[UnityAds sharedInstance] canShow] && [[UnityAds sharedInstance] canShow]) {
+            NSDictionary *props = @{kUnityAdsOptionGamerSIDKey: UnityAdsCreateNSString(gamerSID), kUnityAdsOptionNoOfferscreenKey: noOfferscreenObjectiveC, kUnityAdsOptionOpenAnimatedKey: openAnimatedObjectiveC};
+            return [[UnityAds sharedInstance] show:props];
+        }
+        
         return false;
     }
 	
 	void hide () {
         NSLog(@"show");
+        [[UnityAds sharedInstance] hide];
     }
 	
 	bool isSupported () {
-        NSLog(@"hide");
-        return false;
+        NSLog(@"isSupported");
+        return [UnityAds isSupported];
     }
 	
-	char* getSDKVersion () {
+	const char* getSDKVersion () {
         NSLog(@"getSDKVersion");
-        return "moi";
+        return UnityAdsMakeStringCopy([[UnityAds getSDKVersion] UTF8String]);
     }
     
 	bool canShowAds () {
@@ -128,42 +145,64 @@ extern "C" {
 	
 	void stopAll () {
         NSLog(@"stopAll");
+        [[UnityAds sharedInstance] stopAll];
     }
     
 	bool hasMultipleRewardItems () {
         NSLog(@"hasMultipleRewardItems");
-        return false;
+        return [[UnityAds sharedInstance] hasMultipleRewardItems];
     }
 	
-	char* getRewardItemKeys () {
+	const char* getRewardItemKeys () {
         NSLog(@"getRewardItemKeys");
-        return "moi,moi,moi";
+        NSArray *keys = [[UnityAds sharedInstance] getRewardItemKeys];
+        NSString *keyString = @"";
+        
+        for (NSString *key in keys) {
+            if ([keyString length] <= 0) {
+                keyString = [NSString stringWithFormat:@"%@", key];
+            }
+            else {
+                keyString = [NSString stringWithFormat:@"%@;%@", keyString, key];
+            }
+        }
+        
+        return UnityAdsMakeStringCopy([keyString UTF8String]);
     }
     
-	char* getDefaultRewardItemKey () {
+	const char* getDefaultRewardItemKey () {
         NSLog(@"getDefaultRewardItemKey");
-        return "ship";
+        return UnityAdsMakeStringCopy([[[UnityAds sharedInstance] getDefaultRewardItemKey] UTF8String]);
     }
-	
-	char* getCurrentRewardItemKey () {
+	 
+	const char* getCurrentRewardItemKey () {
         NSLog(@"getCurrentRewardItemKey");
-        return "ship";
+        return UnityAdsMakeStringCopy([[[UnityAds sharedInstance] getCurrentRewardItemKey] UTF8String]);
     }
     
 	bool setRewardItemKey (const char *rewardItemKey) {
         NSLog(@"setRewardItemKey");
-        return false;
+        return [[UnityAds sharedInstance] setRewardItemKey:UnityAdsCreateNSString(rewardItemKey)];
     }
 	
 	void setDefaultRewardItemAsRewardItem () {
         NSLog(@"setDefaultRewardItemAsRewardItem");
+        [[UnityAds sharedInstance] setDefaultRewardItemAsRewardItem];
     }
     
-	char* getRewardItemDetailsWithKey (const char *rewardItemKey) {
+	const char* getRewardItemDetailsWithKey (const char *rewardItemKey) {
         NSLog(@"getRewardItemDetailsWithKey");
-        return "moi,moi,moi";
+        if (rewardItemKey != NULL) {
+            NSDictionary *details = [[UnityAds sharedInstance] getRewardItemDetailsWithKey:UnityAdsCreateNSString(rewardItemKey)];
+            return UnityAdsMakeStringCopy([[NSString stringWithFormat:@"%@;%@", [details objectForKey:kUnityAdsRewardItemNameKey], [details objectForKey:kUnityAdsRewardItemPictureKey]] UTF8String]);
+        }
+        
+        return UnityAdsMakeStringCopy("");
+    }
+    
+    const char *getRewardItemDetailsKeys () {
+        return UnityAdsMakeStringCopy([[NSString stringWithFormat:@"%@;%@", kUnityAdsRewardItemNameKey, kUnityAdsRewardItemPictureKey] UTF8String]);
     }
 }
 
 @end
-

@@ -17,7 +17,11 @@ public class UnityAds : MonoBehaviour {
 	private static bool _gotAwake = false;
 	private static string _gameObjectName = null;
 	private static float _savedTimeScale = 1f;
+	private static float _savedAudioVolume = 1f;
 	private static string _gamerSID = "";
+	
+	private static string _rewardItemNameKey = "";
+	private static string _rewardItemPictureKey = "";
 	
 	public delegate void UnityAdsCampaignsAvailable();
 	private static UnityAdsCampaignsAvailable _campaignsAvailableDelegate;
@@ -172,11 +176,38 @@ public class UnityAds : MonoBehaviour {
 		}
 	}
 	
+	public static string getRewardItemNameKey () {
+		if (_rewardItemNameKey == null || _rewardItemNameKey.Length == 0) {
+			fillRewardItemKeyData();
+		}
+		
+		return _rewardItemNameKey;
+	}
+	
+	public static string getRewardItemPictureKey () {
+		if (_rewardItemPictureKey == null || _rewardItemPictureKey.Length == 0) {
+			fillRewardItemKeyData();
+		}
+		
+		return _rewardItemPictureKey;
+	}
+	
 	public static Dictionary<string, string> getRewardItemDetailsWithKey (string rewardItemKey) {
 		Dictionary<string, string> retDict = new Dictionary<string, string>();
+		string rewardItemDataString = "";
+		
 		if (_campaignsAvailable) {
-			retDict = UnityAdsExternal.getRewardItemDetailsWithKey(rewardItemKey);
-			return retDict;
+			rewardItemDataString = UnityAdsExternal.getRewardItemDetailsWithKey(rewardItemKey);
+			
+			if (rewardItemDataString != null) {
+				List<string> splittedData = new List<string>(rewardItemDataString.Split(';'));
+				UnityAdsExternal.Log("UnityAndroid: getRewardItemDetailsWithKey() rewardItemDataString=" + rewardItemDataString);
+				
+				if (splittedData.Count == 2) {
+					retDict.Add(getRewardItemNameKey(), splittedData.ToArray().GetValue(0).ToString());
+					retDict.Add(getRewardItemPictureKey(), splittedData.ToArray().GetValue(1).ToString());
+				}
+			}
 		}
 		
 		return retDict;
@@ -201,8 +232,15 @@ public class UnityAds : MonoBehaviour {
 				
 				_adsOpen = true;
 				_savedTimeScale = Time.timeScale;
+				_savedAudioVolume = AudioListener.volume;
 				AudioListener.pause = true;
+				AudioListener.volume = 0;
 				Time.timeScale = 0;
+				
+				UnityAdsExternal.Log("nameKey=" + getRewardItemNameKey() + ", pictureKey=" + getRewardItemPictureKey());
+				UnityAdsExternal.Log("currentRewardItem=" + getCurrentRewardItemKey());
+				UnityAdsExternal.Log("defaultRewardItem=" + getDefaultRewardItemKey());
+				UnityAdsExternal.Log("defaultItemDetails= " + getRewardItemDetailsWithKey(getDefaultRewardItemKey()).ToString());
 			}
 		}
 		
@@ -214,13 +252,24 @@ public class UnityAds : MonoBehaviour {
 			UnityAdsExternal.hide();
 		}
 	}
-	
+
+	private static void fillRewardItemKeyData () {
+		string keyData = UnityAdsExternal.getRewardItemDetailsKeys();
+		
+		if (keyData != null && keyData.Length > 2) {
+			List<string> splittedKeyData = new List<string>(keyData.Split(';'));
+			_rewardItemNameKey = splittedKeyData.ToArray().GetValue(0).ToString();
+			_rewardItemPictureKey = splittedKeyData.ToArray().GetValue(1).ToString();
+		}
+	}
+
 	
 	/* Events */
 	
 	public void onHide () {
 		_adsOpen = false;
 		AudioListener.pause = false;
+		AudioListener.volume = _savedAudioVolume;
 		Time.timeScale = _savedTimeScale;
 		
 		if (_adsCloseDelegate != null)
@@ -262,4 +311,5 @@ public class UnityAds : MonoBehaviour {
 		
 		UnityAdsExternal.Log("onFetchFailed");
 	}
+	
 }
