@@ -236,11 +236,6 @@ public class UnityAds : MonoBehaviour {
 				AudioListener.pause = true;
 				AudioListener.volume = 0;
 				Time.timeScale = 0;
-				
-				UnityAdsExternal.Log("nameKey=" + getRewardItemNameKey() + ", pictureKey=" + getRewardItemPictureKey());
-				UnityAdsExternal.Log("currentRewardItem=" + getCurrentRewardItemKey());
-				UnityAdsExternal.Log("defaultRewardItem=" + getDefaultRewardItemKey());
-				UnityAdsExternal.Log("defaultItemDetails= " + getRewardItemDetailsWithKey(getDefaultRewardItemKey()).ToString());
 			}
 		}
 		
