@@ -27,6 +27,19 @@ public class UnityAdsDevice {
 	public static int getDeviceType () {
 		return UnityAdsProperties.CURRENT_ACTIVITY.getResources().getConfiguration().screenLayout;
 	}
+	
+	public static String getOdin1Id () {
+		String odin1ID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
+		
+		try {
+			odin1ID = UnityAdsUtils.SHA1(Secure.getString(UnityAdsProperties.CURRENT_ACTIVITY.getContentResolver(), Secure.ANDROID_ID));
+		}
+		catch (Exception e) {
+			UnityAdsUtils.Log("Could not resolve ODIN1 Id: " + e.getMessage(), UnityAdsDevice.class);
+		}
+		
+		return odin1ID;
+	}
 
 	public static String getAndroidId () {
 		String androidID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;

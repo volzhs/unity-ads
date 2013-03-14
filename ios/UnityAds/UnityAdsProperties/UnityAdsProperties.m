@@ -52,6 +52,10 @@ static UnityAdsProperties *sharedProperties = nil;
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamMacAddressKey, [UnityAdsDevice md5MACAddressString]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamSdkVersionKey, kUnityAdsVersion];
   
+  if ([UnityAdsDevice ODIN1] != nil) {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOdin1IdKey, [UnityAdsDevice ODIN1]];
+  }
+  
   // Add advertisingTrackingId info if identifier is available
   if ([UnityAdsDevice md5AdvertisingIdentifierString] != nil) {
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamAdvertisingTrackingIdKey, [UnityAdsDevice md5AdvertisingIdentifierString]];

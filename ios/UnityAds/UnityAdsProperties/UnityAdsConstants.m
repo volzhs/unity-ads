@@ -166,6 +166,7 @@ NSString * const kUnityAdsInitQueryParamDeviceTypeKey = @"deviceType";
 NSString * const kUnityAdsInitQueryParamPlatformKey = @"platform";
 NSString * const kUnityAdsInitQueryParamGameIdKey = @"gameId";
 NSString * const kUnityAdsInitQueryParamOpenUdidKey = @"openUdid";
+NSString * const kUnityAdsInitQueryParamOdin1IdKey = @"odin1Id";
 NSString * const kUnityAdsInitQueryParamMacAddressKey = @"macAddress";
 NSString * const kUnityAdsInitQueryParamAdvertisingTrackingIdKey = @"advertisingTrackingId";
 NSString * const kUnityAdsInitQueryParamTrackingEnabledKey = @"trackingEnabled";

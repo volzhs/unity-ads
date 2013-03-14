@@ -125,6 +125,7 @@ extern NSString * const kUnityAdsAnalyticsSavedUploadBodyKey;
 extern NSString * const kUnityAdsAnalyticsSavedUploadHTTPMethodKey;
 
 extern NSString * const kUnityAdsAnalyticsQueryParamGameIdKey;
+extern NSString * const kUnityAdsInitQueryParamOdin1IdKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamEventTypeKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamTrackingIdKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamProviderIdKey;
