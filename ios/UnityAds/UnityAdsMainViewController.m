@@ -107,11 +107,15 @@
   
   if (![UnityAdsDevice isSimulator]) {
     if (self.closeHandler == nil) {
+      __unsafe_unretained typeof(self) weakSelf = self;
       self.closeHandler = ^(void) {
         UALOG_DEBUG(@"Setting start view after close");
         [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIClose}];
-        self.isOpen = NO;
-        [self.delegate mainControllerDidClose];
+        
+        if (weakSelf != NULL) {
+          weakSelf.isOpen = NO;
+          [weakSelf.delegate mainControllerDidClose];
+        }
       };
     }
   }
@@ -138,9 +142,11 @@
     
     if (![UnityAdsDevice isSimulator]) {
       if (self.openHandler == nil) {
+        __unsafe_unretained typeof(self) weakSelf = self;
         self.openHandler = ^(void) {
           UALOG_DEBUG(@"Running openhandler after opening view");
-          [self.delegate mainControllerDidOpen];
+          if (weakSelf != NULL)
+            [weakSelf.delegate mainControllerDidOpen];
           
           if (state == kUnityAdsViewStateVideoPlayer) {
             [[UnityAdsMainViewController sharedInstance] showPlayerAndPlaySelectedVideo:YES];
