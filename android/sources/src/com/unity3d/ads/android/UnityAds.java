@@ -24,6 +24,7 @@ import com.unity3d.ads.android.webapp.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -81,7 +82,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			return false;
 		}
 		
-		return false;
+		return true;
 	}
 	
 	public static void setDebugMode (boolean debugModeEnabled) {
@@ -617,7 +618,16 @@ public class UnityAds implements IUnityAdsCacheListener,
 			flags = Intent.FLAG_ACTIVITY_NEW_TASK;
 		
 		newIntent.addFlags(flags);
-		UnityAdsProperties.BASE_ACTIVITY.startActivity(newIntent);
+		
+		try {
+			UnityAdsProperties.BASE_ACTIVITY.startActivity(newIntent);
+		}
+		catch (ActivityNotFoundException e) {
+			UnityAdsUtils.Log("Could not find activity: " + e.getStackTrace(), this);
+		}
+		catch (Exception e) {
+			UnityAdsUtils.Log("Weird error: " + e.getStackTrace(), this);
+		}
 	}
 	
 	
