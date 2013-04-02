@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsBufferingView;
@@ -23,6 +24,13 @@ import android.widget.VideoView;
 
 public class UnityAdsVideoPlayView extends RelativeLayout {
 
+	private RelativeLayout _countDownText = null;
+	private TextView _timeLeftInSecondsText = null;
+	
+	private RelativeLayout _skipText = null;
+	private TextView _timeLeftUntilSkip = null;
+	private int _skipTimeInSeconds = 0;
+	
 	private IUnityAdsVideoPlayerListener _listener;
 	private Timer _videoPausedTimer = null;
 	private VideoView _videoView = null;
@@ -31,10 +39,9 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private UnityAdsVideoPausedView _pausedView = null;
 	private boolean _videoPlayheadPrepared = false;
 	private Map<UnityAdsVideoPosition, Boolean> _sentPositionEvents = new HashMap<UnityAdsVideoPosition, Boolean>();
-	private RelativeLayout _countDownText = null;
-	private TextView _timeLeftInSecondsText = null;
 	private boolean _videoPlaybackStartedSent = false;
 	private boolean _videoPlaybackErrors = false;
+	private MediaPlayer _mediaPlayer = null;
 	
 	public UnityAdsVideoPlayView(Context context, IUnityAdsVideoPlayerListener listener) {
 		super(context);
@@ -111,15 +118,25 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		setOnClickListener(null);
 		setOnFocusChangeListener(null);
 		
+		hideSkipText();
 		hideTimeRemainingLabel();
 		hideBufferingView();
 		hideVideoPausedView();
 		purgeVideoPausedTimer();
-		
+				
 		_videoView.stopPlayback();
 		_videoView.setOnCompletionListener(null);
 		_videoView.setOnPreparedListener(null);
 		_videoView.setOnErrorListener(null);
+		
+		removeAllViews();
+		
+		_skipText = null;
+		_bufferingView = null;
+		_timeLeftUntilSkip = null;
+		
+		_countDownText = null;
+		_timeLeftInSecondsText = null;
 	}
 	
 	
@@ -165,6 +182,14 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
 				UnityAdsUtils.Log("onPrepared", this);
+				_mediaPlayer = mp;
+				
+				if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
+					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS) && 
+					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS).equals(true)) {
+					_mediaPlayer.setVolume(0f, 0f);
+				}
+				
 				_videoPlayheadPrepared = true;
 			}
 		});
@@ -206,6 +231,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		
 		addView(_countDownText);
 		
+		if (hasSkipDuration()) {
+			_skipTimeInSeconds = getSkipDuration();
+			createAndAddSkipText();
+		}
+			
 		setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
@@ -248,6 +278,85 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
     	}  		
 	}
 	
+	private boolean hasSkipDuration () {
+		return UnityAdsProperties.ALLOW_VIDEO_SKIP > 0;
+	}
+	
+	private int getSkipDuration () {
+		if (hasSkipDuration())
+			return UnityAdsProperties.ALLOW_VIDEO_SKIP;
+		
+		return 0;
+	}
+	
+	private void createAndAddSkipText () {
+		_skipText = new RelativeLayout(getContext());
+		_skipText.setId(3010);
+		RelativeLayout.LayoutParams skipTextParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		skipTextParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		skipTextParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		skipTextParams.topMargin = 5;
+		skipTextParams.leftMargin = 5;
+		_skipText.setLayoutParams(skipTextParams);
+		
+		TextView skipText1 = new TextView(getContext());
+		skipText1.setTextColor(Color.WHITE);
+		skipText1.setText("You can skip this video in ");
+		skipText1.setId(10010);
+		
+		_timeLeftUntilSkip = new TextView(getContext());
+		_timeLeftUntilSkip.setTextColor(Color.WHITE);
+		_timeLeftUntilSkip.setText("" + _skipTimeInSeconds);
+		_timeLeftUntilSkip.setId(10011);
+		RelativeLayout.LayoutParams timeLeftUntilSkipParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		timeLeftUntilSkipParams.addRule(RelativeLayout.RIGHT_OF, 10010);
+		timeLeftUntilSkipParams.leftMargin = 1;
+		_timeLeftUntilSkip.setLayoutParams(timeLeftUntilSkipParams);
+		
+		TextView skipText2 = new TextView(getContext());
+		skipText2.setTextColor(Color.WHITE);
+		skipText2.setText("seconds.");
+		RelativeLayout.LayoutParams skipText2Params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		skipText2Params.addRule(RelativeLayout.RIGHT_OF, 10011);
+		skipText2Params.leftMargin = 4;
+		skipText2.setLayoutParams(skipText2Params);
+		
+		_skipText.addView(skipText1);
+		_skipText.addView(_timeLeftUntilSkip);
+		_skipText.addView(skipText2);
+		
+		addView(_skipText);		
+	}
+	
+	private void enableSkippingFromSkipText () {
+		if (_skipText != null) {
+			_skipText.removeAllViews();
+			_skipText.setClickable(true);
+			_skipText.setBackgroundColor(0x01FFFFFF);
+			_skipText.setFocusable(true);
+			
+			_skipText.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					UnityAdsUtils.Log("Touching the skiptext", this);
+					_listener.onVideoSkip();
+				}
+			});
+
+			TextView touchableSkipText = new TextView(getContext());
+			touchableSkipText.setTextColor(Color.WHITE);
+			touchableSkipText.setText("Skip video");
+			RelativeLayout.LayoutParams touchableSkipTextParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			touchableSkipTextParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+			touchableSkipTextParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			touchableSkipTextParams.topMargin = 5;
+			touchableSkipTextParams.leftMargin = 5;
+			
+			_skipText.addView(touchableSkipText);
+			_skipText.requestFocus();
+		}
+	}
+	
 	private void hideTimeRemainingLabel () {
 		if (_countDownText != null && _countDownText.getParent() != null) {
 			_countDownText.removeAllViews();
@@ -263,6 +372,13 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private void hideVideoPausedView () {
 		if (_pausedView != null && _pausedView.getParent() != null)
 			removeView(_pausedView);
+	}
+	
+	private void hideSkipText () {
+		if (_skipText != null && _skipText.getParent() != null) {
+			_skipText.removeAllViews();
+			removeView(_skipText);
+		}
 	}
 	
     @Override
@@ -292,6 +408,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private class VideoStateChecker extends TimerTask {
 		private Float _curPos = 0f;
 		private Float _oldPos = 0f;
+		private Float _skipTimeLeft = 0.01f; 
 		private int _duration = 1;
 		private boolean _playHeadHasMoved = false;
 		
@@ -309,7 +426,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_oldPos = _curPos;
 			
 			try {
-				_curPos = new Float(_videoView.getCurrentPosition());
+				_curPos = Float.valueOf(_videoView.getCurrentPosition());
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Could not get videoView currentPosition", this);
@@ -342,9 +459,37 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
-					_timeLeftInSecondsText.setText("" + Math.round(Math.ceil((_duration - _curPos) / 1000)));
+					if (_timeLeftInSecondsText != null) {
+						_timeLeftInSecondsText.setText("" + Math.round(Math.ceil((_duration - _curPos) / 1000)));
+					}
 				}
 			});
+			
+			if (hasSkipDuration() && _skipTimeInSeconds > 0 && _skipTimeLeft > 0f) {
+				_skipTimeLeft = (_skipTimeInSeconds * 1000) - _curPos;
+				
+				if (_skipTimeLeft < 0)
+					_skipTimeLeft = 0f;
+				
+				if (_skipTimeLeft == 0) {
+					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+						@Override
+						public void run() {
+							enableSkippingFromSkipText();
+						}
+					});
+				}
+				else {
+					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+						@Override
+						public void run() {
+							if (_timeLeftUntilSkip != null) {
+								_timeLeftUntilSkip.setText("" + Math.round(Math.ceil(((_skipTimeInSeconds * 1000) - _curPos) / 1000)));
+							}
+						}
+					});
+				}
+			}
 			
 			if (position > 0.25 && !_sentPositionEvents.containsKey(UnityAdsVideoPosition.FirstQuartile)) {
 				_listener.onEventPositionReached(UnityAdsVideoPosition.FirstQuartile);

@@ -23,6 +23,8 @@ public class UnityAdsProperties {
 	public static Activity CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean UNITY_ADS_DEBUG_MODE = false;
+	public static Map<String, Object> UNITY_ADS_DEVELOPER_OPTIONS = null;
+	public static int ALLOW_VIDEO_SKIP = 0;
 	
 	public static String TEST_DATA = null;
 	public static String TEST_URL = null;

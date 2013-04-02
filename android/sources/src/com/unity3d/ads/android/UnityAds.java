@@ -44,6 +44,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static final String UNITY_ADS_OPTION_NOOFFERSCREEN_KEY = "noOfferScreen";
 	public static final String UNITY_ADS_OPTION_OPENANIMATED_KEY = "openAnimated";
 	public static final String UNITY_ADS_OPTION_GAMERSID_KEY = "sid";
+	public static final String UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS = "muteVideoSounds";
 
 	// Unity Ads components
 	public static UnityAds instance = null;
@@ -56,7 +57,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _adsReadySent = false;
 	private boolean _webAppLoaded = false;
 	private boolean _openRequestFromDeveloper = false;
-	private Map<String, Object> _developerOptions = null;
 	private AlertDialog _alertDialog = null;
 		
 	// Main View
@@ -149,17 +149,17 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public boolean show (Map<String, Object> options) {
 		if (canShow()) {
-			_developerOptions = options;
+			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS = options;
 			
-			if (_developerOptions != null) {
-				if (_developerOptions.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY) && _developerOptions.get(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY).equals(true)) {
+			if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null) {
+				if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY) && UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY).equals(true)) {
 					if (webdata.getViewableVideoPlanCampaigns().size() > 0) {
 						UnityAdsCampaign selectedCampaign = webdata.getViewableVideoPlanCampaigns().get(0);
 						UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
 					}
 				}
-				if (_developerOptions.containsKey(UNITY_ADS_OPTION_GAMERSID_KEY) && _developerOptions.get(UNITY_ADS_OPTION_GAMERSID_KEY) != null) {
-					UnityAdsProperties.GAMER_SID = "" + _developerOptions.get(UNITY_ADS_OPTION_GAMERSID_KEY);
+				if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UNITY_ADS_OPTION_GAMERSID_KEY) && UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UNITY_ADS_OPTION_GAMERSID_KEY) != null) {
+					UnityAdsProperties.GAMER_SID = "" + UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UNITY_ADS_OPTION_GAMERSID_KEY);
 				}
 			}
 			
@@ -545,8 +545,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 			if (_mainView != null) {
 				_mainView.openAds(view, data);
 				
-				if (_developerOptions != null && _developerOptions.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY)  && _developerOptions.get(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY).equals(true))
-					playVideo();
+				if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
+					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY)  && 
+					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY).equals(true))
+						playVideo();
 				
 				if (_adsListener != null)
 					_adsListener.onShow();
@@ -614,8 +616,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 		Intent newIntent = new Intent(UnityAdsProperties.CURRENT_ACTIVITY, com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
 		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
 		
-		if (_developerOptions != null && _developerOptions.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) && _developerOptions.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(true))
-			flags = Intent.FLAG_ACTIVITY_NEW_TASK;
+		if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
+			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) && 
+			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(true))
+				flags = Intent.FLAG_ACTIVITY_NEW_TASK;
 		
 		newIntent.addFlags(flags);
 		
@@ -666,10 +670,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 									_mainView.closeAds(_data);
 									UnityAdsProperties.CURRENT_ACTIVITY.finish();
 									
-									if (_developerOptions == null || !_developerOptions.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) || _developerOptions.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(false))
-										UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
+									if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS == null || 
+										!UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) || 
+										UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(false))
+											UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
 									
-									_developerOptions = null;
+									UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS = null;
 									_showingAds = false;
 									
 									if (_adsListener != null)

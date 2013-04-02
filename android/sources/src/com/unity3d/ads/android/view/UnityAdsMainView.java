@@ -108,8 +108,9 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 				case VideoPlayer:
 					if (videoplayerview == null) {
 						createVideoPlayerView();
-						removeFromMainView(webview);
-						addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+						bringChildToFront(webview);
+						//removeFromMainView(webview);
+						//addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 						focusToView(webview);
 					}
 					break;
@@ -150,7 +151,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	private void init () {
 		UnityAdsUtils.Log("Init", this);
 		this.setId(1001);
-		createVideoPlayerView();
+		//createVideoPlayerView();
 		createWebView();
 	}
 	
@@ -303,6 +304,22 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			_retriedVideoPlaybackOnce = true;
 			sendActionToListener(UnityAdsMainViewAction.RequestRetryVideoPlay);
 		}
+	}
+	
+	public void onVideoSkip () {
+		afterVideoPlaybackOperations();
+		JSONObject params = new JSONObject();
+		
+		try {
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+		}
+		catch (Exception e) {
+			UnityAdsUtils.Log("Could not create JSON", this);
+		}
+		
+		//UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_SKIPVIDEO, UnityAdsProperties.SELECTED_CAMPAIGN);
+		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
+		sendActionToListener(UnityAdsMainViewAction.VideoEnd);
 	}
 	
 	// IUnityAdsWebViewListener

@@ -75,6 +75,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_STOREID_KEY = "storeId";
 	public static final String UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY = "cacheVideo";
 	public static final String UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY = "bypassAppSheet";
+	public static final String UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY = "allowSkipVideoInSeconds";
 	
 	/* Reward Item JSON Properties */
 	public static final String UNITY_ADS_REWARD_ITEMKEY_KEY = "itemKey";
@@ -147,4 +148,5 @@ public class UnityAdsConstants {
 	
 	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_OPENAPPSTORE = "openAppStore";
 	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR = "videoError";
+	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_SKIPVIDEO = "skipVideo";
 }
