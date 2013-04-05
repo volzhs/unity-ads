@@ -47,7 +47,9 @@
   }
   
   [self _logVideoAnalytics];
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:@"videoCompleted" data:@{@"campaignId":[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  
+  /*
+;*/
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.delegate videoPlaybackEnded];

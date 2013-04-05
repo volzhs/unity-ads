@@ -11,10 +11,19 @@
 /* WebView */
 
 typedef enum {
-  kUnityAdsViewStateWebView,
-  kUnityAdsViewStateVideoPlayer,
-  kUnityAdsViewStateNone
-} UnityAdsViewState;
+  kUnityAdsViewStateTypeOfferScreen,
+  kUnityAdsViewStateTypeEndScreen,
+  kUnityAdsViewStateTypeVideoPlayer,
+  kUnityAdsViewStateTypeNone,
+  kUnityAdsViewStateTypeSpinner,
+  kUnityAdsViewStateTypeInvalid
+} UnityAdsViewStateType;
+
+typedef enum {
+  kUnityAdsStateActionWillLeaveApplication,
+  kUnityAdsStateActionVideoStartedPlaying,
+  kUnityAdsStateActionVideoPlaybackEnded
+} UnityAdsViewStateAction;
 
 extern NSString * const kUnityAdsWebViewJSPrefix;
 extern NSString * const kUnityAdsWebViewJSInit;
@@ -57,7 +66,7 @@ extern NSString * const kUnityAdsNativeEventShowSpinner;
 extern NSString * const kUnityAdsNativeEventShowError;
 extern NSString * const kUnityAdsNativeEventVideoCompleted;
 extern NSString * const kUnityAdsNativeEventCampaignIdKey;
-
+extern NSString * const kUnityAdsNativeEventForceStopVideoPlayback;
 
 /* Native Event Params */
 

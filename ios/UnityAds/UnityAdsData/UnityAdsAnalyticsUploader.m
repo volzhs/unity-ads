@@ -10,6 +10,7 @@
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
 
 @interface UnityAdsAnalyticsUploader () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableArray *uploadQueue;
@@ -153,8 +154,8 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
     if (positionString != nil) {
       NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?%@=%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
       
-      if ([[UnityAdsProperties sharedInstance] gamerSID] != nil) {
-        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsProperties sharedInstance] gamerSID]];
+      if ([[UnityAdsShowOptionsParser sharedInstance] gamerSID] != nil) {
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsShowOptionsParser sharedInstance] gamerSID]];
       }
       
       if (!campaign.viewed) {

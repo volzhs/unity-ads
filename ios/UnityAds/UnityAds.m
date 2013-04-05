@@ -10,7 +10,8 @@
 #import "UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
-#import "UnityAdsMainViewController.h"
+#import "UnityAdsView/UnityAdsMainViewController.h"
+#import "UnityAdsProperties/UnityAdsShowOptionsParser.h"
 
 NSString * const kUnityAdsRewardItemPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemNameKey = @"name";
@@ -123,34 +124,16 @@ static UnityAds *sharedUnityAdsInstance = nil;
   if (![UnityAds isSupported]) return NO;
   if (![self canShow]) return NO;
   
-  BOOL animated = YES;
-  UnityAdsViewState state = kUnityAdsViewStateWebView;
+  UnityAdsViewStateType state = kUnityAdsViewStateTypeOfferScreen;
+  [[UnityAdsShowOptionsParser sharedInstance] parseOptions:options];
   
-  if (options != nil) {
-    if ([options objectForKey:kUnityAdsOptionNoOfferscreenKey] != nil && [[options objectForKey:kUnityAdsOptionNoOfferscreenKey] boolValue] == YES) {
-      if (![self canShow]) return NO;
-      [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-      
-      state = kUnityAdsViewStateVideoPlayer;
-      [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
-      
-      UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];
-      
-      if (campaign != nil) {
-        [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
-      }
-    }
-    
-    if ([options objectForKey:kUnityAdsOptionOpenAnimatedKey] != nil && [[options objectForKey:kUnityAdsOptionOpenAnimatedKey] boolValue] == NO) {
-      animated = NO;
-    }
-    
-    if ([options objectForKey:kUnityAdsOptionGamerSIDKey] != nil) {
-      [[UnityAdsProperties sharedInstance] setGamerSID:[options objectForKey:kUnityAdsOptionGamerSIDKey]];
-    }
+  if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
+    if (![self canShow]) return NO;
+    state = kUnityAdsViewStateTypeVideoPlayer;
   }
   
-  [[UnityAdsMainViewController sharedInstance] openAds:animated inState:state];
+  [[UnityAdsMainViewController sharedInstance] openAds:[[UnityAdsShowOptionsParser sharedInstance] openAnimated] inState:state withOptions:options];
+  
   return YES;
 }
 
@@ -158,7 +141,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
   UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) return NO;
   if (![self canShow]) return NO;
-  [[UnityAdsMainViewController sharedInstance] openAds:YES inState:kUnityAdsViewStateWebView];
+  [[UnityAdsMainViewController sharedInstance] openAds:YES inState:kUnityAdsViewStateTypeOfferScreen withOptions:nil];
   return YES;
 }
 
@@ -206,7 +189,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 - (BOOL)hide {
   UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) NO;
-  return [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES];
+  return [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES withOptions:nil];
 }
 
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds {
@@ -218,11 +201,11 @@ static UnityAds *sharedUnityAdsInstance = nil;
     openAnimated = YES;
   }
   
-  [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:NO];
+  [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:NO withOptions:nil];
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
   
   if (applyAds && [self canShow]) {
-    [[UnityAdsMainViewController sharedInstance] openAds:openAnimated inState:kUnityAdsViewStateWebView];
+    [[UnityAdsMainViewController sharedInstance] openAds:openAnimated inState:kUnityAdsViewStateTypeOfferScreen withOptions:nil];
   }
 }
 

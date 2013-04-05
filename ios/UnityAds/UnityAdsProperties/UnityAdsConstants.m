@@ -51,7 +51,7 @@ NSString * const kUnityAdsNativeEventShowSpinner = @"showSpinner";
 NSString * const kUnityAdsNativeEventShowError = @"showError";
 NSString * const kUnityAdsNativeEventVideoCompleted = @"videoCompleted";
 NSString * const kUnityAdsNativeEventCampaignIdKey = @"campaignId";
-
+NSString * const kUnityAdsNativeEventForceStopVideoPlayback = @"forceStopVideoPlayback";
 
 /* Native Event Params */
 

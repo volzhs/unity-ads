@@ -1,0 +1,58 @@
+//
+//  UnityAdsViewStateDefaultEndScreen.m
+//  UnityAds
+//
+//  Created by Pekka Palmu on 4/4/13.
+//  Copyright (c) 2013 Unity Technologies. All rights reserved.
+//
+
+#import "UnityAdsViewStateDefaultEndScreen.h"
+
+#import "../UnityAdsWebView/UnityAdsWebAppController.h"
+#import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "../UnityAdsCampaign/UnityAdsRewardItem.h"
+
+@implementation UnityAdsViewStateDefaultEndScreen
+
+- (UnityAdsViewStateType)getStateType {
+  return kUnityAdsViewStateTypeEndScreen;
+}
+
+- (void)enterState:(NSDictionary *)options {
+  UALOG_DEBUG(@"");
+  
+  [super enterState:options];
+  
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+}
+
+- (void)exitState:(NSDictionary *)options {
+  UALOG_DEBUG(@"");
+  
+  [super exitState:options];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:nil];
+}
+
+- (void)willBeShown {
+  [super willBeShown];
+}
+
+- (void)wasShown {
+  [super wasShown];
+}
+
+- (void)applyOptions:(NSDictionary *)options {
+  [super applyOptions:options];
+  
+  if ([options objectForKey:kUnityAdsNativeEventShowSpinner] != nil) {
+    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:[options objectForKey:kUnityAdsNativeEventShowSpinner]];
+  }
+  else if ([options objectForKey:kUnityAdsNativeEventHideSpinner] != nil) {
+    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:[options objectForKey:kUnityAdsNativeEventHideSpinner]];
+  }
+  else if ([options objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
+    [self openAppStoreWithData:options];
+  }
+}
+
+@end
