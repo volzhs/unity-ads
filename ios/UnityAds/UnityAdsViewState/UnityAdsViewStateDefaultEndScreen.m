@@ -8,7 +8,6 @@
 
 #import "UnityAdsViewStateDefaultEndScreen.h"
 
-#import "../UnityAdsWebView/UnityAdsWebAppController.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "../UnityAdsCampaign/UnityAdsRewardItem.h"
 

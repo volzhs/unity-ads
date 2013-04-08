@@ -54,7 +54,7 @@ extern NSString * const kUnityAdsOptionGamerSIDKey;
 - (BOOL)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController;
 - (BOOL)startWithGameId:(NSString *)gameId;
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds;
-- (BOOL)canShow;
+- (BOOL)canShowAds;
 - (BOOL)canShow;
 - (BOOL)show:(NSDictionary *)options;
 - (BOOL)show;

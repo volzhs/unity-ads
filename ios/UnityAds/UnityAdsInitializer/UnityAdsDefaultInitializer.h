@@ -7,7 +7,6 @@
 //
 
 #import "UnityAdsInitializer.h"
-#import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 
 @interface UnityAdsDefaultInitializer : UnityAdsInitializer <UnityAdsCampaignManagerDelegate>
 

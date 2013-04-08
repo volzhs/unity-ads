@@ -7,6 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "../UnityAdsDevice/UnityAdsDevice.h"
+#import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
+#import "../UnityAdsView/UnityAdsMainViewController.h"
 
 @protocol UnityAdsInitializerDelegate <NSObject>
 
@@ -20,6 +25,9 @@
   @property (nonatomic, strong) NSThread *backgroundThread;
   @property (nonatomic, assign) dispatch_queue_t queue;
 
-- (void)init:(NSDictionary *)options;
-
+- (void)initAds:(NSDictionary *)options;
+- (BOOL)initWasSuccessfull;
+- (void)checkForVersionAndShowAlertDialog;
+- (void)reInitialize;
+- (void)deInitialize;
 @end

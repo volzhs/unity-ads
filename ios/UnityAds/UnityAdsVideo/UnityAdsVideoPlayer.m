@@ -12,7 +12,6 @@
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
-#import "../UnityAdsWebView/UnityAdsWebAppController.h"
 
 @interface UnityAdsVideoPlayer ()
   @property (nonatomic, assign) id timeObserver;
@@ -47,10 +46,7 @@
   }
   
   [self _logVideoAnalytics];
-  
-  /*
-;*/
-  
+
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.delegate videoPlaybackEnded];
   });

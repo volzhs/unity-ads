@@ -24,9 +24,9 @@
 @interface UnityAdsMainViewController ()
   @property (nonatomic, strong) void (^closeHandler)(void);
   @property (nonatomic, strong) void (^openHandler)(void);
-  @property (nonatomic, strong) NSArray *viewStateHandlers;
   @property (nonatomic, strong) UnityAdsViewState *currentViewState;
   @property (nonatomic, assign) BOOL isOpen;
+  @property (nonatomic, strong) NSMutableArray *viewStateHandlers;
 @end
 
 @implementation UnityAdsMainViewController
@@ -38,10 +38,6 @@
       // Add notification listener
       NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
       [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-      
-      // Start WebAppController
-      [UnityAdsWebAppController sharedInstance];
-      [[UnityAdsWebAppController sharedInstance] setDelegate:self];
     }
   
     return self;
@@ -64,6 +60,16 @@
 
 
 #pragma mark - Public
+
+- (void)applyViewStateHandler:(UnityAdsViewState *)viewState {
+  if (viewState != nil) {
+    viewState.delegate = self;
+    if (self.viewStateHandlers == nil) {
+      self.viewStateHandlers = [[NSMutableArray alloc] init];
+    }
+    [self.viewStateHandlers addObject:viewState];
+  }
+}
 
 - (void)applyOptionsToCurrentState:(NSDictionary *)options {
   if (self.currentViewState != nil)
@@ -137,21 +143,7 @@
 
 - (BOOL)openAds:(BOOL)animated inState:(UnityAdsViewStateType)requestedState withOptions:(NSDictionary *)options {
   UALOG_DEBUG(@"");
-  
   if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) return NO;
-  
-  // FIX: TEST, DO NOT GENERATE LIST OF MANAGERS HERE
-  if (self.viewStateHandlers == nil) {
-    UnityAdsViewStateDefaultOffers *defaultOffers = [[UnityAdsViewStateDefaultOffers alloc] init];
-    defaultOffers.delegate = self;
-    UnityAdsViewStateDefaultVideoPlayer *defaultVideoPlayer = [[UnityAdsViewStateDefaultVideoPlayer alloc] init];
-    defaultVideoPlayer.delegate = self;
-    UnityAdsViewStateDefaultEndScreen *defaultEndScreen = [[UnityAdsViewStateDefaultEndScreen alloc] init];
-    defaultEndScreen.delegate = self;
-    UnityAdsViewStateDefaultSpinner *defaultSpinner = [[UnityAdsViewStateDefaultSpinner alloc] init];
-    defaultSpinner.delegate = self;
-    self.viewStateHandlers = [[NSArray alloc] initWithObjects:defaultOffers, defaultVideoPlayer, defaultEndScreen, defaultSpinner, nil];
-  }
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [self selectState:requestedState];
@@ -159,7 +151,6 @@
       [self.delegate mainControllerWillOpen];
       [self.currentViewState willBeShown];
       [self changeState:requestedState withOptions:options];
-      //[viewStateManager enterState];
       
       if (![UnityAdsDevice isSimulator]) {
         if (self.openHandler == nil) {
@@ -246,9 +237,6 @@
   UALOG_DEBUG(@"Notification: %@", name);
   
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
-    // FIX: Find a better way to re-initialize when needed
-    //[[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
-
     [self applyOptionsToCurrentState:@{kUnityAdsNativeEventForceStopVideoPlayback:@true}];
 
     if (self.isOpen)
@@ -278,40 +266,6 @@
 
 - (void)didReceiveMemoryWarning {
   [super didReceiveMemoryWarning];
-}
-
-
-#pragma mark - WebAppController
-
-- (void)webAppReady {
-  [self.delegate mainControllerWebViewInitialized];
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self checkForVersionAndShowAlertDialog];
-    
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIInitComplete, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
-  });
-}
-
-- (void)checkForVersionAndShowAlertDialog {
-  if ([[UnityAdsProperties sharedInstance] expectedSdkVersion] != nil && ![[[UnityAdsProperties sharedInstance] expectedSdkVersion] isEqualToString:[[UnityAdsProperties sharedInstance] adsVersion]]) {
-    UALOG_DEBUG(@"Got different sdkVersions, checking further.");
-    
-    if (![UnityAdsDevice isEncrypted]) {
-      if ([UnityAdsDevice isJailbroken]) {
-        UALOG_DEBUG(@"Build is not encrypted, but device seems to be jailbroken. Not showing version alert");
-        return;
-      }
-      else {
-        // Build is not encrypted and device is not jailbroken, alert dialog is shown that SDK is not the latest version.
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unity Ads SDK"
-                                                        message:@"The Unity Ads SDK you are running is not the current version, please update your SDK"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-      }
-    }
-  }
 }
 
 

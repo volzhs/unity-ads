@@ -99,15 +99,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
       if ([data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey] != nil) {
         [self _selectCampaignWithID:[data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey]];
-        
-        /*
-        BOOL checkIfWatched = YES;
-        if ([data objectForKey:kUnityAdsWebViewEventDataRewatchKey] != nil && [[data valueForKey:kUnityAdsWebViewEventDataRewatchKey] boolValue] == true) {
-          checkIfWatched = NO;
-        }*/
-        
         [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeVideoPlayer withOptions:data];
-        //[[UnityAdsMainViewController sharedInstance] showPlayerAndPlaySelectedVideo:checkIfWatched];
       }
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo]) {

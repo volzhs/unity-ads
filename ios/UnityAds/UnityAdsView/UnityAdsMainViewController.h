@@ -8,14 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-#import "../UnityAdsWebView/UnityAdsWebAppController.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "../UnityAdsViewState/UnityAdsViewState.h"
 
 @protocol UnityAdsMainViewControllerDelegate <NSObject>
 
 @required
-- (void)mainControllerWebViewInitialized;
 - (void)mainControllerWillOpen;
 - (void)mainControllerDidOpen;
 - (void)mainControllerWillClose;
@@ -25,7 +23,7 @@
 - (void)mainControllerWillLeaveApplication;
 @end
 
-@interface UnityAdsMainViewController : UIViewController <UnityAdsWebAppControllerDelegate, UnityAdsViewStateDelegate>
+@interface UnityAdsMainViewController : UIViewController <UnityAdsViewStateDelegate>
 
 @property (nonatomic, assign) id<UnityAdsMainViewControllerDelegate> delegate;
 
@@ -37,5 +35,6 @@
 
 - (BOOL)mainControllerVisible;
 - (void)applyOptionsToCurrentState:(NSDictionary *)options;
+- (void)applyViewStateHandler:(UnityAdsViewState *)viewState;
 
 @end

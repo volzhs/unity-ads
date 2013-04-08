@@ -99,5 +99,4 @@
   [[UnityAdsMainViewController sharedInstance] dismissViewControllerAnimated:YES completion:nil];
 }
 
-
 @end

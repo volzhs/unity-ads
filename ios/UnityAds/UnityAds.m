@@ -12,6 +12,7 @@
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsView/UnityAdsMainViewController.h"
 #import "UnityAdsProperties/UnityAdsShowOptionsParser.h"
+#import "UnityAdsInitializer/UnityAdsDefaultInitializer.h"
 
 NSString * const kUnityAdsRewardItemPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemNameKey = @"name";
@@ -19,10 +20,9 @@ NSString * const kUnityAdsOptionNoOfferscreenKey = @"noOfferScreen";
 NSString * const kUnityAdsOptionOpenAnimatedKey = @"openAnimated";
 NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
 
-@interface UnityAds () <UnityAdsCampaignManagerDelegate, UIWebViewDelegate, UIScrollViewDelegate, UnityAdsMainViewControllerDelegate>
-@property (nonatomic, strong) NSThread *backgroundThread;
-@property (nonatomic, assign) dispatch_queue_t queue;
-@property (nonatomic, assign) Boolean debug;
+@interface UnityAds () <UnityAdsInitializerDelegate, UnityAdsMainViewControllerDelegate>
+  @property (nonatomic, strong) UnityAdsInitializer *initializer;
+  @property (nonatomic, assign) Boolean debug;
 @end
 
 @implementation UnityAds
@@ -64,6 +64,23 @@ static UnityAds *sharedUnityAdsInstance = nil;
 }
 
 
+#pragma mark - Init delegates
+
+- (void)initComplete {
+	UAAssert([NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+  
+	[self notifyDelegateOfCampaignAvailability];
+}
+
+- (void)initFailed {
+	UAAssert([NSThread isMainThread]);
+  UALOG_DEBUG(@"");
+  if ([self.delegate respondsToSelector:@selector(unityAdsFetchFailed:)])
+    [self.delegate unityAdsFetchFailed:self];
+}
+
+
 #pragma mark - Public
 
 - (void)setTestMode:(BOOL)testModeEnabled {
@@ -82,30 +99,21 @@ static UnityAds *sharedUnityAdsInstance = nil;
   if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) return false;
 	if (gameId == nil || [gameId length] == 0) return false;
   
-  [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
-  
   NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-  [notificationCenter addObserver:self selector:@selector(_notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];
+  [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];
+  
+  [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
 	[[UnityAdsProperties sharedInstance] setAdsGameId:gameId];
-	
-  self.queue = dispatch_queue_create("com.unity3d.ads", NULL);
-	 
-	dispatch_async(self.queue, ^{
-    self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
-		[self.backgroundThread start];
-
-		[self performSelector:@selector(_startCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
-		[self performSelector:@selector(_startAnalyticsUploader) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
-		
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      [[UnityAdsMainViewController sharedInstance] setDelegate:self];
-		});
-	});
+  [[UnityAdsMainViewController sharedInstance] setDelegate:self];
+  
+  self.initializer = [[UnityAdsDefaultInitializer alloc] init];
+  [self.initializer setDelegate:self];
+  [self.initializer initAds:nil];
   
   return true;
 }
 
-- (BOOL)canShow {
+- (BOOL)canShowAds {
   if ([self canShow] && [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] count] > 0) {
     return YES;
   }
@@ -116,7 +124,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 - (BOOL)canShow {
 	UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) return NO;
-	return [self _adViewCanBeShown];
+	return [self adsCanBeShown];
 }
 
 - (BOOL)show:(NSDictionary *)options {
@@ -128,7 +136,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
   [[UnityAdsShowOptionsParser sharedInstance] parseOptions:options];
   
   if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
-    if (![self canShow]) return NO;
+    if (![self canShowAds]) return NO;
     state = kUnityAdsViewStateTypeVideoPlayer;
   }
   
@@ -185,7 +193,6 @@ static UnityAds *sharedUnityAdsInstance = nil;
   return nil;
 }
 
-
 - (BOOL)hide {
   UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) NO;
@@ -212,21 +219,26 @@ static UnityAds *sharedUnityAdsInstance = nil;
 - (void)stopAll{
 	UAAssert([NSThread isMainThread]);
   if (![UnityAds isSupported]) return;
-  [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+  if (self.initializer != nil) {
+    [self.initializer deInitialize];
+  }
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+  
   [[UnityAdsCampaignManager sharedInstance] setDelegate:nil];
   [[UnityAdsMainViewController sharedInstance] setDelegate:nil];
-  [[UnityAdsWebAppController sharedInstance] setDelegate:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	dispatch_release(self.queue);
+  
+  if (self.initializer != nil) {
+    [self.initializer setDelegate:nil];
+  }
 }
 
 
 #pragma mark - Private uncategorized
 
-- (void)_notificationHandler: (id) notification {
+- (void)notificationHandler:(id)notification {
   NSString *name = [notification name];
   UALOG_DEBUG(@"Got notification from notificationCenter: %@", name);
   
@@ -237,26 +249,13 @@ static UnityAds *sharedUnityAdsInstance = nil;
       UALOG_DEBUG(@"Ad view visible, not refreshing.");
     }
     else {
-      [self _refresh];
+      [self refreshAds];
     }
   }
 }
 
-- (void)_backgroundRunLoop:(id)dummy {
-	@autoreleasepool {
-		NSPort *port = [[NSPort alloc] init];
-		[port scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-		
-		while([[NSThread currentThread] isCancelled] == NO) {
-			@autoreleasepool {
-				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:3.0]];
-			}
-		}
-	}
-}
-
-- (BOOL)_adViewCanBeShown {
-  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem] != nil && [[UnityAdsWebAppController sharedInstance] webViewInitialized])
+- (BOOL)adsCanBeShown {
+  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem] != nil && self.initializer != nil && [self.initializer initWasSuccessfull])
 		return YES;
 	else
 		return NO;
@@ -265,83 +264,21 @@ static UnityAds *sharedUnityAdsInstance = nil;
 }
 
 
-#pragma mark - Private initalization
-
-- (void)_startCampaignManager {
-	UAAssert(![NSThread isMainThread]);
-	UALOG_DEBUG(@"");
-  [[UnityAdsCampaignManager sharedInstance] setDelegate:self];
-	[self _refreshCampaignManager];
-}
-
-- (void)_startAnalyticsUploader {
-	UAAssert(![NSThread isMainThread]);
-	UALOG_DEBUG(@"");
-	[[UnityAdsAnalyticsUploader sharedInstance] retryFailedUploads];
-}
-
-
 #pragma mark - Private data refreshing
 
-- (void)_refresh {
+- (void)refreshAds {
 	if ([[UnityAdsProperties sharedInstance] adsGameId] == nil) {
 		UALOG_ERROR(@"Unity Ads has not been started properly. Launch with -startWithGameId: first.");
 		return;
 	}
 	
-	UALOG_DEBUG(@"");
-	dispatch_async(self.queue, ^{
-		[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
-		[self performSelector:@selector(_refreshCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
-    [[UnityAdsAnalyticsUploader sharedInstance] performSelector:@selector(retryFailedUploads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
-	});
-}
-
-- (void)_refreshCampaignManager {
-	UAAssert(![NSThread isMainThread]);
-	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
-	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
-}
-
-
-#pragma mark - UnityAdsCampaignManagerDelegate
-
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID {
-	UAAssert([NSThread isMainThread]);
-	UALOG_DEBUG(@"");
-	[self _notifyDelegateOfCampaignAvailability];
-}
-
-- (void)campaignManagerCampaignDataReceived {
-  UAAssert([NSThread isMainThread]);
-  UALOG_DEBUG(@"Campaign data received.");
-  
-  if ([[UnityAdsCampaignManager sharedInstance] campaignData] != nil) {
-    [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
+  if (self.initializer != nil) {
+    [self.initializer reInitialize];
   }
-  
-  if (![[UnityAdsWebAppController sharedInstance] webViewInitialized]) {
-    [[UnityAdsWebAppController sharedInstance] initWebApp];
-  }
-}
-
-- (void)campaignManagerCampaignDataFailed {
-  UAAssert([NSThread isMainThread]);
-  UALOG_DEBUG(@"Campaign data failed.");
-  
-  if ([self.delegate respondsToSelector:@selector(unityAdsFetchFailed:)])
-		[self.delegate unityAdsFetchFailed:self];
 }
 
 
 #pragma mark - UnityAdsViewManagerDelegate
-
-- (void)mainControllerWebViewInitialized {
-	UAAssert([NSThread isMainThread]);
-	UALOG_DEBUG(@"");
-  
-	[self _notifyDelegateOfCampaignAvailability];
-}
 
 - (void)mainControllerWillClose {
 	UAAssert([NSThread isMainThread]);
@@ -401,10 +338,11 @@ static UnityAds *sharedUnityAdsInstance = nil;
 		[self.delegate unityAdsWillLeaveApplication:self];
 }
 
+
 #pragma mark - UnityAdsDelegate calling methods
 
-- (void)_notifyDelegateOfCampaignAvailability {
-	if ([self _adViewCanBeShown]) {
+- (void)notifyDelegateOfCampaignAvailability {
+	if ([self adsCanBeShown]) {
 		if ([self.delegate respondsToSelector:@selector(unityAdsFetchCompleted:)])
 			[self.delegate unityAdsFetchCompleted:self];
 	}

@@ -7,19 +7,28 @@
 //
 
 #import "UnityAdsInitializer.h"
+#import "../UnityAds.h"
 
 @implementation UnityAdsInitializer
 
-- (void)init:(NSDictionary *)options {
+- (void)initAds:(NSDictionary *)options {
   if (self.queue == nil)
     [self createQueue];
   if (self.backgroundThread == nil)
     [self createBackgroundThread];
 }
 
+- (void)reInitialize {
+}
+
+- (void)deInitialize {
+  [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(cancelAllDownloads) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+}
+
 - (void)createBackgroundThread {
   if (self.queue != nil && self.backgroundThread == nil) {
-    dispatch_async(self.queue, ^{
+    dispatch_sync(self.queue, ^{
+      UALOG_DEBUG(@"Starting background thread");
       self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(_backgroundRunLoop:) object:nil];
       [self.backgroundThread start];
     });
@@ -47,6 +56,32 @@
 
 - (void)dealloc {
   dispatch_release(self.queue);
+}
+
+- (BOOL)initWasSuccessfull {
+  return NO;
+}
+
+- (void)checkForVersionAndShowAlertDialog {
+  if ([[UnityAdsProperties sharedInstance] expectedSdkVersion] != nil && ![[[UnityAdsProperties sharedInstance] expectedSdkVersion] isEqualToString:[[UnityAdsProperties sharedInstance] adsVersion]]) {
+    UALOG_DEBUG(@"Got different sdkVersions, checking further.");
+    
+    if (![UnityAdsDevice isEncrypted]) {
+      if ([UnityAdsDevice isJailbroken]) {
+        UALOG_DEBUG(@"Build is not encrypted, but device seems to be jailbroken. Not showing version alert");
+        return;
+      }
+      else {
+        // Build is not encrypted and device is not jailbroken, alert dialog is shown that SDK is not the latest version.
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unity Ads SDK"
+                                                        message:@"The Unity Ads SDK you are running is not the current version, please update your SDK"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+      }
+    }
+  }
 }
 
 @end
