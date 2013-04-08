@@ -10,6 +10,7 @@
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "../UnityAdsView/UnityAdsMainViewController.h"
 #import "../UnityAds.h"
+#import "../UnityAdsWebView/UnityAdsWebAppController.h"
 
 @implementation UnityAdsViewStateDefaultSpinner
 
