@@ -74,7 +74,7 @@ public class UnityAdsProperties {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Problems creating campaigns query", UnityAdsProperties.class);
+			UnityAdsUtils.Log("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString(), UnityAdsProperties.class);
 		}
 		
 		if (TESTMODE_ENABLED) {
