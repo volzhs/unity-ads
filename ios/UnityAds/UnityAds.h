@@ -21,6 +21,11 @@ extern NSString * const kUnityAdsOptionNoOfferscreenKey;
 extern NSString * const kUnityAdsOptionOpenAnimatedKey;
 extern NSString * const kUnityAdsOptionGamerSIDKey;
 
+typedef enum {
+  kUnityAdsModeDefault,
+  kUnityAdsModeNativeNoOfferscreen,
+} UnityAdsMode;
+
 @class UnityAds;
 @class SKStoreProductViewController;
 

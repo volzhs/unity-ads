@@ -26,9 +26,7 @@ static UnityAdsShowOptionsParser *sharedOptionsParser = nil;
 
 
 - (void)parseOptions:(NSDictionary *)options {
-  self.noOfferScreen = NO;
-  self.openAnimated = YES;
-  self.gamerSID = NULL;
+  [self resetToDefaults];
   
   if (options != NULL) {
     if ([options objectForKey:kUnityAdsOptionNoOfferscreenKey] != nil && [[options objectForKey:kUnityAdsOptionNoOfferscreenKey] boolValue] == YES) {
@@ -43,6 +41,12 @@ static UnityAdsShowOptionsParser *sharedOptionsParser = nil;
       self.gamerSID = [options objectForKey:kUnityAdsOptionGamerSIDKey];
     }
   }
+}
+
+- (void)resetToDefaults {
+  self.noOfferScreen = NO;
+  self.openAnimated = YES;
+  self.gamerSID = NULL;
 }
 
 @end

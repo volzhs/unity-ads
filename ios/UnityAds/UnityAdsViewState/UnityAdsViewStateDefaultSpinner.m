@@ -22,9 +22,7 @@
   UALOG_DEBUG(@"");
   
   [super enterState:options];
-  
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:options];
-
 }
 
 - (void)exitState:(NSDictionary *)options {
