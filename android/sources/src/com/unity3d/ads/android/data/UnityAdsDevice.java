@@ -1,6 +1,9 @@
 package com.unity3d.ads.android.data;
 
 import java.lang.reflect.Method;
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.List;
 
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
@@ -9,7 +12,6 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
@@ -86,33 +88,68 @@ public class UnityAdsDevice {
 		return androidSerial;
 	}
 	
-	public static String getMacAddress () {
-		String deviceId = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		
-		if (UnityAdsProperties.CURRENT_ACTIVITY == null) return deviceId;
-		
-		Context context = UnityAdsProperties.CURRENT_ACTIVITY;
-
-		try {
-			WifiManager wm = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-			
-			Boolean originalStatus = wm.isWifiEnabled();
-			if (!originalStatus)
-				wm.setWifiEnabled(true);
-			
-			deviceId = UnityAdsUtils.Md5(wm.getConnectionInfo().getMacAddress());
-			wm.setWifiEnabled(originalStatus);
-		} 
-		catch (Exception e) {
-			//maybe no permissons or wifi off
+    public static String getMacAddress() {
+		NetworkInterface intf = null;
+		intf = getInterfaceFor("eth0");		
+		if (intf == null) {
+			intf = getInterfaceFor("wlan0");
 		}
 		
-		if (deviceId == null)
-			deviceId = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		
-		return deviceId.toLowerCase();
-	}
+		return buildMacAddressFromInterface(intf);
+    }
 	
+    public static String buildMacAddressFromInterface (NetworkInterface intf) {
+		byte[] mac = null;
+		
+		if (intf == null) {
+			return UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
+		}
+		
+		try
+		{
+			Method layertype = NetworkInterface.class.getMethod("getHardwareAddress");
+			mac = (byte[])layertype.invoke(intf);
+		}
+		catch (Exception e) {
+			UnityAdsUtils.Log("Could not getHardwareAddress", UnityAdsDevice.class);
+		}
+		
+		if (mac == null) {
+			return UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
+		}
+		
+		StringBuilder buf = new StringBuilder();
+        for (int idx=0; idx<mac.length; idx++)
+            buf.append(String.format("%02X:", mac[idx]));       
+        if (buf.length()>0) buf.deleteCharAt(buf.length()-1);
+        
+        String retMacAddress = UnityAdsUtils.Md5(buf.toString());
+        return retMacAddress.toLowerCase();    	
+    }
+    
+    public static NetworkInterface getInterfaceFor (String interfaceName) {
+    	List<NetworkInterface> interfaces = null;
+    	
+        try {
+        	interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+        }
+        catch (Exception e) {
+        	return null;
+        }
+        
+    	for (NetworkInterface intf : interfaces) {
+    		if (interfaceName != null) {
+    			if (intf.getName().equalsIgnoreCase(interfaceName)) {
+    				UnityAdsUtils.Log("Returning interface: " + intf.getName(), UnityAdsDevice.class);
+    				return intf;
+    			}
+    				
+            }
+    	}
+        
+    	return null;
+    }
+    
 	public static String getOpenUdid () {
 		String deviceId = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		UnityAdsOpenUDID.syncContext(UnityAdsProperties.CURRENT_ACTIVITY);
