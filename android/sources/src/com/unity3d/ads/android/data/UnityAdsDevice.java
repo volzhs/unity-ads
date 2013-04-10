@@ -12,7 +12,6 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
@@ -89,31 +88,6 @@ public class UnityAdsDevice {
 		return androidSerial;
 	}
 	
-	public static String getOldMacAddress () {
-		String deviceId ="unknown";
-		
-		Context context = UnityAdsProperties.CURRENT_ACTIVITY;
-
-		try {
-			WifiManager wm = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-			
-			Boolean originalStatus = wm.isWifiEnabled();
-			if (!originalStatus)
-				wm.setWifiEnabled(true);
-			
-			deviceId = UnityAdsUtils.Md5(wm.getConnectionInfo().getMacAddress());
-			wm.setWifiEnabled(originalStatus);
-		} 
-		catch (Exception e) {
-			//maybe no permissons or wifi off
-		}
-		
-		if (deviceId == null)
-			deviceId ="unknown";
-		
-		return deviceId.toLowerCase();
-	}
-	
     public static String getMacAddress() {
 		NetworkInterface intf = null;
 		intf = getInterfaceFor("eth0");		
@@ -121,7 +95,6 @@ public class UnityAdsDevice {
 			intf = getInterfaceFor("wlan0");
 		}
 		
-		UnityAdsUtils.Log("Old mac: " + getOldMacAddress(), UnityAdsDevice.class);
 		return buildMacAddressFromInterface(intf);
     }
 	
@@ -159,7 +132,6 @@ public class UnityAdsDevice {
     	
         try {
         	interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-			UnityAdsUtils.Log("Got interface list", UnityAdsDevice.class);
         }
         catch (Exception e) {
         	return null;
@@ -167,7 +139,6 @@ public class UnityAdsDevice {
         
     	for (NetworkInterface intf : interfaces) {
     		if (interfaceName != null) {
-    			UnityAdsUtils.Log("Interface '" + intf.getName() + "' mac=" + buildMacAddressFromInterface(intf), UnityAdsDevice.class);
     			if (intf.getName().equalsIgnoreCase(interfaceName)) {
     				UnityAdsUtils.Log("Returning interface: " + intf.getName(), UnityAdsDevice.class);
     				return intf;
