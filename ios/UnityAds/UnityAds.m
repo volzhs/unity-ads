@@ -22,6 +22,7 @@ NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
 
 @interface UnityAds () <UnityAdsInitializerDelegate, UnityAdsMainViewControllerDelegate>
   @property (nonatomic, strong) UnityAdsInitializer *initializer;
+  @property (nonatomic, assign) UnityAdsMode adsMode;
   @property (nonatomic, assign) Boolean debug;
 @end
 
@@ -40,6 +41,10 @@ NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
 
 + (NSString *)getSDKVersion {
   return [[UnityAdsProperties sharedInstance] adsVersion];
+}
+
+- (void)setAdsMode:(UnityAdsMode)adsMode {
+  self.adsMode = adsMode;
 }
 
 - (void)setDebugMode:(BOOL)debugMode {
@@ -98,6 +103,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
   if (![UnityAds isSupported]) return false;
   if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) return false;
 	if (gameId == nil || [gameId length] == 0) return false;
+  if (self.initializer != nil) return false;
   
   NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
   [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -263,6 +269,16 @@ static UnityAds *sharedUnityAdsInstance = nil;
   return NO;
 }
 
+- (UnityAdsInitializer *)selectInitializerFromMode:(UnityAdsMode)mode {
+  switch (mode) {
+    case kUnityAdsModeDefault:
+      return [[UnityAdsDefaultInitializer alloc] init];
+    case kUnityAdsModeNoWebView:
+      break;
+  }
+  
+  return nil;
+}
 
 #pragma mark - Private data refreshing
 

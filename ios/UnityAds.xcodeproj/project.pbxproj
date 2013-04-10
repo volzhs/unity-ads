@@ -65,6 +65,8 @@
 		7894D8DD170EF726000CFC99 /* UnityAdsInitializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8DB170EF726000CFC99 /* UnityAdsInitializer.m */; };
 		7894D8E0170EF73D000CFC99 /* UnityAdsDefaultInitializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D8DE170EF73D000CFC99 /* UnityAdsDefaultInitializer.h */; };
 		7894D8E1170EF73D000CFC99 /* UnityAdsDefaultInitializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8DF170EF73D000CFC99 /* UnityAdsDefaultInitializer.m */; };
+		7894D8E417155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D8E217155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h */; };
+		7894D8E517155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8E317155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m */; };
 		78AC201A1622EFEA007DE419 /* UnityAdsOpenUDID.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */; };
 		78AC201B1622EFEA007DE419 /* UnityAdsOpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */; };
 		78AC20211622EFF3007DE419 /* UnityAdsAnalyticsUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */; };
@@ -143,6 +145,8 @@
 		7894D8DB170EF726000CFC99 /* UnityAdsInitializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsInitializer.m; sourceTree = "<group>"; };
 		7894D8DE170EF73D000CFC99 /* UnityAdsDefaultInitializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsDefaultInitializer.h; sourceTree = "<group>"; };
 		7894D8DF170EF73D000CFC99 /* UnityAdsDefaultInitializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsDefaultInitializer.m; sourceTree = "<group>"; };
+		7894D8E217155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsNoWebViewInitializer.h; sourceTree = "<group>"; };
+		7894D8E317155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsNoWebViewInitializer.m; sourceTree = "<group>"; };
 		78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsOpenUDID.h; sourceTree = "<group>"; };
 		78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsOpenUDID.m; sourceTree = "<group>"; };
 		78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsAnalyticsUploader.h; sourceTree = "<group>"; };
@@ -255,6 +259,8 @@
 				7894D8DB170EF726000CFC99 /* UnityAdsInitializer.m */,
 				7894D8DE170EF73D000CFC99 /* UnityAdsDefaultInitializer.h */,
 				7894D8DF170EF73D000CFC99 /* UnityAdsDefaultInitializer.m */,
+				7894D8E217155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h */,
+				7894D8E317155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m */,
 			);
 			path = UnityAdsInitializer;
 			sourceTree = "<group>";
@@ -426,6 +432,7 @@
 				7894D8D7170EC93A000CFC99 /* UnityAdsViewStateEndScreen.h in Headers */,
 				7894D8DC170EF726000CFC99 /* UnityAdsInitializer.h in Headers */,
 				7894D8E0170EF73D000CFC99 /* UnityAdsDefaultInitializer.h in Headers */,
+				7894D8E417155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,6 +581,7 @@
 				7894D8D8170EC93A000CFC99 /* UnityAdsViewStateEndScreen.m in Sources */,
 				7894D8DD170EF726000CFC99 /* UnityAdsInitializer.m in Sources */,
 				7894D8E1170EF73D000CFC99 /* UnityAdsDefaultInitializer.m in Sources */,
+				7894D8E517155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

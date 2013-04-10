@@ -23,7 +23,7 @@ extern NSString * const kUnityAdsOptionGamerSIDKey;
 
 typedef enum {
   kUnityAdsModeDefault,
-  kUnityAdsModeNativeNoOfferscreen,
+  kUnityAdsModeNoWebView,
 } UnityAdsMode;
 
 @class UnityAds;
@@ -54,6 +54,7 @@ typedef enum {
 + (BOOL)isSupported;
 + (NSString *)getSDKVersion;
 - (void)setDebugMode:(BOOL)debugMode;
+- (void)setAdsMode:(UnityAdsMode)adsMode;
 - (BOOL)isDebugMode;
 - (void)setTestMode:(BOOL)testModeEnabled;
 - (BOOL)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController;

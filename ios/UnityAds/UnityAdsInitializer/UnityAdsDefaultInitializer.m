@@ -8,7 +8,6 @@
 
 #import "UnityAdsDefaultInitializer.h"
 
-#import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
 #import "../UnityAds.h"
 
@@ -31,8 +30,8 @@
   [UnityAdsWebAppController sharedInstance];
   [[UnityAdsWebAppController sharedInstance] setDelegate:self];
   
-  [self performSelector:@selector(_initCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
-  [self performSelector:@selector(_initAnalyticsUploader) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+  [self performSelector:@selector(initCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+  [self performSelector:@selector(initAnalyticsUploader) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 }
 
 - (BOOL)initWasSuccessfull {
@@ -46,14 +45,22 @@
   dispatch_async(self.queue, ^{
     [[UnityAdsWebAppController sharedInstance] setWebViewInitialized:NO];
 		[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
-		[self performSelector:@selector(_refreshCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
-    [self performSelector:@selector(_initAnalyticsUploader) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+		[self performSelector:@selector(refreshCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
+    [self performSelector:@selector(initAnalyticsUploader) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
 	});
 }
 
 
 #pragma mark - Private initalization
 
+- (void)initCampaignManager {
+	UAAssert(![NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+  [[UnityAdsCampaignManager sharedInstance] setDelegate:self];
+  [super initCampaignManager];
+}
+
+/*
 - (void)_initCampaignManager {
 	UAAssert(![NSThread isMainThread]);
 	UALOG_DEBUG(@"");
@@ -71,7 +78,7 @@
 	UAAssert(![NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	[[UnityAdsAnalyticsUploader sharedInstance] retryFailedUploads];
-}
+}*/
 
 
 #pragma mark - UnityAdsCampaignManagerDelegate

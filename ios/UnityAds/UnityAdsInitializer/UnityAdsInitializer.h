@@ -12,6 +12,7 @@
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsView/UnityAdsMainViewController.h"
+#import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 
 @protocol UnityAdsInitializerDelegate <NSObject>
 
@@ -30,4 +31,9 @@
 - (void)checkForVersionAndShowAlertDialog;
 - (void)reInitialize;
 - (void)deInitialize;
+
+- (void)initCampaignManager;
+- (void)refreshCampaignManager;
+- (void)initAnalyticsUploader;
+
 @end

@@ -84,4 +84,24 @@
   }
 }
 
+- (void)initCampaignManager {
+	UAAssert(![NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+  [[UnityAdsCampaignManager sharedInstance] setDelegate:self];
+	[self refreshCampaignManager];
+}
+
+- (void)refreshCampaignManager {
+	UAAssert(![NSThread isMainThread]);
+	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
+	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
+}
+
+- (void)initAnalyticsUploader {
+	UAAssert(![NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+	[[UnityAdsAnalyticsUploader sharedInstance] retryFailedUploads];
+}
+
+
 @end
