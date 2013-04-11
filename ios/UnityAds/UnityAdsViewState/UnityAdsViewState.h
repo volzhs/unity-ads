@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "../UnityAds.h"
 
 @protocol UnityAdsViewStateDelegate <NSObject>
 
@@ -18,6 +19,7 @@
 @interface UnityAdsViewState : NSObject
 
 @property (nonatomic, assign) id<UnityAdsViewStateDelegate> delegate;
+@property (nonatomic, assign) BOOL waitingToBeShown;
 
 - (UnityAdsViewStateType)getStateType;
 

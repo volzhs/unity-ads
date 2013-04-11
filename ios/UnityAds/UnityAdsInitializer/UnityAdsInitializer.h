@@ -14,6 +14,8 @@
 #import "../UnityAdsView/UnityAdsMainViewController.h"
 #import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 
+#import "../UnityAds.h"
+
 @protocol UnityAdsInitializerDelegate <NSObject>
 
 @required

@@ -12,7 +12,9 @@
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsView/UnityAdsMainViewController.h"
 #import "UnityAdsProperties/UnityAdsShowOptionsParser.h"
+
 #import "UnityAdsInitializer/UnityAdsDefaultInitializer.h"
+#import "UnityAdsInitializer/UnityAdsNoWebViewInitializer.h"
 
 NSString * const kUnityAdsRewardItemPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemNameKey = @"name";
@@ -22,7 +24,7 @@ NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
 
 @interface UnityAds () <UnityAdsInitializerDelegate, UnityAdsMainViewControllerDelegate>
   @property (nonatomic, strong) UnityAdsInitializer *initializer;
-  @property (nonatomic, assign) UnityAdsMode adsMode;
+  @property (nonatomic, assign) UnityAdsMode mode;
   @property (nonatomic, assign) Boolean debug;
 @end
 
@@ -44,7 +46,7 @@ NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
 }
 
 - (void)setAdsMode:(UnityAdsMode)adsMode {
-  self.adsMode = adsMode;
+  self.mode = adsMode;
 }
 
 - (void)setDebugMode:(BOOL)debugMode {
@@ -112,9 +114,16 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	[[UnityAdsProperties sharedInstance] setAdsGameId:gameId];
   [[UnityAdsMainViewController sharedInstance] setDelegate:self];
   
-  self.initializer = [[UnityAdsDefaultInitializer alloc] init];
-  [self.initializer setDelegate:self];
-  [self.initializer initAds:nil];
+  self.initializer = [self selectInitializerFromMode:self.mode];
+  
+  if (self.initializer != nil) {
+    [self.initializer setDelegate:self];
+    [self.initializer initAds:nil];
+  }
+  else {
+    UALOG_DEBUG(@"Initializer is null, cannot start Unity Ads");
+    return false;
+  }
   
   return true;
 }
@@ -134,37 +143,37 @@ static UnityAds *sharedUnityAdsInstance = nil;
 }
 
 - (BOOL)show:(NSDictionary *)options {
-  UAAssertV([NSThread mainThread], NO);
-  if (![UnityAds isSupported]) return NO;
-  if (![self canShow]) return NO;
+  UAAssertV([NSThread mainThread], false);
+  if (![UnityAds isSupported]) return false;
+  if (![self canShow]) return false;
   
   UnityAdsViewStateType state = kUnityAdsViewStateTypeOfferScreen;
   [[UnityAdsShowOptionsParser sharedInstance] parseOptions:options];
   
+  // If Unity Ads is in "No WebView" -mode, always skip offerscreen
+  if (self.mode == kUnityAdsModeNoWebView)
+    [[UnityAdsShowOptionsParser sharedInstance] setNoOfferScreen:true];
+  
   if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
-    if (![self canShowAds]) return NO;
+    if (![self canShowAds]) return false;
     state = kUnityAdsViewStateTypeVideoPlayer;
   }
   
   [[UnityAdsMainViewController sharedInstance] openAds:[[UnityAdsShowOptionsParser sharedInstance] openAnimated] inState:state withOptions:options];
   
-  return YES;
+  return true;
 }
 
 - (BOOL)show {
-  UAAssertV([NSThread mainThread], NO);
-  if (![UnityAds isSupported]) return NO;
-  if (![self canShow]) return NO;
-  [[UnityAdsMainViewController sharedInstance] openAds:YES inState:kUnityAdsViewStateTypeOfferScreen withOptions:nil];
-  return YES;
+  return [self show:nil];
 }
 
 - (BOOL)hasMultipleRewardItems {
   if ([[UnityAdsCampaignManager sharedInstance] rewardItems] != nil && [[[UnityAdsCampaignManager sharedInstance] rewardItems] count] > 0) {
-    return YES;
+    return true;
   }
   
-  return NO;
+  return false;
 }
 
 - (NSArray *)getRewardItemKeys {
@@ -184,7 +193,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
     return [[UnityAdsCampaignManager sharedInstance] setSelectedRewardItemKey:rewardItemKey];
   }
   
-  return NO;
+  return false;
 }
 
 - (void)setDefaultRewardItemAsRewardItem {
@@ -200,8 +209,8 @@ static UnityAds *sharedUnityAdsInstance = nil;
 }
 
 - (BOOL)hide {
-  UAAssertV([NSThread mainThread], NO);
-  if (![UnityAds isSupported]) NO;
+  UAAssertV([NSThread mainThread], false);
+  if (![UnityAds isSupported]) false;
   return [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES withOptions:nil];
 }
 
@@ -209,7 +218,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	UAAssert([NSThread isMainThread]);
   if (![UnityAds isSupported]) return;
   
-  BOOL openAnimated = NO;
+  BOOL openAnimated = false;
   if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) {
     openAnimated = YES;
   }
@@ -261,12 +270,11 @@ static UnityAds *sharedUnityAdsInstance = nil;
 }
 
 - (BOOL)adsCanBeShown {
-  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem] != nil && self.initializer != nil && [self.initializer initWasSuccessfull])
-		return YES;
-	else
-		return NO;
+  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem] != nil && self.initializer != nil && [self.initializer initWasSuccessfull]) {
+		return true;
+  }
   
-  return NO;
+  return false;
 }
 
 - (UnityAdsInitializer *)selectInitializerFromMode:(UnityAdsMode)mode {
@@ -274,7 +282,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
     case kUnityAdsModeDefault:
       return [[UnityAdsDefaultInitializer alloc] init];
     case kUnityAdsModeNoWebView:
-      break;
+      return [[UnityAdsNoWebViewInitializer alloc] init];
   }
   
   return nil;

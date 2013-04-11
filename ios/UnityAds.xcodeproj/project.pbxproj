@@ -67,6 +67,14 @@
 		7894D8E1170EF73D000CFC99 /* UnityAdsDefaultInitializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8DF170EF73D000CFC99 /* UnityAdsDefaultInitializer.m */; };
 		7894D8E417155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D8E217155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h */; };
 		7894D8E517155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8E317155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m */; };
+		7894D8E81716A930000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D8E61716A92F000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.h */; };
+		7894D8E91716A930000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8E71716A930000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.m */; };
+		7894D8EC1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D8EA1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.h */; };
+		7894D8ED1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8EB1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.m */; };
+		7894D8F41716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D8F21716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.h */; };
+		7894D8F51716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8F31716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.m */; };
+		7894D8F81716DEFF000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D8F61716DEFE000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.h */; };
+		7894D8F91716DEFF000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8F71716DEFE000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.m */; };
 		78AC201A1622EFEA007DE419 /* UnityAdsOpenUDID.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */; };
 		78AC201B1622EFEA007DE419 /* UnityAdsOpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */; };
 		78AC20211622EFF3007DE419 /* UnityAdsAnalyticsUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */; };
@@ -147,6 +155,14 @@
 		7894D8DF170EF73D000CFC99 /* UnityAdsDefaultInitializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsDefaultInitializer.m; sourceTree = "<group>"; };
 		7894D8E217155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsNoWebViewInitializer.h; sourceTree = "<group>"; };
 		7894D8E317155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsNoWebViewInitializer.m; sourceTree = "<group>"; };
+		7894D8E61716A92F000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsViewStateNoWebViewVideoPlayer.h; sourceTree = "<group>"; };
+		7894D8E71716A930000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsViewStateNoWebViewVideoPlayer.m; sourceTree = "<group>"; };
+		7894D8EA1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsViewStateVideoPlayer.h; sourceTree = "<group>"; };
+		7894D8EB1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsViewStateVideoPlayer.m; sourceTree = "<group>"; };
+		7894D8F21716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsNoWebViewEndScreenViewController.h; sourceTree = "<group>"; };
+		7894D8F31716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsNoWebViewEndScreenViewController.m; sourceTree = "<group>"; };
+		7894D8F61716DEFE000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsViewStateNoWebViewEndScreen.h; sourceTree = "<group>"; };
+		7894D8F71716DEFE000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsViewStateNoWebViewEndScreen.m; sourceTree = "<group>"; };
 		78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsOpenUDID.h; sourceTree = "<group>"; };
 		78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsOpenUDID.m; sourceTree = "<group>"; };
 		78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsAnalyticsUploader.h; sourceTree = "<group>"; };
@@ -229,6 +245,8 @@
 			children = (
 				7894D8B5170D6E66000CFC99 /* UnityAdsMainViewController.h */,
 				7894D8B6170D6E66000CFC99 /* UnityAdsMainViewController.m */,
+				7894D8F21716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.h */,
+				7894D8F31716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.m */,
 			);
 			path = UnityAdsView;
 			sourceTree = "<group>";
@@ -240,14 +258,20 @@
 				7894D8BA170D6F32000CFC99 /* UnityAdsViewState.m */,
 				7894D8BD170D7126000CFC99 /* UnityAdsViewStateDefaultOffers.h */,
 				7894D8BE170D7126000CFC99 /* UnityAdsViewStateDefaultOffers.m */,
+				7894D8EA1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.h */,
+				7894D8EB1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.m */,
 				7894D8C5170D9644000CFC99 /* UnityAdsViewStateDefaultVideoPlayer.h */,
 				7894D8C6170D9644000CFC99 /* UnityAdsViewStateDefaultVideoPlayer.m */,
+				7894D8D5170EC939000CFC99 /* UnityAdsViewStateEndScreen.h */,
+				7894D8D6170EC939000CFC99 /* UnityAdsViewStateEndScreen.m */,
 				7894D8C9170DAD1D000CFC99 /* UnityAdsViewStateDefaultEndScreen.h */,
 				7894D8CA170DAD1D000CFC99 /* UnityAdsViewStateDefaultEndScreen.m */,
 				7894D8D1170DB671000CFC99 /* UnityAdsViewStateDefaultSpinner.h */,
 				7894D8D2170DB671000CFC99 /* UnityAdsViewStateDefaultSpinner.m */,
-				7894D8D5170EC939000CFC99 /* UnityAdsViewStateEndScreen.h */,
-				7894D8D6170EC939000CFC99 /* UnityAdsViewStateEndScreen.m */,
+				7894D8E61716A92F000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.h */,
+				7894D8E71716A930000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.m */,
+				7894D8F61716DEFE000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.h */,
+				7894D8F71716DEFE000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.m */,
 			);
 			path = UnityAdsViewState;
 			sourceTree = "<group>";
@@ -433,6 +457,10 @@
 				7894D8DC170EF726000CFC99 /* UnityAdsInitializer.h in Headers */,
 				7894D8E0170EF73D000CFC99 /* UnityAdsDefaultInitializer.h in Headers */,
 				7894D8E417155F1A000CFC99 /* UnityAdsNoWebViewInitializer.h in Headers */,
+				7894D8E81716A930000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.h in Headers */,
+				7894D8EC1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.h in Headers */,
+				7894D8F41716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.h in Headers */,
+				7894D8F81716DEFF000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,6 +610,10 @@
 				7894D8DD170EF726000CFC99 /* UnityAdsInitializer.m in Sources */,
 				7894D8E1170EF73D000CFC99 /* UnityAdsDefaultInitializer.m in Sources */,
 				7894D8E517155F1A000CFC99 /* UnityAdsNoWebViewInitializer.m in Sources */,
+				7894D8E91716A930000CFC99 /* UnityAdsViewStateNoWebViewVideoPlayer.m in Sources */,
+				7894D8ED1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.m in Sources */,
+				7894D8F51716DD16000CFC99 /* UnityAdsNoWebViewEndScreenViewController.m in Sources */,
+				7894D8F91716DEFF000CFC99 /* UnityAdsViewStateNoWebViewEndScreen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

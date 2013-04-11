@@ -38,6 +38,7 @@
     // TEST MODE: Do not use in production apps
     [[UnityAds sharedInstance] setDebugMode:YES];
     [[UnityAds sharedInstance] setTestMode:YES];
+    [[UnityAds sharedInstance] setAdsMode:kUnityAdsModeNoWebView];
     
     // Initialize Unity Ads
 	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];

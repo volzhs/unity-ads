@@ -9,8 +9,6 @@
 #import "UnityAdsDefaultInitializer.h"
 
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
-#import "../UnityAds.h"
-
 #import "../UnityAdsViewState/UnityAdsViewStateDefaultOffers.h"
 #import "../UnityAdsViewState/UnityAdsViewStateDefaultVideoPlayer.h"
 #import "../UnityAdsViewState/UnityAdsViewStateDefaultEndScreen.h"
@@ -59,26 +57,6 @@
   [[UnityAdsCampaignManager sharedInstance] setDelegate:self];
   [super initCampaignManager];
 }
-
-/*
-- (void)_initCampaignManager {
-	UAAssert(![NSThread isMainThread]);
-	UALOG_DEBUG(@"");
-  [[UnityAdsCampaignManager sharedInstance] setDelegate:self];
-	[self _refreshCampaignManager];
-}
-
-- (void)_refreshCampaignManager {
-	UAAssert(![NSThread isMainThread]);
-	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
-	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
-}
-
-- (void)_initAnalyticsUploader {
-	UAAssert(![NSThread isMainThread]);
-	UALOG_DEBUG(@"");
-	[[UnityAdsAnalyticsUploader sharedInstance] retryFailedUploads];
-}*/
 
 
 #pragma mark - UnityAdsCampaignManagerDelegate
