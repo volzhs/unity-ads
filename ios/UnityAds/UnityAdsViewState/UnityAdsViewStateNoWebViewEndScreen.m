@@ -8,6 +8,9 @@
 
 #import "UnityAdsViewStateNoWebViewEndScreen.h"
 #import "../UnityAdsView/UnityAdsNoWebViewEndScreenViewController.h"
+#import "../UnityAdsView/UnityAdsDialog.h"
+#import "../UnityAdsView/UnityAdsNativeSpinner.h"
+
 
 @interface UnityAdsViewStateNoWebViewEndScreen ()
   @property (nonatomic, strong) UnityAdsNoWebViewEndScreenViewController *endScreenController;
@@ -26,6 +29,7 @@
   
   if (self.endScreenController == nil) {
     [self createEndScreenController];
+    [self showSpinnerDialog];
   }
   
   [[UnityAdsMainViewController sharedInstance] presentViewController:self.endScreenController animated:NO completion:nil];
@@ -64,7 +68,7 @@
     //[[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:[options objectForKey:kUnityAdsNativeEventHideSpinner]];
   }
   else if ([options objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
-    [self openAppStoreWithData:options];
+    [self openAppStoreWithData:options inViewController:self.endScreenController];
   }
 }
 
@@ -73,6 +77,19 @@
 - (void)createEndScreenController {
   UALOG_DEBUG(@"");
   self.endScreenController = [[UnityAdsNoWebViewEndScreenViewController alloc] initWithNibName:nil bundle:nil];
+}
+
+- (void)showSpinnerDialog {
+  int dialogWidth = 230;
+  int dialogHeight = 70;
+  
+  CGRect newRect = CGRectMake(([[UnityAdsMainViewController sharedInstance] view].bounds.size.width / 2) - (dialogWidth / 2), ([[UnityAdsMainViewController sharedInstance] view].bounds.size.height / 2) - (dialogHeight / 2), dialogWidth, dialogHeight);
+  
+  UnityAdsDialog *spinnerDialog = [[UnityAdsDialog alloc] initWithFrame:newRect useSpinner:true];
+  [spinnerDialog setDrawSpinner:true];
+  spinnerDialog.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+   
+  [self.endScreenController.view addSubview:spinnerDialog];
 }
 
 @end

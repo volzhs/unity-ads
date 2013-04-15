@@ -144,9 +144,10 @@
 - (BOOL)openAds:(BOOL)animated inState:(UnityAdsViewStateType)requestedState withOptions:(NSDictionary *)options {
   UALOG_DEBUG(@"");
   if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) return NO;
-  
+
+  [self selectState:requestedState];
+
   dispatch_async(dispatch_get_main_queue(), ^{
-    [self selectState:requestedState];
     if ([self hasState:requestedState]) {
       [self.currentViewState willBeShown];
       [self.delegate mainControllerWillOpen];
@@ -194,10 +195,7 @@
 #pragma mark - Private
 
 - (void)_dismissMainViewController:(BOOL)forcedToMainThread withAnimations:(BOOL)animated {
-  if ([self.currentViewState getStateType] == kUnityAdsViewStateTypeVideoPlayer) {
-    [self dismissViewControllerAnimated:NO completion:nil];
-  }
-  
+
   if (!forcedToMainThread) {
     if (self.currentViewState != nil) {
       [self.currentViewState exitState:nil];
@@ -238,7 +236,7 @@
   
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
     [self applyOptionsToCurrentState:@{kUnityAdsNativeEventForceStopVideoPlayback:@true}];
-
+    
     if (self.isOpen)
       [self closeAds:NO withAnimations:NO withOptions:nil];
   }

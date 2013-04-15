@@ -16,5 +16,5 @@
 #import "../UnityAds.h"
 
 @interface UnityAdsViewStateEndScreen : UnityAdsViewState
-- (void)openAppStoreWithData:(NSDictionary *)data;
+- (void)openAppStoreWithData:(NSDictionary *)data inViewController:(UIViewController *)targetViewController;
 @end

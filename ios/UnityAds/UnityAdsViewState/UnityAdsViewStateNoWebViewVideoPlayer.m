@@ -8,6 +8,7 @@
 
 #import "UnityAdsViewStateNoWebViewVideoPlayer.h"
 
+
 @implementation UnityAdsViewStateNoWebViewVideoPlayer
 
 - (UnityAdsViewStateType)getStateType {
@@ -42,7 +43,7 @@
 
 - (void)wasShown {
   [super wasShown];
-  if (self.videoController.parentViewController == nil) {
+  if (self.videoController.parentViewController == nil && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   }
 }
@@ -50,7 +51,11 @@
 - (void)enterState:(NSDictionary *)options {
   UALOG_DEBUG(@"");
   [super enterState:options];
-  [self showPlayerAndPlaySelectedVideo];
+  [self createVideoController:self];
+  
+  if (!self.waitingToBeShown) {
+    [self showPlayerAndPlaySelectedVideo];
+  }
 }
 
 - (void)exitState:(NSDictionary *)options {
@@ -85,7 +90,7 @@
   //  [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   //}
   
-  if (!self.waitingToBeShown) {
+  if (!self.waitingToBeShown && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   }
 }
@@ -113,16 +118,27 @@
   [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeEndScreen withOptions:nil];
 }
 
+- (void)videoPlayerReady {
+	UALOG_DEBUG(@"");
+  if (![self.videoController isPlaying])
+    [self showPlayerAndPlaySelectedVideo];
+}
+
+
 - (void)showPlayerAndPlaySelectedVideo {
 	UALOG_DEBUG(@"");
   
   if (![self canViewSelectedCampaign]) return;
+  
   
   /*
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
   */
   
   [self startVideoPlayback:true withDelegate:self];
+
 }
+
+
 
 @end

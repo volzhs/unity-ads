@@ -54,7 +54,7 @@
     [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:[options objectForKey:kUnityAdsNativeEventHideSpinner]];
   }
   else if ([options objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
-    [self openAppStoreWithData:options];
+    [self openAppStoreWithData:options inViewController:[UnityAdsMainViewController sharedInstance]];
   }
 }
 

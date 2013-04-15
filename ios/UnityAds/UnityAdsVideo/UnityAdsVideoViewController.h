@@ -16,6 +16,7 @@
 - (void)videoPlayerStartedPlaying;
 - (void)videoPlayerPlaybackEnded;
 - (void)videoPlayerEncounteredError;
+- (void)videoPlayerReady;
 @end
 
 @interface UnityAdsVideoViewController : UIViewController <UnityAdsVideoPlayerDelegate>

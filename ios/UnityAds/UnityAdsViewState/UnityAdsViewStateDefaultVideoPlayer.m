@@ -37,7 +37,7 @@
 
 - (void)wasShown {
   [super wasShown];
-  if (self.videoController.parentViewController == nil) {
+  if (self.videoController.parentViewController == nil && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   }
 }
@@ -45,7 +45,11 @@
 - (void)enterState:(NSDictionary *)options {
   UALOG_DEBUG(@"");
   [super enterState:options];
-  [self showPlayerAndPlaySelectedVideo];
+  [self createVideoController:self];
+  
+  if (!self.waitingToBeShown) {
+    [self showPlayerAndPlaySelectedVideo];
+  }
 }
 
 - (void)exitState:(NSDictionary *)options {
@@ -72,7 +76,7 @@
   // Set completed view for the webview right away, so we don't get flickering after videoplay from start->end
   [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   
-  if (!self.waitingToBeShown) {
+  if (!self.waitingToBeShown && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   }
 }
@@ -93,6 +97,13 @@
   
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeEndScreen withOptions:nil];
+}
+
+- (void)videoPlayerReady {
+	UALOG_DEBUG(@"");
+  
+  if (![self.videoController isPlaying])
+    [self showPlayerAndPlaySelectedVideo];
 }
 
 - (void)showPlayerAndPlaySelectedVideo {
