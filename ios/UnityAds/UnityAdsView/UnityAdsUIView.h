@@ -9,6 +9,4 @@
 #import <UIKit/UIKit.h>
 
 @interface UnityAdsUIView : UIView
-  @property (nonatomic, assign) BOOL drawSpinner;
-  @property (nonatomic, strong) UIView *spinner;
 @end
