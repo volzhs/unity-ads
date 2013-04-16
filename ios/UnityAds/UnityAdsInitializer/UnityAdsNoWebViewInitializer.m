@@ -25,14 +25,6 @@
   
   [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateNoWebViewVideoPlayer alloc] init]];
   [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateNoWebViewEndScreen alloc] init]];
-  /*
-  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateDefaultVideoPlayer alloc] init]];
-  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateDefaultEndScreen alloc] init]];
-  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateDefaultSpinner alloc] init]];
-  
-  [UnityAdsWebAppController sharedInstance];
-  [[UnityAdsWebAppController sharedInstance] setDelegate:self];
-  */
   
   [self performSelector:@selector(initCampaignManager) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];
   [self performSelector:@selector(initAnalyticsUploader) onThread:self.backgroundThread withObject:nil waitUntilDone:NO];

@@ -33,9 +33,6 @@
   }
   
   [[UnityAdsMainViewController sharedInstance] presentViewController:self.endScreenController animated:NO completion:nil];
-  /*
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
-   */
 }
 
 - (void)exitState:(NSDictionary *)options {
@@ -43,11 +40,6 @@
   
   [super exitState:options];
   [[UnityAdsMainViewController sharedInstance] dismissViewControllerAnimated:NO completion:nil];
-
-  // FIX: Doesn't always work right with rewatch (setView:None (null))
-  if ([options objectForKey:kUnityAdsWebViewEventDataRewatchKey] == nil || [[options valueForKey:kUnityAdsWebViewEventDataRewatchKey] boolValue] == false) {
-    //[[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{}];
-  }
 }
 
 - (void)willBeShown {
@@ -81,12 +73,11 @@
 
 - (void)showSpinnerDialog {
   int dialogWidth = 230;
-  int dialogHeight = 70;
+  int dialogHeight = 76;
   
-  CGRect newRect = CGRectMake(([[UnityAdsMainViewController sharedInstance] view].bounds.size.width / 2) - (dialogWidth / 2), ([[UnityAdsMainViewController sharedInstance] view].bounds.size.height / 2) - (dialogHeight / 2), dialogWidth, dialogHeight);
+  CGRect newRect = CGRectMake(([[UnityAdsMainViewController sharedInstance] view].window.bounds.size.width / 2) - (dialogWidth / 2), ([[UnityAdsMainViewController sharedInstance] view].window.bounds.size.height / 2) - (dialogHeight / 2), dialogWidth, dialogHeight);
   
-  UnityAdsDialog *spinnerDialog = [[UnityAdsDialog alloc] initWithFrame:newRect useSpinner:true];
-  [spinnerDialog setDrawSpinner:true];
+  UnityAdsDialog *spinnerDialog = [[UnityAdsDialog alloc] initWithFrame:newRect useSpinner:false useLabel:true useButton:true];
   spinnerDialog.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
    
   [self.endScreenController.view addSubview:spinnerDialog];

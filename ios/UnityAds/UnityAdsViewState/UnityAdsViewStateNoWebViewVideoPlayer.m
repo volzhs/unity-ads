@@ -7,7 +7,11 @@
 //
 
 #import "UnityAdsViewStateNoWebViewVideoPlayer.h"
+#import "../UnityAdsView/UnityAdsDialog.h"
 
+@interface UnityAdsViewStateNoWebViewVideoPlayer ()
+  @property (nonatomic, strong) UnityAdsDialog *spinnerDialog;
+@end
 
 @implementation UnityAdsViewStateNoWebViewVideoPlayer
 
@@ -17,8 +21,7 @@
 
 - (void)willBeShown {
   [super willBeShown];
-  
-  // FIX: Show native spinner
+  [self showSpinner];
   
   [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
   UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];
@@ -26,25 +29,24 @@
   if (campaign != nil) {
     [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
   }
-
-  /*
-  if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
-    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-    
-    [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
-    
-    UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];
-    
-    if (campaign != nil) {
-      [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:campaign];
-    }
-  }*/
 }
 
 - (void)wasShown {
   [super wasShown];
   if (self.videoController.parentViewController == nil && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
+    
+    if (self.spinnerDialog != nil) {
+      [self.spinnerDialog removeFromSuperview];
+      
+      int spinnerWidth = self.spinnerDialog.bounds.size.width;
+      int spinnerHeight = self.spinnerDialog.bounds.size.height;
+      
+      CGRect newRect = CGRectMake((self.videoController.view.bounds.size.width / 2) - (spinnerWidth / 2), (self.videoController.view.bounds.size.height / 2) - (spinnerHeight / 2), spinnerWidth, spinnerHeight);
+      
+      [self.spinnerDialog setFrame:newRect];
+      [self.videoController.view addSubview:self.spinnerDialog];
+    }
   }
 }
 
@@ -52,6 +54,7 @@
   UALOG_DEBUG(@"");
   [super enterState:options];
   [self createVideoController:self];
+  [self showSpinner];
   
   if (!self.waitingToBeShown) {
     [self showPlayerAndPlaySelectedVideo];
@@ -61,6 +64,7 @@
 - (void)exitState:(NSDictionary *)options {
   UALOG_DEBUG(@"");
   [super exitState:options];
+  [self hideSpinner];
 }
 
 - (void)applyOptions:(NSDictionary *)options {
@@ -77,19 +81,8 @@
     [self.delegate stateNotification:kUnityAdsStateActionVideoStartedPlaying];
   }
   
-  /*
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-  
-  // Set completed view for the webview right away, so we don't get flickering after videoplay from start->end
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
-  */
-  
-  //[[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
-  
-  //if (![[UnityAdsMainViewController sharedInstance] isBeingPresented]) {
-  //  [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
-  //}
-  
+  [self hideSpinner];
+
   if (!self.waitingToBeShown && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   }
@@ -97,13 +90,7 @@
 
 - (void)videoPlayerEncounteredError {
   UALOG_DEBUG(@"");
-  
-  /*
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowError data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyVideoPlaybackError}];
-  */
-  
+  [self hideSpinner];
   [self dismissVideoController];
 }
 
@@ -112,9 +99,6 @@
     [self.delegate stateNotification:kUnityAdsStateActionVideoPlaybackEnded];
   }
   
-  /*
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
-   */
   [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeEndScreen withOptions:nil];
 }
 
@@ -130,15 +114,29 @@
   
   if (![self canViewSelectedCampaign]) return;
   
-  
-  /*
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-  */
-  
   [self startVideoPlayback:true withDelegate:self];
-
 }
 
 
+- (void)showSpinner {
+  if (self.spinnerDialog == nil) {
+    int dialogWidth = 230;
+    int dialogHeight = 76;
+    
+    CGRect newRect = CGRectMake(([[UnityAdsMainViewController sharedInstance] view].bounds.size.width / 2) - (dialogWidth / 2), ([[UnityAdsMainViewController sharedInstance] view].bounds.size.height / 2) - (dialogHeight / 2), dialogWidth, dialogHeight);
+    
+    self.spinnerDialog = [[UnityAdsDialog alloc] initWithFrame:newRect useSpinner:true useLabel:true useButton:false];
+    self.spinnerDialog.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+    
+    [[[UnityAdsMainViewController sharedInstance] view] addSubview:self.spinnerDialog];
+  }
+}
+
+- (void)hideSpinner {
+  if (self.spinnerDialog != nil) {
+    [self.spinnerDialog removeFromSuperview];
+    self.spinnerDialog = nil;
+  }
+}
 
 @end

@@ -81,6 +81,8 @@
 		7894D901171C02F4000CFC99 /* UnityAdsDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8FF171C02F3000CFC99 /* UnityAdsDialog.m */; };
 		7894D904171C0E6B000CFC99 /* UnityAdsNativeSpinner.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D902171C0E6A000CFC99 /* UnityAdsNativeSpinner.h */; };
 		7894D905171C0E6B000CFC99 /* UnityAdsNativeSpinner.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D903171C0E6A000CFC99 /* UnityAdsNativeSpinner.m */; };
+		7894D908171D4FEC000CFC99 /* UnityAdsNativeButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D906171D4FEB000CFC99 /* UnityAdsNativeButton.h */; };
+		7894D909171D4FEC000CFC99 /* UnityAdsNativeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D907171D4FEC000CFC99 /* UnityAdsNativeButton.m */; };
 		78AC201A1622EFEA007DE419 /* UnityAdsOpenUDID.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */; };
 		78AC201B1622EFEA007DE419 /* UnityAdsOpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */; };
 		78AC20211622EFF3007DE419 /* UnityAdsAnalyticsUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */; };
@@ -175,6 +177,8 @@
 		7894D8FF171C02F3000CFC99 /* UnityAdsDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsDialog.m; sourceTree = "<group>"; };
 		7894D902171C0E6A000CFC99 /* UnityAdsNativeSpinner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsNativeSpinner.h; sourceTree = "<group>"; };
 		7894D903171C0E6A000CFC99 /* UnityAdsNativeSpinner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsNativeSpinner.m; sourceTree = "<group>"; };
+		7894D906171D4FEB000CFC99 /* UnityAdsNativeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsNativeButton.h; sourceTree = "<group>"; };
+		7894D907171D4FEC000CFC99 /* UnityAdsNativeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsNativeButton.m; sourceTree = "<group>"; };
 		78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsOpenUDID.h; sourceTree = "<group>"; };
 		78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsOpenUDID.m; sourceTree = "<group>"; };
 		78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsAnalyticsUploader.h; sourceTree = "<group>"; };
@@ -265,6 +269,8 @@
 				7894D8FF171C02F3000CFC99 /* UnityAdsDialog.m */,
 				7894D902171C0E6A000CFC99 /* UnityAdsNativeSpinner.h */,
 				7894D903171C0E6A000CFC99 /* UnityAdsNativeSpinner.m */,
+				7894D906171D4FEB000CFC99 /* UnityAdsNativeButton.h */,
+				7894D907171D4FEC000CFC99 /* UnityAdsNativeButton.m */,
 			);
 			path = UnityAdsView;
 			sourceTree = "<group>";
@@ -482,6 +488,7 @@
 				7894D8FC171C020F000CFC99 /* UnityAdsUIView.h in Headers */,
 				7894D900171C02F4000CFC99 /* UnityAdsDialog.h in Headers */,
 				7894D904171C0E6B000CFC99 /* UnityAdsNativeSpinner.h in Headers */,
+				7894D908171D4FEC000CFC99 /* UnityAdsNativeButton.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,6 +645,7 @@
 				7894D8FD171C020F000CFC99 /* UnityAdsUIView.m in Sources */,
 				7894D901171C02F4000CFC99 /* UnityAdsDialog.m in Sources */,
 				7894D905171C0E6B000CFC99 /* UnityAdsNativeSpinner.m in Sources */,
+				7894D909171D4FEC000CFC99 /* UnityAdsNativeButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

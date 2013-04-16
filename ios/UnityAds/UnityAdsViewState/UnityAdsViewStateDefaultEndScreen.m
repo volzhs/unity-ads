@@ -30,7 +30,6 @@
   
   [super exitState:options];
   
-  // FIX: Doesn't always work right with rewatch (setView:None (null))
   if ([options objectForKey:kUnityAdsWebViewEventDataRewatchKey] == nil || [[options valueForKey:kUnityAdsWebViewEventDataRewatchKey] boolValue] == false) {
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{}];
   }
