@@ -30,7 +30,6 @@ static UnityAdsProperties *sharedProperties = nil;
   if (self = [super init]) {
     [self setMaxNumberOfAnalyticsRetries:5];
     [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
-    //[self setCampaignDataUrl:@"http://192.168.1.152:3500/mobile/campaigns"];
     [self setCampaignQueryString:[self _createCampaignQueryString]];
   }
   

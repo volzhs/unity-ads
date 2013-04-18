@@ -36,6 +36,7 @@
     }
     
     // DOES NOT INITIALIZE WEBVIEW
+    UALOG_DEBUG(@"CLICK_URL: %@", clickUrl);
     [[UnityAdsWebAppController sharedInstance] openExternalUrl:clickUrl];
     return;
   }

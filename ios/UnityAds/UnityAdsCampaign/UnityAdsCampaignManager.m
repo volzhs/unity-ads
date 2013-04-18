@@ -88,6 +88,13 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			UAAssertV(trailerStreamingURL != nil, nil);
 			campaign.trailerStreamingURL = trailerStreamingURL;
       
+      NSString *gameIconURLString = [campaignDictionary objectForKey:kUnityAdsCampaignGameIconKey];
+      if (gameIconURLString == nil) continue;
+			UAAssertV([gameIconURLString isKindOfClass:[NSString class]], nil);
+			NSURL *gameIconURL = [NSURL URLWithString:gameIconURLString];
+			UAAssertV(gameIconURL != nil, nil);
+			campaign.gameIconURL = gameIconURL;
+      
 			id gameIDValue = [campaignDictionary objectForKey:kUnityAdsCampaignGameIDKey];
       if (gameIDValue == nil) continue;
 			UAAssertV(gameIDValue != nil && ([gameIDValue isKindOfClass:[NSString class]] || [gameIDValue isKindOfClass:[NSNumber class]]), nil);
