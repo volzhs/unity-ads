@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UnityAdsNoWebViewEndScreenBottomBarContent : UIView
-
+- (void)updateViewData;
 @end

@@ -10,4 +10,5 @@
 
 @interface UnityAdsNoWebViewEndScreenViewController : UIViewController
 - (void)initController;
+- (void)updateViewData;
 @end
