@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UnityAdsNoWebViewEndScreenBottomBar : UIView
-
+- (void)destroyView;
 @end

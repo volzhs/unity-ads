@@ -9,4 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UnityAdsUIView : UIView
+- (void)destroyView;
 @end

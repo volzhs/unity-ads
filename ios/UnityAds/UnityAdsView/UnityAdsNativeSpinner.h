@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UnityAdsNativeSpinner : UIView
-
+- (void)destroyView;
 @end

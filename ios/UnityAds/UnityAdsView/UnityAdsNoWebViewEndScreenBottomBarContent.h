@@ -10,4 +10,5 @@
 
 @interface UnityAdsNoWebViewEndScreenBottomBarContent : UIView
 - (void)updateViewData;
+- (void)destroyView;
 @end

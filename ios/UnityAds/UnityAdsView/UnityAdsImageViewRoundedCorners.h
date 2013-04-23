@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface UnityAdsImageViewRoundedCorners : UIView <NSURLConnectionDelegate>
-  - (void)loadImageFromURL:(NSURL*)url;
+- (void)loadImageFromURL:(NSURL*)url;
+- (void)destroyView;
 @end
