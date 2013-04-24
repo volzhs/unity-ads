@@ -13,8 +13,10 @@
 @property (nonatomic, assign) BOOL openAnimated;
 @property (nonatomic, assign) BOOL noOfferScreen;
 @property (nonatomic, assign) NSString *gamerSID;
+@property (nonatomic, assign) BOOL muteVideoSounds;
 
 + (UnityAdsShowOptionsParser *)sharedInstance;
 - (void)parseOptions:(NSDictionary *)options;
 - (void)resetToDefaults;
+- (NSString *)getOptionsAsJson;
 @end

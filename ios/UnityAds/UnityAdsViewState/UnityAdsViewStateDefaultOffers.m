@@ -14,6 +14,7 @@
 #import "../UnityAdsCampaign/UnityAdsRewardItem.h"
 #import "../UnityAdsView/UnityAdsMainViewController.h"
 #import "../UnityAds.h"
+#import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
 
 @implementation UnityAdsViewStateDefaultOffers
 
@@ -26,7 +27,7 @@
   
   [super enterState:options];
   
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key, kUnityAdsWebViewAPIDeveloperOptions:[[UnityAdsShowOptionsParser sharedInstance] getOptionsAsJson]}];
   
   if (![[[[UnityAdsWebAppController sharedInstance] webView] superview] isEqual:[[UnityAdsMainViewController sharedInstance] view]]) {
     [[[UnityAdsMainViewController sharedInstance] view] addSubview:[[UnityAdsWebAppController sharedInstance] webView]];

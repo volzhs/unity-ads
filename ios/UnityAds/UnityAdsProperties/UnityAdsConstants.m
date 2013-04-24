@@ -22,6 +22,7 @@ NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
 NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
 NSString * const kUnityAdsWebViewAPIClose = @"close";
 NSString * const kUnityAdsWebViewAPIOpen = @"open";
+NSString * const kUnityAdsWebViewAPIDeveloperOptions = @"developerOptions";
 NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
 NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_playing";
 
@@ -85,6 +86,7 @@ NSString * const kUnityAdsCampaignStoreIDKey = @"iTunesId";
 NSString * const kUnityAdsCampaignCacheVideoKey = @"cacheVideo";
 NSString * const kUnityAdsCampaignBypassAppSheet = @"bypassAppSheet";
 NSString * const kUnityAdsCampaignExpectedFileSize = @"trailerSize";
+NSString * const kUnityAdsCampaignAllowVideoSkipKey = @"allowSkipVideoInSeconds";
 
 /* Reward Item JSON Properties */
 

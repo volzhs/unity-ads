@@ -21,6 +21,7 @@ NSString * const kUnityAdsRewardItemNameKey = @"name";
 NSString * const kUnityAdsOptionNoOfferscreenKey = @"noOfferScreen";
 NSString * const kUnityAdsOptionOpenAnimatedKey = @"openAnimated";
 NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
+NSString * const kUnityAdsOptionMuteVideoSounds = @"muteVideoSounds";
 
 @interface UnityAds () <UnityAdsInitializerDelegate, UnityAdsMainViewControllerDelegate>
   @property (nonatomic, strong) UnityAdsInitializer *initializer;

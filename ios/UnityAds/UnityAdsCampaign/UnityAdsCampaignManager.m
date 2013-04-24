@@ -153,6 +153,11 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     if ([jsonDictionary objectForKey:kUnityAdsCampaignsKey] == nil) validData = NO;
     if ([jsonDictionary objectForKey:kUnityAdsRewardItemKey] == nil) validData = NO;
     
+    if ([jsonDictionary objectForKey:kUnityAdsCampaignAllowVideoSkipKey] != nil) {
+      [[UnityAdsProperties sharedInstance] setAllowVideoSkipInSeconds:[[jsonDictionary objectForKey:kUnityAdsCampaignAllowVideoSkipKey] intValue]];
+      UALOG_DEBUG(@"ALLOW_VIDEO_SKIP: %i", [UnityAdsProperties sharedInstance].allowVideoSkipInSeconds);
+    }
+    
     self.campaigns = [self deserializeCampaigns:[jsonDictionary objectForKey:kUnityAdsCampaignsKey]];
     if (self.campaigns == nil || [self.campaigns count] == 0) validData = NO;
     
