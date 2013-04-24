@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UnityAdsNativeButton.h"
 
 @interface UnityAdsNoWebViewEndScreenBottomBarContent : UIView
+@property (nonatomic, strong) UnityAdsNativeButton *downloadButton;
 - (void)updateViewData;
 - (void)destroyView;
 @end
