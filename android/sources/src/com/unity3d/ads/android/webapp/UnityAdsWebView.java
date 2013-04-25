@@ -328,7 +328,17 @@ public class UnityAdsWebView extends WebView {
 		
 		@Override
 		public void run() {
-			loadUrl(_jsString);
+			if (_jsString != null) {
+				try {
+					loadUrl(_jsString);
+				}
+				catch (Exception e) {
+					UnityAdsUtils.Log("Error while processing JavaScriptString!", this);
+				}
+			}
+			else {
+				UnityAdsUtils.Log("Could not process JavaScript, the string is NULL", this);
+			}
 		}		
 	}
 }
