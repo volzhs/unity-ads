@@ -50,6 +50,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static UnityAds instance = null;
 	public static UnityAdsCacheManager cachemanager = null;
 	public static UnityAdsWebData webdata = null;
+	public static UnityAdsMainView mainview = null;
 	
 	// Temporary data
 	private boolean _initialized = false;
@@ -59,8 +60,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _openRequestFromDeveloper = false;
 	private AlertDialog _alertDialog = null;
 		
-	// Main View
-	private UnityAdsMainView _mainView = null;
 	
 	// Listeners
 	private IUnityAdsListener _adsListener = null;
@@ -118,8 +117,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 				String view = null;
 				
-				if (_mainView != null && _mainView.webview != null) {
-					view = _mainView.webview.getWebViewCurrentView();
+				if (mainview != null && mainview.webview != null) {
+					view = mainview.webview.getWebViewCurrentView();
 					
 					if (_openRequestFromDeveloper) {
 						view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
@@ -181,9 +180,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public boolean canShowAds () {
-		return _mainView != null && 
-			_mainView.webview != null && 
-			_mainView.webview.isWebAppLoaded() && 
+		return mainview != null && 
+			mainview.webview != null && 
+			mainview.webview.isWebAppLoaded() && 
 			_webAppLoaded && 
 			webdata != null && 
 			webdata.getViewableVideoPlanCampaigns() != null && 
@@ -192,9 +191,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public boolean canShow () {
 		return !_showingAds && 
-			_mainView != null && 
-			_mainView.webview != null && 
-			_mainView.webview.isWebAppLoaded() && 
+			mainview != null && 
+			mainview.webview != null && 
+			mainview.webview.isWebAppLoaded() && 
 			_webAppLoaded && 
 			webdata != null && 
 			webdata.getVideoPlanCampaigns() != null && 
@@ -203,10 +202,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	public void stopAll () {
 		UnityAdsUtils.Log("stopAll()", this);
-		if (_mainView != null && _mainView.videoplayerview != null)
-			_mainView.videoplayerview.clearVideoPlayer();
-		if (_mainView != null && _mainView.webview != null)
-			_mainView.webview.clearWebView();
+		if (mainview != null && mainview.videoplayerview != null)
+			mainview.videoplayerview.clearVideoPlayer();
+		if (mainview != null && mainview.webview != null)
+			mainview.webview.clearWebView();
 		
 		UnityAdsDownloader.stopAllDownloads();
 		UnityAdsDownloader.clearData();
@@ -460,7 +459,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 			
 			if (dataOk) {
-				_mainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
+				mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
 				sendAdsReadyEvent();			
 			}
 		}
@@ -542,8 +541,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (dataOk && view != null) {
 			UnityAdsUtils.Log("open() opening with view:" + view + " and data:" + data.toString(), this);
 			
-			if (_mainView != null) {
-				_mainView.openAds(view, data);
+			if (mainview != null) {
+				mainview.openAds(view, data);
 				
 				if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
 					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UNITY_ADS_OPTION_NOOFFERSCREEN_KEY)  && 
@@ -583,7 +582,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	private void setupViews () {
-		_mainView = new UnityAdsMainView(UnityAdsProperties.CURRENT_ACTIVITY, this);
+		mainview = new UnityAdsMainView(UnityAdsProperties.CURRENT_ACTIVITY, this);
 	}
 
 	private void playVideo () {
@@ -659,7 +658,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 				if (dataOk) {
 					_data = data;
-					_mainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+					mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
 					Timer testTimer = new Timer();
 					testTimer.schedule(new TimerTask() {
 						@Override
@@ -667,7 +666,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 							UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
-									_mainView.closeAds(_data);
+									mainview.closeAds(_data);
 									UnityAdsProperties.CURRENT_ACTIVITY.finish();
 									
 									if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS == null || 
@@ -707,15 +706,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 					return;
 				}
 				
-				_mainView.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
+				mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
 				
 				String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
 				if (!UnityAdsUtils.isFileInCache(UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename()))
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl(); 
 
-				_mainView.setViewState(UnityAdsMainViewState.VideoPlayer);
+				mainview.setViewState(UnityAdsMainViewState.VideoPlayer);
 				UnityAdsUtils.Log("Start videoplayback with: " + playUrl, this);
-				_mainView.videoplayerview.playVideo(playUrl);
+				mainview.videoplayerview.playVideo(playUrl);
 			}			
 			else
 				UnityAdsUtils.Log("Campaign is null", this);

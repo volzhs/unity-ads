@@ -7,8 +7,10 @@ import java.util.TimerTask;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsBufferingView;
+import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.content.Context;
@@ -30,6 +32,9 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private RelativeLayout _skipText = null;
 	private TextView _timeLeftUntilSkip = null;
 	private int _skipTimeInSeconds = 0;
+	
+	private long _bufferingStartedMillis = 0;
+	private long _bufferingCompledtedMillis = 0;
 	
 	private IUnityAdsVideoPlayerListener _listener;
 	private Timer _videoPausedTimer = null;
@@ -75,6 +80,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				purgeVideoPausedTimer();
 				if (_listener != null)
 					_listener.onVideoPlaybackError();
+				
+				//Map<String, Object> values = new HashMap<String, Object>();
+				//values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
+				UnityAdsInstrumentation.gaInstrumentationVideoError(UnityAdsProperties.SELECTED_CAMPAIGN, null);
+				
 				return true;
 			}
 		});
@@ -88,11 +98,15 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			purgeVideoPausedTimer();
 			if (_listener != null)
 				_listener.onVideoPlaybackError();
+			
+			UnityAdsInstrumentation.gaInstrumentationVideoError(UnityAdsProperties.SELECTED_CAMPAIGN, null);
+
 			return;
 		}
 		
 		if (!_videoPlaybackErrors) {
 			_timeLeftInSecondsText.setText("" + Math.round(Math.ceil(_videoView.getDuration() / 1000)));
+			_bufferingStartedMillis = System.currentTimeMillis();
 			startVideo();
 		}
 	}
@@ -383,7 +397,10 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
-		switch (keyCode) {
+    	long bufferingDuration = 0;
+    	Map<String, Object> values = null;
+    	
+    	switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
 				UnityAdsUtils.Log("onKeyDown", this);
 				clearVideoPlayer();
@@ -391,7 +408,23 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				if (_listener != null)
 					_listener.onBackButtonClicked(this);
 				
+				_bufferingCompledtedMillis = System.currentTimeMillis();
+				bufferingDuration = _bufferingCompledtedMillis - _bufferingStartedMillis;
+				values = new HashMap<String, Object>();
+				values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
+				values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_BACK);
+				UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);				
+				
 		    	return true;
+			case KeyEvent.KEYCODE_HOME:
+				_bufferingCompledtedMillis = System.currentTimeMillis();
+				bufferingDuration = _bufferingCompledtedMillis - _bufferingStartedMillis;
+				values = new HashMap<String, Object>();
+				values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
+				values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_EXIT);
+				UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);				
+				
+				return false;
 		}
     	
     	return false;
@@ -539,6 +572,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 								_videoPlaybackStartedSent = true;
 								UnityAdsUtils.Log("onVideoPlaybackStarted sent to listener", this);
 								_listener.onVideoPlaybackStarted();
+								_bufferingCompledtedMillis = System.currentTimeMillis();
+								long bufferingDuration = _bufferingCompledtedMillis - _bufferingStartedMillis;
+								Map<String, Object> values = new HashMap<String, Object>();
+								values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
+								UnityAdsInstrumentation.gaInstrumentationVideoPlay(UnityAdsProperties.SELECTED_CAMPAIGN, values);
 							}
 							
 							if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {
