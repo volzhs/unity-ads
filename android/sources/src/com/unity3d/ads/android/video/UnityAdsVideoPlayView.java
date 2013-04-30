@@ -77,15 +77,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			@Override
 			public boolean onError(MediaPlayer mp, int what, int extra) {
 				UnityAdsUtils.Log("For some reason the device failed to play the video (error: " + what + ", " + extra + "), a crash was prevented.", this);
-				_videoPlaybackErrors = true;
-				purgeVideoPausedTimer();
-				if (_listener != null)
-					_listener.onVideoPlaybackError();
-				
-				//Map<String, Object> values = new HashMap<String, Object>();
-				//values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
-				UnityAdsInstrumentation.gaInstrumentationVideoError(UnityAdsProperties.SELECTED_CAMPAIGN, null);
-				
+				videoErrorOperations();
 				return true;
 			}
 		});
@@ -95,13 +87,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		}
 		catch (Exception e) {
 			UnityAdsUtils.Log("For some reason the device failed to play the video, a crash was prevented.", this);
-			_videoPlaybackErrors = true;
-			purgeVideoPausedTimer();
-			if (_listener != null)
-				_listener.onVideoPlaybackError();
-			
-			UnityAdsInstrumentation.gaInstrumentationVideoError(UnityAdsProperties.SELECTED_CAMPAIGN, null);
-
+			videoErrorOperations();
 			return;
 		}
 		
@@ -171,6 +157,15 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	
 	
 	/* INTERNAL METHODS */
+	private void videoErrorOperations () {
+		_videoPlaybackErrors = true;
+		purgeVideoPausedTimer();
+		if (_listener != null)
+			_listener.onVideoPlaybackError();
+		
+		UnityAdsInstrumentation.gaInstrumentationVideoError(UnityAdsProperties.SELECTED_CAMPAIGN, null);		
+	}
+	
 	
 	private void startVideo () {
 		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
@@ -419,7 +414,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
     	switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
 				UnityAdsUtils.Log("onKeyDown", this);
-				UnityAdsUtils.Log("DATA: " + UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP + ", " + getSecondsUntilBackButtonAllowed(), this);
 				
 				if (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP > 0 && getSecondsUntilBackButtonAllowed() == 0) {
 					clearVideoPlayer();
@@ -573,6 +567,17 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				UnityAdsUtils.Log("Could not get videoView buffering percentage", this);
 			}
 			
+			if (UnityAdsProperties.CURRENT_ACTIVITY != null && !_playHeadHasMoved && _bufferingStartedMillis > 0 && 
+				(System.currentTimeMillis() - _bufferingStartedMillis) > (UnityAdsProperties.MAX_BUFFERING_WAIT_SECONDS * 1000)) {
+				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						UnityAdsUtils.Log("Buffering taking too long.. cancelling video play", this);
+						videoErrorOperations();
+					}
+				});
+			}
+						
 			if (UnityAdsProperties.CURRENT_ACTIVITY != null && _videoView != null && bufferPercentage < 15 && _videoView.getParent() == null) {				
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {					
 					@Override

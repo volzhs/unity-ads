@@ -1,7 +1,10 @@
 package com.unity3d.ads.android.properties;
 
 import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.Map;
+
+import org.json.JSONObject;
 
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
@@ -36,6 +39,7 @@ public class UnityAdsProperties {
 	private static Map<String, String> TEST_EXTRA_PARAMS = null; 
 
 	public static final int MAX_NUMBER_OF_ANALYTICS_RETRIES = 5;
+	public static final int MAX_BUFFERING_WAIT_SECONDS = 20;
 	
 	private static String _campaignQueryString = null; 
 	
@@ -94,6 +98,30 @@ public class UnityAdsProperties {
 				UnityAdsUtils.Log("Feature: OpenGLES " + feature.getGlEsVersion(), UnityAdsProperties.class);
 		}
 		*/
+	}
+	
+	public static JSONObject getDeveloperOptionsAsJson () {
+		if (UNITY_ADS_DEVELOPER_OPTIONS != null) {
+			Iterator<String> i = UNITY_ADS_DEVELOPER_OPTIONS.keySet().iterator();
+			JSONObject options = new JSONObject();
+			
+			while (i.hasNext()) {
+				String key = i.next();
+				
+				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(key) && UNITY_ADS_DEVELOPER_OPTIONS.get(key) != null) {
+					try {
+						options.put(key, UNITY_ADS_DEVELOPER_OPTIONS.get(key));
+					}
+					catch (Exception e) {
+						UnityAdsUtils.Log("Couldn't create JSON", UnityAdsProperties.class);
+					}
+				}
+			}
+			
+			return options;
+		}
+		
+		return null;
 	}
 	
 	public static String getCampaignQueryUrl () {

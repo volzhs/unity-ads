@@ -531,6 +531,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		try  {
 			data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN);
 			data.put(UnityAdsConstants.UNITY_ADS_REWARD_ITEMKEY_KEY, webdata.getCurrentRewardItemKey());
+			data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_DEVELOPER_OPTIONS, UnityAdsProperties.getDeveloperOptionsAsJson());
 		}
 		catch (Exception e) {
 			dataOk = false;
