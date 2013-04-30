@@ -487,6 +487,10 @@ public class UnityAdsWebData {
 					_currentRewardItem = _defaultRewardItem;
 				}
 				
+				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY)) {
+					UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY);
+				}
+				
 				// Parse possible multiple reward items
 				if (validData && data.has(UnityAdsConstants.UNITY_ADS_REWARD_ITEMS_KEY)) {
 					JSONArray rewardItems = data.getJSONArray(UnityAdsConstants.UNITY_ADS_REWARD_ITEMS_KEY);

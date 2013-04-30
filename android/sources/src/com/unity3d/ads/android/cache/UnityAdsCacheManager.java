@@ -70,12 +70,9 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 			_totalCampaigns = activeList.size();
 			UnityAdsUtils.Log("Updating cache: Going through active campaigns: " + _totalCampaigns, this);			
 			for (UnityAdsCampaign campaign : activeList) {
-				UnityAdsUtils.Log("Campaign: " + campaign.getCampaignId(), this);			
 				UnityAdsCampaignHandler campaignHandler = new UnityAdsCampaignHandler(campaign);
 				addToUpdatingHandlers(campaignHandler);
-				UnityAdsUtils.Log("Adding listener", this);			
 				campaignHandler.setListener(this);
-				UnityAdsUtils.Log("Init campaign", this);			
 				campaignHandler.initCampaign();
 				
 				if (campaignHandler.hasDownloads()) {

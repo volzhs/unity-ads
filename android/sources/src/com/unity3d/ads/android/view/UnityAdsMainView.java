@@ -133,8 +133,15 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
+				/*
 				UnityAdsUtils.Log("onKeyDown", this);
-				sendActionToListener(UnityAdsMainViewAction.BackButtonPressed);
+				UnityAdsUtils.Log("BLAA: " + _currentState.toString(), this);
+				if (_currentState != UnityAdsMainViewState.VideoPlayer || 
+					(_currentState == UnityAdsMainViewState.VideoPlayer && videoplayerview != null && videoplayerview.getSecondsUntilBackButtonAllowed() == 0)) {
+					UnityAdsUtils.Log("BLAA2: " + videoplayerview.getSecondsUntilBackButtonAllowed(), this);
+					sendActionToListener(UnityAdsMainViewAction.BackButtonPressed);
+				}*/
+				onBackButtonClicked(this);
 		    	return true;
 		}
     	
@@ -207,7 +214,21 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	// IUnityAdsViewListener
 	@Override
 	public void onBackButtonClicked (View view) {
-		sendActionToListener(UnityAdsMainViewAction.BackButtonPressed);
+		UnityAdsUtils.Log("Current state: " + _currentState.toString(), this);
+		
+		if (videoplayerview != null) {
+			UnityAdsUtils.Log("Seconds: " + videoplayerview.getSecondsUntilBackButtonAllowed(), this);
+		}
+		
+		if ((UnityAdsProperties.SELECTED_CAMPAIGN != null &&
+			UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) ||
+			_currentState != UnityAdsMainViewState.VideoPlayer || 
+			(_currentState == UnityAdsMainViewState.VideoPlayer && videoplayerview != null && videoplayerview.getSecondsUntilBackButtonAllowed() == 0)) {
+			sendActionToListener(UnityAdsMainViewAction.BackButtonPressed);
+		}
+		else {
+			UnityAdsUtils.Log("Prevented back-button", this);
+		}
 	}
 	
 	// IUnityAdsVideoPlayerListener
@@ -272,11 +293,6 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			UnityAdsUtils.Log("onVideoPlaybackError", this);		
 			UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
 			
-			// FIX: Replace with afterVideoPlaybackOperations?
-			//videoplayerview.setKeepScreenOn(false);
-			//destroyVideoPlayerView();
-			//setViewState(UnityAdsMainViewState.WebView);
-			
 			JSONObject errorParams = new JSONObject();
 			JSONObject spinnerParams = new JSONObject();
 			JSONObject params = new JSONObject();
@@ -294,7 +310,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 			webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
 			webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START);
-			//UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+			
 			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 			UnityAdsProperties.SELECTED_CAMPAIGN = null;
 			_retriedVideoPlaybackOnce = false;
@@ -317,7 +333,6 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			UnityAdsUtils.Log("Could not create JSON", this);
 		}
 		
-		//UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_SKIPVIDEO, UnityAdsProperties.SELECTED_CAMPAIGN);
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 		sendActionToListener(UnityAdsMainViewAction.VideoEnd);
 	}
