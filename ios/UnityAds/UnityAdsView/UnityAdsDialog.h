@@ -16,4 +16,5 @@
   @property (nonatomic, strong) UnityAdsNativeButton *button;
 
 - (id)initWithFrame:(CGRect)frame useSpinner:(BOOL)createSpinner useLabel:(BOOL)createLabel useButton:(BOOL)createButton;
+- (void)createView;
 @end

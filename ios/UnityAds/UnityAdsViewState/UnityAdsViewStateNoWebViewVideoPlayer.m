@@ -33,6 +33,7 @@
 
 - (void)wasShown {
   [super wasShown];
+  
   if (self.videoController.parentViewController == nil && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
     [self moveSpinnerToVideoController];
@@ -102,7 +103,6 @@
 	UALOG_DEBUG(@"");
   
   if (![self canViewSelectedCampaign]) return;
-  
   [self startVideoPlayback:true withDelegate:self];
 }
 
