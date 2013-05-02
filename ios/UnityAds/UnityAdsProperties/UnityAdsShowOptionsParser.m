@@ -51,10 +51,18 @@ static UnityAdsShowOptionsParser *sharedOptionsParser = nil;
   }
 }
 
-- (NSString *)getOptionsAsJson {
-  NSDictionary *options = @{kUnityAdsOptionNoOfferscreenKey:[NSNumber numberWithBool:self.noOfferScreen], kUnityAdsOptionOpenAnimatedKey:[NSNumber numberWithBool:self.openAnimated], kUnityAdsOptionGamerSIDKey:self.gamerSID};
+- (NSDictionary *)getOptionsAsJson {
+  NSMutableDictionary *options = [NSMutableDictionary dictionary];
   
-  return [options JSONRepresentation];
+  [options setObject:@(self.noOfferScreen) forKey:kUnityAdsOptionNoOfferscreenKey];
+  [options setObject:@(self.openAnimated) forKey:kUnityAdsOptionOpenAnimatedKey];
+  [options setObject:@(self.muteVideoSounds) forKey:kUnityAdsOptionMuteVideoSounds];
+  
+  if (self.gamerSID != nil) {
+    [options setObject:self.gamerSID forKey:kUnityAdsOptionGamerSIDKey];
+  }
+  
+  return options;
 }
 
 - (void)resetToDefaults {
