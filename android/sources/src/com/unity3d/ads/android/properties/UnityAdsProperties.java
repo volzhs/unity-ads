@@ -1,11 +1,11 @@
 package com.unity3d.ads.android.properties;
 
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
@@ -87,37 +87,39 @@ public class UnityAdsProperties {
 		}
 		
 		_campaignQueryString = queryString;
-		
-		/*
-		PackageManager manager = UnityAdsProperties.CURRENT_ACTIVITY.getPackageManager();
-		FeatureInfo[] features = manager.getSystemAvailableFeatures();
-		for (FeatureInfo feature : features) {
-			if (feature.name != null)
-				UnityAdsUtils.Log("Feature:" + feature.name, UnityAdsProperties.class);
-			else
-				UnityAdsUtils.Log("Feature: OpenGLES " + feature.getGlEsVersion(), UnityAdsProperties.class);
-		}
-		*/
 	}
 	
 	public static JSONObject getDeveloperOptionsAsJson () {
 		if (UNITY_ADS_DEVELOPER_OPTIONS != null) {
-			Iterator<String> i = UNITY_ADS_DEVELOPER_OPTIONS.keySet().iterator();
 			JSONObject options = new JSONObject();
 			
-			while (i.hasNext()) {
-				String key = i.next();
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(key) && UNITY_ADS_DEVELOPER_OPTIONS.get(key) != null) {
-					try {
-						options.put(key, UNITY_ADS_DEVELOPER_OPTIONS.get(key));
-					}
-					catch (Exception e) {
-						UnityAdsUtils.Log("Couldn't create JSON", UnityAdsProperties.class);
-					}
-				}
-			}
+			boolean noOfferscreen = false;
+			boolean openAnimated = false;
+			boolean muteVideoSounds = false;
 			
+			try {
+				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY))
+					noOfferscreen = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY);
+				
+				options.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, noOfferscreen);
+				
+				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY))
+					openAnimated = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY);
+				
+				options.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, openAnimated);
+				
+				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS))
+					muteVideoSounds = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS);
+				
+				options.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, muteVideoSounds);
+				
+				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY))
+					options.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("Could not create JSON", UnityAdsProperties.class);
+			}
+
 			return options;
 		}
 		
