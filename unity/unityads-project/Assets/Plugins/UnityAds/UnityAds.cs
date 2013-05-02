@@ -3,19 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class UnityAds : MonoBehaviour {
-	
-	public bool showTestButton = false;
+
 	public string gameId = "";
 	public bool debugModeEnabled = false;
 	public bool testModeEnabled = false;
 	public bool openAnimated = false;
 	public bool noOfferscreen = false;
 	
+	private static UnityAds sharedInstance;
 	private static bool _campaignsAvailable = false;
-	private static bool _initRun = false;
 	private static bool _adsOpen = false;
-	private static bool _gotAwake = false;
-	private static string _gameObjectName = null;
 	private static float _savedTimeScale = 1f;
 	private static float _savedAudioVolume = 1f;
 	private static string _gamerSID = "";
@@ -59,11 +56,26 @@ public class UnityAds : MonoBehaviour {
 		_videoStartedDelegate = action;
 	}
 	
+	public static UnityAds SharedInstance {
+		get {
+			if(!sharedInstance) {
+				sharedInstance = (UnityAds) FindObjectOfType(typeof(UnityAds));
+
+				#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
+				UnityAdsExternal.init(sharedInstance.gameId, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name);
+				#endif
+			}
+
+			return sharedInstance;
+		}
+	}
 	
 	public void Awake () {
-		if (_gotAwake == false) {
-			_gotAwake = true;
-			this.init(this.gameId, this.testModeEnabled, this.debugModeEnabled);
+		if(gameObject == SharedInstance.gameObject) {
+			DontDestroyOnLoad(gameObject);
+		}
+		else {
+			Destroy (gameObject);
 		}
 	}
 	
@@ -75,28 +87,8 @@ public class UnityAds : MonoBehaviour {
 		_videoCompletedDelegate = null;
 		_videoStartedDelegate = null;
 	}
-	
-	public void init (string gameId, bool testModeEnabled, bool debugModeEnabled) {
-		if (!_initRun) {
-			_initRun = true;
-			_gameObjectName = gameObject.name;
-			UnityAdsExternal.init(gameId, testModeEnabled, debugModeEnabled, _gameObjectName);
-		}
-	}
-	
-	
+
 	/* Static Methods */
-	
-	public static UnityAds getCurrentInstance () {
-		GameObject unityAds = GameObject.FindWithTag("UnityAds");
-		UnityAds unityAdsMobile = unityAds.GetComponent<UnityAds>();
-		return unityAdsMobile;
-	}
-	
-	
-	public static bool getTestButtonVisibility () {
-		return getCurrentInstance().showTestButton;
-	}
 	
 	public static bool isSupported () {
 		return UnityAdsExternal.isSupported();
@@ -215,27 +207,29 @@ public class UnityAds : MonoBehaviour {
 	
 	public static bool show () {
 		if (!_adsOpen && _campaignsAvailable) {
-			UnityAds instance = getCurrentInstance();
+			UnityAds instance = SharedInstance;
 			
-			bool animated = false;
-			bool noOfferscreen = false;
-			string gamerSID = _gamerSID;
-			
-			if (instance != null) {
-				animated = instance.openAnimated;
-				noOfferscreen = instance.noOfferscreen;
-			}
-			
-			if (UnityAdsExternal.show(animated, noOfferscreen, gamerSID)) {				
-				if (_adsOpenDelegate != null)
-					_adsOpenDelegate();
+			if(instance) {
+				bool animated = false;
+				bool noOfferscreen = false;
+				string gamerSID = _gamerSID;
 				
-				_adsOpen = true;
-				_savedTimeScale = Time.timeScale;
-				_savedAudioVolume = AudioListener.volume;
-				AudioListener.pause = true;
-				AudioListener.volume = 0;
-				Time.timeScale = 0;
+				if (instance != null) {
+					animated = instance.openAnimated;
+					noOfferscreen = instance.noOfferscreen;
+				}
+				
+				if (UnityAdsExternal.show(animated, noOfferscreen, gamerSID)) {				
+					if (_adsOpenDelegate != null)
+						_adsOpenDelegate();
+					
+					_adsOpen = true;
+					_savedTimeScale = Time.timeScale;
+					_savedAudioVolume = AudioListener.volume;
+					AudioListener.pause = true;
+					AudioListener.volume = 0;
+					Time.timeScale = 0;
+				}
 			}
 		}
 		
@@ -258,7 +252,6 @@ public class UnityAds : MonoBehaviour {
 		}
 	}
 
-	
 	/* Events */
 	
 	public void onHide () {
@@ -306,5 +299,4 @@ public class UnityAds : MonoBehaviour {
 		
 		UnityAdsExternal.Log("onFetchFailed");
 	}
-	
 }

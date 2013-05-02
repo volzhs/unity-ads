@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-public class UnityAdsExternal : MonoBehaviour {
+public static class UnityAdsExternal {
 
 	private static string _logTag = "UnityAds";
 	
 	public static void Log (string message) {
-		Debug.Log(_logTag + "/" + message);
+		UnityAds unityAdsMobileInstance = UnityAds.SharedInstance;
+		
+		if(unityAdsMobileInstance) {
+			if(unityAdsMobileInstance.debugModeEnabled && Debug.isDebugBuild)
+				Debug.Log(_logTag + "/" + message);
+		}
 	}
 	
 #if UNITY_EDITOR
@@ -136,7 +141,6 @@ public class UnityAdsExternal : MonoBehaviour {
 	[DllImport ("__Internal")]
 	public static extern string getRewardItemDetailsKeys ();
 
-	
 #elif UNITY_ANDROID
 	private static AndroidJavaObject unityAds;
 	private static AndroidJavaObject unityAdsUnity;
