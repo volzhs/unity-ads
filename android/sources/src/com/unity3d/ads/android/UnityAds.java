@@ -25,10 +25,12 @@ import com.unity3d.ads.android.webapp.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
 
 
 public class UnityAds implements IUnityAdsCacheListener, 
@@ -60,6 +62,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _openRequestFromDeveloper = false;
 	private AlertDialog _alertDialog = null;
 		
+	private TimerTask _pauseScreenTimer = null;
+	private Timer _pauseTimer = null;
 	
 	// Listeners
 	private IUnityAdsListener _adsListener = null;
@@ -303,6 +307,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case VideoStart:
 				if (_adsListener != null)
 					_adsListener.onVideoStarted();
+				cancelPauseScreenTimer();
 				break;
 			case VideoEnd:
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
@@ -520,6 +525,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private void close () {
+		cancelPauseScreenTimer();
 		UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeRunner);
 	}
@@ -634,6 +640,37 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
+	private void cancelPauseScreenTimer () {
+		if (_pauseScreenTimer != null) {
+			_pauseScreenTimer.cancel();
+		}
+		
+		if (_pauseTimer != null) {
+			_pauseTimer.cancel();
+			_pauseTimer.purge();
+		}
+		
+		_pauseScreenTimer = null;
+		_pauseTimer = null;
+	}
+	
+	private void createPauseScreenTimer () {
+		_pauseScreenTimer = new TimerTask() {
+			@Override
+			public void run() {
+				PowerManager pm = (PowerManager)UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext().getSystemService(Context.POWER_SERVICE);			
+				if (!pm.isScreenOn()) {
+					mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
+					close();
+					cancelPauseScreenTimer();
+				}
+			}
+		};
+		
+		_pauseTimer = new Timer();
+		_pauseTimer.scheduleAtFixedRate(_pauseScreenTimer, 0, 50);
+	}
+	
 	
 	/* INTERNAL CLASSES */
 
@@ -692,6 +729,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private class UnityAdsPlayVideoRunner implements Runnable {
+		
 		@Override
 		public void run() {			
 			UnityAdsUtils.Log("Running videoplayrunner", this);
@@ -708,6 +746,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 				}
 				
 				mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
+				
+				createPauseScreenTimer();
 				
 				String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
 				if (!UnityAdsUtils.isFileInCache(UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename()))
