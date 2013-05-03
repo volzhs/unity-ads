@@ -22,6 +22,7 @@ NSString * const kUnityAdsOptionNoOfferscreenKey = @"noOfferScreen";
 NSString * const kUnityAdsOptionOpenAnimatedKey = @"openAnimated";
 NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
 NSString * const kUnityAdsOptionMuteVideoSounds = @"muteVideoSounds";
+NSString * const kUnityAdsOptionVideoUsesDeviceOrientation = @"useDeviceOrientationForVideo";
 
 @interface UnityAds () <UnityAdsInitializerDelegate, UnityAdsMainViewControllerDelegate>
   @property (nonatomic, strong) UnityAdsInitializer *initializer;

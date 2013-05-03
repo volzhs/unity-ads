@@ -45,8 +45,7 @@ static UnityAdsProperties *sharedProperties = nil;
   NSString *queryParams = @"?";
   
   // Mandatory params
-  queryParams = [NSString stringWithFormat:@"%@%@=%@", queryParams, kUnityAdsInitQueryParamDeviceIdKey, [UnityAdsDevice md5DeviceId]];
-  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamPlatformKey, @"ios"];
+  queryParams = [NSString stringWithFormat:@"%@%@=%@", queryParams, kUnityAdsInitQueryParamPlatformKey, @"ios"];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamGameIdKey, [self adsGameId]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOpenUdidKey, [UnityAdsDevice md5OpenUDIDString]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamMacAddressKey, [UnityAdsDevice md5MACAddressString]];

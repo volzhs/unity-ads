@@ -21,7 +21,7 @@ extern NSString * const kUnityAdsOptionNoOfferscreenKey;
 extern NSString * const kUnityAdsOptionOpenAnimatedKey;
 extern NSString * const kUnityAdsOptionGamerSIDKey;
 extern NSString * const kUnityAdsOptionMuteVideoSounds;
-//public static final String UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS = "muteVideoSounds";
+extern NSString * const kUnityAdsOptionVideoUsesDeviceOrientation;
 
 typedef enum {
   kUnityAdsModeDefault,

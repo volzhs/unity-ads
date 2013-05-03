@@ -48,6 +48,9 @@ static UnityAdsShowOptionsParser *sharedOptionsParser = nil;
       self.muteVideoSounds = YES;
     }
 
+    if ([options objectForKey:kUnityAdsOptionVideoUsesDeviceOrientation] != nil && [[options objectForKey:kUnityAdsOptionVideoUsesDeviceOrientation] boolValue] == YES) {
+      self.useDeviceOrientationForVideo = YES;
+    }
   }
 }
 
@@ -57,6 +60,7 @@ static UnityAdsShowOptionsParser *sharedOptionsParser = nil;
   [options setObject:@(self.noOfferScreen) forKey:kUnityAdsOptionNoOfferscreenKey];
   [options setObject:@(self.openAnimated) forKey:kUnityAdsOptionOpenAnimatedKey];
   [options setObject:@(self.muteVideoSounds) forKey:kUnityAdsOptionMuteVideoSounds];
+  [options setObject:@(self.useDeviceOrientationForVideo) forKey:kUnityAdsOptionVideoUsesDeviceOrientation];
   
   if (self.gamerSID != nil) {
     [options setObject:self.gamerSID forKey:kUnityAdsOptionGamerSIDKey];
@@ -70,6 +74,7 @@ static UnityAdsShowOptionsParser *sharedOptionsParser = nil;
   self.openAnimated = YES;
   self.gamerSID = NULL;
   self.muteVideoSounds = NO;
+  self.useDeviceOrientationForVideo = NO;
 }
 
 @end
