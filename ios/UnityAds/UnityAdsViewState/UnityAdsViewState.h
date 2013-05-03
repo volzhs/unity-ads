@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "../UnityAds.h"
+#import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
+#import "../UnityAdsCampaign/UnityAdsCampaign.h"
+#import "../UnityAdsWebView/UnityAdsWebAppController.h"
 
 @protocol UnityAdsViewStateDelegate <NSObject>
 
@@ -30,4 +33,6 @@
 - (void)wasShown;
 
 - (void)applyOptions:(NSDictionary *)options;
+
+- (void)openAppStoreWithData:(NSDictionary *)data inViewController:(UIViewController *)targetViewController;
 @end

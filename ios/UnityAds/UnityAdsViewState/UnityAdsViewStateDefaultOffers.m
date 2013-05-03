@@ -56,4 +56,12 @@
   }
 }
 
+- (void)applyOptions:(NSDictionary *)options {
+  [super applyOptions:options];
+  
+  if ([options objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
+    [self openAppStoreWithData:options inViewController:[UnityAdsMainViewController sharedInstance]];
+  }
+}
+
 @end

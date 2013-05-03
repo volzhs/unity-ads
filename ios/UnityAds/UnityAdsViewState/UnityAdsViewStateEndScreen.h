@@ -7,14 +7,7 @@
 //
 
 #import "UnityAdsViewState.h"
-#import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "../UnityAdsView/UnityAdsMainViewController.h"
-#import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
-#import "../UnityAdsCampaign/UnityAdsCampaign.h"
-#import "../UnityAdsWebView/UnityAdsWebAppController.h"
-
-#import "../UnityAds.h"
 
 @interface UnityAdsViewStateEndScreen : UnityAdsViewState
-- (void)openAppStoreWithData:(NSDictionary *)data inViewController:(UIViewController *)targetViewController;
 @end
