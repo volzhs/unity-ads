@@ -152,6 +152,11 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR = "videoError";
 	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_SKIPVIDEO = "skipVideo";
 	
+	/* PlayStore Open */
+	public static final String UNITY_ADS_PLAYSTORE_ITUNESID_KEY = "iTunesId";
+	public static final String UNITY_ADS_PLAYSTORE_CLICKURL_KEY = "clickUrl";
+	public static final String UNITY_ADS_PLAYSTORE_BYPASSAPPSHEET_KEY = "bypassAppSheet";
+	
 	/* Google Analytics Events */
 	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_KEY = "googleAnalyticsEvent";
 	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOPLAY = "videoAnalyticsEventPlay";

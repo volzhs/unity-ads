@@ -472,33 +472,62 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public void onOpenPlayStore (JSONObject data) {
 	    UnityAdsUtils.Log("onOpenPlayStore", this);
-		if (UnityAdsProperties.SELECTED_CAMPAIGN != null && UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId() != null) {
-			try {
-				if (!UnityAdsProperties.SELECTED_CAMPAIGN.shouldBypassAppSheet()) {
-					UnityAdsUtils.Log("Opening playstore activity with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
-					UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId())));
-				}
-				else {
-					openPlayStoreInBrowser();
-				}
-			} 
-			catch (android.content.ActivityNotFoundException anfe) {
-				openPlayStoreInBrowser();
-			}
-			
-			webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_OPENAPPSTORE, UnityAdsProperties.SELECTED_CAMPAIGN);
-		}
-		else {
-		    UnityAdsUtils.Log("Selected campaign (" + UnityAdsProperties.SELECTED_CAMPAIGN + ") or couldn't get storeId", this);
-		}
+
+	    if (data != null) {
+	    	
+	    	UnityAdsUtils.Log(data.toString(), this);
+	    	
+	    	String playStoreId = null;
+	    	String clickUrl = null;
+	    	Boolean bypassAppSheet = false;
+	    	
+	    	if (data.has(UnityAdsConstants.UNITY_ADS_PLAYSTORE_ITUNESID_KEY)) {
+	    		try {
+		    		playStoreId = data.getString(UnityAdsConstants.UNITY_ADS_PLAYSTORE_ITUNESID_KEY);
+	    		}
+	    		catch (Exception e) {
+	    			UnityAdsUtils.Log("Could not fetch playStoreId", this);
+	    		}
+	    	}
+	    	
+	    	if (data.has(UnityAdsConstants.UNITY_ADS_PLAYSTORE_CLICKURL_KEY)) {
+	    		try {
+	    			clickUrl = data.getString(UnityAdsConstants.UNITY_ADS_PLAYSTORE_CLICKURL_KEY);
+	    		}
+	    		catch (Exception e) {
+	    			UnityAdsUtils.Log("Could not fetch clickUrl", this);
+	    		}
+	    	}
+	    	
+	    	if (data.has(UnityAdsConstants.UNITY_ADS_PLAYSTORE_BYPASSAPPSHEET_KEY)) {
+	    		try {
+	    			bypassAppSheet = data.getBoolean(UnityAdsConstants.UNITY_ADS_PLAYSTORE_BYPASSAPPSHEET_KEY);
+	    		}
+	    		catch (Exception e) {
+	    			UnityAdsUtils.Log("Could not fetch bypassAppSheet", this);
+	    		}
+	    	}
+	    	
+	    	if (playStoreId != null && !bypassAppSheet) {
+	    		openPlayStoreAsIntent(playStoreId);
+	    	}
+	    	else if (clickUrl != null ){
+	    		openPlayStoreInBrowser(clickUrl);
+	    	}
+	    }
 	}
 	
 
 	/* PRIVATE METHODS */
 	
-	private void openPlayStoreInBrowser () {
-	    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with storeId: " + UnityAdsProperties.SELECTED_CAMPAIGN.getStoreId(), this);
-		UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UnityAdsProperties.SELECTED_CAMPAIGN.getClickUrl())));
+	private void openPlayStoreAsIntent (String playStoreId) {
+		UnityAdsUtils.Log("Opening playstore activity with storeId: " + playStoreId, this);
+		UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + playStoreId)));
+	}
+	
+	private void openPlayStoreInBrowser (String url) {
+	    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with url: " + url, this);
+		UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 	}
 	
 	private void init (Activity activity, String gameId, IUnityAdsListener listener) {
