@@ -43,6 +43,7 @@ NSString * const kUnityAdsWebViewDataParamIosVersionKey = @"iOSVersion";
 NSString * const kUnityAdsWebViewEventDataCampaignIdKey = @"campaignId";
 NSString * const kUnityAdsWebViewEventDataRewatchKey = @"rewatch";
 NSString * const kUnityAdsWebViewEventDataClickUrlKey = @"clickUrl";
+NSString * const kUnityAdsWebViewEventDataBypassAppSheetKey = @"bypassAppSheet";
 
 
 /* Native Events */

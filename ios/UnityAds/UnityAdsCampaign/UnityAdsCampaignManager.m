@@ -270,6 +270,36 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	return foundCampaign;
 }
 
+- (UnityAdsCampaign *)getCampaignWithITunesId:(NSString *)iTunesId {
+	UALOG_DEBUG(@"");
+	UAAssertV([NSThread isMainThread], nil);
+	UnityAdsCampaign *foundCampaign = nil;
+	
+	for (UnityAdsCampaign *campaign in self.campaigns) {
+		if ([campaign.itunesID isEqualToString:iTunesId]) {
+			foundCampaign = campaign;
+			break;
+		}
+	}
+	
+	return foundCampaign;
+}
+
+- (UnityAdsCampaign *)getCampaignWithClickUrl:(NSString *)clickUrl {
+	UALOG_DEBUG(@"");
+	UAAssertV([NSThread isMainThread], nil);
+	UnityAdsCampaign *foundCampaign = nil;
+	
+	for (UnityAdsCampaign *campaign in self.campaigns) {
+		if ([[campaign.clickURL absoluteString] isEqualToString:clickUrl]) {
+			foundCampaign = campaign;
+			break;
+		}
+	}
+	
+	return foundCampaign;
+}
+
 - (NSArray *)getViewableCampaigns {
 	UALOG_DEBUG(@"");
   NSMutableArray *retAr = [[NSMutableArray alloc] init];

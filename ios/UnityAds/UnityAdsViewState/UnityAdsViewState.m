@@ -54,28 +54,44 @@
 - (void)openAppStoreWithData:(NSDictionary *)data inViewController:(UIViewController *)targetViewController {
   UALOG_DEBUG(@"");
   
-  if (![self _canOpenStoreProductViewController] || [[UnityAdsCampaignManager sharedInstance] selectedCampaign].bypassAppSheet == YES) {
-    NSString *clickUrl = [data objectForKey:kUnityAdsWebViewEventDataClickUrlKey];
-    if (clickUrl == nil) return;
-    UALOG_DEBUG(@"Cannot open store product view controller, falling back to click URL.");
-    [[UnityAdsAnalyticsUploader sharedInstance] sendOpenAppStoreRequest:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
-    
-    if (self.delegate != nil) {
-      [self.delegate stateNotification:kUnityAdsStateActionWillLeaveApplication];
+  BOOL bypassAppSheet = false;
+  NSString *iTunesId = nil;
+  NSString *clickUrl = nil;
+  
+  if (data != nil) {
+    if ([data objectForKey:kUnityAdsWebViewEventDataBypassAppSheetKey] != nil) {
+      bypassAppSheet = [[data objectForKey:kUnityAdsWebViewEventDataBypassAppSheetKey] boolValue];
     }
-    
-    // DOES NOT INITIALIZE WEBVIEW
-    UALOG_DEBUG(@"CLICK_URL: %@", clickUrl);
-    [[UnityAdsWebAppController sharedInstance] openExternalUrl:clickUrl];
-    return;
+    if ([data objectForKey:kUnityAdsCampaignStoreIDKey] != nil && [[data objectForKey:kUnityAdsCampaignStoreIDKey] isKindOfClass:[NSString class]]) {
+      iTunesId = [data objectForKey:kUnityAdsCampaignStoreIDKey];
+    }
+    if ([data objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil && [[data objectForKey:kUnityAdsWebViewEventDataClickUrlKey] isKindOfClass:[NSString class]]) {
+      clickUrl = [data objectForKey:kUnityAdsWebViewEventDataClickUrlKey];
+    }
   }
   
+  if (iTunesId != nil && !bypassAppSheet && [self _canOpenStoreProductViewController]) {
+    UALOG_DEBUG(@"Opening Appstore in AppSheet: %@", iTunesId);
+    [self openAppSheetWithId:iTunesId toViewController:targetViewController];
+  }
+  else if (clickUrl != nil) {
+    UALOG_DEBUG(@"Opening Appstore with clickUrl: %@", clickUrl);
+    [self openAppStoreWithUrl:clickUrl];
+  }
+}
+
+
+#pragma mark - AppStore opening
+
+- (BOOL)_canOpenStoreProductViewController {
+  Class storeProductViewControllerClass = NSClassFromString(@"SKStoreProductViewController");
+  return [storeProductViewControllerClass instancesRespondToSelector:@selector(loadProductWithParameters:completionBlock:)];
+}
+
+- (void)openAppSheetWithId:(NSString *)iTunesId toViewController:(UIViewController *)targetViewController {
   Class storeProductViewControllerClass = NSClassFromString(@"SKStoreProductViewController");
   if ([storeProductViewControllerClass instancesRespondToSelector:@selector(loadProductWithParameters:completionBlock:)] == YES) {
-    if (![[data objectForKey:kUnityAdsCampaignStoreIDKey] isKindOfClass:[NSString class]]) return;
-    NSString *gameId = nil;
-    gameId = [data valueForKey:kUnityAdsCampaignStoreIDKey];
-    if (gameId == nil || [gameId length] < 1) return;
+    if (![iTunesId isKindOfClass:[NSString class]] || iTunesId == nil || [iTunesId length] < 1) return;
     
     /*
      FIX: This _could_ bug someday. The key @"id" is written literally (and
@@ -88,7 +104,7 @@
      HOWTOFIX: Find a way to reflect global constant SKStoreProductParameterITunesItemIdentifier
      by using string value and not the constant itself.
      */
-    NSDictionary *productParams = @{@"id":gameId};
+    NSDictionary *productParams = @{@"id":iTunesId};
     
     self.storeController = [[storeProductViewControllerClass alloc] init];
     
@@ -97,12 +113,16 @@
     }
     
     void (^storeControllerComplete)(BOOL result, NSError *error) = ^(BOOL result, NSError *error) {
-      UALOG_DEBUG(@"RESULT: %i", result);
+      UALOG_DEBUG(@"Result: %i", result);
       if (result) {
         dispatch_async(dispatch_get_main_queue(), ^{
           self.targetController = targetViewController;
           [targetViewController presentViewController:self.storeController animated:YES completion:nil];
-          [[UnityAdsAnalyticsUploader sharedInstance] sendOpenAppStoreRequest:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+          UnityAdsCampaign *campaign = [[UnityAdsCampaignManager sharedInstance] getCampaignWithITunesId:iTunesId];
+          
+          if (campaign != nil) {
+            [[UnityAdsAnalyticsUploader sharedInstance] sendOpenAppStoreRequest:campaign];
+          }
         });
       }
       else {
@@ -124,12 +144,24 @@
   }
 }
 
-#pragma mark - AppStore opening
-
-- (BOOL)_canOpenStoreProductViewController {
-  Class storeProductViewControllerClass = NSClassFromString(@"SKStoreProductViewController");
-  return [storeProductViewControllerClass instancesRespondToSelector:@selector(loadProductWithParameters:completionBlock:)];
+- (void)openAppStoreWithUrl:(NSString *)clickUrl {
+  if (clickUrl == nil) return;
+  
+  UnityAdsCampaign *campaign = [[UnityAdsCampaignManager sharedInstance] getCampaignWithClickUrl:clickUrl];
+  
+  if (campaign != nil) {
+    [[UnityAdsAnalyticsUploader sharedInstance] sendOpenAppStoreRequest:campaign];
+  }
+  
+  if (self.delegate != nil) {
+    [self.delegate stateNotification:kUnityAdsStateActionWillLeaveApplication];
+  }
+  
+  // DOES NOT INITIALIZE WEBVIEW
+  [[UnityAdsWebAppController sharedInstance] openExternalUrl:clickUrl];
+  return;
 }
+
 
 #pragma mark - SKStoreProductViewControllerDelegate
 

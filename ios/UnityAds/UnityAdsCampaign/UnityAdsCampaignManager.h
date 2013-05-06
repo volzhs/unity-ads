@@ -33,6 +33,8 @@
 - (NSURL *)getVideoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (void)cancelAllDownloads;
 - (UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId;
+- (UnityAdsCampaign *)getCampaignWithITunesId:(NSString *)iTunesId;
+- (UnityAdsCampaign *)getCampaignWithClickUrl:(NSString *)clickUrl;
 - (NSArray *)getViewableCampaigns;
 - (BOOL)setSelectedRewardItemKey:(NSString *)rewardItemKey;
 - (UnityAdsRewardItem *)getCurrentRewardItem;

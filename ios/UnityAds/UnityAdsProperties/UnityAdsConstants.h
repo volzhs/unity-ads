@@ -57,7 +57,7 @@ extern NSString * const kUnityAdsWebViewDataParamIosVersionKey;
 extern NSString * const kUnityAdsWebViewEventDataCampaignIdKey;
 extern NSString * const kUnityAdsWebViewEventDataRewatchKey;
 extern NSString * const kUnityAdsWebViewEventDataClickUrlKey;
-
+extern NSString * const kUnityAdsWebViewEventDataBypassAppSheetKey;
 
 
 /* Native Events */
