@@ -52,7 +52,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 			// Analytics / Instrumentation
 			Map<String, Object> values = new HashMap<String, Object>();
 			values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_COMPLETED);
-			values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, getCachingDurationInMillis());
+			values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CACHINGDURATION_KEY, getCachingDurationInMillis());
 			UnityAdsInstrumentation.gaInstrumentationVideoCaching(_campaign, values);		
 		}
 	}
