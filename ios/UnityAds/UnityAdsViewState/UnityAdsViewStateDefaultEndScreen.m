@@ -53,13 +53,7 @@
 - (void)applyOptions:(NSDictionary *)options {
   [super applyOptions:options];
   
-  if ([options objectForKey:kUnityAdsNativeEventShowSpinner] != nil) {
-    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:[options objectForKey:kUnityAdsNativeEventShowSpinner]];
-  }
-  else if ([options objectForKey:kUnityAdsNativeEventHideSpinner] != nil) {
-    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:[options objectForKey:kUnityAdsNativeEventHideSpinner]];
-  }
-  else if ([options objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
+  if ([options objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
     [self openAppStoreWithData:options inViewController:[UnityAdsMainViewController sharedInstance]];
   }
 }

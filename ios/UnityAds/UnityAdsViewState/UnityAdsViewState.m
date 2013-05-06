@@ -45,6 +45,13 @@
 
 - (void)applyOptions:(NSDictionary *)options {
   UALOG_DEBUG(@"");
+  
+  if ([options objectForKey:kUnityAdsNativeEventShowSpinner] != nil) {
+    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:[options objectForKey:kUnityAdsNativeEventShowSpinner]];
+  }
+  else if ([options objectForKey:kUnityAdsNativeEventHideSpinner] != nil) {
+    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:[options objectForKey:kUnityAdsNativeEventHideSpinner]];
+  }
 }
 
 - (UnityAdsViewStateType)getStateType {
