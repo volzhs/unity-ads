@@ -415,7 +415,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			case KeyEvent.KEYCODE_BACK:
 				UnityAdsUtils.Log("onKeyDown", this);
 				
-				if (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP > 0 && getSecondsUntilBackButtonAllowed() == 0) {
+				if (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP == 0 || (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP > 0 && getSecondsUntilBackButtonAllowed() == 0)) {
 					clearVideoPlayer();
 					
 					_bufferingCompledtedMillis = System.currentTimeMillis();
@@ -430,15 +430,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 					_listener.onBackButtonClicked(this);
 				
 		    	return true;
-			case KeyEvent.KEYCODE_HOME:
-				_bufferingCompledtedMillis = System.currentTimeMillis();
-				bufferingDuration = _bufferingCompledtedMillis - _bufferingStartedMillis;
-				values = new HashMap<String, Object>();
-				values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
-				values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_EXIT);
-				UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);				
-				
-				return false;
 		}
     	
     	return false;
