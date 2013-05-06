@@ -37,7 +37,7 @@
 		785829E516676A2D00605539 /* unityads_loaded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_loaded.png"; sourceTree = "<group>"; };
 		785829E71667762600605539 /* unityads_open.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_open.png"; sourceTree = "<group>"; };
 		785829E916677A9D00605539 /* unityads_reward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unityads_reward.png"; sourceTree = "<group>"; };
-		785829EB166790EC00605539 /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnityAds.framework; path = "build/Release-iphoneos/UnityAds.framework"; sourceTree = "<group>"; };
+		785829EB166790EC00605539 /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnityAds.framework; path = "build/Debug-iphoneos/UnityAds.framework"; sourceTree = "<group>"; };
 		78CC133715D3D84A00972EA6 /* icon_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_57.png; path = UnityAdsExample/icon_57.png; sourceTree = "<group>"; };
 		78CC133915D3D85400972EA6 /* icon_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_114.png; path = UnityAdsExample/icon_114.png; sourceTree = "<group>"; };
 		78ED794915C66FC6007C5BD5 /* UnityAdsExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnityAdsExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
