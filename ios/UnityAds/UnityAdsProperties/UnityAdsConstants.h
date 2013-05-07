@@ -195,6 +195,21 @@ extern NSString * const kUnityAdsInitQueryParamTestKey;
 extern NSString * const kUnityAdsInitQueryParamEncryptionKey;
 
 
+/* Google Analytics Instrumentation */
+
+extern NSString * const kUnityAdsGoogleAnalyticsEventKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoPlayKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoErrorKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoAbortKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoCachingKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortBack;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortExit;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayStream;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayCached;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingCompleted;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingFailed;
+
 @interface UnityAdsConstants : NSObject
 
 @end

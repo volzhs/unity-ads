@@ -182,6 +182,22 @@ NSString * const kUnityAdsInitQueryParamConnectionTypeKey = @"connectionType";
 NSString * const kUnityAdsInitQueryParamTestKey = @"test";
 NSString * const kUnityAdsInitQueryParamEncryptionKey = @"encrypted";
 
+
+/* Google Analytics Instrumentation */
+
+NSString * const kUnityAdsGoogleAnalyticsEventKey = @"googleAnalyticsEvent";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoPlayKey = @"videoAnalyticsEventPlay";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoErrorKey = @"videoAnalyticsEventError";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoAbortKey = @"videoAnalyticsEventAbort";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoCachingKey = @"videoAnalyticsEventCaching";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortBack = @"back";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortExit = @"exit";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayStream = @"stream";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayCached = @"cached";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart = @"start";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingCompleted = @"completed";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingFailed = @"failed";
+
 @implementation UnityAdsConstants
 
 @end
