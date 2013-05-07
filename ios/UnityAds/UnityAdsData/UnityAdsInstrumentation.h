@@ -7,7 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "../UnityAdsCampaign/UnityAdsCampaign.h"
 
 @interface UnityAdsInstrumentation : NSObject
 
-@end
++ (void)gaInstrumentationVideoPlay:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues;
++ (void)gaInstrumentationVideoError:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues;
++ (void)gaInstrumentationVideoAbort:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues;
++ (void)gaInstrumentationVideoCaching:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues;
+
+  @end

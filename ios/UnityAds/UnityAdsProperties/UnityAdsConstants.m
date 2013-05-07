@@ -198,6 +198,14 @@ NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart = @"start";
 NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingCompleted = @"completed";
 NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingFailed = @"failed";
 
+NSString * const kUnityAdsGoogleAnalyticsEventCampaignIdKey = @"campaignId";
+NSString * const kUnityAdsGoogleAnalyticsEventConnectionTypeKey = @"connectionType";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoPlaybackTypeKey = @"videoPlaybackType";
+NSString * const kUnityAdsGoogleAnalyticsEventBufferingDurationKey = @"bufferingDuration";
+NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey = @"cachingDuration";
+NSString * const kUnityAdsGoogleAnalyticsEventValueKey = @"eventValue";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeKey = @"eventType";
+
 @implementation UnityAdsConstants
 
 @end

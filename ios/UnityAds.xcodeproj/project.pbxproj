@@ -105,6 +105,8 @@
 		78AC20301622EFFD007DE419 /* UnityAdsRewardItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC202A1622EFFD007DE419 /* UnityAdsRewardItem.m */; };
 		78AC20411622F01F007DE419 /* UnityAds.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC203B1622F01F007DE419 /* UnityAds.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		78AC20421622F01F007DE419 /* UnityAds.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC203C1622F01F007DE419 /* UnityAds.m */; };
+		78BC12F717392D0D0015A35E /* UnityAdsInstrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 78BC12F517392D0D0015A35E /* UnityAdsInstrumentation.h */; };
+		78BC12F817392D0D0015A35E /* UnityAdsInstrumentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */; };
 		78CB843A16255FAA00E94915 /* UnityAdsURLProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 78CB843816255FAA00E94915 /* UnityAdsURLProtocol.h */; };
 		78CB843B16255FAA00E94915 /* UnityAdsURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 78CB843916255FAA00E94915 /* UnityAdsURLProtocol.m */; };
 		CC095C961733A2C300A0BD3C /* mute_button.png in Resources */ = {isa = PBXBuildFile; fileRef = CC095C951733A2C300A0BD3C /* mute_button.png */; };
@@ -229,6 +231,8 @@
 		78AC202A1622EFFD007DE419 /* UnityAdsRewardItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsRewardItem.m; sourceTree = "<group>"; };
 		78AC203B1622F01F007DE419 /* UnityAds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAds.h; sourceTree = "<group>"; };
 		78AC203C1622F01F007DE419 /* UnityAds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAds.m; sourceTree = "<group>"; };
+		78BC12F517392D0D0015A35E /* UnityAdsInstrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsInstrumentation.h; sourceTree = "<group>"; };
+		78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsInstrumentation.m; sourceTree = "<group>"; };
 		78CB843816255FAA00E94915 /* UnityAdsURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsURLProtocol.h; sourceTree = "<group>"; };
 		78CB843916255FAA00E94915 /* UnityAdsURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsURLProtocol.m; sourceTree = "<group>"; };
 		CC095C951733A2C300A0BD3C /* mute_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mute_button.png; sourceTree = "<group>"; };
@@ -398,6 +402,8 @@
 		78AC20131622EF56007DE419 /* UnityAdsData */ = {
 			isa = PBXGroup;
 			children = (
+				78BC12F517392D0D0015A35E /* UnityAdsInstrumentation.h */,
+				78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */,
 				78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */,
 				78AC201E1622EFF3007DE419 /* UnityAdsAnalyticsUploader.m */,
 				78AC201F1622EFF3007DE419 /* UnityAdsCache.h */,
@@ -606,6 +612,7 @@
 				CC095C991733A30E00A0BD3C /* UnityAdsBundle.h in Headers */,
 				CC095CAE17377C2C00A0BD3C /* UnityAdsVideoMuteButton.h in Headers */,
 				CCBAF0321737B008005EA0FC /* UnityAdsVideoOverlay.h in Headers */,
+				78BC12F717392D0D0015A35E /* UnityAdsInstrumentation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -799,6 +806,7 @@
 				CC095C9A1733A30E00A0BD3C /* UnityAdsBundle.m in Sources */,
 				CC095CAF17377C2C00A0BD3C /* UnityAdsVideoMuteButton.m in Sources */,
 				CCBAF0331737B008005EA0FC /* UnityAdsVideoOverlay.m in Sources */,
+				78BC12F817392D0D0015A35E /* UnityAdsInstrumentation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

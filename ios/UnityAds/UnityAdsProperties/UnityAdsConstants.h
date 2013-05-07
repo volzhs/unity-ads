@@ -210,6 +210,14 @@ extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart;
 extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingCompleted;
 extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingFailed;
 
+extern NSString * const kUnityAdsGoogleAnalyticsEventCampaignIdKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventConnectionTypeKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlaybackTypeKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventBufferingDurationKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventValueKey;
+extern NSString * const kUnityAdsGoogleAnalyticsEventTypeKey;
+
 @interface UnityAdsConstants : NSObject
 
 @end
