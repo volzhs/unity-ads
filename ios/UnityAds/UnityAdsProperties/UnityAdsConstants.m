@@ -180,6 +180,7 @@ NSString * const kUnityAdsInitQueryParamHardwareVersionKey = @"hardwareVersion";
 NSString * const kUnityAdsInitQueryParamSdkVersionKey = @"sdkVersion";
 NSString * const kUnityAdsInitQueryParamConnectionTypeKey = @"connectionType";
 NSString * const kUnityAdsInitQueryParamTestKey = @"test";
+NSString * const kUnityAdsInitQueryParamEncryptionKey = @"encrypted";
 
 @implementation UnityAdsConstants
 

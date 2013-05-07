@@ -192,6 +192,7 @@ extern NSString * const kUnityAdsInitQueryParamHardwareVersionKey;
 extern NSString * const kUnityAdsInitQueryParamSdkVersionKey;
 extern NSString * const kUnityAdsInitQueryParamConnectionTypeKey;
 extern NSString * const kUnityAdsInitQueryParamTestKey;
+extern NSString * const kUnityAdsInitQueryParamEncryptionKey;
 
 
 @interface UnityAdsConstants : NSObject
