@@ -38,7 +38,7 @@
     // TEST MODE: Do not use in production apps
     [[UnityAds sharedInstance] setDebugMode:YES];
     [[UnityAds sharedInstance] setTestMode:YES];
-    //[[UnityAds sharedInstance] setAdsMode:kUnityAdsModeNoWebView];
+    [[UnityAds sharedInstance] setAdsMode:kUnityAdsModeNoWebView];
     
     // Initialize Unity Ads
 	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];
@@ -58,7 +58,7 @@
 
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
         
-        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@false, kUnityAdsOptionOpenAnimatedKey:@true, kUnityAdsOptionGamerSIDKey:@"gom", kUnityAdsOptionMuteVideoSounds:@true, kUnityAdsOptionVideoUsesDeviceOrientation:@false}]);
+        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@YES, kUnityAdsOptionOpenAnimatedKey:@true, kUnityAdsOptionGamerSIDKey:@"gom", kUnityAdsOptionMuteVideoSounds:@NO, kUnityAdsOptionVideoUsesDeviceOrientation:@false}]);
         
         //[[UnityAds sharedInstance] show];
         
