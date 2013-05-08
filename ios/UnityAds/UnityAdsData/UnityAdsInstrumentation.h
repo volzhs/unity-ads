@@ -16,4 +16,4 @@
 + (void)gaInstrumentationVideoAbort:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues;
 + (void)gaInstrumentationVideoCaching:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues;
 
-  @end
+@end

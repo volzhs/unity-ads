@@ -6,6 +6,8 @@
 #import "../UnityAds.h"
 #import "UnityAdsCache.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
+#import "UnityAdsInstrumentation.h"
+#import "../UnityAdsProperties/UnityAdsConstants.h"
 
 NSString * const kUnityAdsCacheCampaignKey = @"kUnityAdsCacheCampaignKey";
 NSString * const kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";
@@ -141,6 +143,13 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	[self.currentDownload setObject:urlConnection forKey:kUnityAdsCacheConnectionKey];
 	[urlConnection start];
 	
+  UnityAdsCampaign *campaign = [self.currentDownload objectForKey:kUnityAdsCacheCampaignKey];
+  if (campaign != nil) {
+    long long cachingStarted = [[NSDate date] timeIntervalSince1970] * 1000;
+    campaign.videoCachingStartTime = cachingStarted;
+    [UnityAdsInstrumentation gaInstrumentationVideoCaching:campaign withValuesFrom:@{kUnityAdsGoogleAnalyticsEventValueKey:kUnityAdsGoogleAnalyticsEventVideoCachingStart}];
+  }
+  
 	[self.downloadQueue removeObjectAtIndex:0];
 	
 	UALOG_DEBUG(@"starting download %@", self.currentDownload);
@@ -160,8 +169,10 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
   NSError *err;
 	[self.fileHandle closeFile];
 	self.fileHandle = nil;
+  long long cachingFinished = [[NSDate date] timeIntervalSince1970] * 1000;
 	UnityAdsCampaign *campaign = [self.currentDownload objectForKey:kUnityAdsCacheCampaignKey];
-
+  campaign.videoCachingEndTime = cachingFinished;
+  
   // Check that file came through OK
   if (!failure) {
     NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[self.currentDownload objectForKey:kUnityAdsCacheFilePathKey] error:&err];
@@ -173,6 +184,8 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
       if (campaign.expectedTrailerSize > 0 && fileSize != campaign.expectedTrailerSize) {
         UALOG_DEBUG(@"Problems with file size, expected: %lld, got: %lld", campaign.expectedTrailerSize, fileSize);
         [[NSFileManager defaultManager] removeItemAtPath:[self.currentDownload objectForKey:kUnityAdsCacheFilePathKey] error:&err];
+        NSDictionary *data = @{kUnityAdsGoogleAnalyticsEventValueKey:kUnityAdsGoogleAnalyticsEventVideoCachingFailed};
+        [UnityAdsInstrumentation gaInstrumentationVideoCaching:campaign withValuesFrom:data];
       }
     }
     else {
@@ -186,11 +199,18 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
   
 	if (failure) {		
 		[self _queueCampaignDownload:campaign];
-    if ([self isCampaignVideoCached:campaign])
+    if ([self isCampaignVideoCached:campaign]) {
       [[NSFileManager defaultManager] removeItemAtPath:[self.currentDownload objectForKey:kUnityAdsCacheFilePathKey] error:&err];
+    }
+    NSDictionary *data = @{kUnityAdsGoogleAnalyticsEventValueKey:kUnityAdsGoogleAnalyticsEventVideoCachingFailed};
+    [UnityAdsInstrumentation gaInstrumentationVideoCaching:campaign withValuesFrom:data];
 	}
-	else
+	else {
 		[self.delegate cache:self finishedCachingCampaign:[self.currentDownload objectForKey:kUnityAdsCacheCampaignKey]];
+    NSDictionary *data = @{kUnityAdsGoogleAnalyticsEventValueKey:kUnityAdsGoogleAnalyticsEventVideoCachingCompleted,
+                           kUnityAdsGoogleAnalyticsEventCachingDurationKey:@(campaign.videoCachingEndTime - campaign.videoCachingStartTime)};
+    [UnityAdsInstrumentation gaInstrumentationVideoCaching:campaign withValuesFrom:data];
+  }
 	
 	self.currentDownload = nil;
 	

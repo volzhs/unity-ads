@@ -10,6 +10,7 @@
 
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
+#import "../UnityAdsWebView/UnityAdsWebAppController.h"
 
 @implementation UnityAdsInstrumentation
 
@@ -44,29 +45,61 @@
   return finalData;
 }
 
-+ (NSArray *)getUnsentGAInstrumentationEvents {
-  return nil;
++ (NSDictionary *)makeEventFromEvent:(NSString *)eventType withData:(NSDictionary *)data {
+  return @{kUnityAdsGoogleAnalyticsEventTypeKey:eventType, @"data":data};
 }
 
-+ (void)sendGAInstrumentationEvent:(NSString *)eventType {
+static NSMutableArray *unsentEvents;
+
++ (void)sendGAInstrumentationEvent:(NSString *)eventType withData:(NSDictionary *)data {
+  NSDictionary *eventDataToSend = [self makeEventFromEvent:eventType withData:data];
   
+  if (eventDataToSend != nil) {
+    if ([[UnityAdsWebAppController sharedInstance] webViewInitialized] && [[UnityAdsWebAppController sharedInstance] webViewLoaded]) {
+      NSMutableArray *eventsArray = [NSMutableArray array];
+      
+      if (unsentEvents != nil) {
+        [eventsArray addObjectsFromArray:unsentEvents];
+        [unsentEvents removeAllObjects];
+        unsentEvents = nil;
+      }
+      
+      [eventsArray addObject:eventDataToSend];
+      NSDictionary *finalData = @{@"events":eventsArray};
+      [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsGoogleAnalyticsEventKey data:finalData];
+    }
+    else {
+      if (unsentEvents == nil) {
+        unsentEvents = [NSMutableArray array];
+      }
+      
+      [unsentEvents addObject:eventDataToSend];
+    }
+  }
 }
 
 + (void)gaInstrumentationVideoPlay:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues {
   NSDictionary *basicData = [self getBasicGAVideoProperties:campaign];
   NSDictionary *finalData = [self mergeDictionaries:basicData dictionaryToMerge:additionalValues];
+  [self sendGAInstrumentationEvent:kUnityAdsGoogleAnalyticsEventTypeVideoPlay withData:finalData];
 }
 
 + (void)gaInstrumentationVideoError:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues {
-  
+  NSDictionary *basicData = [self getBasicGAVideoProperties:campaign];
+  NSDictionary *finalData = [self mergeDictionaries:basicData dictionaryToMerge:additionalValues];
+  [self sendGAInstrumentationEvent:kUnityAdsGoogleAnalyticsEventTypeVideoError withData:finalData];
 }
 
 + (void)gaInstrumentationVideoAbort:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues {
-  
+  NSDictionary *basicData = [self getBasicGAVideoProperties:campaign];
+  NSDictionary *finalData = [self mergeDictionaries:basicData dictionaryToMerge:additionalValues];
+  [self sendGAInstrumentationEvent:kUnityAdsGoogleAnalyticsEventTypeVideoAbort withData:finalData];
 }
 
 + (void)gaInstrumentationVideoCaching:(UnityAdsCampaign *)campaign withValuesFrom:(NSDictionary *)additionalValues {
-  
+  NSDictionary *basicData = [self getBasicGAVideoProperties:campaign];
+  NSDictionary *finalData = [self mergeDictionaries:basicData dictionaryToMerge:additionalValues];
+  [self sendGAInstrumentationEvent:kUnityAdsGoogleAnalyticsEventTypeVideoCaching withData:finalData];
 }
 
 @end

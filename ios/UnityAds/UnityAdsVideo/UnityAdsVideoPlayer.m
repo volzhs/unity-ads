@@ -12,6 +12,8 @@
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
+#import "../UnityAdsData/UnityAdsInstrumentation.h"
+#import "../UnityAdsProperties/UnityAdsConstants.h"
 
 @interface UnityAdsVideoPlayer ()
   @property (nonatomic, assign) id timeObserver;
@@ -45,9 +47,12 @@
 
 - (void)playSelectedVideo {
   self.videoPosition = kVideoAnalyticsPositionUnplayed;
+  /*
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.delegate videoPlaybackStarted];
-  });
+  });*/
+  
+  [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingStartTime = [[NSDate date] timeIntervalSince1970] * 1000;
 }
 
 - (void)_videoPlaybackEnded:(NSNotification *)notification {
@@ -76,6 +81,7 @@
     [self.timeOutTimer invalidate];
     self.timeOutTimer = nil;
     [self.delegate videoPlaybackError];
+    [UnityAdsInstrumentation gaInstrumentationVideoError:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:nil];
   }
 }
 
@@ -129,6 +135,7 @@
       self.isPlaying = false;
       self.hasPlayed = false;
       [self.delegate videoPlaybackError];
+      [UnityAdsInstrumentation gaInstrumentationVideoError:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:nil];
     });
     UALOG_DEBUG(@"VIDEOPLAYER_ERROR: %@", self.currentItem.error);
   }
@@ -164,6 +171,11 @@
       });
       
       [self play];
+      
+      [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingEndTime = [[NSDate date] timeIntervalSince1970] * 1000;
+      long long bufferingCompleted = [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingEndTime - [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingStartTime;
+      
+      [UnityAdsInstrumentation gaInstrumentationVideoPlay:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:@{kUnityAdsGoogleAnalyticsEventBufferingDurationKey:@(bufferingCompleted)}];
     }
     else if (playerStatus == AVPlayerStatusFailed) {
       UALOG_DEBUG(@"Player failed");
@@ -171,6 +183,7 @@
         self.hasPlayed = false;
         self.isPlaying = false;
         [self.delegate videoPlaybackError];
+        [UnityAdsInstrumentation gaInstrumentationVideoError:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:nil];
       });
     }
     else if (playerStatus == AVPlayerStatusUnknown) {
