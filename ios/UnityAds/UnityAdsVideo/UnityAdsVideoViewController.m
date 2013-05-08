@@ -27,12 +27,13 @@
   @property (nonatomic, strong) NSURL *currentPlayingVideoUrl;
   @property (nonatomic, strong) UnityAdsVideoMuteButton *muteButton;
   @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+
 @end
 
 @implementation UnityAdsVideoViewController
 
 @synthesize muteButton = _muteButton;
-
+@synthesize isMuted = _isMuted;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -40,6 +41,7 @@
       self.videoControllerQueue = dispatch_queue_create("com.unity3d.ads.videocontroller", NULL);
       self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFrom:)];
       self.isPlaying = NO;
+      self.isMuted = NO;
     }
     return self;
 }
@@ -55,7 +57,9 @@
   self.tapGestureRecognizer.cancelsTouchesInView = NO;
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
   self.tapGestureRecognizer.delegate = self;
-  self.muteButton = [[UnityAdsVideoMuteButton alloc] initWithIcon:[UnityAdsBundle imageWithName:@"mute_button" ofType:@"png"] title:@"0"];
+  self.muteButton = [[UnityAdsVideoMuteButton alloc] initWithIcon:[UnityAdsBundle imageWithName:@"audio_on" ofType:@"png"] title:@""];
+  [self.muteButton setImage:[UnityAdsBundle imageWithName:@"audio_mute" ofType:@"png"] forState:UIControlStateSelected];
+  
   [self.muteButton addTarget:self action:@selector(muteVideoButtonPressed:) forControlEvents:UIControlEventTouchDown];  
   [self _attachVideoView];
 }
@@ -96,22 +100,23 @@
 }
 
 -(void)muteVideoButtonPressed:(id)sender {
-  UALOG_DEBUG(@"mute");
-  AVPlayerItem *item = [self.videoPlayer currentItem];
-  AVMutableAudioMix *audioZeroMix = nil;
-  NSArray *audioTracks = [item.asset tracksWithMediaType:AVMediaTypeAudio];
-  NSMutableArray *allAudioParams = [NSMutableArray array];
+    AVPlayerItem *item = [self.videoPlayer currentItem];
+    AVMutableAudioMix *audioZeroMix = nil;
+    NSArray *audioTracks = [item.asset tracksWithMediaType:AVMediaTypeAudio];
+    NSMutableArray *allAudioParams = [NSMutableArray array];
 
-  for (AVAssetTrack *track in audioTracks) {
-    AVMutableAudioMixInputParameters *audioInputParams = [AVMutableAudioMixInputParameters audioMixInputParameters];
-    [audioInputParams setVolume:0.0 atTime:kCMTimeZero];
-    [audioInputParams setTrackID:[track trackID]];
-    [allAudioParams addObject:audioInputParams];
-  }
+    for (AVAssetTrack *track in audioTracks) {
+      AVMutableAudioMixInputParameters *audioInputParams = [AVMutableAudioMixInputParameters audioMixInputParameters];
+      [audioInputParams setVolume:self.isMuted ? 0.0f : 1.0f atTime:kCMTimeZero];
+      [audioInputParams setTrackID:[track trackID]];
+      [allAudioParams addObject:audioInputParams];
+    }
 
-  audioZeroMix = [AVMutableAudioMix audioMix];
-  [audioZeroMix setInputParameters:allAudioParams];
-  [item setAudioMix:audioZeroMix];
+    audioZeroMix = [AVMutableAudioMix audioMix];
+    [audioZeroMix setInputParameters:allAudioParams];
+    [item setAudioMix:audioZeroMix];
+    self.isMuted = !self.isMuted;
+    self.muteButton.selected = self.isMuted;
 }
 
 - (void)_makeOrientation {
