@@ -241,10 +241,19 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		sendActionToListener(UnityAdsMainViewAction.VideoStart);
 		bringChildToFront(videoplayerview);
 		
-		if (Build.VERSION.SDK_INT < 9) 
+		// SENSOR_LANDSCAPE
+		int targetOrientation = 6;
+		
+		if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
+			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION) && 
+			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION).equals(true)) {
 			UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		else
-			UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(6);
+			
+			// UNSPECIFIED
+			targetOrientation = -1;
+		}
+		
+		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(targetOrientation);
 		
 		focusToView(videoplayerview);
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);

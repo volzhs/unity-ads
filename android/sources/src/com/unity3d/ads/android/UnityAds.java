@@ -47,6 +47,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static final String UNITY_ADS_OPTION_OPENANIMATED_KEY = "openAnimated";
 	public static final String UNITY_ADS_OPTION_GAMERSID_KEY = "sid";
 	public static final String UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS = "muteVideoSounds";
+	public static final String UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION = "useDeviceOrientationForVideo";
 
 	// Unity Ads components
 	public static UnityAds instance = null;
