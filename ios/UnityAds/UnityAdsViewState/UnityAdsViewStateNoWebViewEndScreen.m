@@ -42,6 +42,7 @@
   UALOG_DEBUG(@"");
   
   [super exitState:options];
+  self.endScreenController = nil;
   [[UnityAdsMainViewController sharedInstance] dismissViewControllerAnimated:NO completion:nil];
 }
 
