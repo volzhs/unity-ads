@@ -43,6 +43,15 @@ NSString * const kUnityAdsOptionVideoUsesDeviceOrientation = @"useDeviceOrientat
   return YES;
 }
 
+- (void)setTestDeveloperId:(NSString *)developerId {
+  [[UnityAdsProperties sharedInstance] setDeveloperId:developerId];
+}
+
+- (void)setTestOptionsId:(NSString *)optionsId {
+  [[UnityAdsProperties sharedInstance] setOptionsId:optionsId];
+}
+
+
 + (NSString *)getSDKVersion {
   return [[UnityAdsProperties sharedInstance] adsVersion];
 }

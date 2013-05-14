@@ -11,37 +11,78 @@
 #import <CoreMedia/CoreMedia.h>
 #import <UnityAds/UnityAds.h>
 
-@interface UnityAdsViewController () <UnityAdsDelegate>
+@interface UnityAdsViewController () <UnityAdsDelegate, UITextFieldDelegate>
 @end
 
 @implementation UnityAdsViewController
 
-@synthesize buttonView;
+@synthesize startButton;
+@synthesize openButton;
+@synthesize optionsButton;
+@synthesize optionsView;
+@synthesize developerId;
+@synthesize optionsId;
 @synthesize loadingImage;
 @synthesize contentView;
-@synthesize currentPhase;
-@synthesize avPlayer;
-@synthesize avPlayerLayer;
-@synthesize avAsset;
-@synthesize avPlayerItem;
+@synthesize webviewSwitch;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
 	[[UnityAds sharedInstance] setDelegate:self];
-    [self.buttonView addTarget:self action:@selector(openAds) forControlEvents:UIControlEventTouchUpInside];
+    [self.openButton addTarget:self action:@selector(openAds) forControlEvents:UIControlEventTouchUpInside];
+    [self.startButton addTarget:self action:@selector(startAds) forControlEvents:UIControlEventTouchUpInside];
+    [self.optionsButton addTarget:self action:@selector(openOptions) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.developerId setDelegate:self];
+    [self.optionsId setDelegate:self];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+}
+
+- (void)startAds {
+    self.optionsButton.enabled = false;
+    [self.optionsButton setAlpha:0.3f];
+    self.startButton.enabled = false;
+    self.startButton.hidden = true;
+    self.openButton.hidden = false;
+    self.loadingImage.hidden = false;
+    self.optionsView.hidden = true;
     
     // TEST MODE: Do not use in production apps
     [[UnityAds sharedInstance] setDebugMode:YES];
     [[UnityAds sharedInstance] setTestMode:YES];
-    [[UnityAds sharedInstance] setAdsMode:kUnityAdsModeNoWebView];
+    
+    if (self.developerId.text != nil) {
+        UALOG_DEBUG(@"Setting developerId");
+        // TEST STUFF, DO NOT USE IN PRODUCTION APPS
+        [[UnityAds sharedInstance] setTestDeveloperId:self.developerId.text];
+    }
+    
+    if (self.optionsId.text != nil) {
+        UALOG_DEBUG(@"Setting optionsId");
+        // TEST STUFF, DO NOT USE IN PRODUCTION APPS
+        [[UnityAds sharedInstance] setTestOptionsId:self.optionsId.text];
+    }
+    
+    if (!self.webviewSwitch.isOn) {
+        [[UnityAds sharedInstance] setAdsMode:kUnityAdsModeNoWebView];
+    }
     
     // Initialize Unity Ads
 	[[UnityAds sharedInstance] startWithGameId:@"16" andViewController:self];
+}
+
+- (void)openOptions {
+    if (self.optionsView.hidden) {
+        self.optionsView.hidden = false;
+    }
+    else {
+        self.optionsView.hidden = true;
+    }
 }
 
 - (void)openAds {
@@ -58,7 +99,7 @@
 
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
         
-        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@YES, kUnityAdsOptionOpenAnimatedKey:@true, kUnityAdsOptionGamerSIDKey:@"gom", kUnityAdsOptionMuteVideoSounds:@NO, kUnityAdsOptionVideoUsesDeviceOrientation:@false}]);
+        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@false, kUnityAdsOptionOpenAnimatedKey:@true, kUnityAdsOptionGamerSIDKey:@"gom", kUnityAdsOptionMuteVideoSounds:@false, kUnityAdsOptionVideoUsesDeviceOrientation:@false}]);
         
         //[[UnityAds sharedInstance] show];
         
@@ -84,12 +125,22 @@
 }
 
 
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    UALOG_DEBUG(@"");
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
 #pragma mark - UnityAdsDelegate
 
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
 	NSLog(@"unityAdsFetchCompleted");
     [self.loadingImage setImage:[UIImage imageNamed:@"unityads_loaded"]];
-	[self.buttonView setEnabled:YES];
+	[self.openButton setEnabled:YES];
+    [self.instructionsText setText:@"Press \"Open\" to show Unity Ads"];
 }
 
 - (void)unityAdsWillShow:(UnityAds *)unityAds {
