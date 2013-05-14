@@ -75,6 +75,7 @@ NSString * const kUnityAdsCampaignsKey = @"campaigns";
 NSString * const kUnityAdsCampaignEndScreenKey = @"endScreen";
 NSString * const kUnityAdsCampaignEndScreenPortraitKey = @"endScreenPortrait";
 NSString * const kUnityAdsCampaignClickURLKey = @"clickUrl";
+NSString * const kUnityAdsCampaignCustomClickURLKey = @"customClickUrl";
 NSString * const kUnityAdsCampaignPictureKey = @"picture";
 NSString * const kUnityAdsCampaignTrailerDownloadableKey = @"trailerDownloadable";
 NSString * const kUnityAdsCampaignTrailerStreamingKey = @"trailerStreaming";

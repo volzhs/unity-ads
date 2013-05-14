@@ -89,6 +89,7 @@ extern NSString * const kUnityAdsCampaignsKey;
 extern NSString * const kUnityAdsCampaignEndScreenKey;
 extern NSString * const kUnityAdsCampaignEndScreenPortraitKey;
 extern NSString * const kUnityAdsCampaignClickURLKey;
+extern NSString * const kUnityAdsCampaignCustomClickURLKey;
 extern NSString * const kUnityAdsCampaignPictureKey;
 extern NSString * const kUnityAdsCampaignTrailerDownloadableKey;
 extern NSString * const kUnityAdsCampaignTrailerStreamingKey;

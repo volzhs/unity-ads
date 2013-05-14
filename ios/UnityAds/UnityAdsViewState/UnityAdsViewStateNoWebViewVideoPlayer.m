@@ -8,6 +8,7 @@
 
 #import "UnityAdsViewStateNoWebViewVideoPlayer.h"
 #import "../UnityAdsView/UnityAdsDialog.h"
+#import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 
 @interface UnityAdsViewStateNoWebViewVideoPlayer ()
   @property (nonatomic, strong) UnityAdsDialog *spinnerDialog;
@@ -76,6 +77,17 @@
   if (!self.waitingToBeShown && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   }
+  
+  /*
+  if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign] != nil &&
+      ![[UnityAdsCampaignManager sharedInstance] selectedCampaign].nativeTrackingQuerySent &&
+      [[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL != nil &&
+      [[[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL absoluteString] length] > 4) {
+    
+    UALOG_DEBUG(@"Sending tracking call");
+    [[UnityAdsCampaignManager sharedInstance] selectedCampaign].nativeTrackingQuerySent = true;
+    [[UnityAdsAnalyticsUploader sharedInstance] queueUrl:[[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL absoluteString]];
+  }*/
 }
 
 - (void)videoPlayerEncounteredError {

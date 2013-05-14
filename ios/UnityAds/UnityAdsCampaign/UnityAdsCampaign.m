@@ -26,6 +26,7 @@
   BOOL failedData = false;
   
   self.viewed = NO;
+  self.nativeTrackingQuerySent = false;
   
   NSString *endScreenURLString = [data objectForKey:kUnityAdsCampaignEndScreenKey];
   if (endScreenURLString == nil) failedData = true;
@@ -42,7 +43,7 @@
     UALOG_DEBUG(@"Found endScreenPortraitURL");
     self.endScreenPortraitURL = endScreenPortraitURL;
   }
-  
+    
   NSString *clickURLString = [data objectForKey:kUnityAdsCampaignClickURLKey];
   if (clickURLString == nil) failedData = true;
   UAAssertV([clickURLString isKindOfClass:[NSString class]], nil);
@@ -137,6 +138,21 @@
   if (!failedData) {
     self.isValidCampaign = true;
   }
+
+  /*
+  NSString *customClickURLString = [data objectForKey:kUnityAdsCampaignCustomClickURLKey];
+  if (customClickURLString == nil) failedData = true;
+  UAAssertV([customClickURLString isKindOfClass:[NSString class]], nil);
+  
+  if (customClickURLString != nil && [customClickURLString length] > 4) {
+    UALOG_DEBUG(@"CustomClickUrl=%@ for CampaignID=%@", customClickURLString, idString);
+    NSURL *customClickURL = [NSURL URLWithString:customClickURLString];
+    UAAssertV(customClickURL != nil, nil);
+    self.customClickURL = customClickURL;
+  }
+  else {
+    UALOG_DEBUG(@"Not a valid URL: %@", customClickURLString);
+  }*/
   
   data = nil;
 }
