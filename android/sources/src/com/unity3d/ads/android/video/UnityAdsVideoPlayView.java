@@ -1,5 +1,6 @@
 package com.unity3d.ads.android.video;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -7,9 +8,11 @@ import java.util.TimerTask;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.data.UnityAdsGraphicsBundle;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsBufferingView;
+import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
 import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
@@ -20,6 +23,7 @@ import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -194,6 +198,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 
 	private void createView () {
 		UnityAdsUtils.Log("Creating custom view", this);
+				
 		setBackgroundColor(0xFF000000);
 		_videoView = new VideoView(getContext());
 		_videoView.setId(3001);
@@ -278,6 +283,13 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				}
 			}
 		});
+		
+		RelativeLayout.LayoutParams muteButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		muteButtonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		muteButtonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		UnityAdsMuteVideoButton test = new UnityAdsMuteVideoButton(getContext());
+		test.setLayoutParams(muteButtonParams);
+		addView(test);
 	}
 	
 	private void createAndAddPausedView () {
