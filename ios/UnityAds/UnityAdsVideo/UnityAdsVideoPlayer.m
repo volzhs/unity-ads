@@ -39,6 +39,11 @@
 }
 
 
+
+- (void)dealloc {
+  UALOG_DEBUG(@"dealloc");
+}
+
 #pragma mark Video Playback
 
 - (void) muteVideo {

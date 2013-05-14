@@ -59,12 +59,13 @@
   self.tapGestureRecognizer.delegate = self;
   self.muteButton = [[UnityAdsVideoMuteButton alloc] initWithIcon:[UnityAdsBundle imageWithName:@"audio_on" ofType:@"png"] title:@""];
   [self.muteButton setImage:[UnityAdsBundle imageWithName:@"audio_mute" ofType:@"png"] forState:UIControlStateSelected];
-  
+
   [self.muteButton addTarget:self action:@selector(muteVideoButtonPressed:) forControlEvents:UIControlEventTouchDown];  
   [self _attachVideoView];
 }
 
 - (void)dealloc {
+  UALOG_DEBUG(@"dealloc");
   dispatch_release(self.videoControllerQueue);
 }
 
@@ -107,7 +108,7 @@
 
     for (AVAssetTrack *track in audioTracks) {
       AVMutableAudioMixInputParameters *audioInputParams = [AVMutableAudioMixInputParameters audioMixInputParameters];
-      [audioInputParams setVolume:self.isMuted ? 0.0f : 1.0f atTime:kCMTimeZero];
+      [audioInputParams setVolume:!self.isMuted ? 0.0f : 1.0f atTime:kCMTimeZero];
       [audioInputParams setTrackID:[track trackID]];
       [allAudioParams addObject:audioInputParams];
     }
@@ -129,9 +130,11 @@
       UALOG_DEBUG(@"NEW DIMENSIONS: %f, %f", minValue, maxValue);
     }
   }
+  [self.muteButton setFrame:CGRectMake(0.0f, self.view.bounds.size.height - self.muteButton.bounds.size.height + 16, self.muteButton.frame.size.width, self.muteButton.frame.size.height)];
+  UALOG_DEBUG("Mutebutton frame: %f x %f - %f x %f",self.muteButton.frame.size.height,self.muteButton.frame.size.width,self.muteButton.frame.origin.x,self.muteButton.frame.origin.y);
   
   // Position in lower left corner.
-  [self.muteButton setFrame:CGRectMake(0.0f, self.view.bounds.size.height - self.muteButton.frame.size.height, self.muteButton.frame.size.width, self.muteButton.frame.size.height)];
+
   if (self.videoView != nil) {
     [self.videoView setFrame:self.view.bounds];
   }
