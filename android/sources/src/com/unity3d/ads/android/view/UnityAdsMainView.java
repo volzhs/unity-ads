@@ -322,6 +322,12 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	}
 	
 	public void onVideoSkip () {
+		Map<String, Object> values = null;
+		values = new HashMap<String, Object>();
+		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, videoplayerview.getBufferingDuration());
+		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_SKIP);
+		UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);
+				
 		afterVideoPlaybackOperations();
 		JSONObject params = new JSONObject();
 		
@@ -331,12 +337,6 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		catch (Exception e) {
 			UnityAdsUtils.Log("Could not create JSON", this);
 		}
-		
-		Map<String, Object> values = null;
-		values = new HashMap<String, Object>();
-		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, videoplayerview.getBufferingDuration());
-		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_SKIP);
-		UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);
 		
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 		sendActionToListener(UnityAdsMainViewAction.VideoEnd);

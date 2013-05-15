@@ -1,3 +1,11 @@
+//
+//  UnityAdsUnityWrapper.m
+//  UnityAdsUnity
+//
+//  Created by Pekka Palmu on 3/8/13.
+//  Copyright (c) 2013 Pekka Palmu. All rights reserved.
+//
+
 #import "UnityAdsUnityWrapper.h"
 #import "AppController.h"
 
@@ -85,7 +93,7 @@ extern "C" {
         }
     }
     
-	bool show (bool openAnimated, bool noOfferscreen, const char *gamerSID) {
+	bool show (bool openAnimated, bool noOfferscreen, const char *gamerSID, bool muteVideoSounds, bool useDeviceOrientationForVideo) {
         NSNumber *noOfferscreenObjectiveC = [NSNumber numberWithBool:noOfferscreen];
         NSNumber *openAnimatedObjectiveC = [NSNumber numberWithBool:openAnimated];
         

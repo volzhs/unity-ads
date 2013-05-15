@@ -101,6 +101,7 @@ public class UnityAdsProperties {
 			boolean noOfferscreen = false;
 			boolean openAnimated = false;
 			boolean muteVideoSounds = false;
+			boolean videoUsesDeviceOrientation = false;
 			
 			try {
 				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY))
@@ -119,7 +120,13 @@ public class UnityAdsProperties {
 				options.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, muteVideoSounds);
 				
 				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY))
-					options.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
+					options.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
+				
+				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION))
+					videoUsesDeviceOrientation = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION);
+				
+				options.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, videoUsesDeviceOrientation);
+
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Could not create JSON", UnityAdsProperties.class);
