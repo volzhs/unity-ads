@@ -140,6 +140,14 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_timeLeftInSecondsText = null;
 	}
 	
+	public long getBufferingDuration () {
+		if (_bufferingCompledtedMillis == 0) {
+			_bufferingCompledtedMillis = System.currentTimeMillis();
+		}
+		
+		return _bufferingCompledtedMillis - _bufferingStartedMillis;
+	}
+	
 	public int getSecondsUntilBackButtonAllowed () {
 		int timeUntilBackButton = 0;
 		
@@ -418,8 +426,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				if (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP == 0 || (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP > 0 && getSecondsUntilBackButtonAllowed() == 0)) {
 					clearVideoPlayer();
 					
-					_bufferingCompledtedMillis = System.currentTimeMillis();
-					bufferingDuration = _bufferingCompledtedMillis - _bufferingStartedMillis;
+					bufferingDuration = getBufferingDuration();
 					values = new HashMap<String, Object>();
 					values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
 					values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_BACK);
