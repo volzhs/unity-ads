@@ -38,6 +38,10 @@
     return self;
 }
 
+-(void)dealloc {
+  UALOG_DEBUG(@"dealloc");
+}
+
 - (void)viewDidLoad {
   [super viewDidLoad];
   [self createBackgroundImage];

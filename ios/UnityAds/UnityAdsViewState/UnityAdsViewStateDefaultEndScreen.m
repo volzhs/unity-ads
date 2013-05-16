@@ -34,12 +34,12 @@
 
 - (void)exitState:(NSDictionary *)options {
   UALOG_DEBUG(@"");
-  
   [super exitState:options];
   
   if ([options objectForKey:kUnityAdsWebViewEventDataRewatchKey] == nil || [[options valueForKey:kUnityAdsWebViewEventDataRewatchKey] boolValue] == false) {
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{}];
   }
+  
 }
 
 - (void)willBeShown {
