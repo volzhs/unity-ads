@@ -193,6 +193,7 @@ NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoAbort = @"videoAnalyticsE
 NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoCaching = @"videoAnalyticsEventCaching";
 NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortBack = @"back";
 NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortExit = @"exit";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortSkip = @"skip";
 NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayStream = @"stream";
 NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayCached = @"cached";
 NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart = @"start";

@@ -15,6 +15,7 @@
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsVideoMuteButton.h"
 #import "../UnityAdsBundle/UnityAdsBundle.h"
+#import "../UnityAdsView/UnityAdsMainViewController.h"
 
 @interface UnityAdsVideoViewController ()
   @property (nonatomic, strong) UnityAdsVideoView *videoView;
@@ -300,6 +301,11 @@
 - (void)videoPlaybackEnded {
   UALOG_DEBUG(@"");
   //self.campaignToPlay.viewed = YES;
+  
+  if (self.delegate == nil) {
+    UALOG_DEBUG(@"ALERT DELEGATE IS NIL");
+  }
+  
   [self.delegate videoPlayerPlaybackEnded];
   self.isPlaying = NO;
   self.campaignToPlay = nil;
@@ -362,9 +368,12 @@
   }
 }
 
+
+
 - (void)skipButtonPressed {
   UALOG_DEBUG(@"");
   [self videoPlaybackEnded];
+  [[UnityAdsMainViewController sharedInstance] applyOptionsToCurrentState:@{@"sendAbortInstrumentation":@true, @"type":kUnityAdsGoogleAnalyticsEventVideoAbortSkip}];
 }
 
 

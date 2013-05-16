@@ -12,6 +12,10 @@
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "../UnityAdsCampaign/UnityAdsRewardItem.h"
 #import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
+#import "../UnityAdsData/UnityAdsInstrumentation.h"
+
+@interface UnityAdsViewStateDefaultVideoPlayer ()
+@end
 
 @implementation UnityAdsViewStateDefaultVideoPlayer
 
@@ -65,6 +69,19 @@
 }
 
 - (void)applyOptions:(NSDictionary *)options {
+  UALOG_DEBUG(@"");
+  if (options != nil) {
+    if ([options objectForKey:@"sendAbortInstrumentation"] != nil && [[options objectForKey:@"sendAbortInstrumentation"] boolValue] == true) {
+      NSString *eventType = nil;
+      
+      if ([options objectForKey:@"type"] != nil) {
+        
+        eventType = [options objectForKey:@"type"];
+        [UnityAdsInstrumentation gaInstrumentationVideoAbort:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:@{kUnityAdsGoogleAnalyticsEventValueKey:eventType, kUnityAdsGoogleAnalyticsEventBufferingDurationKey:@([[[UnityAdsCampaignManager sharedInstance] selectedCampaign] geBufferingDuration])}];
+      }
+    }
+  }
+  
   [super applyOptions:options];
 }
 
@@ -98,6 +115,7 @@
 }
 
 - (void)videoPlayerPlaybackEnded {
+  UALOG_DEBUG(@"");
   if (self.delegate != nil) {
     [self.delegate stateNotification:kUnityAdsStateActionVideoPlaybackEnded];
   }

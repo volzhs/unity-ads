@@ -205,6 +205,7 @@ extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoAbort;
 extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoCaching;
 extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortBack;
 extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortExit;
+extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortSkip;
 extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayStream;
 extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayCached;
 extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart;

@@ -17,6 +17,7 @@
 
 @implementation UnityAdsViewState
 
+@synthesize storeController;
 
 - (id)init {
   self = [super init];
