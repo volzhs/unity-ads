@@ -99,7 +99,8 @@
    
     UALOG_DEBUG(@"Sending tracking call");
     [[UnityAdsCampaignManager sharedInstance] selectedCampaign].nativeTrackingQuerySent = true;
-    [self createWebViewAndSendTracking:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL];
+    
+    //[self createWebViewAndSendTracking:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL];
   }
 }
 
