@@ -134,16 +134,16 @@
 
 
 - (void)showSpinner {
-  if (_spinnerDialog == nil) {
+  if (self.spinnerDialog == nil) {
     int dialogWidth = 230;
     int dialogHeight = 76;
     
     CGRect newRect = CGRectMake(([[UnityAdsMainViewController sharedInstance] view].bounds.size.width / 2) - (dialogWidth / 2), ([[UnityAdsMainViewController sharedInstance] view].bounds.size.height / 2) - (dialogHeight / 2), dialogWidth, dialogHeight);
     
-    _spinnerDialog = [[UnityAdsDialog alloc] initWithFrame:newRect useSpinner:true useLabel:true useButton:false];
-    _spinnerDialog.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+    self.spinnerDialog = [[UnityAdsDialog alloc] initWithFrame:newRect useSpinner:true useLabel:true useButton:false];
+    self.spinnerDialog.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
     
-    [[[UnityAdsMainViewController sharedInstance] view] addSubview:_spinnerDialog];
+    [[[UnityAdsMainViewController sharedInstance] view] addSubview:self.spinnerDialog];
   }
 }
 
@@ -164,7 +164,7 @@
     CGRect newRect = CGRectMake((self.videoController.view.bounds.size.width / 2) - (spinnerWidth / 2), (self.videoController.view.bounds.size.height / 2) - (spinnerHeight / 2), spinnerWidth, spinnerHeight);
     
     [self.spinnerDialog setFrame:newRect];
-    [self.videoController.view addSubview:_spinnerDialog];
+    [self.videoController.view addSubview:self.spinnerDialog];
   }
 }
 
