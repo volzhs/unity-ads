@@ -11,7 +11,7 @@
 #import "../UnityAds.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 
-NSString * const kUnityAdsVersion = @"1.0.3";
+NSString * const kUnityAdsVersion = @"104";
 
 @implementation UnityAdsProperties
 
@@ -32,6 +32,7 @@ static UnityAdsProperties *sharedProperties = nil;
     [self setAllowVideoSkipInSeconds:0];
     [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
     [self setCampaignQueryString:[self _createCampaignQueryString]];
+    [self setSdkIsCurrent:true];
   }
   
   return self;

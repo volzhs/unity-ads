@@ -154,7 +154,7 @@
   }
 
   NSString *customClickURLString = [data objectForKey:kUnityAdsCampaignCustomClickURLKey];
-  customClickURLString = @"http://www.google.com/";
+  //customClickURLString = @"http://www.google.com/";
   if (customClickURLString == nil) failedData = true;
   UAAssertV([customClickURLString isKindOfClass:[NSString class]], nil);
   

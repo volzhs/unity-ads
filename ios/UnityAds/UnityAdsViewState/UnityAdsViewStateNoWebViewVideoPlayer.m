@@ -98,7 +98,9 @@
     UALOG_DEBUG(@"Sending tracking call");
     [[UnityAdsCampaignManager sharedInstance] selectedCampaign].nativeTrackingQuerySent = true;
     
-    [self createWebViewAndSendTracking:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL];
+    if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL != nil) {
+      [self createWebViewAndSendTracking:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL];
+    }
   }
 }
 
@@ -184,17 +186,13 @@
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-	NSURL *url = [request URL];
-	UALOG_DEBUG(@"url %@", url);
 	return YES;
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-	UALOG_DEBUG(@"");
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-	UALOG_DEBUG(@"DESTROYING WEBVIEW");
   [self.webView setDelegate:nil];
   [[NSURLCache sharedURLCache] removeAllCachedResponses];
   self.webView = nil;
@@ -202,7 +200,6 @@
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-	UALOG_DEBUG(@"%@", error);
   [self.webView setDelegate:nil];
   [[NSURLCache sharedURLCache] removeAllCachedResponses];
   self.webView = nil;

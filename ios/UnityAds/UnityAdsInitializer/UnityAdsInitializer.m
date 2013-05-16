@@ -63,7 +63,9 @@
 }
 
 - (void)checkForVersionAndShowAlertDialog {
-  if ([[UnityAdsProperties sharedInstance] expectedSdkVersion] != nil && ![[[UnityAdsProperties sharedInstance] expectedSdkVersion] isEqualToString:[[UnityAdsProperties sharedInstance] adsVersion]]) {
+  UALOG_DEBUG(@"");
+  
+  if (![[UnityAdsProperties sharedInstance] sdkIsCurrent]) {
     UALOG_DEBUG(@"Got different sdkVersions, checking further.");
     
     if (![UnityAdsDevice isEncrypted]) {

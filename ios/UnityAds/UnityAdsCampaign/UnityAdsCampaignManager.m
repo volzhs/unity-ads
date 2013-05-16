@@ -193,6 +193,10 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
         UALOG_DEBUG(@"Got SDK Version: %@", [[UnityAdsProperties sharedInstance] expectedSdkVersion]);
       }
       
+      if ([jsonDictionary objectForKey:kUnityAdsWebViewDataParamSdkIsCurrentKey] != nil) {
+        [[UnityAdsProperties sharedInstance] setSdkIsCurrent:[[jsonDictionary objectForKey:kUnityAdsWebViewDataParamSdkIsCurrentKey] boolValue]];
+      }
+
       NSString *gamerId = [jsonDictionary objectForKey:kUnityAdsGamerIDKey];
       
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
