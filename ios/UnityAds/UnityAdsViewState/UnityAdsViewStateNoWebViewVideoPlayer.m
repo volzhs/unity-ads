@@ -10,11 +10,16 @@
 #import "../UnityAdsView/UnityAdsDialog.h"
 #import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 
-@interface UnityAdsViewStateNoWebViewVideoPlayer ()
+@interface UnityAdsViewStateNoWebViewVideoPlayer () <UIWebViewDelegate>
   @property (nonatomic, strong) UnityAdsDialog *spinnerDialog;
+  @property (nonatomic, strong) UIWebView *webView;
 @end
 
 @implementation UnityAdsViewStateNoWebViewVideoPlayer
+
+@synthesize webView;
+@synthesize spinnerDialog;
+
 
 - (UnityAdsViewStateType)getStateType {
   return kUnityAdsViewStateTypeVideoPlayer;
@@ -78,16 +83,15 @@
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   }
   
-  /*
   if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign] != nil &&
       ![[UnityAdsCampaignManager sharedInstance] selectedCampaign].nativeTrackingQuerySent &&
       [[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL != nil &&
       [[[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL absoluteString] length] > 4) {
-    
+   
     UALOG_DEBUG(@"Sending tracking call");
     [[UnityAdsCampaignManager sharedInstance] selectedCampaign].nativeTrackingQuerySent = true;
-    [[UnityAdsAnalyticsUploader sharedInstance] queueUrl:[[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL absoluteString]];
-  }*/
+    [self createWebViewAndSendTracking:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].customClickURL];
+  }
 }
 
 - (void)videoPlayerEncounteredError {
@@ -153,5 +157,41 @@
     [self.videoController.view addSubview:self.spinnerDialog];
   }
 }
+
+- (void)createWebViewAndSendTracking:(NSURL *)trackingUrl {
+  if (self.webView == nil) {
+    self.webView = [[UIWebView alloc] initWithFrame:[[UnityAdsMainViewController sharedInstance] view].bounds];
+    self.webView.delegate = self;
+    self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.webView.scalesPageToFit = NO;
+    [self.webView setBackgroundColor:[UIColor blackColor]];
+  }
+  
+  [self.webView loadRequest:[NSURLRequest requestWithURL:trackingUrl]];
+}
+
+
+#pragma mark - UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+	NSURL *url = [request URL];
+	UALOG_DEBUG(@"url %@", url);
+	return YES;
+}
+
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+	UALOG_DEBUG(@"");
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+	UALOG_DEBUG(@"DESTROYING WEBVIEW");
+  [self.webView setDelegate:nil];
+  self.webView = nil;
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+	UALOG_DEBUG(@"%@", error);
+}
+
 
 @end
