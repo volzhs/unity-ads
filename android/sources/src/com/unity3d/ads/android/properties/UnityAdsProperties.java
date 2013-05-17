@@ -35,6 +35,9 @@ public class UnityAdsProperties {
 	public static String TEST_JAVASCRIPT = null;
 	public static Boolean RUN_WEBVIEW_TESTS = false;
 	
+	public static String TEST_DEVELOPER_ID = null;
+	public static String TEST_OPTIONS_ID = null;
+	
 	@SuppressWarnings("unused")
 	private static Map<String, String> TEST_EXTRA_PARAMS = null; 
 
@@ -84,6 +87,14 @@ public class UnityAdsProperties {
 		
 		if (TESTMODE_ENABLED) {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TEST_KEY, "true");
+			
+			if (TEST_OPTIONS_ID != null && TEST_OPTIONS_ID.length() > 0) {
+				queryString = String.format("%s&%s=%s", queryString, "optionsId", TEST_OPTIONS_ID);
+			}
+			
+			if (TEST_DEVELOPER_ID != null && TEST_DEVELOPER_ID.length() > 0) {
+				queryString = String.format("%s&%s=%s", queryString, "developerId", TEST_DEVELOPER_ID);
+			}
 		}
 		else {
 			if (UnityAdsProperties.CURRENT_ACTIVITY != null) {

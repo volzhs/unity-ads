@@ -97,6 +97,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.TESTMODE_ENABLED = testModeEnabled;
 	}
 	
+	public static void setTestDeveloperId (String testDeveloperId) {
+		UnityAdsProperties.TEST_DEVELOPER_ID = testDeveloperId;
+	}
+	
+	public static void setTestOptionsId (String testOptionsId) {
+		UnityAdsProperties.TEST_OPTIONS_ID = testOptionsId;
+	}
+	
 	public static String getSDKVersion () {
 		return UnityAdsConstants.UNITY_ADS_VERSION;
 	}
