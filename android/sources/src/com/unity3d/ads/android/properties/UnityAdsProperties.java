@@ -150,10 +150,7 @@ public class UnityAdsProperties {
 	}
 	
 	public static String getCampaignQueryUrl () {
-		if (_campaignQueryString == null) {
-			createCampaignQueryString();
-		}
-		
+		createCampaignQueryString();
 		String url = CAMPAIGN_DATA_URL;
 		
 		if (UnityAdsUtils.isDebuggable(BASE_ACTIVITY) && TEST_URL != null)
