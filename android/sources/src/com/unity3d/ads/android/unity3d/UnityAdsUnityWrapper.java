@@ -78,16 +78,18 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		}
 	}
 	
-	public boolean show (boolean openAnimated, boolean noOfferscreen, final String gamerSID) {
+	public boolean show (boolean openAnimated, boolean noOfferscreen, final String gamerSID, boolean muteVideoSounds, boolean useDeviceOrientationForVideo) {
 		if (_unityAds != null && _unityAds.canShowAds() && _unityAds.canShow()) {
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, openAnimated);
 			params.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, noOfferscreen);
+			params.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, muteVideoSounds);
+			params.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, useDeviceOrientationForVideo);
 			
 			if (gamerSID != null && gamerSID.length() > 0)
 				params.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, gamerSID);
 			
-			UnityAdsUtils.Log("Opening with: openAnimated=" + openAnimated + ", noOfferscreen=" + noOfferscreen + ", gamerSID=" + gamerSID, this);
+			UnityAdsUtils.Log("Opening with: openAnimated=" + openAnimated + ", noOfferscreen=" + noOfferscreen + ", gamerSID=" + gamerSID + ", muteVideoSounds=" + muteVideoSounds + ", useDeviceOrientationForVideo=" + useDeviceOrientationForVideo, this);
 			return _unityAds.show(params);
 		}
 		

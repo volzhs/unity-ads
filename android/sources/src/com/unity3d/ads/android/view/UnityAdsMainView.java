@@ -1,5 +1,8 @@
 package com.unity3d.ads.android.view;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONObject;
 
 import com.unity3d.ads.android.UnityAds;
@@ -9,6 +12,7 @@ import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
+import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
 import com.unity3d.ads.android.webapp.UnityAdsWebView;
 import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
@@ -244,6 +248,9 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		// SENSOR_LANDSCAPE
 		int targetOrientation = 6;
 		
+		if (Build.VERSION.SDK_INT < 9)
+			targetOrientation = 0;
+		
 		if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
 			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION) && 
 			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION).equals(true)) {
@@ -315,6 +322,12 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	}
 	
 	public void onVideoSkip () {
+		Map<String, Object> values = null;
+		values = new HashMap<String, Object>();
+		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, videoplayerview.getBufferingDuration());
+		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_SKIP);
+		UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);
+				
 		afterVideoPlaybackOperations();
 		JSONObject params = new JSONObject();
 		

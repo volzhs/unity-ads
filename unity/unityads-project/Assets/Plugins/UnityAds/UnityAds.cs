@@ -9,6 +9,8 @@ public class UnityAds : MonoBehaviour {
 	public bool testModeEnabled = false;
 	public bool openAnimated = false;
 	public bool noOfferscreen = false;
+	public bool videoUsesDeviceOrientation = false;
+	public bool muteVideoSounds = false;
 	
 	private static UnityAds sharedInstance;
 	private static bool _campaignsAvailable = false;
@@ -212,14 +214,20 @@ public class UnityAds : MonoBehaviour {
 			if(instance) {
 				bool animated = false;
 				bool noOfferscreen = false;
+				bool videoUsesDeviceOrientation = false;
+				bool muteVideoSounds = false;
 				string gamerSID = _gamerSID;
 				
 				if (instance != null) {
 					animated = instance.openAnimated;
 					noOfferscreen = instance.noOfferscreen;
+					videoUsesDeviceOrientation = instance.videoUsesDeviceOrientation;
+					muteVideoSounds = instance.muteVideoSounds;
+					
+					UnityAdsExternal.Log("UnityAndroid: " + muteVideoSounds + ", " + videoUsesDeviceOrientation);
 				}
 				
-				if (UnityAdsExternal.show(animated, noOfferscreen, gamerSID)) {				
+				if (UnityAdsExternal.show(animated, noOfferscreen, gamerSID, muteVideoSounds, videoUsesDeviceOrientation)) {				
 					if (_adsOpenDelegate != null)
 						_adsOpenDelegate();
 					

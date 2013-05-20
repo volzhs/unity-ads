@@ -97,6 +97,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.TESTMODE_ENABLED = testModeEnabled;
 	}
 	
+	public static void setTestDeveloperId (String testDeveloperId) {
+		UnityAdsProperties.TEST_DEVELOPER_ID = testDeveloperId;
+	}
+	
+	public static void setTestOptionsId (String testOptionsId) {
+		UnityAdsProperties.TEST_OPTIONS_ID = testOptionsId;
+	}
+	
 	public static String getSDKVersion () {
 		return UnityAdsConstants.UNITY_ADS_VERSION;
 	}
@@ -350,7 +358,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onWebDataCompleted () {
 		JSONObject jsonData = null;
 		boolean dataFetchFailed = false;
-		String nativeSdkVersion = null;
+		boolean sdkIsCurrent = true;
 		
 		if (webdata.getData() != null && webdata.getData().has(UnityAdsConstants.UNITY_ADS_JSON_DATA_ROOTKEY)) {
 			try {
@@ -361,9 +369,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 			
 			if (!dataFetchFailed) {
-				if (jsonData.has(UnityAdsConstants.UNITY_ADS_NATIVESDKVERSION_KEY)) {
+				if (jsonData.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDK_IS_CURRENT_KEY)) {
 					try {
-						nativeSdkVersion = jsonData.getString(UnityAdsConstants.UNITY_ADS_NATIVESDKVERSION_KEY);
+						sdkIsCurrent = jsonData.getBoolean(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDK_IS_CURRENT_KEY);
 					}
 					catch (Exception e) {
 						dataFetchFailed = true;
@@ -372,20 +380,18 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 		}
 		
-		if (nativeSdkVersion != null && !dataFetchFailed && UnityAdsUtils.isDebuggable(UnityAdsProperties.CURRENT_ACTIVITY)) {
-			if (!nativeSdkVersion.equals(UnityAdsConstants.UNITY_ADS_VERSION)) {
-				_alertDialog = new AlertDialog.Builder(UnityAdsProperties.CURRENT_ACTIVITY).create();
-				_alertDialog.setTitle("Unity Ads");
-				_alertDialog.setMessage("You are not running the latest version of Unity Ads android. Please update your version (this dialog won't appear in release builds).");
-				_alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						_alertDialog.dismiss();
-					}
-				});
-				
-				_alertDialog.show();
-			}
+		if (!dataFetchFailed && !sdkIsCurrent && UnityAdsUtils.isDebuggable(UnityAdsProperties.CURRENT_ACTIVITY)) {
+			_alertDialog = new AlertDialog.Builder(UnityAdsProperties.CURRENT_ACTIVITY).create();
+			_alertDialog.setTitle("Unity Ads");
+			_alertDialog.setMessage("You are not running the latest version of Unity Ads android. Please update your version (this dialog won't appear in release builds).");
+			_alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					_alertDialog.dismiss();
+				}
+			});
+			
+			_alertDialog.show();
 		}
 		
 		setup();

@@ -35,6 +35,9 @@ public class UnityAdsProperties {
 	public static String TEST_JAVASCRIPT = null;
 	public static Boolean RUN_WEBVIEW_TESTS = false;
 	
+	public static String TEST_DEVELOPER_ID = null;
+	public static String TEST_OPTIONS_ID = null;
+	
 	@SuppressWarnings("unused")
 	private static Map<String, String> TEST_EXTRA_PARAMS = null; 
 
@@ -84,6 +87,14 @@ public class UnityAdsProperties {
 		
 		if (TESTMODE_ENABLED) {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TEST_KEY, "true");
+			
+			if (TEST_OPTIONS_ID != null && TEST_OPTIONS_ID.length() > 0) {
+				queryString = String.format("%s&%s=%s", queryString, "optionsId", TEST_OPTIONS_ID);
+			}
+			
+			if (TEST_DEVELOPER_ID != null && TEST_DEVELOPER_ID.length() > 0) {
+				queryString = String.format("%s&%s=%s", queryString, "developerId", TEST_DEVELOPER_ID);
+			}
 		}
 		else {
 			if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
@@ -101,6 +112,7 @@ public class UnityAdsProperties {
 			boolean noOfferscreen = false;
 			boolean openAnimated = false;
 			boolean muteVideoSounds = false;
+			boolean videoUsesDeviceOrientation = false;
 			
 			try {
 				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY))
@@ -119,7 +131,13 @@ public class UnityAdsProperties {
 				options.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, muteVideoSounds);
 				
 				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY))
-					options.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
+					options.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
+				
+				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION))
+					videoUsesDeviceOrientation = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION);
+				
+				options.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, videoUsesDeviceOrientation);
+
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Could not create JSON", UnityAdsProperties.class);
@@ -132,10 +150,7 @@ public class UnityAdsProperties {
 	}
 	
 	public static String getCampaignQueryUrl () {
-		if (_campaignQueryString == null) {
-			createCampaignQueryString();
-		}
-		
+		createCampaignQueryString();
 		String url = CAMPAIGN_DATA_URL;
 		
 		if (UnityAdsUtils.isDebuggable(BASE_ACTIVITY) && TEST_URL != null)
