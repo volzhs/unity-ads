@@ -43,6 +43,9 @@
   [super wasShown];
   if (self.videoController.parentViewController == nil && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
+    [[[UnityAdsWebAppController sharedInstance] webView] removeFromSuperview];
+    [self.videoController.view addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
+    [[[UnityAdsWebAppController sharedInstance] webView] setFrame:self.videoController.view.bounds];
   }
 }
 
@@ -95,12 +98,19 @@
     [self.delegate stateNotification:kUnityAdsStateActionVideoStartedPlaying];
   }
   
+  if ([[UnityAdsWebAppController sharedInstance] webView].superview != nil) {
+    [[[UnityAdsWebAppController sharedInstance] webView] removeFromSuperview];
+    [[[UnityAdsMainViewController sharedInstance] view] addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
+    [[[UnityAdsWebAppController sharedInstance] webView] setFrame:[[UnityAdsMainViewController sharedInstance] view].bounds];
+  }
+  
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
 
   // Set completed view for the webview right away, so we don't get flickering after videoplay from start->end
   [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   
   if (!self.waitingToBeShown && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
+    UALOG_DEBUG(@"Placing videoview to hierarchy");
     [[UnityAdsMainViewController sharedInstance] presentViewController:self.videoController animated:NO completion:nil];
   }
 }
@@ -110,6 +120,12 @@
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowError data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyVideoPlaybackError}];
+  
+  if ([[UnityAdsWebAppController sharedInstance] webView].superview != nil) {
+    [[[UnityAdsWebAppController sharedInstance] webView] removeFromSuperview];
+    [[[UnityAdsMainViewController sharedInstance] view] addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
+    [[[UnityAdsWebAppController sharedInstance] webView] setFrame:[[UnityAdsMainViewController sharedInstance] view].bounds];
+  }
   
   [self dismissVideoController];
 }

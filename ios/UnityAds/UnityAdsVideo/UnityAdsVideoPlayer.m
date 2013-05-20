@@ -85,8 +85,7 @@
   
   if (!self.hasPlayed && !self.isPlaying) {
     UALOG_DEBUG(@"Video hasn't played and video is not playing! Seems that video is timing out.");
-    [self.timeOutTimer invalidate];
-    self.timeOutTimer = nil;
+    [self clearTimeOutTimer];
     [self.delegate videoPlaybackError];
     [UnityAdsInstrumentation gaInstrumentationVideoError:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:nil];
   }

@@ -184,6 +184,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
       if (campaign.expectedTrailerSize > 0 && fileSize != campaign.expectedTrailerSize) {
         UALOG_DEBUG(@"Problems with file size, expected: %lld, got: %lld", campaign.expectedTrailerSize, fileSize);
         [[NSFileManager defaultManager] removeItemAtPath:[self.currentDownload objectForKey:kUnityAdsCacheFilePathKey] error:&err];
+        UALOG_DEBUG(@"Removing file at: %@", [self.currentDownload objectForKey:kUnityAdsCacheFilePathKey]);
         NSDictionary *data = @{kUnityAdsGoogleAnalyticsEventValueKey:kUnityAdsGoogleAnalyticsEventVideoCachingFailed};
         [UnityAdsInstrumentation gaInstrumentationVideoCaching:campaign withValuesFrom:data];
       }
