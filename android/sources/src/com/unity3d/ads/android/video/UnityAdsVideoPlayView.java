@@ -1,6 +1,5 @@
 package com.unity3d.ads.android.video;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -8,22 +7,22 @@ import java.util.TimerTask;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.data.UnityAdsGraphicsBundle;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsBufferingView;
 import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
+import com.unity3d.ads.android.view.UnityAdsMuteVideoButton.UnityAdsMuteVideoButtonState;
 import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -47,11 +46,14 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private String _videoFileName = null;
 	private UnityAdsBufferingView _bufferingView = null;
 	private UnityAdsVideoPausedView _pausedView = null;
+	private UnityAdsMuteVideoButton _muteButton = null;
 	private boolean _videoPlayheadPrepared = false;
 	private Map<UnityAdsVideoPosition, Boolean> _sentPositionEvents = new HashMap<UnityAdsVideoPosition, Boolean>();
 	private boolean _videoPlaybackStartedSent = false;
 	private boolean _videoPlaybackErrors = false;
 	private MediaPlayer _mediaPlayer = null;
+	private boolean _muted = false;
+	private float _volumeBeforeMute = 0.5f;
 	
 	public UnityAdsVideoPlayView(Context context, IUnityAdsVideoPlayerListener listener) {
 		super(context);
@@ -169,6 +171,20 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	
 	
 	/* INTERNAL METHODS */
+	private void storeVolume () {
+		AudioManager am = ((AudioManager)((Context)UnityAdsProperties.CURRENT_ACTIVITY).getSystemService(Context.AUDIO_SERVICE));
+		int curVol = 0;
+		int maxVol = 0;
+		
+		if (am != null) {
+			curVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+			maxVol = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+			float parts = 1f / (float)maxVol;
+			_volumeBeforeMute = parts * (float)curVol;
+			UnityAdsUtils.Log("Storing volume: " + curVol + ", " + maxVol + ", " + parts + ", " + _volumeBeforeMute, this);
+		}
+	}
+	
 	private void videoErrorOperations () {
 		_videoPlaybackErrors = true;
 		purgeVideoPausedTimer();
@@ -225,6 +241,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
 					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS) && 
 					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS).equals(true)) {
+					_muted = true;
+					storeVolume();
 					_mediaPlayer.setVolume(0f, 0f);
 				}
 				
@@ -292,12 +310,37 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			}
 		});
 		
+		
+		createAndAddMuteButton();
+	}
+	
+	private void createAndAddMuteButton () {
 		RelativeLayout.LayoutParams muteButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		muteButtonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		muteButtonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		UnityAdsMuteVideoButton test = new UnityAdsMuteVideoButton(getContext());
-		test.setLayoutParams(muteButtonParams);
-		addView(test);
+		
+		_muteButton = new UnityAdsMuteVideoButton(getContext());
+		_muteButton.setLayoutParams(muteButtonParams);
+		_muteButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (_videoPlayheadPrepared && _videoPlaybackStartedSent) {
+					if (_muted) {
+						_muted = false;
+						_muteButton.setState(UnityAdsMuteVideoButtonState.UnMuted);
+						_mediaPlayer.setVolume(_volumeBeforeMute, _volumeBeforeMute);
+					}
+					else {
+						_muted = true;
+						_muteButton.setState(UnityAdsMuteVideoButtonState.Muted);
+						storeVolume();
+						_mediaPlayer.setVolume(0f, 0f);
+					}
+				}
+			}
+		});
+		
+		addView(_muteButton);
 	}
 	
 	private void createAndAddPausedView () {
