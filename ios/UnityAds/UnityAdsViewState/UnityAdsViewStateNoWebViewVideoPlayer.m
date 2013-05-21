@@ -13,6 +13,7 @@
 
 @interface UnityAdsViewStateNoWebViewVideoPlayer () <UIWebViewDelegate>
   @property (nonatomic, strong) UnityAdsDialog *spinnerDialog;
+  @property (nonatomic, strong) UnityAdsDialog *videoPlaybackErrorDialog;
   @property (nonatomic, strong) UIWebView *webView;
   @property (nonatomic, assign) BOOL abortInstrumentationSent;
 @end
@@ -21,6 +22,7 @@
 
 @synthesize webView = _webView;
 @synthesize spinnerDialog = _spinnerDialog;
+@synthesize videoPlaybackErrorDialog = _videoPlaybackErrorDialog;
 
 - (UnityAdsViewStateType)getStateType {
   return kUnityAdsViewStateTypeVideoPlayer;
@@ -108,6 +110,7 @@
   UALOG_DEBUG(@"");
   [self hideSpinner];
   [self dismissVideoController];
+  [self showVideoPlaybackError];
 }
 
 - (void)videoPlayerPlaybackEnded {
@@ -132,6 +135,36 @@
   
   if (![self canViewSelectedCampaign]) return;
   [self startVideoPlayback:true withDelegate:self];
+}
+
+
+- (void)showVideoPlaybackError {
+  UALOG_DEBUG(@"");
+  int dialogWidth = 200;
+  int dialogHeight = 86;
+  
+  CGRect newRect = CGRectMake(([[UnityAdsMainViewController sharedInstance] view].bounds.size.width / 2) - (dialogWidth / 2), ([[UnityAdsMainViewController sharedInstance] view].bounds.size.height / 2) - (dialogHeight / 2), dialogWidth, dialogHeight);
+  
+  self.videoPlaybackErrorDialog = [[UnityAdsDialog alloc] initWithFrame:newRect useSpinner:false useLabel:true useButton:true];
+  self.videoPlaybackErrorDialog.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+  
+  [self.videoPlaybackErrorDialog.label setText:@"Video playback error"];
+  [self.videoPlaybackErrorDialog.button addTarget:self action:@selector(videoPlaybackErrorConfirmed) forControlEvents:UIControlEventTouchUpInside];
+  
+  [[[UnityAdsMainViewController sharedInstance] view] addSubview:self.videoPlaybackErrorDialog];
+}
+
+- (void)videoPlaybackErrorConfirmed {
+  [self hideVideoPlaybackError];
+  [[UnityAds sharedInstance] hide];
+}
+
+- (void)hideVideoPlaybackError {
+  if (self.videoPlaybackErrorDialog != nil) {
+    [self.videoPlaybackErrorDialog.button removeTarget:self action:@selector(videoPlaybackErrorConfirmed) forControlEvents:UIControlEventTouchUpInside];
+    [self.videoPlaybackErrorDialog removeFromSuperview];
+    self.videoPlaybackErrorDialog = nil;
+  }
 }
 
 
