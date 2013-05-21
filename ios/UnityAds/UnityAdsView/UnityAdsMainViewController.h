@@ -7,14 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UnityAdsWebView/UnityAdsWebAppController.h"
-#import "UnityAdsVideo/UnityAdsVideoViewController.h"
-#import "UnityAdsProperties/UnityAdsConstants.h"
+
+#import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "../UnityAdsViewState/UnityAdsViewState.h"
 
 @protocol UnityAdsMainViewControllerDelegate <NSObject>
 
 @required
-- (void)mainControllerWebViewInitialized;
 - (void)mainControllerWillOpen;
 - (void)mainControllerDidOpen;
 - (void)mainControllerWillClose;
@@ -24,16 +23,18 @@
 - (void)mainControllerWillLeaveApplication;
 @end
 
-@interface UnityAdsMainViewController : UIViewController <UnityAdsVideoControllerDelegate, UnityAdsWebAppControllerDelegate>
+@interface UnityAdsMainViewController : UIViewController <UnityAdsViewStateDelegate>
 
 @property (nonatomic, assign) id<UnityAdsMainViewControllerDelegate> delegate;
 
 + (id)sharedInstance;
 
-- (BOOL)openAds:(BOOL)animated inState:(UnityAdsViewState)state;
-- (BOOL)closeAds:(BOOL)forceMainThread withAnimations:(BOOL)animated;
+- (BOOL)openAds:(BOOL)animated inState:(UnityAdsViewStateType)requestedState withOptions:(NSDictionary *)options;
+- (BOOL)closeAds:(BOOL)forceMainThread withAnimations:(BOOL)animated withOptions:(NSDictionary *)options;
+- (BOOL)changeState:(UnityAdsViewStateType)requestedState withOptions:(NSDictionary *)options;
+
 - (BOOL)mainControllerVisible;
-- (void)showPlayerAndPlaySelectedVideo:(BOOL)checkIfWatched;
-- (void)openAppStoreWithData:(NSDictionary *)data;
+- (void)applyOptionsToCurrentState:(NSDictionary *)options;
+- (void)applyViewStateHandler:(UnityAdsViewState *)viewState;
 
 @end

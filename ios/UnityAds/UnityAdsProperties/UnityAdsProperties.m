@@ -11,7 +11,7 @@
 #import "../UnityAds.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 
-NSString * const kUnityAdsVersion = @"1.0.3";
+NSString * const kUnityAdsVersion = @"104";
 
 @implementation UnityAdsProperties
 
@@ -29,9 +29,10 @@ static UnityAdsProperties *sharedProperties = nil;
 - (UnityAdsProperties *)init {
   if (self = [super init]) {
     [self setMaxNumberOfAnalyticsRetries:5];
+    [self setAllowVideoSkipInSeconds:0];
     [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
-    //[self setCampaignDataUrl:@"http://192.168.1.152:3500/mobile/campaigns"];
     [self setCampaignQueryString:[self _createCampaignQueryString]];
+    [self setSdkIsCurrent:true];
   }
   
   return self;
@@ -45,8 +46,7 @@ static UnityAdsProperties *sharedProperties = nil;
   NSString *queryParams = @"?";
   
   // Mandatory params
-  queryParams = [NSString stringWithFormat:@"%@%@=%@", queryParams, kUnityAdsInitQueryParamDeviceIdKey, [UnityAdsDevice md5DeviceId]];
-  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamPlatformKey, @"ios"];
+  queryParams = [NSString stringWithFormat:@"%@%@=%@", queryParams, kUnityAdsInitQueryParamPlatformKey, @"ios"];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamGameIdKey, [self adsGameId]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOpenUdidKey, [UnityAdsDevice md5OpenUDIDString]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamMacAddressKey, [UnityAdsDevice md5MACAddressString]];
@@ -72,6 +72,16 @@ static UnityAdsProperties *sharedProperties = nil;
   
   if ([self testModeEnabled]) {
     queryParams = [NSString stringWithFormat:@"%@&%@=true", queryParams, kUnityAdsInitQueryParamTestKey];
+    
+    if ([self optionsId] != nil) {
+      queryParams = [NSString stringWithFormat:@"%@&optionsId=%@", queryParams, [self optionsId]];
+    }
+    if ([self developerId] != nil) {
+      queryParams = [NSString stringWithFormat:@"%@&developerId=%@", queryParams, [self developerId]];
+    }
+  }
+  else {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamEncryptionKey, [UnityAdsDevice isEncrypted] ? @"true" : @"false"];
   }
   
   return queryParams;

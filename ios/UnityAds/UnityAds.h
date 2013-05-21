@@ -20,6 +20,13 @@ extern NSString * const kUnityAdsRewardItemNameKey;
 extern NSString * const kUnityAdsOptionNoOfferscreenKey;
 extern NSString * const kUnityAdsOptionOpenAnimatedKey;
 extern NSString * const kUnityAdsOptionGamerSIDKey;
+extern NSString * const kUnityAdsOptionMuteVideoSounds;
+extern NSString * const kUnityAdsOptionVideoUsesDeviceOrientation;
+
+typedef enum {
+  kUnityAdsModeDefault,
+  kUnityAdsModeNoWebView,
+} UnityAdsMode;
 
 @class UnityAds;
 @class SKStoreProductViewController;
@@ -48,13 +55,18 @@ extern NSString * const kUnityAdsOptionGamerSIDKey;
 + (UnityAds *)sharedInstance;
 + (BOOL)isSupported;
 + (NSString *)getSDKVersion;
+
+- (void)setTestDeveloperId:(NSString *)developerId;
+- (void)setTestOptionsId:(NSString *)optionsId;
 - (void)setDebugMode:(BOOL)debugMode;
-- (BOOL)isDebugMode;
+- (void)setAdsMode:(UnityAdsMode)adsMode;
 - (void)setTestMode:(BOOL)testModeEnabled;
+
+- (BOOL)isDebugMode;
 - (BOOL)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController;
 - (BOOL)startWithGameId:(NSString *)gameId;
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds;
-- (BOOL)canShow;
+- (BOOL)canShowAds;
 - (BOOL)canShow;
 - (BOOL)show:(NSDictionary *)options;
 - (BOOL)show;

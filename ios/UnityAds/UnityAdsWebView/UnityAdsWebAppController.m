@@ -14,7 +14,7 @@
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
-#import "../UnityAdsMainViewController.h"
+#import "../UnityAdsView/UnityAdsMainViewController.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 
@@ -99,12 +99,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
       if ([data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey] != nil) {
         [self _selectCampaignWithID:[data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey]];
-        BOOL checkIfWatched = YES;
-        if ([data objectForKey:kUnityAdsWebViewEventDataRewatchKey] != nil && [[data valueForKey:kUnityAdsWebViewEventDataRewatchKey] boolValue] == true) {
-          checkIfWatched = NO;
-        }
-        
-        [[UnityAdsMainViewController sharedInstance] showPlayerAndPlaySelectedVideo:checkIfWatched];
+        [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeVideoPlayer withOptions:data];
       }
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo]) {
@@ -115,12 +110,12 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPIAppStore]) {
       if ([data objectForKey:kUnityAdsWebViewEventDataClickUrlKey] != nil) {
-        [[UnityAdsMainViewController sharedInstance] openAppStoreWithData:data];
+        [[UnityAdsMainViewController sharedInstance] applyOptionsToCurrentState:data];
       }    
 		}
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIClose]) {
-    [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES];
+    [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES withOptions:nil];
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete]) {
     self.webViewInitialized = YES;
@@ -132,14 +127,9 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 }
 
 - (void)runJavascriptDependingOnPlatform:(NSString *)javaScriptString {
-  if (![UnityAdsDevice isSimulator]) {
     dispatch_async(dispatch_get_main_queue(), ^{
       [self runJavascript:javaScriptString];
     });
-  }
-  else {
-    [self runJavascript:javaScriptString];
-  }
 }
 
 - (void)runJavascript:(NSString *)javaScriptString {

@@ -22,6 +22,7 @@ NSString * const kUnityAdsWebViewAPINavigateTo = @"navigateTo";
 NSString * const kUnityAdsWebViewAPIInitComplete = @"initComplete";
 NSString * const kUnityAdsWebViewAPIClose = @"close";
 NSString * const kUnityAdsWebViewAPIOpen = @"open";
+NSString * const kUnityAdsWebViewAPIDeveloperOptions = @"developerOptions";
 NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
 NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_playing";
 
@@ -38,10 +39,12 @@ NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey = @"openUdid";
 NSString * const kUnityAdsWebViewDataParamMacAddressKey = @"macAddress";
 NSString * const kUnityAdsWebViewDataParamSdkVersionKey = @"sdkVersion";
 NSString * const kUnityAdsWebViewDataParamIosVersionKey = @"iOSVersion";
+NSString * const kUnityAdsWebViewDataParamSdkIsCurrentKey = @"sdkIsCurrent";
 
 NSString * const kUnityAdsWebViewEventDataCampaignIdKey = @"campaignId";
 NSString * const kUnityAdsWebViewEventDataRewatchKey = @"rewatch";
 NSString * const kUnityAdsWebViewEventDataClickUrlKey = @"clickUrl";
+NSString * const kUnityAdsWebViewEventDataBypassAppSheetKey = @"bypassAppSheet";
 
 
 /* Native Events */
@@ -51,7 +54,7 @@ NSString * const kUnityAdsNativeEventShowSpinner = @"showSpinner";
 NSString * const kUnityAdsNativeEventShowError = @"showError";
 NSString * const kUnityAdsNativeEventVideoCompleted = @"videoCompleted";
 NSString * const kUnityAdsNativeEventCampaignIdKey = @"campaignId";
-
+NSString * const kUnityAdsNativeEventForceStopVideoPlayback = @"forceStopVideoPlayback";
 
 /* Native Event Params */
 
@@ -71,10 +74,13 @@ NSString * const kUnityAdsJsonDataRootKey = @"data";
 
 NSString * const kUnityAdsCampaignsKey = @"campaigns";
 NSString * const kUnityAdsCampaignEndScreenKey = @"endScreen";
+NSString * const kUnityAdsCampaignEndScreenPortraitKey = @"endScreenPortrait";
 NSString * const kUnityAdsCampaignClickURLKey = @"clickUrl";
+NSString * const kUnityAdsCampaignCustomClickURLKey = @"customClickUrl";
 NSString * const kUnityAdsCampaignPictureKey = @"picture";
 NSString * const kUnityAdsCampaignTrailerDownloadableKey = @"trailerDownloadable";
 NSString * const kUnityAdsCampaignTrailerStreamingKey = @"trailerStreaming";
+NSString * const kUnityAdsCampaignGameIconKey = @"gameIcon";
 NSString * const kUnityAdsCampaignGameIDKey = @"gameId";
 NSString * const kUnityAdsCampaignGameNameKey = @"gameName";
 NSString * const kUnityAdsCampaignIDKey = @"id";
@@ -83,6 +89,7 @@ NSString * const kUnityAdsCampaignStoreIDKey = @"iTunesId";
 NSString * const kUnityAdsCampaignCacheVideoKey = @"cacheVideo";
 NSString * const kUnityAdsCampaignBypassAppSheet = @"bypassAppSheet";
 NSString * const kUnityAdsCampaignExpectedFileSize = @"trailerSize";
+NSString * const kUnityAdsCampaignAllowVideoSkipKey = @"allowSkipVideoInSeconds";
 
 /* Reward Item JSON Properties */
 
@@ -175,6 +182,32 @@ NSString * const kUnityAdsInitQueryParamHardwareVersionKey = @"hardwareVersion";
 NSString * const kUnityAdsInitQueryParamSdkVersionKey = @"sdkVersion";
 NSString * const kUnityAdsInitQueryParamConnectionTypeKey = @"connectionType";
 NSString * const kUnityAdsInitQueryParamTestKey = @"test";
+NSString * const kUnityAdsInitQueryParamEncryptionKey = @"encrypted";
+
+
+/* Google Analytics Instrumentation */
+
+NSString * const kUnityAdsGoogleAnalyticsEventKey = @"googleAnalyticsEvent";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoPlay = @"videoAnalyticsEventPlay";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoError = @"videoAnalyticsEventError";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoAbort = @"videoAnalyticsEventAbort";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoCaching = @"videoAnalyticsEventCaching";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortBack = @"back";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortExit = @"exit";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortSkip = @"skip";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayStream = @"stream";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayCached = @"cached";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart = @"start";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingCompleted = @"completed";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingFailed = @"failed";
+
+NSString * const kUnityAdsGoogleAnalyticsEventCampaignIdKey = @"campaignId";
+NSString * const kUnityAdsGoogleAnalyticsEventConnectionTypeKey = @"connectionType";
+NSString * const kUnityAdsGoogleAnalyticsEventVideoPlaybackTypeKey = @"videoPlaybackType";
+NSString * const kUnityAdsGoogleAnalyticsEventBufferingDurationKey = @"bufferingDuration";
+NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey = @"cachingDuration";
+NSString * const kUnityAdsGoogleAnalyticsEventValueKey = @"eventValue";
+NSString * const kUnityAdsGoogleAnalyticsEventTypeKey = @"eventType";
 
 @implementation UnityAdsConstants
 

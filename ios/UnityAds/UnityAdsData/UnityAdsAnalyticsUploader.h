@@ -15,6 +15,7 @@
 - (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary;
 - (void)retryFailedUploads;
 - (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign;
+- (void)queueUrl:(NSString *)url;
 
 + (UnityAdsAnalyticsUploader *)sharedInstance;
 @end

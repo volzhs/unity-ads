@@ -10,6 +10,7 @@
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
 
 @interface UnityAdsAnalyticsUploader () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableArray *uploadQueue;
@@ -117,6 +118,21 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 }
 
 
+#pragma mark - Public
+
+- (void)queueUrl:(NSString *)url {
+  if (url != nil) {
+    UAAssert(![NSThread isMainThread]);
+    
+    NSArray *queryStringComponents = [url componentsSeparatedByString:@"?"];
+    NSString *urlPath = [queryStringComponents objectAtIndex:0];
+    NSString *queryString = [queryStringComponents objectAtIndex:1];
+    
+    [self _queueWithURLString:urlPath queryString:queryString httpMethod:@"GET" retries:[NSNumber numberWithInt:0]];
+  }
+}
+
+
 #pragma mark - Click track
 
 - (void)sendOpenAppStoreRequest:(UnityAdsCampaign *)campaign {
@@ -153,8 +169,8 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
     if (positionString != nil) {
       NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?%@=%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
       
-      if ([[UnityAdsProperties sharedInstance] gamerSID] != nil) {
-        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsProperties sharedInstance] gamerSID]];
+      if ([[UnityAdsShowOptionsParser sharedInstance] gamerSID] != nil) {
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsShowOptionsParser sharedInstance] gamerSID]];
       }
       
       if (!campaign.viewed) {

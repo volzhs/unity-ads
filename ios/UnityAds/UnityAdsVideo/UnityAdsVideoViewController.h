@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import "UnityAdsVideoPlayer.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 
@@ -16,11 +17,13 @@
 - (void)videoPlayerStartedPlaying;
 - (void)videoPlayerPlaybackEnded;
 - (void)videoPlayerEncounteredError;
+- (void)videoPlayerReady;
 @end
 
-@interface UnityAdsVideoViewController : UIViewController <UnityAdsVideoPlayerDelegate>
+@interface UnityAdsVideoViewController : UIViewController <UnityAdsVideoPlayerDelegate, UIGestureRecognizerDelegate>
 @property (nonatomic, assign) id<UnityAdsVideoControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL isPlaying;
+@property (nonatomic, assign) BOOL isMuted;
 - (void)playCampaign:(UnityAdsCampaign *)campaignToPlay;
 - (void)forceStopVideoPlayer;
 @end
