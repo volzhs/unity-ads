@@ -35,15 +35,20 @@ extern "C" {
 
 @implementation UnityAdsUnityWrapper
 
-- (id)initWithGameId:(NSString*)gameId testModeOn:(bool)testMode debugModeOn:(bool)debugMode withGameObjectName:(NSString*)gameObjectName {
+- (id)initWithGameId:(NSString*)gameId testModeOn:(bool)testMode debugModeOn:(bool)debugMode withGameObjectName:(NSString*)gameObjectName useNativeUI:(bool)useNativeWhenPossible {
     self = [super init];
     
     if (self != nil) {
         self.gameObjectName = gameObjectName;
         self.gameId = gameId;
+        
+        if (useNativeWhenPossible) {
+            [[UnityAds sharedInstance] setAdsMode:kUnityAdsModeNoWebView];
+        }
+        
         [[UnityAds sharedInstance] setDelegate:self];
         [[UnityAds sharedInstance] setDebugMode:debugMode];
-        [[UnityAds sharedInstance] setTestMode:testMode];
+        [[UnityAds sharedInstance] setTestMode:testMode];        
         [[UnityAds sharedInstance] startWithGameId:gameId andViewController:UnityGetGLViewController()];
     }
     
@@ -87,18 +92,18 @@ extern "C" {
 
 
 extern "C" {
-    void init (const char *gameId, bool testMode, bool debugMode, const char *gameObjectName) {
+    void init (const char *gameId, bool testMode, bool debugMode, const char *gameObjectName, bool useNativeUI) {
         if (unityAds == NULL) {
-            unityAds = [[UnityAdsUnityWrapper alloc] initWithGameId:UnityAdsCreateNSString(gameId) testModeOn:testMode debugModeOn:debugMode withGameObjectName:UnityAdsCreateNSString(gameObjectName)];
+            unityAds = [[UnityAdsUnityWrapper alloc] initWithGameId:UnityAdsCreateNSString(gameId) testModeOn:testMode debugModeOn:debugMode withGameObjectName:UnityAdsCreateNSString(gameObjectName) useNativeUI:useNativeUI];
         }
     }
     
 	bool show (bool openAnimated, bool noOfferscreen, const char *gamerSID, bool muteVideoSounds, bool useDeviceOrientationForVideo) {
         NSNumber *noOfferscreenObjectiveC = [NSNumber numberWithBool:noOfferscreen];
         NSNumber *openAnimatedObjectiveC = [NSNumber numberWithBool:openAnimated];
-        
-        if ([[UnityAds sharedInstance] canShow] && [[UnityAds sharedInstance] canShow]) {
-            NSDictionary *props = @{kUnityAdsOptionGamerSIDKey: UnityAdsCreateNSString(gamerSID), kUnityAdsOptionNoOfferscreenKey: noOfferscreenObjectiveC, kUnityAdsOptionOpenAnimatedKey: openAnimatedObjectiveC};
+
+        if ([[UnityAds sharedInstance] canShowAds] && [[UnityAds sharedInstance] canShow]) {
+            NSDictionary *props = @{kUnityAdsOptionGamerSIDKey: UnityAdsCreateNSString(gamerSID), kUnityAdsOptionNoOfferscreenKey: noOfferscreenObjectiveC, kUnityAdsOptionOpenAnimatedKey: openAnimatedObjectiveC, kUnityAdsOptionVideoUsesDeviceOrientation:@(useDeviceOrientationForVideo), kUnityAdsOptionMuteVideoSounds:@(muteVideoSounds)};
             return [[UnityAds sharedInstance] show:props];
         }
         

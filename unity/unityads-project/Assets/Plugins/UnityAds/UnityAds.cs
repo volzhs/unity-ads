@@ -11,6 +11,7 @@ public class UnityAds : MonoBehaviour {
 	public bool noOfferscreen = false;
 	public bool videoUsesDeviceOrientation = false;
 	public bool muteVideoSounds = false;
+	public bool useNativeUiWhenPossible = false;
 	
 	private static UnityAds sharedInstance;
 	private static bool _campaignsAvailable = false;
@@ -64,7 +65,7 @@ public class UnityAds : MonoBehaviour {
 				sharedInstance = (UnityAds) FindObjectOfType(typeof(UnityAds));
 
 				#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
-				UnityAdsExternal.init(sharedInstance.gameId, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name);
+				UnityAdsExternal.init(sharedInstance.gameId, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name, sharedInstance.useNativeUiWhenPossible);
 				#endif
 			}
 

@@ -147,6 +147,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 #pragma mark - Video analytics
 
 - (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign {
+  UALOG_DEBUG(@"");
 	if (campaign == nil) {
 		UALOG_DEBUG(@"Campaign is nil.");
 		return;
@@ -165,10 +166,10 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 			positionString = kUnityAdsAnalyticsEventTypeVideoThirdQuartile;
 		else if (videoPosition == kVideoAnalyticsPositionEnd)
 			positionString = kUnityAdsAnalyticsEventTypeVideoEnd;
-		
+
     if (positionString != nil) {
       NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?%@=%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
-      
+
       if ([[UnityAdsShowOptionsParser sharedInstance] gamerSID] != nil) {
         trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsShowOptionsParser sharedInstance] gamerSID]];
       }
@@ -181,8 +182,6 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 }
 
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString {
-	UAAssert(![NSThread isMainThread]);
-	
   NSArray *queryStringComponents = [queryString componentsSeparatedByString:@"?"];
   NSString *trackingPath = [queryStringComponents objectAtIndex:0];
   queryString = [queryStringComponents objectAtIndex:1];
@@ -198,8 +197,6 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 }
 
 - (void)sendAnalyticsRequestWithQueryString:(NSString *)queryString {
-	UAAssert(![NSThread isMainThread]);
-	
 	if (queryString == nil || [queryString length] == 0) {
 		UALOG_DEBUG(@"Invalid input.");
 		return;
@@ -211,9 +208,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 
 #pragma mark - Install tracking
 
-- (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary {
-	UAAssert( ! [NSThread isMainThread]);
-	
+- (void)sendInstallTrackingCallWithQueryDictionary:(NSDictionary *)queryDictionary {	
 	if (queryDictionary == nil) {
 		UALOG_DEBUG(@"Invalid input.");
 		return;
@@ -234,8 +229,6 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 #pragma mark - Error handling
 
 - (void)retryFailedUploads {
-	UAAssert( ! [NSThread isMainThread]);
-	
 	NSArray *uploads = [[NSUserDefaults standardUserDefaults] arrayForKey:kUnityAdsAnalyticsSavedUploadsKey];
 	if (uploads != nil) {
 		for (NSDictionary *upload in uploads) {
