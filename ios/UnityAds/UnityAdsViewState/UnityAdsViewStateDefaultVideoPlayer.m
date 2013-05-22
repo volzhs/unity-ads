@@ -127,7 +127,10 @@
     [[[UnityAdsWebAppController sharedInstance] webView] setFrame:[[UnityAdsMainViewController sharedInstance] view].bounds];
   }
   
-  [self dismissVideoController];
+  if (![[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
+    [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeOfferScreen withOptions:nil];
+  }
+  //[self dismissVideoController];
 }
 
 - (void)videoPlayerPlaybackEnded {
@@ -148,13 +151,15 @@
 }
 
 - (void)showPlayerAndPlaySelectedVideo {
-	UALOG_DEBUG(@"");
-  
-  if (![self canViewSelectedCampaign]) return;
-  
-  [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-
-  [self startVideoPlayback:true withDelegate:self];
+  if ([[UnityAdsMainViewController sharedInstance] isOpen]) {
+    UALOG_DEBUG(@"");
+    
+    if (![self canViewSelectedCampaign]) return;
+    
+    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
+    
+    [self startVideoPlayback:true withDelegate:self];
+  }
 }
 
 @end

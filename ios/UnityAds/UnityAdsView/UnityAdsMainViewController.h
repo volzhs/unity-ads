@@ -26,6 +26,9 @@
 @interface UnityAdsMainViewController : UIViewController <UnityAdsViewStateDelegate>
 
 @property (nonatomic, assign) id<UnityAdsMainViewControllerDelegate> delegate;
+@property (nonatomic, assign) BOOL isClosing;
+@property (nonatomic, assign) BOOL isOpen;
+
 
 + (id)sharedInstance;
 
@@ -36,5 +39,5 @@
 - (BOOL)mainControllerVisible;
 - (void)applyOptionsToCurrentState:(NSDictionary *)options;
 - (void)applyViewStateHandler:(UnityAdsViewState *)viewState;
-
+- (UnityAdsViewState *)getCurrentViewState;
 @end

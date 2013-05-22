@@ -13,7 +13,15 @@
 
 - (void)enterState:(NSDictionary *)options {
   [super enterState:options];
-
+  
+  UALOG_DEBUG(@"campaign=%@  byPassAppSheet=%i", [[UnityAdsCampaignManager sharedInstance] selectedCampaign], [[UnityAdsCampaignManager sharedInstance] selectedCampaign].bypassAppSheet);
+  
+  if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign] != nil &&
+      ![[UnityAdsCampaignManager sharedInstance] selectedCampaign].bypassAppSheet &&
+      ![[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed) {
+    [self preloadAppSheetWithId:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].itunesID];
+  }
+  
   self.checkIfWatched = YES;
   if ([options objectForKey:kUnityAdsWebViewEventDataRewatchKey] != nil && [[options valueForKey:kUnityAdsWebViewEventDataRewatchKey] boolValue] == true) {
     self.checkIfWatched = NO;
@@ -24,6 +32,10 @@
   UALOG_DEBUG(@"");
   [super exitState:options];
   [self dismissVideoController];
+  
+  if (self.storeController != nil) {
+    self.storeController = nil;
+  }
 }
 
 - (void)applyOptions:(NSDictionary *)options {
@@ -65,7 +77,9 @@
 }
 
 - (void)startVideoPlayback:(BOOL)createVideoController withDelegate:(id)videoControllerDelegate {
-  [self.videoController playCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+  if ([[UnityAdsMainViewController sharedInstance] isOpen]) {
+    [self.videoController playCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+  }
 }
 
 @end

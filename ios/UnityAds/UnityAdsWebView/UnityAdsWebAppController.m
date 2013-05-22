@@ -98,8 +98,14 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 	{
 		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
       if ([data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey] != nil) {
-        [self _selectCampaignWithID:[data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey]];
-        [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeVideoPlayer withOptions:data];
+        if ([[[UnityAdsMainViewController sharedInstance] getCurrentViewState] getStateType] != kUnityAdsViewStateTypeVideoPlayer &&
+            ![[UnityAdsMainViewController sharedInstance] isClosing]) {
+          [self _selectCampaignWithID:[data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey]];
+          [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeVideoPlayer withOptions:data];
+        }
+        else {
+           UALOG_DEBUG(@"Cannot start video: %i, %i", [[UnityAdsMainViewController sharedInstance] isClosing], [[[UnityAdsMainViewController sharedInstance] getCurrentViewState] getStateType]);
+        }
       }
 		}
 		else if ([type isEqualToString:kUnityAdsWebViewAPINavigateTo]) {
@@ -115,7 +121,13 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 		}
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIClose]) {
-    [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES withOptions:nil];
+    if ([[[UnityAdsMainViewController sharedInstance] getCurrentViewState] getStateType] != kUnityAdsViewStateTypeVideoPlayer &&
+        ![[UnityAdsMainViewController sharedInstance] isClosing]) {
+      [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES withOptions:nil];
+    }
+    else {
+      UALOG_DEBUG(@"Preventing sending close from WebView: %i, %i", [[UnityAdsMainViewController sharedInstance] isClosing], [[[UnityAdsMainViewController sharedInstance] getCurrentViewState] getStateType]);
+    }
 	}
 	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete]) {
     self.webViewInitialized = YES;
