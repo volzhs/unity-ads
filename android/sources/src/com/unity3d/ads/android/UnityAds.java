@@ -759,8 +759,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 					}, 250);
 				}
 			}
-			
-			// Reset developer options when Unity Ads closes
 		}
 	}
 	

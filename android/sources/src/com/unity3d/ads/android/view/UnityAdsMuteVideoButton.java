@@ -1,10 +1,12 @@
 package com.unity3d.ads.android.view;
 
+import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.data.UnityAdsGraphicsBundle;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -41,12 +43,22 @@ public class UnityAdsMuteVideoButton extends ImageButton {
 	}
 	
 	private Bitmap selectBitmap () {
+		String bitmapString = "";
 		if (_size != null && _size.equals(UnityAdsMuteVideoButtonSize.Medium)) {
 			switch (_state) {
 				case UnMuted:
-					return UnityAdsGraphicsBundle.getBitmapFromString(UnityAdsGraphicsBundle.ICON_AUDIO_UNMUTED_50x50);
+					bitmapString = UnityAdsGraphicsBundle.ICON_AUDIO_UNMUTED_50x50;
+					if (UnityAdsDevice.getScreenDensity() == DisplayMetrics.DENSITY_LOW) {
+						bitmapString = UnityAdsGraphicsBundle.ICON_AUDIO_UNMUTED_32x32;
+					}
+					return UnityAdsGraphicsBundle.getBitmapFromString(bitmapString);
 				case Muted:
-					return UnityAdsGraphicsBundle.getBitmapFromString(UnityAdsGraphicsBundle.ICON_AUDIO_MUTED_50x50);
+					bitmapString = UnityAdsGraphicsBundle.ICON_AUDIO_MUTED_50x50;
+					if (UnityAdsDevice.getScreenDensity() == DisplayMetrics.DENSITY_LOW) {
+						bitmapString = UnityAdsGraphicsBundle.ICON_AUDIO_MUTED_32x32;
+					}
+
+					return UnityAdsGraphicsBundle.getBitmapFromString(bitmapString);
 			}
 		}
 		

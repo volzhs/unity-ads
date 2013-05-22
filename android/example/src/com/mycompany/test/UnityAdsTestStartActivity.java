@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.IUnityAdsListener;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 import com.mycompany.test.R;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
