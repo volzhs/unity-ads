@@ -119,6 +119,19 @@
   UALOG_DEBUG(@"");
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  
+  if ([[UnityAdsMainViewController sharedInstance] getPreviousViewState] != nil &&
+      ([[[UnityAdsMainViewController sharedInstance] getPreviousViewState] getStateType] == kUnityAdsViewStateTypeEndScreen ||
+      [[[UnityAdsMainViewController sharedInstance] getPreviousViewState] getStateType] == kUnityAdsViewStateTypeOfferScreen)) {
+      [[UnityAdsMainViewController sharedInstance] changeState:[[[UnityAdsMainViewController sharedInstance] getPreviousViewState] getStateType] withOptions:nil];
+  }
+  else if (![[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
+    [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeOfferScreen withOptions:nil];
+  }
+  else {
+    [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeEndScreen withOptions:nil];
+  }
+  
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowError data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyVideoPlaybackError}];
   
   if ([[UnityAdsWebAppController sharedInstance] webView].superview != nil) {
@@ -126,11 +139,6 @@
     [[[UnityAdsMainViewController sharedInstance] view] addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
     [[[UnityAdsWebAppController sharedInstance] webView] setFrame:[[UnityAdsMainViewController sharedInstance] view].bounds];
   }
-  
-  if (![[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
-    [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeOfferScreen withOptions:nil];
-  }
-  //[self dismissVideoController];
 }
 
 - (void)videoPlayerPlaybackEnded {

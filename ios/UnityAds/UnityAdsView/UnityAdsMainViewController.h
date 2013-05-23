@@ -40,4 +40,5 @@
 - (void)applyOptionsToCurrentState:(NSDictionary *)options;
 - (void)applyViewStateHandler:(UnityAdsViewState *)viewState;
 - (UnityAdsViewState *)getCurrentViewState;
+- (UnityAdsViewState *)getPreviousViewState;
 @end
