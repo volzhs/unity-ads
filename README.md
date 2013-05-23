@@ -40,6 +40,11 @@ v1.0.4 May 22nd, 2013
 
 - Option to use a Native iOS UI instead of UIWebView in order to save memory
 
+*Android:*
+
+- Unity Ads no longer requires CHANGE_WIFI_STATE permission
+- android:configChanges="keyboardHidden|orientation" require new possible options depending on the developers targetSdk etc. All possible options Unity Ads needs are: "keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
+
 
 v1.0.3.2 March 13, 2013
 --------------------------
