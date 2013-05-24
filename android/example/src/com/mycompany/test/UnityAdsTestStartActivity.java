@@ -164,7 +164,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, false);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, false);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, "gom");
-				optionsMap.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, false);
+				optionsMap.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, true);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, false);
 				
 				UnityAds.instance.show(optionsMap);
@@ -174,96 +174,9 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 			}
 		});
     	_openButton.setVisibility(View.VISIBLE);
-    	
-    	/*
-    	((ImageView)findViewById(R.id.playbtn)).setAlpha(255);
-    	((ImageView)findViewById(R.id.playbtn)).setOnClickListener(new View.OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				Intent newIntent = new Intent(getBaseContext(), UnityAdsGameActivity.class);
-				newIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(newIntent);
-			}
-		});*/  
 	}
     
     @Override
     public void onFetchFailed () {
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    /*
-       ((ImageView)findViewById(R.id.plissken)).setAlpha(60);
-        ((ImageView)findViewById(R.id.unlock)).setOnClickListener(new View.OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				UnityAdsUtils.Log("Opening with key: " + UnityAds.instance.getCurrentRewardItemKey(), this);
-				
-				// Open with options test
-				Map<String, Object> optionsMap = new HashMap<String, Object>();
-				optionsMap.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, false);
-				optionsMap.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, false);
-				optionsMap.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, "gom");
-				optionsMap.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, false);
-				optionsMap.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, false);
-				
-				UnityAds.instance.show(optionsMap);
-				
-				// Open without options (defaults)
-				//UnityAds.instance.show();
-			}
-		});
-        
-        UnityAds.instance.setListener(this);
-        
-        */
-    
-    
-    /*
-         @Override
-    public void onResume () {
-    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsGameActivity->onResume()");
-    	super.onResume();
-    	
-    	UnityAds.instance.changeActivity(this);
-		UnityAds.instance.setListener(this);
-		
-		if (!UnityAds.instance.canShowAds()) {
-			((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
-		}
-    }
-    
-    public void onHide () {
-    	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Unity Ads close");
-    }
-    
-    public void onShow () {   	
-    	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Unity Ads open");
-    }
-    
-	public void onVideoStarted () {
-		Log.d(UnityAdsConstants.LOG_NAME, "HOST: Video started!");
-	}
-	
-	public void onVideoCompleted (String rewardItemKey) {
-    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsGameActivity->onVideoCompleted()");
-    	((ImageView)findViewById(R.id.plissken)).setAlpha(255);
-    	((ImageView)findViewById(R.id.unlock)).setVisibility(View.INVISIBLE);
-    	Log.d(UnityAdsConstants.LOG_NAME, "HOST: Video completed!");
-	}
-	
-    @Override
-	public void onFetchCompleted () {
-	}
-    
-    @Override
-    public void onFetchFailed () {
-    }
-    */
 }

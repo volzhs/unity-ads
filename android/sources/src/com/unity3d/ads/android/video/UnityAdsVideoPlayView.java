@@ -221,6 +221,12 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 
 	private void createView () {
+		if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
+			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS) && 
+			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS).equals(true)) {
+			_muted = true;
+		}
+		
 		UnityAdsUtils.Log("Creating custom view", this);
 				
 		setBackgroundColor(0xFF000000);
@@ -238,10 +244,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				UnityAdsUtils.Log("onPrepared", this);
 				_mediaPlayer = mp;
 				
-				if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
-					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS) && 
-					UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS).equals(true)) {
-					_muted = true;
+				if (_muted) {
 					storeVolume();
 					_mediaPlayer.setVolume(0f, 0f);
 				}
@@ -318,9 +321,14 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		RelativeLayout.LayoutParams muteButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		muteButtonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		muteButtonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		
+				
 		_muteButton = new UnityAdsMuteVideoButton(getContext());
 		_muteButton.setLayoutParams(muteButtonParams);
+		
+		if (_muted) {
+			_muteButton.setState(UnityAdsMuteVideoButtonState.Muted);
+		}
+		
 		_muteButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
