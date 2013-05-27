@@ -225,6 +225,11 @@ public class UnityAdsUtils {
 	public static File createCacheDir () {
 		File tdir = new File (getCacheDirectory());
 		tdir.mkdirs();
+		
+		if (tdir != null) {
+			UnityAdsUtils.writeFile(new File(getCacheDirectory() + "/.nomedia"), "");
+		}
+		
 		return tdir;
 	}
 	
@@ -232,6 +237,9 @@ public class UnityAdsUtils {
 		if (fileName == null || campaigns == null) return false;
 		
 		File seekFile = new File(fileName);
+		
+		if (seekFile.getName().equals(".nomedia"))
+			return true;
 		
 		for (UnityAdsCampaign campaign : campaigns) {
 			File matchFile = new File(campaign.getVideoFilename());
