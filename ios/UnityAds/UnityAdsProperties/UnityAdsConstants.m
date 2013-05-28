@@ -158,6 +158,7 @@ NSString * const kUnityAdsDeviceIpodTouch1gen = @"ipodtouch1gen";
 NSString * const kUnityAdsDeviceIpodTouch2gen = @"ipodtouch2gen";
 NSString * const kUnityAdsDeviceIpodTouch3gen = @"ipodtouch3gen";
 NSString * const kUnityAdsDeviceIpodTouch4gen = @"ipodtouch4gen";
+NSString * const kUnityAdsDeviceIpodTouch5gen = @"ipodtouch5gen";
 NSString * const kUnityAdsDeviceIpad = @"ipad";
 NSString * const kUnityAdsDeviceIpad1 = @"ipad1";
 NSString * const kUnityAdsDeviceIpad2 = @"ipad2";

@@ -171,6 +171,7 @@ extern NSString * const kUnityAdsDeviceIpodTouch1gen;
 extern NSString * const kUnityAdsDeviceIpodTouch2gen;
 extern NSString * const kUnityAdsDeviceIpodTouch3gen;
 extern NSString * const kUnityAdsDeviceIpodTouch4gen;
+extern NSString * const kUnityAdsDeviceIpodTouch5gen;
 extern NSString * const kUnityAdsDeviceIpad;
 extern NSString * const kUnityAdsDeviceIpad1;
 extern NSString * const kUnityAdsDeviceIpad2;

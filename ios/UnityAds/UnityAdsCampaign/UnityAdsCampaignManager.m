@@ -188,7 +188,8 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       [[UnityAdsProperties sharedInstance] setAnalyticsBaseUrl:(NSString *)[jsonDictionary objectForKey:kUnityAdsAnalyticsUrlKey]];
       [[UnityAdsProperties sharedInstance] setAdsBaseUrl:(NSString *)[jsonDictionary objectForKey:kUnityAdsUrlKey]];
       
-      if ([jsonDictionary objectForKey:kUnityAdsSdkVersionKey] != nil) {
+      if ([jsonDictionary objectForKey:kUnityAdsSdkVersionKey] != nil &&
+          [[jsonDictionary objectForKey:kUnityAdsSdkVersionKey] isKindOfClass:[NSString class]]) {
         [[UnityAdsProperties sharedInstance] setExpectedSdkVersion:[jsonDictionary objectForKey:kUnityAdsSdkVersionKey]];
         UALOG_DEBUG(@"Got SDK Version: %@", [[UnityAdsProperties sharedInstance] expectedSdkVersion]);
       }

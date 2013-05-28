@@ -63,9 +63,26 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
+  
+  if (self.isClosing && [[UnityAdsProperties sharedInstance] statusBarWasVisible]) {
+    UALOG_DEBUG(@"Statusbar was originally visible. Bringing it back.");
+    [[UnityAdsProperties sharedInstance] setStatusBarWasVisible:false];
+    [[UIApplication sharedApplication] setStatusBarHidden:false];
+  }
+  
   self.isClosing = false;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  
+  if (![UIApplication sharedApplication].statusBarHidden) {
+    UALOG_DEBUG(@"Hiding statusbar");
+    [[UnityAdsProperties sharedInstance] setStatusBarWasVisible:true];
+    [[UIApplication sharedApplication] setStatusBarHidden:true];
+  }
+}
 
 #pragma mark - Orientation handling
 
