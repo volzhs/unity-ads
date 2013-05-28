@@ -2,13 +2,16 @@ package com.unity3d.ads.android.webapp;
 
 import org.json.JSONObject;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.webkit.JavascriptInterface;
 
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsWebBridge {
-	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView, InitComplete, PlayStore;
+	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView, InitComplete, PlayStore, NavigateTo;
 		@Override
 		public String toString () {
 			String retVal = null;
@@ -27,6 +30,9 @@ public class UnityAdsWebBridge {
 					break;
 				case PlayStore:
 					retVal = UnityAdsConstants.UNITY_ADS_WEBVIEW_API_PLAYSTORE;
+					break;
+				case NavigateTo:
+					retVal = UnityAdsConstants.UNITY_ADS_WEBVIEW_API_NAVIGATETO;
 					break;
 			}
 			return retVal;
@@ -87,6 +93,26 @@ public class UnityAdsWebBridge {
 				break;
 			case PlayStore:
 				_listener.onOpenPlayStore(parameters);
+				break;
+			case NavigateTo:
+				if (parameters.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY)) {
+					String clickUrl = null;
+					
+					try {
+						clickUrl = parameters.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY);
+					}
+					catch (Exception e) {
+						UnityAdsUtils.Log("Error fetching clickUrl", this);
+						return false;
+					}
+					
+					if (clickUrl != null) {
+						Intent i = new Intent(Intent.ACTION_VIEW);
+						i.setData(Uri.parse(clickUrl));
+						UnityAdsProperties.CURRENT_ACTIVITY.startActivity(i);
+					}
+				}
+				
 				break;
 		}
 		
