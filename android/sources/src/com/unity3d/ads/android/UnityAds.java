@@ -530,12 +530,28 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private void openPlayStoreAsIntent (String playStoreId) {
 		UnityAdsUtils.Log("Opening playstore activity with storeId: " + playStoreId, this);
-		UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + playStoreId)));
+		
+		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
+			try {
+				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + playStoreId)));
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("Couldn't start PlayStore intent!", this);
+			}
+		}
 	}
 	
 	private void openPlayStoreInBrowser (String url) {
 	    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with url: " + url, this);
-		UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+	    
+		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
+			try {
+				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("Couldn't start browser intent!", this);
+			}
+		}
 	}
 	
 	private void init (Activity activity, String gameId, IUnityAdsListener listener) {
