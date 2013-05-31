@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="DefaultLocale">
+        <ignore path="src/com/unity3d/ads/android/data/UnityAdsDevice.java" />
+        <ignore path="src/com/unity3d/ads/android/data/UnityAdsOpenUDID.java" />
+    </issue>
+</lint>

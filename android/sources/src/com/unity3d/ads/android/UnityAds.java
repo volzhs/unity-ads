@@ -354,6 +354,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	// IUnityAdsWebDataListener
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onWebDataCompleted () {
 		JSONObject jsonData = null;

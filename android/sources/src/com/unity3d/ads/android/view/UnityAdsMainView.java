@@ -34,6 +34,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 
 	public static enum UnityAdsMainViewState { WebView, VideoPlayer };
 	public static enum UnityAdsMainViewAction { VideoStart, VideoEnd, BackButtonPressed, RequestRetryVideoPlay };
+	private static final int FILL_PARENT = -1;
 	
 	// Views
 	public UnityAdsVideoPlayView videoplayerview = null;
@@ -43,6 +44,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	private IUnityAdsMainViewListener _listener = null;
 	private UnityAdsMainViewState _currentState = UnityAdsMainViewState.WebView;
 
+	
 	public UnityAdsMainView(Context context, IUnityAdsMainViewListener listener) {
 		super(context);
 		_listener = listener;
@@ -77,7 +79,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 				((ViewGroup)this.getParent()).removeView(this);
 			
 			if (this.getParent() == null)
-				UnityAdsProperties.CURRENT_ACTIVITY.addContentView(this, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+				UnityAdsProperties.CURRENT_ACTIVITY.addContentView(this, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 			
 			setViewState(UnityAdsMainViewState.WebView);
 		}
@@ -93,7 +95,6 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 				vg.removeView(this);
 		}
 		
-		//webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, data);
 		destroyVideoPlayerView();
 		UnityAdsProperties.SELECTED_CAMPAIGN = null;
 	}
@@ -105,15 +106,13 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			switch (state) {
 				case WebView:
 					removeFromMainView(webview);
-					addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+					addView(webview, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 					focusToView(webview);
 					break;
 				case VideoPlayer:
 					if (videoplayerview == null) {
 						createVideoPlayerView();
 						bringChildToFront(webview);
-						//removeFromMainView(webview);
-						//addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
 						focusToView(webview);
 					}
 					break;
@@ -126,7 +125,10 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	}
 	
 	public void afterVideoPlaybackOperations () {
-		videoplayerview.setKeepScreenOn(false);
+		if (videoplayerview != null) {
+			videoplayerview.setKeepScreenOn(false);
+		}
+		
 		destroyVideoPlayerView();
 		setViewState(UnityAdsMainViewState.WebView);		
 		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -153,7 +155,6 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	private void init () {
 		UnityAdsUtils.Log("Init", this);
 		this.setId(1001);
-		//createVideoPlayerView();
 		createWebView();
 	}
 	
@@ -169,7 +170,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	
 	private void createVideoPlayerView () {
 		videoplayerview = new UnityAdsVideoPlayView(UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext(), this);
-		videoplayerview.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+		videoplayerview.setLayoutParams(new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 		videoplayerview.setId(1002);
 		addView(videoplayerview);
 	}
@@ -177,7 +178,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	private void createWebView () {
 		webview = new UnityAdsWebView(UnityAdsProperties.CURRENT_ACTIVITY, this, new UnityAdsWebBridge(UnityAds.instance));
 		webview.setId(1003);
-		addView(webview, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT));
+		addView(webview, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 	}
 	
 	private void removeFromMainView (View view) {
