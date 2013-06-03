@@ -62,15 +62,18 @@
   }
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-  [super viewDidDisappear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
+  [super viewWillDisappear:animated];
   
   if (self.isClosing && [[UnityAdsProperties sharedInstance] statusBarWasVisible]) {
     UALOG_DEBUG(@"Statusbar was originally visible. Bringing it back.");
     [[UnityAdsProperties sharedInstance] setStatusBarWasVisible:false];
     [[UIApplication sharedApplication] setStatusBarHidden:false];
   }
-  
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
   self.isClosing = false;
 }
 
