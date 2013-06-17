@@ -285,7 +285,12 @@ public class UnityAdsDownloader {
     			removeDownload(_campaign);
             	removeFromCacheDownloads(this);
             	cacheNextFile();
-            	sendToListeners(UnityAdsDownloadEventType.DownloadCompleted, _downloadUrl.toString());
+            	
+            	String url = "ERROR";
+            	if (_downloadUrl != null)
+            		url = _downloadUrl.toString();
+            	
+            	sendToListeners(UnityAdsDownloadEventType.DownloadCompleted, url);
     			super.onPostExecute(result);
         	}
 		}
@@ -315,12 +320,16 @@ public class UnityAdsDownloader {
 	    }
 	    
 	    private void cancelDownload () {
-	    	UnityAdsUtils.Log("Download cancelled for: " + _downloadUrl.toString(), this);
+        	String url = "ERROR";
+        	if (_downloadUrl != null)
+        		url = _downloadUrl.toString();
+        	
+	    	UnityAdsUtils.Log("Download cancelled for: " + url, this);
 			closeAndFlushConnection();
 			UnityAdsUtils.removeFile(_campaign.getVideoFilename());
         	removeDownload(_campaign);
         	removeFromCacheDownloads(this);
-        	sendToListeners(UnityAdsDownloadEventType.DownloadCancelled, _downloadUrl.toString());
+        	sendToListeners(UnityAdsDownloadEventType.DownloadCancelled, url);
 	    }
 	}
 }
