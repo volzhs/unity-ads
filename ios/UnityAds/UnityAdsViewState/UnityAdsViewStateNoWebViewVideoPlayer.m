@@ -108,6 +108,7 @@
 
 - (void)videoPlayerEncounteredError {
   UALOG_DEBUG(@"");
+  [[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
   [self hideSpinner];
   [self dismissVideoController];
   [self showVideoPlaybackError];

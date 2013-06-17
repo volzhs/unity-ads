@@ -117,6 +117,8 @@
 
 - (void)videoPlayerEncounteredError {
   UALOG_DEBUG(@"");
+  [[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
+
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   
