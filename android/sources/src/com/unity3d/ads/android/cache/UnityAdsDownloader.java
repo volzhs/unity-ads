@@ -132,9 +132,15 @@ public class UnityAdsDownloader {
 	    
 		if (cm != null && cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
 			UnityAdsUtils.Log("Starting download for: " + campaign.getVideoFilename(), UnityAdsDownloader.class);
-			CacheDownload cd = new CacheDownload(campaign);
-			addToCacheDownloads(cd);
-			cd.execute(campaign.getVideoUrl());
+			
+			if (campaign != null && campaign.getVideoUrl() != null && campaign.getVideoUrl().length() > 0) {
+				CacheDownload cd = new CacheDownload(campaign);
+				addToCacheDownloads(cd);
+				cd.execute(campaign.getVideoUrl());
+			}
+			else {
+				removeDownload(campaign);
+			}
 	    }
 		else {
 			UnityAdsUtils.Log("No WIFI detected, not downloading: " + campaign.getVideoUrl(), UnityAdsDownloader.class);
@@ -208,6 +214,8 @@ public class UnityAdsDownloader {
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Problems with url: " + e.getMessage(), this);
+				onCancelled();
+				return null;
 			}
 			
 			try {
@@ -273,9 +281,7 @@ public class UnityAdsDownloader {
 
 		@Override
 		protected void onPostExecute(String result) {
-			// If the server sent invalid campaign data, _downloadUrl can be null
-			// so we must check that as well
-        	if (!_cancelled && _downloadUrl != null) {
+        	if (!_cancelled) {
     			removeDownload(_campaign);
             	removeFromCacheDownloads(this);
             	cacheNextFile();
