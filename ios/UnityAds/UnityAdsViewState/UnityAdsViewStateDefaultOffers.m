@@ -32,7 +32,7 @@
 - (void)willBeShown {
   [super willBeShown];
   
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen}];
+  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsRewardItemKeyKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   
   [self placeToViewHiearchy];
 }
