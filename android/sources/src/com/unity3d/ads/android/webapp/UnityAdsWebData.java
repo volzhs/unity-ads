@@ -280,8 +280,12 @@ public class UnityAdsWebData {
 	}
 	
 	public void setCurrentRewardItem (UnityAdsRewardItem rewardItem) {
-		if (_currentRewardItem != null && !_currentRewardItem.equals(_currentRewardItem))
+		if (_currentRewardItem != null && !_currentRewardItem.equals(rewardItem)) {
 			_currentRewardItem = rewardItem;
+		}
+		else {
+			UnityAdsUtils.Log("Problem setting current reward item: " + _currentRewardItem + ", " + rewardItem, this);
+		}
 	}
 	
 	
