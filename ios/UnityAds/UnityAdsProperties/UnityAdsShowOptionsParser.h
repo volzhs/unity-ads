@@ -19,5 +19,5 @@
 + (UnityAdsShowOptionsParser *)sharedInstance;
 - (void)parseOptions:(NSDictionary *)options;
 - (void)resetToDefaults;
-- (NSString *)getOptionsAsJson;
+- (NSDictionary *)getOptionsAsJson;
 @end
