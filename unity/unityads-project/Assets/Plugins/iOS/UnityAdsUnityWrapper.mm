@@ -123,7 +123,7 @@ extern "C" {
     }
     
 	bool canShowAds () {
-        return [[UnityAds sharedInstance] canShow];
+        return [[UnityAds sharedInstance] canShowAds];
     }
     
 	bool canShow () {
