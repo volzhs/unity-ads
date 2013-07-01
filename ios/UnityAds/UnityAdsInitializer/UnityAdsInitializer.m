@@ -16,6 +16,7 @@
     [self createQueue];
   if (self.backgroundThread == nil)
     [self createBackgroundThread];
+  [UnityAdsDevice launchReachabilityCheck];
 }
 
 - (void)reInitialize {
@@ -55,6 +56,7 @@
 }
 
 - (void)dealloc {
+  [UnityAdsDevice clearReachabilityCheck];
   dispatch_release(self.queue);
 }
 
