@@ -25,6 +25,7 @@ NSString * const kUnityAdsWebViewAPIOpen = @"open";
 NSString * const kUnityAdsWebViewAPIDeveloperOptions = @"developerOptions";
 NSString * const kUnityAdsWebViewAPIAppStore = @"appStore";
 NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying = @"video_started_playing";
+NSString * const kUnityAdsWebViewAPIActionVideoPlaybackError = @"video_playback_error";
 
 NSString * const kUnityAdsWebViewViewTypeCompleted = @"completed";
 NSString * const kUnityAdsWebViewViewTypeStart = @"start";

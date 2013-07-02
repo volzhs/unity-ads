@@ -39,6 +39,7 @@ extern NSString * const kUnityAdsWebViewAPIOpen;
 extern NSString * const kUnityAdsWebViewAPIDeveloperOptions;
 extern NSString * const kUnityAdsWebViewAPIAppStore;
 extern NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying;
+extern NSString * const kUnityAdsWebViewAPIActionVideoPlaybackError;
 
 extern NSString * const kUnityAdsWebViewViewTypeCompleted;
 extern NSString * const kUnityAdsWebViewViewTypeStart;
