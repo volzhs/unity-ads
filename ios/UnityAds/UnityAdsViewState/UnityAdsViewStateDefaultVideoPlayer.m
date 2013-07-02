@@ -26,9 +26,7 @@
 - (void)willBeShown {
   [super willBeShown];
   
-  if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
-    [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventShowSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
-    
+  if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {    
     [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
     
     UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];
