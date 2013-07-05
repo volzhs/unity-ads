@@ -61,6 +61,10 @@ extern NSString * const kUnityAdsWebViewEventDataRewatchKey;
 extern NSString * const kUnityAdsWebViewEventDataClickUrlKey;
 extern NSString * const kUnityAdsWebViewEventDataBypassAppSheetKey;
 
+/* Web Data */
+
+extern int const kUnityAdsWebDataMaxRetryCount;
+extern int const kUnityAdsWebDataRetryInterval;
 
 /* Native Events */
 

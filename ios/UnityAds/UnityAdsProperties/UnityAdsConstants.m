@@ -47,6 +47,10 @@ NSString * const kUnityAdsWebViewEventDataRewatchKey = @"rewatch";
 NSString * const kUnityAdsWebViewEventDataClickUrlKey = @"clickUrl";
 NSString * const kUnityAdsWebViewEventDataBypassAppSheetKey = @"bypassAppSheet";
 
+/* Web Data */
+
+int const kUnityAdsWebDataMaxRetryCount = 5;
+int const kUnityAdsWebDataRetryInterval = 5;
 
 /* Native Events */
 

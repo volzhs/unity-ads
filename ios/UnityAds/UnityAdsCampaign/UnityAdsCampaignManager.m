@@ -396,23 +396,17 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
   [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
+static int retryCount = 0;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
 	self.campaignDownloadData = nil;
 	self.urlConnection = nil;
 	
-	NSInteger errorCode = [error code];
-	if (errorCode != NSURLErrorNotConnectedToInternet &&
-      errorCode != NSURLErrorCannotFindHost &&
-      errorCode != NSURLErrorCannotConnectToHost &&
-      errorCode != NSURLErrorResourceUnavailable &&
-      errorCode != NSURLErrorFileDoesNotExist &&
-      errorCode != NSURLErrorNoPermissionsToReadFile)
-  {
-		UALOG_DEBUG(@"Retrying campaign download.");
-		[self updateCampaigns];
-	}
-	else {
-		UALOG_DEBUG(@"Not retrying campaign download.");
+	if(retryCount < kUnityAdsWebDataMaxRetryCount) {
+    ++retryCount;
+    UALOG_DEBUG(@"Retrying campaign download in %d seconds.", kUnityAdsWebDataRetryInterval);
+    [NSTimer scheduledTimerWithTimeInterval:kUnityAdsWebDataRetryInterval target:self selector:@selector(updateCampaigns) userInfo:nil repeats:NO];
+  } else {
+    UALOG_DEBUG(@"Not retrying campaign download.");
     dispatch_async(dispatch_get_main_queue(), ^{
       [self.delegate campaignManagerCampaignDataFailed];
     });
