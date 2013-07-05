@@ -298,8 +298,6 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		
 		UnityAdsUtils.Log("onVideoPlaybackError", this);		
 		UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
-
-		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START);
 		
 		JSONObject errorParams = new JSONObject();
 		JSONObject spinnerParams = new JSONObject();
@@ -313,6 +311,8 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		catch (Exception e) {
 			UnityAdsUtils.Log("Could not create JSON", this);
 		}
+		
+		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
 		
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWERROR, errorParams);
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
