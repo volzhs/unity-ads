@@ -50,17 +50,23 @@ static UnityAdsProperties *sharedProperties = nil;
   // Mandatory params
   queryParams = [NSString stringWithFormat:@"%@%@=%@", queryParams, kUnityAdsInitQueryParamPlatformKey, @"ios"];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamGameIdKey, [self adsGameId]];
-  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOpenUdidKey, [UnityAdsDevice md5OpenUDIDString]];
-  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamMacAddressKey, [UnityAdsDevice md5MACAddressString]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamSdkVersionKey, kUnityAdsVersion];
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOpenUdidKey, [UnityAdsDevice md5OpenUDIDString]];
   
-  if ([UnityAdsDevice ODIN1] != nil) {
-    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOdin1IdKey, [UnityAdsDevice ODIN1]];
+  if ([UnityAdsDevice getIOSMajorVersion] < 7) {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamMacAddressKey, [UnityAdsDevice md5MACAddressString]];
+    if ([UnityAdsDevice ODIN1] != nil) {
+      queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOdin1IdKey, [UnityAdsDevice ODIN1]];
+    }
   }
   
+  id advertisingIdentifierString = [UnityAdsDevice advertisingIdentifier];
+  id md5AdvertisingIdentifierString = [UnityAdsDevice md5AdvertisingIdentifierString];
+  
   // Add advertisingTrackingId info if identifier is available
-  if ([UnityAdsDevice md5AdvertisingIdentifierString] != nil) {
-    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamAdvertisingTrackingIdKey, [UnityAdsDevice md5AdvertisingIdentifierString]];
+  if (advertisingIdentifierString != nil) {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamRawAdvertisingTrackingIdKey, advertisingIdentifierString];
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamAdvertisingTrackingIdKey, md5AdvertisingIdentifierString];
     queryParams = [NSString stringWithFormat:@"%@&%@=%i", queryParams, kUnityAdsInitQueryParamTrackingEnabledKey, [UnityAdsDevice canUseTracking]];
   }
   
