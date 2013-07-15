@@ -99,9 +99,13 @@
 
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
         
-        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{kUnityAdsOptionNoOfferscreenKey:@false, kUnityAdsOptionOpenAnimatedKey:@true, kUnityAdsOptionGamerSIDKey:@"gom", kUnityAdsOptionMuteVideoSounds:@false, kUnityAdsOptionVideoUsesDeviceOrientation:@true}]);
-        
-        //[[UnityAds sharedInstance] show];
+        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{
+          kUnityAdsOptionNoOfferscreenKey:@false,
+          kUnityAdsOptionOpenAnimatedKey:@true,
+          kUnityAdsOptionGamerSIDKey:@"gom",
+          kUnityAdsOptionMuteVideoSounds:@true,
+          kUnityAdsOptionVideoUsesDeviceOrientation:@true
+        }]);
         
         /*
         NSLog(@"SETTING_REWARD_ITEM (while open): %i", [[UnityAds sharedInstance] setRewardItemKey:[[UnityAds sharedInstance] getDefaultRewardItemKey]]);
@@ -163,8 +167,8 @@
 	NSLog(@"unityAdsVideoStarted");
 }
 
-- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey {
-	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@", rewardItemKey);
+- (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped {
+	NSLog(@"unityAds:completedVideoWithRewardItem: -- key: %@ -- skipped: %@", rewardItemKey, skipped ? @"true" : @"false");
     [self.loadingImage setImage:[UIImage imageNamed:@"unityads_reward"]];
 }
 

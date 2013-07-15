@@ -133,10 +133,14 @@
   }
 }
 
-- (void)videoPlayerPlaybackEnded {
+- (void)videoPlayerPlaybackEnded:(BOOL)skipped {
   UALOG_DEBUG(@"");
   if (self.delegate != nil) {
-    [self.delegate stateNotification:kUnityAdsStateActionVideoPlaybackEnded];
+    if(skipped) {
+      [self.delegate stateNotification:kUnityAdsStateActionVideoPlaybackSkipped];
+    } else {
+      [self.delegate stateNotification:kUnityAdsStateActionVideoPlaybackEnded];
+    }
   }
   
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];

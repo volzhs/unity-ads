@@ -314,6 +314,10 @@
     if (self.delegate != nil) {
       [self.delegate mainControllerVideoEnded];
     }
+  } else if (action == kUnityAdsStateActionVideoPlaybackSkipped) {
+    if (self.delegate != nil) {
+      [self.delegate mainControllerVideoSkipped];
+    }
   }
 }
 

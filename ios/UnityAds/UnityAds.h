@@ -34,7 +34,7 @@ typedef enum {
 @protocol UnityAdsDelegate <NSObject>
 
 @required
-- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey;
+- (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped;
 
 @optional
 - (void)unityAdsWillShow:(UnityAds *)unityAds;
@@ -45,7 +45,6 @@ typedef enum {
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds;
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
 - (void)unityAdsFetchFailed:(UnityAds *)unityAds;
-
 @end
 
 @interface UnityAds : NSObject

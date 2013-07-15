@@ -361,7 +361,17 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	
   if (![[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed) {
     [[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
-    [self.delegate unityAds:self completedVideoWithRewardItemKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key];
+    [self.delegate unityAdsVideoCompleted:self rewardItemKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key skipped:FALSE];
+  }
+}
+
+- (void)mainControllerVideoSkipped {
+  UAAssert([NSThread isMainThread]);
+	UALOG_DEBUG(@"");
+	
+  if (![[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed) {
+    [[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
+    [self.delegate unityAdsVideoCompleted:self rewardItemKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key skipped:TRUE];
   }
 }
 

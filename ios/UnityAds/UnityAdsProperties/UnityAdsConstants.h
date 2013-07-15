@@ -22,7 +22,8 @@ typedef enum {
 typedef enum {
   kUnityAdsStateActionWillLeaveApplication,
   kUnityAdsStateActionVideoStartedPlaying,
-  kUnityAdsStateActionVideoPlaybackEnded
+  kUnityAdsStateActionVideoPlaybackEnded,
+  kUnityAdsStateActionVideoPlaybackSkipped
 } UnityAdsViewStateAction;
 
 extern NSString * const kUnityAdsWebViewJSPrefix;

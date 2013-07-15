@@ -114,11 +114,15 @@
   [self showVideoPlaybackError];
 }
 
-- (void)videoPlayerPlaybackEnded {
+- (void)videoPlayerPlaybackEnded:(BOOL)skipped {
   UALOG_DEBUG(@"");
 
   if (self.delegate != nil) {
-    [self.delegate stateNotification:kUnityAdsStateActionVideoPlaybackEnded];
+    if(skipped) {
+      [self.delegate stateNotification:kUnityAdsStateActionVideoPlaybackSkipped];
+    } else {
+      [self.delegate stateNotification:kUnityAdsStateActionVideoPlaybackEnded];
+    }
   }
   
   [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeEndScreen withOptions:nil];
