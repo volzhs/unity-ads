@@ -32,8 +32,8 @@ public class UnityAdsTest : MonoBehaviour {
 		Debug.Log ("ADS: CLOSE!");
 	}
 
-	public void UnityAdsVideoCompleted(string rewardItemKey) {
-		Debug.Log ("ADS: VIDEO COMPLETE : " + rewardItemKey);
+	public void UnityAdsVideoCompleted(string rewardItemKey, bool skipped) {
+		Debug.Log ("ADS: VIDEO COMPLETE : " + rewardItemKey + " - " + skipped);
 	}
 
 	public void UnityAdsVideoStarted() {

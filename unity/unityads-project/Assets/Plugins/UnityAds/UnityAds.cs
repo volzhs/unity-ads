@@ -47,7 +47,7 @@ public class UnityAds : MonoBehaviour {
 		_adsCloseDelegate = action;
 	}
 
-	public delegate void UnityAdsVideoCompleted(string rewardItemKey);
+	public delegate void UnityAdsVideoCompleted(string rewardItemKey, bool skipped);
 	private static UnityAdsVideoCompleted _videoCompletedDelegate;
 	public static void setVideoCompletedDelegate (UnityAdsVideoCompleted action) {
 		_videoCompletedDelegate = action;
@@ -286,11 +286,17 @@ public class UnityAds : MonoBehaviour {
 		UnityAdsExternal.Log("onVideoStarted");
 	}
 	
-	public void onVideoCompleted (string rewardItemKey) {
-		if (_videoCompletedDelegate != null)
-			_videoCompletedDelegate(rewardItemKey);
+	public void onVideoCompleted (string parameters) {
+		if (parameters != null) {
+			List<string> splittedParameters = new List<string>(parameters.Split(';'));
+			string rewardItemKey = splittedParameters.ToArray().GetValue(0).ToString();
+			bool skipped = splittedParameters.ToArray().GetValue(1).ToString() == "true" ? true : false;
+			
+			if (_videoCompletedDelegate != null)
+				_videoCompletedDelegate(rewardItemKey, skipped);
 		
-		UnityAdsExternal.Log("onVideoCompleted: " + rewardItemKey);
+			UnityAdsExternal.Log("onVideoCompleted: " + rewardItemKey + " - " + skipped);
+		}
 	}
 	
 	public void onFetchCompleted () {
