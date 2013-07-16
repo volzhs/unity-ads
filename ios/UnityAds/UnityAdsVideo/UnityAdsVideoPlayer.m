@@ -250,7 +250,8 @@
 - (void)_logVideoAnalytics {
   UALOG_DEBUG(@"_logVideoAnalytics");
 	self.videoPosition++;
-  [[UnityAdsAnalyticsUploader sharedInstance] logVideoAnalyticsWithPosition:self.videoPosition campaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+  UnityAdsCampaign *campaign = [[UnityAdsCampaignManager sharedInstance] selectedCampaign];
+  [[UnityAdsAnalyticsUploader sharedInstance] logVideoAnalyticsWithPosition:self.videoPosition campaignId:campaign.id viewed:campaign.viewed];
 }
 
 @end

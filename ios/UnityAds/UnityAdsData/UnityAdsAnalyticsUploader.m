@@ -146,9 +146,9 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 
 #pragma mark - Video analytics
 
-- (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaign:(UnityAdsCampaign *)campaign {
+- (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaignId:(NSString *)campaignId viewed:(BOOL)viewed {
   UALOG_DEBUG(@"");
-	if (campaign == nil) {
+	if (campaignId == nil) {
 		UALOG_DEBUG(@"Campaign is nil.");
 		return;
 	}
@@ -168,20 +168,21 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 			positionString = kUnityAdsAnalyticsEventTypeVideoEnd;
 
     if (positionString != nil) {
-      NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?%@=%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaign.id, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
+      NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?%@=%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaignId, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
 
       if ([[UnityAdsShowOptionsParser sharedInstance] gamerSID] != nil) {
         trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsShowOptionsParser sharedInstance] gamerSID]];
       }
       
-      if (!campaign.viewed) {
-        [self performSelector:@selector(sendTrackingCallWithQueryString:) onThread:self.backgroundThread withObject:trackingQuery waitUntilDone:NO];
+      if (!viewed) {
+        [self performSelector:@selector(sendTrackingCallWithQueryString:) onThread:self.backgroundThread withObject:trackingQuery waitUntilDone:YES];
       }
-     }
+    }
 	});
 }
 
 - (void)sendTrackingCallWithQueryString:(NSString *)queryString {
+  UALOG_DEBUG(@"");
   NSArray *queryStringComponents = [queryString componentsSeparatedByString:@"?"];
   NSString *trackingPath = [queryStringComponents objectAtIndex:0];
   queryString = [queryStringComponents objectAtIndex:1];
