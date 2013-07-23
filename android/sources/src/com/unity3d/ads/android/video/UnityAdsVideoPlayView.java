@@ -631,6 +631,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			
 			if (UnityAdsProperties.CURRENT_ACTIVITY != null && !_playHeadHasMoved && _bufferingStartedMillis > 0 && 
 				(System.currentTimeMillis() - _bufferingStartedMillis) > (UnityAdsProperties.MAX_BUFFERING_WAIT_SECONDS * 1000)) {
+				this.cancel();
 				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
