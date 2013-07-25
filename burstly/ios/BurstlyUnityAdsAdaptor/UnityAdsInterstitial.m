@@ -15,7 +15,7 @@
 - (id)initWithParams:(NSDictionary *)params {
     self = [super init];
     if(self != nil) {
-        _params = [NSMutableDictionary dictionary];
+        _params = [[NSMutableDictionary alloc] init];
                 
         NSString *noOfferScreenValue = [params objectForKey:kUnityAdsOptionNoOfferscreenKey];
         NSString *openAnimatedValue = [params objectForKey:kUnityAdsOptionOpenAnimatedKey];
@@ -24,22 +24,27 @@
         NSString *videoUsesDeviceOrientationValue = [params objectForKey:kUnityAdsOptionVideoUsesDeviceOrientation];
         
         if(noOfferScreenValue != nil) {
-            [_params setObject:@true forKey:kUnityAdsOptionNoOfferscreenKey];
+            [_params setObject:noOfferScreenValue forKey:kUnityAdsOptionNoOfferscreenKey];
         }
         if(openAnimatedValue != nil) {
-            [_params setObject:@true forKey:kUnityAdsOptionOpenAnimatedKey];
+            [_params setObject:openAnimatedValue forKey:kUnityAdsOptionOpenAnimatedKey];
         }
         if(gamerSidValue != nil) {
             [_params setObject:gamerSidValue forKey:kUnityAdsOptionGamerSIDKey];
         }
         if(muteVideoSoundsValue != nil) {
-            [_params setObject:@true forKey:kUnityAdsOptionMuteVideoSounds];
+            [_params setObject:muteVideoSoundsValue forKey:kUnityAdsOptionMuteVideoSounds];
         }
         if(videoUsesDeviceOrientationValue != nil) {
-            [_params setObject:@true forKey:kUnityAdsOptionVideoUsesDeviceOrientation];
+            [_params setObject:videoUsesDeviceOrientationValue forKey:kUnityAdsOptionVideoUsesDeviceOrientation];
         }
     }
     return self;
+}
+
+- (void)dealloc {
+    [_params dealloc];
+    [super dealloc];
 }
 
 /**
@@ -69,7 +74,7 @@
 - (void)presentInterstitial {
     UALOG_DEBUG(@"");
     [[UnityAds sharedInstance] setViewController:[[self delegate] viewControllerForModalPresentation] showImmediatelyInNewController:NO];
-    [[UnityAds sharedInstance] show:[_params copy]];
+    [[UnityAds sharedInstance] show:_params];
 }
 
 /*=

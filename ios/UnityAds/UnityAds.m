@@ -18,6 +18,7 @@
 
 NSString * const kUnityAdsRewardItemPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemNameKey = @"name";
+
 NSString * const kUnityAdsOptionNoOfferscreenKey = @"noOfferScreen";
 NSString * const kUnityAdsOptionOpenAnimatedKey = @"openAnimated";
 NSString * const kUnityAdsOptionGamerSIDKey = @"sid";
@@ -232,9 +233,12 @@ static UnityAds *sharedUnityAdsInstance = nil;
   BOOL openAnimated = false;
   if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) {
     openAnimated = YES;
+  } else {
+    if([[UnityAdsMainViewController sharedInstance] isOpen]) {
+      [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:NO withOptions:nil];
+    }
   }
   
-  [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:NO withOptions:nil];
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
   
   if (applyAds && [self canShow]) {
