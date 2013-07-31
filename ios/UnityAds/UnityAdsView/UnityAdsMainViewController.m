@@ -25,7 +25,6 @@
   @property (nonatomic, strong) UnityAdsViewState *currentViewState;
   @property (nonatomic, strong) UnityAdsViewState *previousViewState;
   @property (nonatomic, strong) NSMutableArray *viewStateHandlers;
-  @property (nonatomic, assign) BOOL simulatorOpeningSupportCallSent;
 @end
 
 @implementation UnityAdsMainViewController
@@ -42,7 +41,6 @@
       // Add notification listener
       NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
       [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-      self.simulatorOpeningSupportCallSent = false;
       self.isClosing = false;
     }
   
@@ -51,13 +49,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
-  
-  if ([UnityAdsDevice isSimulator] && !self.simulatorOpeningSupportCallSent) {
-    UALOG_DEBUG(@"");
-    self.simulatorOpeningSupportCallSent = true;
-    [self.currentViewState wasShown];
-    [self.delegate mainControllerDidOpen];
-  }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -189,9 +180,6 @@
     [self _dismissMainViewController:forceMainThread withAnimations:animated];
   }
   
-  if ([UnityAdsDevice isSimulator]) {
-    self.simulatorOpeningSupportCallSent = false;
-  }
   
   return YES;
 }
