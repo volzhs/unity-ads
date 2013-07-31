@@ -26,7 +26,7 @@
 
 @interface UnityAdsMainViewController : UIViewController <UnityAdsViewStateDelegate>
 
-@property (nonatomic, assign) id<UnityAdsMainViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<UnityAdsMainViewControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL isClosing;
 @property (nonatomic, assign) BOOL isOpen;
 

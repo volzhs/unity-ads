@@ -21,7 +21,7 @@
 
 @interface UnityAdsViewState : NSObject
 
-@property (nonatomic, assign) id<UnityAdsViewStateDelegate> delegate;
+@property (nonatomic, weak) id<UnityAdsViewStateDelegate> delegate;
 @property (nonatomic, assign) BOOL waitingToBeShown;
 @property (nonatomic, strong) UIViewController *storeController;
 

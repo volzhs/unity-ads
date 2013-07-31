@@ -21,7 +21,7 @@
 @end
 
 @interface UnityAdsVideoViewController : UIViewController <UnityAdsVideoPlayerDelegate, UIGestureRecognizerDelegate>
-@property (nonatomic, assign) id<UnityAdsVideoControllerDelegate> delegate;
+@property (nonatomic, weak) id<UnityAdsVideoControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL isPlaying;
 @property (nonatomic, assign) BOOL isMuted;
 - (void)playCampaign:(UnityAdsCampaign *)campaignToPlay;

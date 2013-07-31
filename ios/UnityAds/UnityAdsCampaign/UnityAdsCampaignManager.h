@@ -20,7 +20,7 @@
 
 @interface UnityAdsCampaignManager : NSObject
 
-@property (nonatomic, assign) id<UnityAdsCampaignManagerDelegate> delegate;
+@property (nonatomic, weak) id<UnityAdsCampaignManagerDelegate> delegate;
 @property (nonatomic, strong) NSArray *campaigns;
 @property (nonatomic, strong) NSDictionary *campaignData;
 @property (nonatomic, strong) UnityAdsCampaign *selectedCampaign;

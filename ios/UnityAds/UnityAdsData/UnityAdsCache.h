@@ -18,7 +18,7 @@
 
 @interface UnityAdsCache : NSObject
 
-@property (nonatomic, assign) id<UnityAdsCacheDelegate> delegate;
+@property (nonatomic, weak) id<UnityAdsCacheDelegate> delegate;
 
 - (void)cacheCampaigns:(NSArray *)campaigns;
 - (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign;

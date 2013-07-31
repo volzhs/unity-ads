@@ -24,7 +24,7 @@
 @end
 
 @interface UnityAdsInitializer : NSObject
-  @property (nonatomic, assign) id<UnityAdsInitializerDelegate> delegate;
+  @property (nonatomic, weak) id<UnityAdsInitializerDelegate> delegate;
   @property (nonatomic, strong) NSThread *backgroundThread;
   @property (nonatomic, assign) dispatch_queue_t queue;
 

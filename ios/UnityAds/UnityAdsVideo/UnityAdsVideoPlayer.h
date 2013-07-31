@@ -30,7 +30,7 @@ typedef enum
 @end
 
 @interface UnityAdsVideoPlayer : AVPlayer
-@property (nonatomic, assign) id<UnityAdsVideoPlayerDelegate> delegate;
+@property (nonatomic, weak) id<UnityAdsVideoPlayerDelegate> delegate;
 @property (nonatomic, strong) AVPlayerLayer *playerLayer;
 - (void)playSelectedVideo;
 - (void)preparePlayer;

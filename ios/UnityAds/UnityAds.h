@@ -49,7 +49,7 @@ typedef enum {
 
 @interface UnityAds : NSObject
 
-@property (nonatomic, assign) id<UnityAdsDelegate> delegate;
+@property (nonatomic, weak) id<UnityAdsDelegate> delegate;
 
 + (UnityAds *)sharedInstance;
 + (BOOL)isSupported;

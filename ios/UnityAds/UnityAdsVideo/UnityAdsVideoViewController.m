@@ -20,7 +20,7 @@
 @interface UnityAdsVideoViewController ()
   @property (nonatomic, strong) UnityAdsVideoView *videoView;
   @property (nonatomic, strong) UnityAdsVideoPlayer *videoPlayer;
-  @property (nonatomic, assign) UnityAdsCampaign *campaignToPlay;
+  @property (nonatomic, weak) UnityAdsCampaign *campaignToPlay;
   @property (nonatomic, strong) UILabel *bufferingLabel;
   @property (nonatomic, strong) UILabel *progressLabel;
   @property (nonatomic, strong) UIButton *skipLabel;
