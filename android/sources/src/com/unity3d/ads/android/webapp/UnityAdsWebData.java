@@ -299,7 +299,7 @@ public class UnityAdsWebData {
 	}
 	
 	private void startNextLoader () {		
-		if (_urlLoaders.size() > 0 && !_isLoading) {
+		if (_urlLoaders != null && _urlLoaders.size() > 0 && !_isLoading) {
 			UnityAdsUtils.Log("Starting next URL loader", this);
 			_isLoading = true;
 			_currentLoader = (UnityAdsUrlLoader)_urlLoaders.remove(0).execute();
@@ -703,8 +703,6 @@ public class UnityAdsWebData {
 		
 		@Override
 		protected String doInBackground(String... params) {
-			Boolean panicCancel = false;
-
 			try {
 				if (_url.toString().startsWith("https://")) {
 					_connection = (HttpsURLConnection)_url.openConnection();
@@ -724,12 +722,8 @@ public class UnityAdsWebData {
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Problems opening connection: " + e.getMessage(), this);
-				panicCancel = true;
-			}
-			
-			if (panicCancel) {
 				cancelInMainThread();
-				panicCancel = false;
+				return null;
 			}
 			
 			if (_connection != null) {				
@@ -741,12 +735,8 @@ public class UnityAdsWebData {
 					}
 					catch (Exception e) {
 						UnityAdsUtils.Log("Problems writing post-data: " + e.getMessage() + ", " + e.getStackTrace(), this);
-						panicCancel = true;
-					}
-					
-					if (panicCancel) {
 						cancelInMainThread();
-						panicCancel = false;
+						return null;
 					}
 				}
 				
@@ -757,12 +747,8 @@ public class UnityAdsWebData {
 				}
 				catch (Exception e) {
 					UnityAdsUtils.Log("Problems opening stream: " + e.getMessage(), this);
-					panicCancel = true;
-				}
-				
-				if (panicCancel) {
 					cancelInMainThread();
-					panicCancel = false;
+					return null;
 				}
 				
 				long total = 0;
@@ -789,13 +775,8 @@ public class UnityAdsWebData {
 				}
 				catch (Exception e) {
 					UnityAdsUtils.Log("Problems loading url! Error-message: " + e.getMessage(), this);
-					panicCancel = true;
-					return null;
-				}
-				
-				if (panicCancel) {
 					cancelInMainThread();
-					panicCancel = false;
+					return null;
 				}
 			}
 			
