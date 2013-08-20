@@ -7,11 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #import "BurstlyAdNetworkAdaptorProtocol.h"
 #import "BurstlyAdBannerProtocol.h"
 #import "BurstlyAdInterstitialProtocol.h"
+
 #import "UnityAdsInterstitial.h"
+
 #import <UnityAds/UnityAds.h>
 
 @interface BurstlyUnityAdsAdaptor : NSObject <BurstlyAdNetworkAdaptorProtocol>

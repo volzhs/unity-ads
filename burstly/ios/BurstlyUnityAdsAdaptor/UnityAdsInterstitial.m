@@ -90,7 +90,7 @@
 
 -(void)unityAdsDidShow:(UnityAds *)unityAds {
     [[self delegate] interstitialWillPresentFullScreen:self];
-    [[self delegate] interstitialDidPresentFillScreen:self];
+    [[self delegate] interstitialDidPresentFullScreen:self];
 }
 
 -(void)unityAdsDidHide:(UnityAds *)unityAds {
