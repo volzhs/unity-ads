@@ -184,17 +184,19 @@ public class UnityAdsUtils {
 	}
 	
 	public static void removeFile (String fileName) {
-		File removeFile = new File (fileName);
-		File cachedVideoFile = new File (UnityAdsUtils.getCacheDirectory() + "/" + removeFile.getName());
-		
-		if (cachedVideoFile.exists()) {
-			if (!cachedVideoFile.delete())
-				Log("Could not delete: " + cachedVideoFile.getAbsolutePath(), UnityAdsUtils.class);
-			else
-				Log("Deleted: " + cachedVideoFile.getAbsolutePath(), UnityAdsUtils.class);
-		}
-		else {
-			Log("File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.", UnityAdsUtils.class);
+		if(fileName != null) {
+			File removeFile = new File (fileName);
+			File cachedVideoFile = new File (UnityAdsUtils.getCacheDirectory() + "/" + removeFile.getName());
+			
+			if (cachedVideoFile.exists()) {
+				if (!cachedVideoFile.delete())
+					Log("Could not delete: " + cachedVideoFile.getAbsolutePath(), UnityAdsUtils.class);
+				else
+					Log("Deleted: " + cachedVideoFile.getAbsolutePath(), UnityAdsUtils.class);
+			}
+			else {
+				Log("File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.", UnityAdsUtils.class);
+			}
 		}
 	}
 	
