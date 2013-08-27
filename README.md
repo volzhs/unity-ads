@@ -1,3 +1,11 @@
+<div style="padding: 10px; border: 1px solid #DEDEDE">
+ <b>Note About iOS7</b>
+ <div>As the release of iOS7 draws closer, we've built ready-made binaries for you to use when updating your applications for
+ iOS7. However, as the binaries are built against a Beta SDK provided by Apple, we have not made these available
+ in our master branch. If you are looking to build iOS7 updated, grab the binaries from the ios7 branch here: 
+ <a href="https://github.com/Applifier/unity-ads/tree/ios7">https://github.com/Applifier/unity-ads/tree/ios7</a>
+</div>
+
 
 
 Welcome to the repository for Unity Ads. To get started, make sure you have an account registered with Applifier.
