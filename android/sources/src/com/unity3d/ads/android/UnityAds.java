@@ -321,7 +321,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case VideoEnd:
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
-					_adsListener.onVideoCompleted(getCurrentRewardItemKey());
+					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), false);
+				}
+				break;
+			case VideoSkipped:
+				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
+					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
+					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), true);
 				}
 				break;
 			case RequestRetryVideoPlay:

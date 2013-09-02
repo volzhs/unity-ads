@@ -33,7 +33,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 																		IUnityAdsVideoPlayerListener {
 
 	public static enum UnityAdsMainViewState { WebView, VideoPlayer };
-	public static enum UnityAdsMainViewAction { VideoStart, VideoEnd, BackButtonPressed, RequestRetryVideoPlay };
+	public static enum UnityAdsMainViewAction { VideoStart, VideoEnd, VideoSkipped, BackButtonPressed, RequestRetryVideoPlay };
 	private static final int FILL_PARENT = -1;
 	
 	// Views
@@ -340,7 +340,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		}
 		
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
-		sendActionToListener(UnityAdsMainViewAction.VideoEnd);
+		sendActionToListener(UnityAdsMainViewAction.VideoSkipped);
 	}
 	
 	// IUnityAdsWebViewListener
