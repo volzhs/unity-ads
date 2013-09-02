@@ -480,7 +480,9 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
 			@Override
 			public void run() {
-				_bufferingText.setVisibility(visibility);
+				if(_bufferingText != null) {
+					_bufferingText.setVisibility(visibility);
+				}
 				if(visibility == VISIBLE) {
 					if(_skipText == null) {
 						createAndAddSkipText();
