@@ -135,7 +135,10 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     }
     
     @Override
-	public void onVideoCompleted (String rewardItemKey) {
+	public void onVideoCompleted (String rewardItemKey, boolean skipped) {
+    	if(skipped) {
+    		Log.d(UnityAdsConstants.LOG_NAME, "Video was skipped!");
+    	}
     	_statusImage.setImageResource(R.drawable.unityads_reward);
     }
 	

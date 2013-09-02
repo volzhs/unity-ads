@@ -207,8 +207,8 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	}
 
 	@Override
-	public void onVideoCompleted(String rewardItemKey) {
-		sendMessageToUnity3D("onVideoCompleted", rewardItemKey + ";false");
+	public void onVideoCompleted(String rewardItemKey, boolean skipped) {
+		sendMessageToUnity3D("onVideoCompleted", rewardItemKey + ";" + (skipped ? "true" : "false"));
 	}
 
 	@Override
