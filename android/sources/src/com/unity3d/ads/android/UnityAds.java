@@ -563,6 +563,19 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private void init (Activity activity, String gameId, IUnityAdsListener listener) {
 		if (_initialized) return; 
 		
+		if(gameId.length() == 0) {
+			throw new IllegalArgumentException("gameId is empty");
+		} else {
+			try {
+				int gameIdInteger = Integer.parseInt(gameId);
+				if(gameIdInteger <= 0) {
+					throw new IllegalArgumentException("gameId is invalid");
+				}
+			} catch(NumberFormatException e) {
+				throw new IllegalArgumentException("gameId does not parse as an integer");
+			}
+		}
+		
 		instance = this;
 		setListener(listener);
 		
