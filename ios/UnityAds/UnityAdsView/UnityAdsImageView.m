@@ -105,8 +105,12 @@
     
     //[self setTransform:CGAffineTransformMakeTranslation(0, -(109 / 2))];
     
-    [self setFrame:newPos];
-    [self setNeedsLayout];
+    if(isnan(newPos.origin.x) || isnan(newPos.origin.y) || isnan(newPos.size.width) || isnan(newPos.size.height)) {
+      UALOG_DEBUG(@"Invalid frame rectangle");
+    } else {
+      [self setFrame:newPos];
+      [self setNeedsLayout];
+    }
   }
   
   self.data = nil;
