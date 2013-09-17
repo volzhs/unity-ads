@@ -229,6 +229,11 @@ extern NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey;
 extern NSString * const kUnityAdsGoogleAnalyticsEventValueKey;
 extern NSString * const kUnityAdsGoogleAnalyticsEventTypeKey;
 
+/* Zones */
+
+extern NSString * const kUnityAdsZoneIdKey;
+extern NSString * const kUnityAdsZoneNameKey;
+
 @interface UnityAdsConstants : NSObject
 
 @end

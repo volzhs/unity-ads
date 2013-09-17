@@ -216,6 +216,11 @@ NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey = @"cachingDura
 NSString * const kUnityAdsGoogleAnalyticsEventValueKey = @"eventValue";
 NSString * const kUnityAdsGoogleAnalyticsEventTypeKey = @"eventType";
 
+/* Zones */
+
+NSString * const kUnityAdsZoneIdKey = @"id";
+NSString * const kUnityAdsZoneNameKey = @"name";
+
 @implementation UnityAdsConstants
 
 @end
