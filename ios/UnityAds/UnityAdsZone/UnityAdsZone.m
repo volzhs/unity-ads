@@ -29,6 +29,26 @@
   return [self._options valueForKey:kUnityAdsZoneIdKey];
 }
 
+- (BOOL)noWebView {
+  return [self._options valueForKey:kUnityAdsZoneNoWebViewKey];
+}
+
+- (BOOL)noOfferScreen {
+  return [self._options valueForKey:kUnityAdsZoneNoOfferScreenKey];
+}
+
+- (BOOL)openAnimated {
+  return [self._options valueForKey:kUnityAdsZoneOpenAnimatedKey];
+}
+
+- (BOOL)muteVideoSounds {
+  return [self._options valueForKey:kUnityAdsZoneMuteVideoSoundsKey];
+}
+
+- (BOOL)useDeviceOrientationForVideo {
+  return [self._options valueForKey:kUnityAdsZoneUseDeviceOrientationForVideoKey];
+}
+
 - (BOOL)allowsOverride:(NSString *)option {
   id allowOverrides = [self._options objectForKey:kUnityAdsZoneAllowOverrides];
   return [allowOverrides indexOfObject:option] != NSNotFound;

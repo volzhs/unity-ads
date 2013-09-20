@@ -222,6 +222,11 @@ NSString * const kUnityAdsZonesRootKey = @"zones";
 NSString * const kUnityAdsZoneIdKey = @"id";
 NSString * const kUnityAdsZoneNameKey = @"name";
 NSString * const kUnityAdsZoneAllowOverrides = @"allowClientOverrides";
+NSString * const kUnityAdsZoneNoWebViewKey = @"noWebView";
+NSString * const kUnityAdsZoneNoOfferScreenKey = @"noOfferScreen";
+NSString * const kUnityAdsZoneOpenAnimatedKey = @"openAnimated";
+NSString * const kUnityAdsZoneMuteVideoSoundsKey = @"muteVideoSounds";
+NSString * const kUnityAdsZoneUseDeviceOrientationForVideoKey = @"useDeviceOrientationForVideo";
 
 @implementation UnityAdsConstants
 

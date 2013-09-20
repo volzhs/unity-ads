@@ -235,6 +235,11 @@ extern NSString * const kUnityAdsZonesRootKey;
 extern NSString * const kUnityAdsZoneIdKey;
 extern NSString * const kUnityAdsZoneNameKey;
 extern NSString * const kUnityAdsZoneAllowOverrides;
+extern NSString * const kUnityAdsZoneNoWebViewKey;
+extern NSString * const kUnityAdsZoneNoOfferScreenKey;
+extern NSString * const kUnityAdsZoneOpenAnimatedKey;
+extern NSString * const kUnityAdsZoneMuteVideoSoundsKey;
+extern NSString * const kUnityAdsZoneUseDeviceOrientationForVideoKey;
 
 @interface UnityAdsConstants : NSObject
 
