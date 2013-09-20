@@ -12,6 +12,8 @@
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "UnityAdsZoneParser.h"
+#import "UnityAdsZoneManager.h"
 
 @interface UnityAdsCampaignManager () <NSURLConnectionDelegate, UnityAdsCacheDelegate>
 @property (nonatomic, strong) NSURLConnection *urlConnection;
@@ -159,6 +161,9 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       [[UnityAdsProperties sharedInstance] setAllowVideoSkipInSeconds:[[jsonDictionary objectForKey:kUnityAdsCampaignAllowVideoSkipKey] intValue]];
       UALOG_DEBUG(@"ALLOW_VIDEO_SKIP: %i", [UnityAdsProperties sharedInstance].allowVideoSkipInSeconds);
     }
+    
+    id zoneManager = [UnityAdsZoneManager sharedInstance];
+    int addedZones = [zoneManager addZones:[UnityAdsZoneParser parseZones:[jsonDictionary objectForKey:kUnityAdsZonesRootKey]]];
     
     self.campaigns = [self deserializeCampaigns:[jsonDictionary objectForKey:kUnityAdsCampaignsKey]];
     if (self.campaigns == nil || [self.campaigns count] == 0) validData = NO;

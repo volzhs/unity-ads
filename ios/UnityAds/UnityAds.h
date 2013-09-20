@@ -69,6 +69,8 @@ typedef enum {
 - (BOOL)canShow;
 - (BOOL)show:(NSDictionary *)options;
 - (BOOL)show;
+- (BOOL)showZone:(NSString *)zoneId;
+- (BOOL)showZone:(NSString *)zoneId withOptions:(NSDictionary *)options;
 - (BOOL)hide;
 - (void)stopAll;
 - (BOOL)hasMultipleRewardItems;

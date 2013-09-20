@@ -12,6 +12,7 @@
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsView/UnityAdsMainViewController.h"
 #import "UnityAdsProperties/UnityAdsShowOptionsParser.h"
+#import "UnityAdsZoneManager.h"
 
 #import "UnityAdsInitializer/UnityAdsDefaultInitializer.h"
 #import "UnityAdsInitializer/UnityAdsNoWebViewInitializer.h"
@@ -178,6 +179,37 @@ static UnityAds *sharedUnityAdsInstance = nil;
 
 - (BOOL)show {
   return [self show:nil];
+}
+
+- (BOOL)showZone:(NSString *)zoneId {
+  return [self showZone:zoneId withOptions:[[NSDictionary alloc] init]];
+}
+
+- (BOOL)showZone:(NSString *)zoneId withOptions:(NSDictionary *)options {
+  UAAssertV([NSThread mainThread], false);
+  if (![self canShow] || ![self canShowAds]) return false;
+  
+  if([[UnityAdsZoneManager sharedInstance] setCurrentZone:zoneId]) {
+    UnityAdsViewStateType state = kUnityAdsViewStateTypeOfferScreen;
+    
+    id zone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+    [zone mergeOptions:options];
+    
+    // If Unity Ads is in "No WebView" -mode, always skip offerscreen
+    if (self.mode == kUnityAdsModeNoWebView)
+      [[UnityAdsShowOptionsParser sharedInstance] setNoOfferScreen:true];
+    
+    if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
+      state = kUnityAdsViewStateTypeVideoPlayer;
+    }
+    
+    [[UnityAdsMainViewController sharedInstance] openAds:[[UnityAdsShowOptionsParser sharedInstance] openAnimated] inState:state withOptions:options];
+    
+    return true;
+  } else {
+    UALOG_DEBUG(@"zoneId '%@' not found", zoneId);
+    return false;
+  }
 }
 
 - (BOOL)hasMultipleRewardItems {

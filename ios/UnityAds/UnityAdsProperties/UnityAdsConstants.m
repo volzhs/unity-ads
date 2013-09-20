@@ -218,8 +218,10 @@ NSString * const kUnityAdsGoogleAnalyticsEventTypeKey = @"eventType";
 
 /* Zones */
 
+NSString * const kUnityAdsZonesRootKey = @"zones";
 NSString * const kUnityAdsZoneIdKey = @"id";
 NSString * const kUnityAdsZoneNameKey = @"name";
+NSString * const kUnityAdsZoneAllowOverrides = @"allowClientOverrides";
 
 @implementation UnityAdsConstants
 

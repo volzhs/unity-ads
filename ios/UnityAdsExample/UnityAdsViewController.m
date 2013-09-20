@@ -54,7 +54,7 @@
     
     // TEST MODE: Do not use in production apps
     [[UnityAds sharedInstance] setDebugMode:YES];
-    [[UnityAds sharedInstance] setTestMode:YES];
+    //[[UnityAds sharedInstance] setTestMode:YES];
     
     if (self.developerId.text != nil) {
         UALOG_DEBUG(@"Setting developerId");
@@ -99,11 +99,11 @@
 
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
         
-        NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{
+        NSLog(@"show: %i", [[UnityAds sharedInstance] showZone:@"testZone1" withOptions:@{
           kUnityAdsOptionNoOfferscreenKey:@false,
           kUnityAdsOptionOpenAnimatedKey:@true,
           kUnityAdsOptionGamerSIDKey:@"gom",
-          kUnityAdsOptionMuteVideoSounds:@true,
+          kUnityAdsOptionMuteVideoSounds:@false,
           kUnityAdsOptionVideoUsesDeviceOrientation:@true
         }]);
         

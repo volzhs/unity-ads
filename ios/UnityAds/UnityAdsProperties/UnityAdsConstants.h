@@ -231,8 +231,10 @@ extern NSString * const kUnityAdsGoogleAnalyticsEventTypeKey;
 
 /* Zones */
 
+extern NSString * const kUnityAdsZonesRootKey;
 extern NSString * const kUnityAdsZoneIdKey;
 extern NSString * const kUnityAdsZoneNameKey;
+extern NSString * const kUnityAdsZoneAllowOverrides;
 
 @interface UnityAdsConstants : NSObject
 
