@@ -1,16 +1,18 @@
 //
-//  UnityAdsRewardItem.h
-//  Copyright (c) 2012 Unity Technologies. All rights reserved.
+//  UnityAdsItem.h
+//  UnityAds
+//
+//  Created by Ville Orkas on 10/1/13.
+//  Copyright (c) 2013 Unity Technologies. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@interface UnityAdsRewardItem : NSObject
+@interface UnityAdsItem : NSObject
 
 @property (nonatomic, strong) NSString *key;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSURL *pictureURL;
-@property (nonatomic, assign) BOOL isValidRewardItem;
 
 - (id)initWithData:(NSDictionary *)data;
 
