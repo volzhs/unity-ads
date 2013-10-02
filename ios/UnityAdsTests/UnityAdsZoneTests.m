@@ -6,9 +6,17 @@
 //  Copyright (c) 2013 Unity Technologies. All rights reserved.
 //
 
-#import "UnityAdsZoneTests.h"
+#import <SenTestingKit/SenTestingKit.h>
 
 #import "UnityAdsSBJsonParser.h"
+
+#import "UnityAdsZone.h"
+#import "UnityAdsZoneManager.h"
+#import "UnityAdsZoneParser.h"
+
+@interface UnityAdsZoneTests : SenTestCase
+
+@end
 
 @implementation UnityAdsZoneTests
 
