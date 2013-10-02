@@ -7,6 +7,7 @@
 //
 
 #import "UnityAdsZoneManager.h"
+#import "UnityAdsIncentivizedZone.h"
 
 @interface UnityAdsZoneManager ()
 

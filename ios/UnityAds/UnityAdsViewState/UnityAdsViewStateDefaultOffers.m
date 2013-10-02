@@ -11,10 +11,13 @@
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
-#import "../UnityAdsCampaign/UnityAdsRewardItem.h"
+#import "../UnityAdsItem/UnityAdsRewardItem.h"
 #import "../UnityAdsView/UnityAdsMainViewController.h"
 #import "../UnityAds.h"
 #import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
+
+#import "../UnityAdsZone/UnityAdsZoneManager.h"
+#import "../UnityAdsZone/UnityAdsIncentivizedZone.h"
 
 @implementation UnityAdsViewStateDefaultOffers
 
@@ -31,7 +34,13 @@
 
 - (void)willBeShown {
   [super willBeShown];
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsRewardItemKeyKey:[[UnityAds sharedInstance] getCurrentRewardItemKey], @"developerOptions":[[UnityAdsShowOptionsParser sharedInstance] getOptionsAsJson]}];
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if([currentZone isIncentivized]) {
+    id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsRewardItemKeyKey:[itemManager getCurrentItem].key, @"developerOptions":[[UnityAdsShowOptionsParser sharedInstance] getOptionsAsJson]}];
+  } else {
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, @"developerOptions":[[UnityAdsShowOptionsParser sharedInstance] getOptionsAsJson]}];
+  }
   
   [self placeToViewHiearchy];
 }

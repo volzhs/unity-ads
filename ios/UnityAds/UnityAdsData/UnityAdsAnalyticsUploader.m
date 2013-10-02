@@ -12,6 +12,9 @@
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
 
+#import "../UnityAdsZone/UnityAdsZoneManager.h"
+#import "../UnityAdsZone/UnityAdsIncentivizedZone.h"
+
 @interface UnityAdsAnalyticsUploader () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSMutableArray *uploadQueue;
 @property (nonatomic, strong) NSDictionary *currentUpload;
@@ -137,7 +140,13 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 
 - (void)sendOpenAppStoreRequest:(UnityAdsCampaign *)campaign {
   if (campaign != nil) {
-    NSString *query = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@", kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamEventTypeKey, kUnityAdsAnalyticsEventTypeOpenAppStore, kUnityAdsAnalyticsQueryParamTrackingIdKey, [[UnityAdsProperties sharedInstance] gamerId], kUnityAdsAnalyticsQueryParamProviderIdKey, campaign.id, kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
+    NSString *query = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@", kUnityAdsAnalyticsQueryParamGameIdKey, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamEventTypeKey, kUnityAdsAnalyticsEventTypeOpenAppStore, kUnityAdsAnalyticsQueryParamTrackingIdKey, [[UnityAdsProperties sharedInstance] gamerId], kUnityAdsAnalyticsQueryParamProviderIdKey, campaign.id];
+    
+    id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+    if([currentZone isIncentivized]) {
+      id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+      query = [NSString stringWithFormat:@"%@&%@=%@", query, kUnityAdsAnalyticsQueryParamRewardItemKey, [itemManager getCurrentItem].key];
+    }
     
     [self performSelector:@selector(sendAnalyticsRequestWithQueryString:) onThread:self.backgroundThread withObject:query waitUntilDone:NO];
   }
@@ -168,8 +177,14 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 			positionString = kUnityAdsAnalyticsEventTypeVideoEnd;
 
     if (positionString != nil) {
-      NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?%@=%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaignId, [[UnityAdsProperties sharedInstance] adsGameId], kUnityAdsAnalyticsQueryParamRewardItemKey, [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey]];
+      NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?t=1", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaignId, [[UnityAdsProperties sharedInstance] adsGameId]];
 
+      id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+      if([currentZone isIncentivized]) {
+        id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamRewardItemKey, [itemManager getCurrentItem].key];
+      }
+      
       if ([[UnityAdsShowOptionsParser sharedInstance] gamerSID] != nil) {
         trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsShowOptionsParser sharedInstance] gamerSID]];
       }

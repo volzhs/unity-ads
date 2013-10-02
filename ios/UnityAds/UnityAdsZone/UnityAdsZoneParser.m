@@ -7,6 +7,7 @@
 //
 
 #import "UnityAdsZoneParser.h"
+#import "UnityAdsIncentivizedZone.h"
 #import "UnityAdsConstants.h"
 
 @implementation UnityAdsZoneParser
@@ -33,7 +34,12 @@
     return nil;
   }
   
-  return [[UnityAdsZone alloc] initWithData:rawZone];
+  BOOL isIncentivized = [[rawZone objectForKey:kUnityAdsZoneIsIncentivizedKey] boolValue];
+  if(isIncentivized) {
+    return [[UnityAdsIncentivizedZone alloc] initWithData:rawZone];
+  } else {
+    return [[UnityAdsZone alloc] initWithData:rawZone];
+  }
 }
 
 @end

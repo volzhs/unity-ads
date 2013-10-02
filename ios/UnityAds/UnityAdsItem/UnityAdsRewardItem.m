@@ -6,12 +6,12 @@
 //  Copyright (c) 2013 Unity Technologies. All rights reserved.
 //
 
-#import "UnityAdsItem.h"
+#import "UnityAdsRewardItem.h"
 
 #import "UnityAds.h"
 #import "UnityAdsConstants.h"
 
-@implementation UnityAdsItem
+@implementation UnityAdsRewardItem
 
 - (id)initWithData:(NSDictionary *)data {
   self = [super init];
@@ -46,6 +46,10 @@
     [NSException raise:@"itemPictureException" format:@"Item picture is invalid"];
   }
 	self.pictureURL = pictureURL;
+}
+
+- (NSDictionary *)getDetails {
+  return @{kUnityAdsRewardItemNameKey:self.name, kUnityAdsRewardItemPictureKey:self.pictureURL};
 }
 
 @end

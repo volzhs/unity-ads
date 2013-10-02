@@ -8,26 +8,36 @@
 
 #import "UnityAdsIncentivizedZone.h"
 #import "UnityAdsConstants.h"
+#import "UnityAdsRewardItem.h"
 
 @interface UnityAdsIncentivizedZone ()
 
-@property (nonatomic, strong) UnityAdsItemManager *_itemManager;
+@property (nonatomic, strong) UnityAdsRewardItemManager *_itemManager;
 
 @end
 
 @implementation UnityAdsIncentivizedZone
 
 - (id)initWithData:(NSDictionary *)options {
-  self = [super init];
+  self = [super initWithData:options];
   if(self) {
-    id items = [options objectForKey:kUnityAdsRewardItemsKey];
-    id defaultItem = [options objectForKey:kUnityAdsRewardItemKey];
-    self._itemManager = [[UnityAdsItemManager alloc] initWithItems:items defaultItem:defaultItem];
+    id items = [options objectForKey:kUnityAdsZoneRewardItemsKey];
+    NSMutableDictionary * itemsDictionary = [[NSMutableDictionary alloc] init];
+    [items enumerateObjectsUsingBlock:^(id rawItem, NSUInteger idx, BOOL *stop) {
+      id item = [[UnityAdsRewardItem alloc] initWithData:rawItem];
+      [itemsDictionary setObject:item forKey:[item key]];
+    }];
+    id defaultItem = [[UnityAdsRewardItem alloc] initWithData:[options objectForKey:kUnityAdsZoneDefaultRewardItemKey]];
+    self._itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:itemsDictionary defaultItem:defaultItem];
   }
   return self;
 }
 
-- (UnityAdsItemManager *)itemManager {
+- (BOOL)isIncentivized {
+  return TRUE;
+}
+
+- (UnityAdsRewardItemManager *)itemManager {
   return self._itemManager;
 }
 

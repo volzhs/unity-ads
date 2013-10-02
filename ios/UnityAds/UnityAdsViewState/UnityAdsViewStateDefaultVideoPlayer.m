@@ -10,9 +10,13 @@
 
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
-#import "../UnityAdsCampaign/UnityAdsRewardItem.h"
+#import "../UnityAdsItem/UnityAdsRewardItem.h"
 #import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
 #import "../UnityAdsData/UnityAdsInstrumentation.h"
+
+#import "../UnityAdsZone/UnityAdsZoneManager.h"
+#import "../UnityAdsZone/UnityAdsIncentivizedZone.h"
+#import "../UnityAdsItem/UnityAdsRewardItemManager.h"
 
 @interface UnityAdsViewStateDefaultVideoPlayer ()
 @end
@@ -105,7 +109,13 @@
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
 
   // Set completed view for the webview right away, so we don't get flickering after videoplay from start->end
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if([currentZone isIncentivized]) {
+    id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsItemKeyKey:[itemManager getCurrentItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  } else {
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoStartedPlaying, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  }
   
   if (!self.waitingToBeShown && [[UnityAdsMainViewController sharedInstance] presentedViewController] != self.videoController) {
     UALOG_DEBUG(@"Placing videoview to hierarchy");
@@ -120,7 +130,13 @@
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventHideSpinner data:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyBuffering}];
   [[UnityAdsWebAppController sharedInstance] sendNativeEventToWebApp:kUnityAdsNativeEventVideoCompleted data:@{kUnityAdsNativeEventCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
   
-  [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoPlaybackError, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if([currentZone isIncentivized]) {
+    id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoPlaybackError, kUnityAdsItemKeyKey:[itemManager getCurrentItem].key, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  } else {
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeCompleted data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIActionVideoPlaybackError, kUnityAdsWebViewEventDataCampaignIdKey:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].id}];
+  }
 
   [[UnityAdsMainViewController sharedInstance] changeState:kUnityAdsViewStateTypeEndScreen withOptions:nil];
   

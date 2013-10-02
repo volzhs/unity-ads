@@ -98,7 +98,7 @@ NSString * const kUnityAdsCampaignAllowVideoSkipKey = @"allowSkipVideoInSeconds"
 
 /* Reward Item JSON Properties */
 
-NSString * const kUnityAdsRewardItemKeyKey = @"itemKey";
+NSString * const kUnityAdsRewardItemKeyKey = @"key";
 NSString * const kUnityAdsRewardNameKey = @"name";
 NSString * const kUnityAdsRewardPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemKey = @"item";
@@ -221,6 +221,9 @@ NSString * const kUnityAdsGoogleAnalyticsEventTypeKey = @"eventType";
 NSString * const kUnityAdsZonesRootKey = @"zones";
 NSString * const kUnityAdsZoneIdKey = @"id";
 NSString * const kUnityAdsZoneNameKey = @"name";
+NSString * const kUnityAdsZoneIsIncentivizedKey = @"incentivised";
+NSString * const kUnityAdsZoneRewardItemsKey = @"rewardItems";
+NSString * const kUnityAdsZoneDefaultRewardItemKey = @"defaultRewardItem";
 NSString * const kUnityAdsZoneAllowOverrides = @"allowClientOverrides";
 NSString * const kUnityAdsZoneNoWebViewKey = @"noWebView";
 NSString * const kUnityAdsZoneNoOfferScreenKey = @"noOfferScreen";

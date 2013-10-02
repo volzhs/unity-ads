@@ -11,7 +11,7 @@
 #import "../UnityAds.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 
-NSString * const kUnityAdsVersion = @"1010";
+NSString * const kUnityAdsVersion = @"1100";
 
 @implementation UnityAdsProperties
 
@@ -90,6 +90,8 @@ static UnityAdsProperties *sharedProperties = nil;
   else {
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamEncryptionKey, [UnityAdsDevice isEncrypted] ? @"true" : @"false"];
   }
+  
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, @"forceWebViewUrl", @"http://ads-dev.local/index.html"];
   
   return queryParams;
 }

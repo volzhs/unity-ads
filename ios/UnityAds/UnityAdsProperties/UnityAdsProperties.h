@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "../UnityAdsCampaign/UnityAdsRewardItem.h"
+#import "../UnityAdsItem/UnityAdsRewardItem.h"
 
 @interface UnityAdsProperties : NSObject
   @property (nonatomic, strong) NSString *webViewBaseUrl;

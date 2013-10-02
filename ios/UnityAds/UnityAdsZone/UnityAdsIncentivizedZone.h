@@ -9,12 +9,14 @@
 #import <Foundation/Foundation.h>
 
 #import "UnityAdsZone.h"
-#import "UnityAdsItemManager.h"
+#import "UnityAdsRewardItemManager.h"
 
 @interface UnityAdsIncentivizedZone : UnityAdsZone
 
 - (id)initWithData:(NSDictionary *)options;
 
-- (UnityAdsItemManager *)itemManager;
+- (BOOL)isIncentivized;
+
+- (UnityAdsRewardItemManager *)itemManager;
 
 @end
