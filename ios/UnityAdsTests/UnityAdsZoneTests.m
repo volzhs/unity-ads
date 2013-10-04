@@ -14,18 +14,33 @@
 #import "UnityAdsZoneManager.h"
 #import "UnityAdsZoneParser.h"
 
-@interface UnityAdsZoneTests : SenTestCase
-
+@interface UnityAdsZoneTests : SenTestCase {
+  UnityAdsZone * validZone;
+}
 @end
 
 @implementation UnityAdsZoneTests
 
-- (void)testZone {
-  id parser = [[UnityAdsSBJsonParser alloc] init];
-  id json = [parser objectWithString:@"{\"id\": \"testId\", \"name\": \"testName\"}"];
-  id test = [UnityAdsZoneParser parseZone:json];
-  id testZoneId = [test getZoneId];
-  STAssertTrue([testZoneId isEqual:@"testId"], @"zoneId does not match");
+- (void)setUp {
+  [super setUp];
+  validZone = [[UnityAdsZone alloc] initWithData:@{
+                                                         @"id": @"testZoneId",
+                                                         @"name": @"testZoneName",
+                                                         @"noOfferScreen": @NO,
+                                                         @"openAnimated": @YES,
+                                                         @"muteVideoSounds": @NO,
+                                                         @"useDeviceOrientationForVideo": @YES,
+                                                         @"allowClientOverrides": @[@"noOfferScreen", @"openAnimated"]}];
+}
+
+- (void)testZoneValidOverrides {
+  [validZone mergeOptions:@{@"openAnimated": @NO}];
+  STAssertTrue(![validZone openAnimated], @"Merge options failed");
+}
+
+- (void)testZoneInvalidOverrides {
+  [validZone mergeOptions:@{@"muteVideoSounds": @YES}];
+  STAssertTrue(![validZone muteVideoSounds], @"Merge options failed");
 }
 
 @end

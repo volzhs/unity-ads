@@ -24,15 +24,17 @@
 }
 
 + (UnityAdsZone *)parseZone:(NSDictionary *)rawZone {
-  id zoneId = [rawZone objectForKey:kUnityAdsZoneIdKey];
+  NSString * zoneId = [rawZone objectForKey:kUnityAdsZoneIdKey];
   if([zoneId length] == 0) {
     return nil;
   }
   
-  id zoneName = [rawZone objectForKey:kUnityAdsZoneNameKey];
+  NSString * zoneName = [rawZone objectForKey:kUnityAdsZoneNameKey];
   if([zoneName length] == 0) {
     return nil;
   }
+  
+  
   
   BOOL isIncentivized = [[rawZone objectForKey:kUnityAdsZoneIsIncentivizedKey] boolValue];
   if(isIncentivized) {
