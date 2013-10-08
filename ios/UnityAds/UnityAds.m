@@ -177,20 +177,24 @@ static UnityAds *sharedUnityAdsInstance = nil;
   UnityAdsViewStateType state = kUnityAdsViewStateTypeOfferScreen;
   
   id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
-  [currentZone mergeOptions:options];
-  
-  // If Unity Ads is in "No WebView" -mode, always skip offerscreen
-  if (self.mode == kUnityAdsModeNoWebView)
-    [currentZone setNoOfferScreen:true];
-  
-  if ([currentZone noOfferScreen]) {
-    if (![self canShowAds]) return false;
-    state = kUnityAdsViewStateTypeVideoPlayer;
+  if(currentZone) {
+    [currentZone mergeOptions:options];
+    
+    // If Unity Ads is in "No WebView" -mode, always skip offerscreen
+    if (self.mode == kUnityAdsModeNoWebView)
+      [currentZone setNoOfferScreen:true];
+    
+    if ([currentZone noOfferScreen]) {
+      if (![self canShowAds]) return false;
+      state = kUnityAdsViewStateTypeVideoPlayer;
+    }
+    
+    [[UnityAdsMainViewController sharedInstance] openAds:[currentZone openAnimated] inState:state withOptions:options];
+    
+    return true;
+  } else {
+    return false;
   }
-  
-  [[UnityAdsMainViewController sharedInstance] openAds:[currentZone openAnimated] inState:state withOptions:options];
-  
-  return true;
 }
 
 - (BOOL)show {
