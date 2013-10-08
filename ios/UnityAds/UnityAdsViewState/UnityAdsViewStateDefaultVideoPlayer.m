@@ -11,7 +11,6 @@
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "../UnityAdsItem/UnityAdsRewardItem.h"
-#import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
 #import "../UnityAdsData/UnityAdsInstrumentation.h"
 
 #import "../UnityAdsZone/UnityAdsZoneManager.h"
@@ -30,7 +29,8 @@
 - (void)willBeShown {
   [super willBeShown];
   
-  if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {    
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if ([currentZone noOfferScreen]) {
     [[UnityAdsCampaignManager sharedInstance] setSelectedCampaign:nil];
     
     UnityAdsCampaign *campaign = [[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] objectAtIndex:0];

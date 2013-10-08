@@ -41,6 +41,8 @@ NSString * const kUnityAdsWebViewDataParamMacAddressKey = @"macAddress";
 NSString * const kUnityAdsWebViewDataParamSdkVersionKey = @"sdkVersion";
 NSString * const kUnityAdsWebViewDataParamIosVersionKey = @"iOSVersion";
 NSString * const kUnityAdsWebViewDataParamSdkIsCurrentKey = @"sdkIsCurrent";
+NSString * const kUnityAdsWebViewDataParamZoneKey = @"zone";
+NSString * const kUnityAdsWebViewDataParamZonesKey = @"zones";
 
 NSString * const kUnityAdsWebViewEventDataCampaignIdKey = @"campaignId";
 NSString * const kUnityAdsWebViewEventDataRewatchKey = @"rewatch";
@@ -230,6 +232,7 @@ NSString * const kUnityAdsZoneNoOfferScreenKey = @"noOfferScreen";
 NSString * const kUnityAdsZoneOpenAnimatedKey = @"openAnimated";
 NSString * const kUnityAdsZoneMuteVideoSoundsKey = @"muteVideoSounds";
 NSString * const kUnityAdsZoneUseDeviceOrientationForVideoKey = @"useDeviceOrientationForVideo";
+NSString * const kUnityAdsZoneAllowVideoSkipInSecondsKey = @"allowVideoSkipInSeconds";
 
 @implementation UnityAdsConstants
 

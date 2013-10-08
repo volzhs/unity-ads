@@ -10,7 +10,6 @@
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
-#import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
 
 #import "../UnityAdsZone/UnityAdsZoneManager.h"
 #import "../UnityAdsZone/UnityAdsIncentivizedZone.h"
@@ -185,8 +184,8 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
         trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamRewardItemKey, [itemManager getCurrentItem].key];
       }
       
-      if ([[UnityAdsShowOptionsParser sharedInstance] gamerSID] != nil) {
-        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [[UnityAdsShowOptionsParser sharedInstance] gamerSID]];
+      if ([currentZone getGamerSid] != nil) {
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [currentZone getGamerSid]];
       }
       
       if (!viewed) {

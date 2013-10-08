@@ -56,6 +56,8 @@ extern NSString * const kUnityAdsWebViewDataParamMacAddressKey;
 extern NSString * const kUnityAdsWebViewDataParamSdkVersionKey;
 extern NSString * const kUnityAdsWebViewDataParamSdkIsCurrentKey;
 extern NSString * const kUnityAdsWebViewDataParamIosVersionKey;
+extern NSString * const kUnityAdsWebViewDataParamZoneKey;
+extern NSString * const kUnityAdsWebViewDataParamZonesKey;
 
 extern NSString * const kUnityAdsWebViewEventDataCampaignIdKey;
 extern NSString * const kUnityAdsWebViewEventDataRewatchKey;
@@ -243,6 +245,7 @@ extern NSString * const kUnityAdsZoneNoOfferScreenKey;
 extern NSString * const kUnityAdsZoneOpenAnimatedKey;
 extern NSString * const kUnityAdsZoneMuteVideoSoundsKey;
 extern NSString * const kUnityAdsZoneUseDeviceOrientationForVideoKey;
+extern NSString * const kUnityAdsZoneAllowVideoSkipInSecondsKey;
 
 @interface UnityAdsConstants : NSObject
 

@@ -11,7 +11,6 @@
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsView/UnityAdsMainViewController.h"
-#import "UnityAdsProperties/UnityAdsShowOptionsParser.h"
 #import "UnityAdsZone/UnityAdsZoneManager.h"
 #import "UnityAdsZone/UnityAdsIncentivizedZone.h"
 
@@ -176,18 +175,20 @@ static UnityAds *sharedUnityAdsInstance = nil;
   if (![self canShow]) return false;
   
   UnityAdsViewStateType state = kUnityAdsViewStateTypeOfferScreen;
-  [[UnityAdsShowOptionsParser sharedInstance] parseOptions:options];
+  
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  [currentZone mergeOptions:options];
   
   // If Unity Ads is in "No WebView" -mode, always skip offerscreen
   if (self.mode == kUnityAdsModeNoWebView)
-    [[UnityAdsShowOptionsParser sharedInstance] setNoOfferScreen:true];
+    [currentZone setNoOfferScreen:true];
   
-  if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
+  if ([currentZone noOfferScreen]) {
     if (![self canShowAds]) return false;
     state = kUnityAdsViewStateTypeVideoPlayer;
   }
   
-  [[UnityAdsMainViewController sharedInstance] openAds:[[UnityAdsShowOptionsParser sharedInstance] openAnimated] inState:state withOptions:options];
+  [[UnityAdsMainViewController sharedInstance] openAds:[currentZone openAnimated] inState:state withOptions:options];
   
   return true;
 }

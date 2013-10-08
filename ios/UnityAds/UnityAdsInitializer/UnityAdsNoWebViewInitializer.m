@@ -62,7 +62,7 @@
 
 #pragma mark - UnityAdsCampaignManagerDelegate
 
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID {
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns gamerID:(NSString *)gamerID {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 }

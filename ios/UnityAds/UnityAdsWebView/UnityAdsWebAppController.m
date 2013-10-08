@@ -17,6 +17,7 @@
 #import "../UnityAdsView/UnityAdsMainViewController.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "../UnityAdsZone/UnityAdsZoneManager.h"
 
 @interface UnityAdsWebAppController ()
   @property (nonatomic, strong) NSDictionary* webAppInitalizationParams;

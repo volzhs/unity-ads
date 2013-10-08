@@ -6,12 +6,14 @@
 //  Copyright (c) 2013 Unity Technologies. All rights reserved.
 //
 
+#import "../UnityAds.h"
 #import "UnityAdsZone.h"
 #import "UnityAdsConstants.h"
 
 @interface UnityAdsZone ()
 
 @property (nonatomic, strong) NSMutableDictionary *_options;
+@property (nonatomic, strong) NSString * _gamerSid;
 
 @end
 
@@ -21,6 +23,7 @@
   self = [super init];
   if(self) {
     self._options = [NSMutableDictionary dictionaryWithDictionary:options];
+    self._gamerSid = nil;
   }
   return self;
 }
@@ -31,6 +34,10 @@
 
 - (NSString *)getZoneId {
   return [self._options valueForKey:kUnityAdsZoneIdKey];
+}
+
+- (NSDictionary *)getZoneOptions {
+  return self._options;
 }
 
 - (BOOL)noWebView {
@@ -53,6 +60,23 @@
   return [[self._options valueForKey:kUnityAdsZoneUseDeviceOrientationForVideoKey] boolValue];
 }
 
+- (NSString *)getGamerSid {
+  return self._gamerSid;
+}
+
+- (void)setGamerSid:(NSString *)gamerSid {
+  self._gamerSid = gamerSid;
+}
+
+- (void)setNoOfferScreen:(BOOL)noOfferScreen {
+  NSString *stringValue = noOfferScreen ? @"1" : @"0";
+  [self._options setObject:stringValue forKey:kUnityAdsZoneNoOfferScreenKey];
+}
+
+- (int)allowVideoSkipInSeconds {
+  return [[self._options valueForKey:kUnityAdsZoneAllowVideoSkipInSecondsKey] integerValue];
+}
+
 - (BOOL)allowsOverride:(NSString *)option {
   id allowOverrides = [self._options objectForKey:kUnityAdsZoneAllowOverrides];
   return [allowOverrides indexOfObject:option] != NSNotFound;
@@ -64,6 +88,10 @@
       [self._options setObject:optionValue forKey:optionKey];
     }
   }];
+  NSString * gamerSid = [options valueForKey:kUnityAdsOptionGamerSIDKey];
+  if(gamerSid != nil) {
+    [self setGamerSid:gamerSid];
+  }
 }
 
 @end

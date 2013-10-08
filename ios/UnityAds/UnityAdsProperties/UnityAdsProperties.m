@@ -29,7 +29,6 @@ static UnityAdsProperties *sharedProperties = nil;
 - (UnityAdsProperties *)init {
   if (self = [super init]) {
     [self setMaxNumberOfAnalyticsRetries:5];
-    [self setAllowVideoSkipInSeconds:0];
     [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
     [self setCampaignQueryString:[self _createCampaignQueryString]];
     [self setSdkIsCurrent:true];
