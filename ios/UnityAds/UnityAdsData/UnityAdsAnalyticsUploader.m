@@ -176,16 +176,22 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 			positionString = kUnityAdsAnalyticsEventTypeVideoEnd;
 
     if (positionString != nil) {
-      NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@?t=1", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaignId, [[UnityAdsProperties sharedInstance] adsGameId]];
+      NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaignId, [[UnityAdsProperties sharedInstance] adsGameId]];
 
       id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
       if([currentZone isIncentivized]) {
         id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
-        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamRewardItemKey, [itemManager getCurrentItem].key];
+        trackingQuery = [NSString stringWithFormat:@"%@?%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamRewardItemKey, [itemManager getCurrentItem].key];
       }
       
       if ([currentZone getGamerSid] != nil) {
-        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [currentZone getGamerSid]];
+        NSString * formatString = nil;
+        if([currentZone isIncentivized]) {
+          formatString = @"%@&%@=%@";
+        } else {
+          formatString = @"%@?%@=%@";
+        }
+        trackingQuery = [NSString stringWithFormat:formatString, trackingQuery, kUnityAdsAnalyticsQueryParamGamerSIDKey, [currentZone getGamerSid]];
       }
       
       if (!viewed) {
