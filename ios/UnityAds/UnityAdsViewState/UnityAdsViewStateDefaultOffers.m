@@ -36,7 +36,7 @@
   id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
   if([currentZone isIncentivized]) {
     id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsWebViewDataParamZoneKey: [currentZone getZoneId], kUnityAdsRewardItemKeyKey:[itemManager getCurrentItem].key}];
+    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsWebViewDataParamZoneKey: [currentZone getZoneId], kUnityAdsItemKeyKey:[itemManager getCurrentItem].key}];
   } else {
     [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeStart data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIOpen, kUnityAdsWebViewDataParamZoneKey: [currentZone getZoneId]}];
   }
