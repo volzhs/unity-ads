@@ -105,6 +105,8 @@
 		78BC12F817392D0D0015A35E /* UnityAdsInstrumentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */; };
 		78CB843A16255FAA00E94915 /* UnityAdsURLProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 78CB843816255FAA00E94915 /* UnityAdsURLProtocol.h */; };
 		78CB843B16255FAA00E94915 /* UnityAdsURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 78CB843916255FAA00E94915 /* UnityAdsURLProtocol.m */; };
+		9945F95B180572A200A97B70 /* UnityAdsZoneParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9945F95A180572A200A97B70 /* UnityAdsZoneParserTests.m */; };
+		9945F95D180575A000A97B70 /* UnityAdsZoneManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9945F95C180575A000A97B70 /* UnityAdsZoneManagerTests.m */; };
 		99A78DBB17E9B81B00731814 /* UnityAdsZoneManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 99A78DB717E9B81B00731814 /* UnityAdsZoneManager.h */; };
 		99A78DBC17E9B81B00731814 /* UnityAdsZoneManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 99A78DB817E9B81B00731814 /* UnityAdsZoneManager.m */; };
 		99A78DBD17E9B81B00731814 /* UnityAdsZoneParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 99A78DB917E9B81B00731814 /* UnityAdsZoneParser.h */; };
@@ -251,6 +253,8 @@
 		78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsInstrumentation.m; sourceTree = "<group>"; };
 		78CB843816255FAA00E94915 /* UnityAdsURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsURLProtocol.h; sourceTree = "<group>"; };
 		78CB843916255FAA00E94915 /* UnityAdsURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsURLProtocol.m; sourceTree = "<group>"; };
+		9945F95A180572A200A97B70 /* UnityAdsZoneParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsZoneParserTests.m; sourceTree = "<group>"; };
+		9945F95C180575A000A97B70 /* UnityAdsZoneManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsZoneManagerTests.m; sourceTree = "<group>"; };
 		99A78DB717E9B81B00731814 /* UnityAdsZoneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnityAdsZoneManager.h; path = UnityAdsZone/UnityAdsZoneManager.h; sourceTree = "<group>"; };
 		99A78DB817E9B81B00731814 /* UnityAdsZoneManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnityAdsZoneManager.m; path = UnityAdsZone/UnityAdsZoneManager.m; sourceTree = "<group>"; };
 		99A78DB917E9B81B00731814 /* UnityAdsZoneParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnityAdsZoneParser.h; path = UnityAdsZone/UnityAdsZoneParser.h; sourceTree = "<group>"; };
@@ -505,6 +509,8 @@
 		99FE3C1717E87E1400845E0B /* UnityAdsTests */ = {
 			isa = PBXGroup;
 			children = (
+				9945F95C180575A000A97B70 /* UnityAdsZoneManagerTests.m */,
+				9945F95A180572A200A97B70 /* UnityAdsZoneParserTests.m */,
 				99A8516917FC45160090F8FF /* UnityAdsRewardItemManagerTests.m */,
 				99A8516717FC41C00090F8FF /* UnityAdsRewardItemTests.m */,
 				99FE3C2517E87E9200845E0B /* UnityAdsZoneTests.m */,
@@ -919,6 +925,8 @@
 			files = (
 				99FE3C2617E87E9200845E0B /* UnityAdsZoneTests.m in Sources */,
 				99A8516A17FC45160090F8FF /* UnityAdsRewardItemManagerTests.m in Sources */,
+				9945F95D180575A000A97B70 /* UnityAdsZoneManagerTests.m in Sources */,
+				9945F95B180572A200A97B70 /* UnityAdsZoneParserTests.m in Sources */,
 				99A8516817FC41C00090F8FF /* UnityAdsRewardItemTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
