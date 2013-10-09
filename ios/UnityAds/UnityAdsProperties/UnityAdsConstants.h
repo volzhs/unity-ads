@@ -236,6 +236,7 @@ extern NSString * const kUnityAdsGoogleAnalyticsEventTypeKey;
 extern NSString * const kUnityAdsZonesRootKey;
 extern NSString * const kUnityAdsZoneIdKey;
 extern NSString * const kUnityAdsZoneNameKey;
+extern NSString * const kUnityAdsZoneDefaultKey;
 extern NSString * const kUnityAdsZoneIsIncentivizedKey;
 extern NSString * const kUnityAdsZoneRewardItemsKey;
 extern NSString * const kUnityAdsZoneDefaultRewardItemKey;

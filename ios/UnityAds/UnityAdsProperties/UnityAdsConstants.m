@@ -223,6 +223,7 @@ NSString * const kUnityAdsGoogleAnalyticsEventTypeKey = @"eventType";
 NSString * const kUnityAdsZonesRootKey = @"zones";
 NSString * const kUnityAdsZoneIdKey = @"id";
 NSString * const kUnityAdsZoneNameKey = @"name";
+NSString * const kUnityAdsZoneDefaultKey = @"default";
 NSString * const kUnityAdsZoneIsIncentivizedKey = @"incentivised";
 NSString * const kUnityAdsZoneRewardItemsKey = @"rewardItems";
 NSString * const kUnityAdsZoneDefaultRewardItemKey = @"defaultRewardItem";

@@ -34,8 +34,6 @@
     return nil;
   }
   
-  
-  
   BOOL isIncentivized = [[rawZone objectForKey:kUnityAdsZoneIsIncentivizedKey] boolValue];
   if(isIncentivized) {
     return [[UnityAdsIncentivizedZone alloc] initWithData:rawZone];
