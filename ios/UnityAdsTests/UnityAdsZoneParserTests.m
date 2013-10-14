@@ -8,6 +8,9 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
+#import <objc/objc-runtime.h>
+extern void __gcov_flush();
+
 #import "UnityAdsZoneParser.h"
 #import "UnityAdsIncentivizedZone.h"
 
@@ -16,6 +19,11 @@
 @end
 
 @implementation UnityAdsZoneParserTests
+
+- (void)tearDown {
+  __gcov_flush();
+  [super tearDown];
+}
 
 - (void)testZoneParserSingleZone {
   UnityAdsZone * zone = [UnityAdsZoneParser parseZone:@{@"id": @"testZone1", @"name": @"testZoneName1"}];

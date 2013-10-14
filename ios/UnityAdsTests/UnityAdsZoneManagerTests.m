@@ -8,6 +8,9 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
+#import <objc/objc-runtime.h>
+extern void __gcov_flush();
+
 #import "UnityAdsZoneManager.h"
 
 @interface UnityAdsZoneManagerTests : SenTestCase {
@@ -23,6 +26,11 @@
   validZone1 = [[UnityAdsZone alloc] initWithData:@{@"id": @"testZoneId1", @"name": @"testZoneName1", @"default": @"true"}];
   validZone2 = [[UnityAdsZone alloc] initWithData:@{@"id": @"testZoneId2", @"name": @"testZoneName2", @"default": @"false"}];
   zoneManager = [[UnityAdsZoneManager alloc] init];
+}
+
+- (void)tearDown {
+  __gcov_flush();
+  [super tearDown];
 }
 
 - (void)testZoneManagerIsEmptyOnInit {

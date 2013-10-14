@@ -8,6 +8,9 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
+#import <objc/objc-runtime.h>
+extern void __gcov_flush();
+
 #import "UnityAdsRewardItemManager.h"
 
 @interface UnityAdsRewardItemManagerTests : SenTestCase {
@@ -22,6 +25,11 @@
   [super setUp];
   validItem1 = [[UnityAdsRewardItem alloc] initWithData:@{@"key": @"testItemKey1", @"name": @"testItemName1", @"picture": @"http://invalid.url.com"}];
   validItem2 = [[UnityAdsRewardItem alloc] initWithData:@{@"key": @"testItemKey2", @"name": @"testItemName2", @"picture": @"http://invalid.url.com"}];
+}
+
+- (void)tearDown {
+  __gcov_flush();
+  [super tearDown];
 }
 
 - (void)testEmptyItems {

@@ -8,6 +8,9 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
+#import <objc/objc-runtime.h>
+extern void __gcov_flush();
+
 #import "UnityAdsRewardItem.h"
 
 @interface UnityAdsRewardItemTests : SenTestCase
@@ -15,6 +18,11 @@
 @end
 
 @implementation UnityAdsRewardItemTests
+
+- (void)tearDown {
+  __gcov_flush();
+  [super tearDown];
+}
 
 - (void)testValidItem {
   id itemData = @{@"key": @"testItemKey", @"name": @"testItemName", @"picture": @"http://invalid.url.com"};
