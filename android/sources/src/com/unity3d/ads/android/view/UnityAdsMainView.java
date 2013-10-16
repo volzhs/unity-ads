@@ -14,9 +14,11 @@ import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
+import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebView;
 import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
+import com.unity3d.ads.android.zone.UnityAdsZone;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -252,9 +254,8 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		if (Build.VERSION.SDK_INT < 9)
 			targetOrientation = 0;
 		
-		if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
-			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION) && 
-			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION).equals(true)) {
+		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+		if (currentZone.useDeviceOrientationForVideo()) {
 			UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			
 			// UNSPECIFIED

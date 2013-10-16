@@ -3,9 +3,6 @@ package com.unity3d.ads.android.properties;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import org.json.JSONObject;
-
-import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
@@ -20,15 +17,11 @@ public class UnityAdsProperties {
 	public static String CAMPAIGN_QUERY_STRING = null;
 	public static String UNITY_ADS_GAME_ID = null;
 	public static String UNITY_ADS_GAMER_ID = null;
-	public static String GAMER_SID = null;
 	public static Boolean TESTMODE_ENABLED = false;
 	public static Activity BASE_ACTIVITY = null;
 	public static Activity CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean UNITY_ADS_DEBUG_MODE = false;
-	public static Map<String, Object> UNITY_ADS_DEVELOPER_OPTIONS = null;
-	public static int ALLOW_VIDEO_SKIP = 0;
-	public static int ALLOW_BACK_BUTTON_SKIP = 0;
 	
 	public static String TEST_DATA = null;
 	public static String TEST_URL = null;
@@ -102,51 +95,9 @@ public class UnityAdsProperties {
 			}
 		}
 		
-		_campaignQueryString = queryString;
-	}
-	
-	public static JSONObject getDeveloperOptionsAsJson () {
-		if (UNITY_ADS_DEVELOPER_OPTIONS != null) {
-			JSONObject options = new JSONObject();
-			
-			boolean noOfferscreen = false;
-			boolean openAnimated = false;
-			boolean muteVideoSounds = false;
-			boolean videoUsesDeviceOrientation = false;
-			
-			try {
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY))
-					noOfferscreen = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY);
-				
-				options.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, noOfferscreen);
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY))
-					openAnimated = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY);
-				
-				options.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, openAnimated);
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS))
-					muteVideoSounds = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS);
-				
-				options.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, muteVideoSounds);
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY))
-					options.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION))
-					videoUsesDeviceOrientation = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION);
-				
-				options.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, videoUsesDeviceOrientation);
-
-			}
-			catch (Exception e) {
-				UnityAdsUtils.Log("Could not create JSON", UnityAdsProperties.class);
-			}
-
-			return options;
-		}
+		queryString = String.format("%s&%s=%s", queryString, "forceWebViewUrl", "http://ads-dev.local/index.html");
 		
-		return null;
+		_campaignQueryString = queryString;
 	}
 	
 	public static String getCampaignQueryUrl () {

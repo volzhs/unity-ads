@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -13,7 +12,9 @@ import com.unity3d.ads.android.view.UnityAdsBufferingView;
 import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
 import com.unity3d.ads.android.view.UnityAdsMuteVideoButton.UnityAdsMuteVideoButtonState;
 import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
+import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
+import com.unity3d.ads.android.zone.UnityAdsZone;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -35,7 +36,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	
 	private RelativeLayout _skipText = null;
 	private TextView _skipTextView = null;
-	private int _skipTimeInSeconds = 0;
+	private long _skipTimeInSeconds = 0;
 	
 	private RelativeLayout _bufferingText = null;
 	
@@ -162,12 +163,13 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	public int getSecondsUntilBackButtonAllowed () {
 		int timeUntilBackButton = 0;
 		
-		if (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP > 0 && _videoStartedPlayingMillis > 0) {
-			timeUntilBackButton = Math.round((UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP * 1000) - (System.currentTimeMillis() - _videoStartedPlayingMillis));
+		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+		if (currentZone.allowVideoSkipInSeconds() > 0 && _videoStartedPlayingMillis > 0) {
+			timeUntilBackButton = Math.round((currentZone.allowVideoSkipInSeconds() * 1000) - (System.currentTimeMillis() - _videoStartedPlayingMillis));
 			if (timeUntilBackButton < 0)
 				timeUntilBackButton = 0;
 		}
-		else if (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP > 0 && _videoStartedPlayingMillis <= 0){
+		else if (currentZone.allowVideoSkipInSeconds() > 0 && _videoStartedPlayingMillis <= 0){
 			return 1;
 		}
 		
@@ -226,9 +228,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 
 	private void createView () {
-		if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS != null && 
-			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS) && 
-			UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS).equals(true)) {
+		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+		if (currentZone.muteVideoSounds()) {
 			_muted = true;
 		}
 		
@@ -397,12 +398,15 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 	
 	private boolean hasSkipDuration () {
-		return UnityAdsProperties.ALLOW_VIDEO_SKIP > 0;
+		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+		return currentZone.allowVideoSkipInSeconds() > 0;
 	}
 	
-	private int getSkipDuration () {
-		if (hasSkipDuration())
-			return UnityAdsProperties.ALLOW_VIDEO_SKIP;
+	private long getSkipDuration () {
+		if (hasSkipDuration()) {
+			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+			return currentZone.allowVideoSkipInSeconds();
+		}	
 		
 		return 0;
 	}
@@ -512,7 +516,9 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			case KeyEvent.KEYCODE_BACK:
 				UnityAdsUtils.Log("onKeyDown", this);
 				
-				if (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP == 0 || (UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP > 0 && getSecondsUntilBackButtonAllowed() == 0)) {
+				UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+				long allowBackButtonSkip = currentZone.disableBackButtonForSeconds();
+				if (allowBackButtonSkip == 0 || (allowBackButtonSkip > 0 && getSecondsUntilBackButtonAllowed() == 0)) {
 					clearVideoPlayer();
 					
 					bufferingDuration = getBufferingDuration();
