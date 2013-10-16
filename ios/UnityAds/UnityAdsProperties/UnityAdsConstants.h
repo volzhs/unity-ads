@@ -241,7 +241,6 @@ extern NSString * const kUnityAdsZoneIsIncentivizedKey;
 extern NSString * const kUnityAdsZoneRewardItemsKey;
 extern NSString * const kUnityAdsZoneDefaultRewardItemKey;
 extern NSString * const kUnityAdsZoneAllowOverrides;
-extern NSString * const kUnityAdsZoneNoWebViewKey;
 extern NSString * const kUnityAdsZoneNoOfferScreenKey;
 extern NSString * const kUnityAdsZoneOpenAnimatedKey;
 extern NSString * const kUnityAdsZoneMuteVideoSoundsKey;

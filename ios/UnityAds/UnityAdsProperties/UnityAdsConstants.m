@@ -228,7 +228,6 @@ NSString * const kUnityAdsZoneIsIncentivizedKey = @"incentivised";
 NSString * const kUnityAdsZoneRewardItemsKey = @"rewardItems";
 NSString * const kUnityAdsZoneDefaultRewardItemKey = @"defaultRewardItem";
 NSString * const kUnityAdsZoneAllowOverrides = @"allowClientOverrides";
-NSString * const kUnityAdsZoneNoWebViewKey = @"noWebView";
 NSString * const kUnityAdsZoneNoOfferScreenKey = @"noOfferScreen";
 NSString * const kUnityAdsZoneOpenAnimatedKey = @"openAnimated";
 NSString * const kUnityAdsZoneMuteVideoSoundsKey = @"muteVideoSounds";
