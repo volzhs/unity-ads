@@ -162,11 +162,31 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 	
+	public boolean setZone(String zoneId) {
+		if(!_showingAds) {
+			return UnityAdsWebData.getZoneManager().setCurrentZone(zoneId);
+		}		
+		return false;
+	}
+	
+	public boolean setZone(String zoneId, String rewardItemKey) {
+		if(!_showingAds && setZone(zoneId)) {
+			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+			if(currentZone.isIncentivized()) {
+				UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)currentZone).itemManager();
+				return itemManager.setCurrentItem(rewardItemKey);
+			}
+		}
+		return false;
+	}
+	
 	public boolean show (Map<String, Object> options) {
 		if (canShow()) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 			
 			if (currentZone != null) {
+				currentZone.mergeOptions(options);
+				
 				if (currentZone.noOfferScreen()) {
 					if (webdata.getViewableVideoPlanCampaigns().size() > 0) {
 						UnityAdsCampaign selectedCampaign = webdata.getViewableVideoPlanCampaigns().get(0);
@@ -180,9 +200,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 						currentZone.setGamerSid(gamerSidString);
 					}
 				}
+				
+				return show();
 			}
-			
-			return show();
+					
 		}
 		
 		return false;

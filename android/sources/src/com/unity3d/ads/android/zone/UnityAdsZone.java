@@ -27,10 +27,12 @@ public class UnityAdsZone {
 		_zoneName = zoneObject.getString(UnityAdsConstants.UNITY_ADS_ZONE_NAME_KEY);
 		_default = zoneObject.optBoolean(UnityAdsConstants.UNITY_ADS_ZONE_DEFAULT_KEY, true);
 		
-		JSONArray allowClientOverrides = zoneObject.getJSONArray(UnityAdsConstants.UNITY_ADS_ZONE_ALLOW_CLIENT_OVERRIDES_KEY);
-		for(int i = 0; i < allowClientOverrides.length(); ++i) {
-			_allowClientOverrides.add(allowClientOverrides.getString(i));
-		}
+		JSONArray allowClientOverrides = zoneObject.optJSONArray(UnityAdsConstants.UNITY_ADS_ZONE_ALLOW_CLIENT_OVERRIDES_KEY);
+		if(allowClientOverrides != null) {
+			for(int i = 0; i < allowClientOverrides.length(); ++i) {
+				_allowClientOverrides.add(allowClientOverrides.getString(i));
+			}
+		}			
 	}
 	
 	public String getZoneId() {
