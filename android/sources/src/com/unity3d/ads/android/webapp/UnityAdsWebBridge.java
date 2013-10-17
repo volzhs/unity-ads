@@ -39,7 +39,7 @@ public class UnityAdsWebBridge {
 		}
 	}
 	
-	private IUnityAdsWebBrigeListener _listener = null;
+	private IUnityAdsWebBridgeListener _listener = null;
 	
 	private UnityAdsWebEvent getEventType (String event) {
 		for (UnityAdsWebEvent evt : UnityAdsWebEvent.values()) {
@@ -50,7 +50,7 @@ public class UnityAdsWebBridge {
 		return null;
 	}
 	
-	public UnityAdsWebBridge (IUnityAdsWebBrigeListener listener) {
+	public UnityAdsWebBridge (IUnityAdsWebBridgeListener listener) {
 		_listener = listener;
 	}
 	

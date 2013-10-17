@@ -2,7 +2,7 @@ package com.unity3d.ads.android.webapp;
 
 import org.json.JSONObject;
 
-public interface IUnityAdsWebBrigeListener {
+public interface IUnityAdsWebBridgeListener {
 	public void onPlayVideo (JSONObject data);
 	public void onPauseVideo (JSONObject data);
 	public void onCloseAdsView (JSONObject data);

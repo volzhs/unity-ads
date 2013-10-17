@@ -38,7 +38,7 @@ import android.os.PowerManager;
 
 public class UnityAds implements IUnityAdsCacheListener, 
 										IUnityAdsWebDataListener, 
-										IUnityAdsWebBrigeListener,
+										IUnityAdsWebBridgeListener,
 										IUnityAdsMainViewListener {
 	
 	// Reward item HashMap keys
