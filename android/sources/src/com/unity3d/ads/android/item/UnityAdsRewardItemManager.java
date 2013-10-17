@@ -1,6 +1,7 @@
 package com.unity3d.ads.android.item;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -16,6 +17,8 @@ public class UnityAdsRewardItemManager {
 	private UnityAdsRewardItem _defaultItem = null;
 	
 	public UnityAdsRewardItemManager(JSONArray rewardItemArray, String defaultItem) {
+		_rewardItems = new HashMap<String, UnityAdsRewardItem>();
+		
 		for(int i = 0; i < rewardItemArray.length(); ++i) {
 			try {
 				JSONObject rewardItemObject = rewardItemArray.getJSONObject(i);

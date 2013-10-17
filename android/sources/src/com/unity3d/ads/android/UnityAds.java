@@ -487,12 +487,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 			JSONObject setViewData = new JSONObject();
 			
 			try {
-				setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_INITCOMPLETE);
-				
 				UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
+				
+				setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_INITCOMPLETE);
+				setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ZONE_KEY, zone.getZoneId());
+				
 				if(zone.isIncentivized()) {
 					UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
-					setViewData.put(UnityAdsConstants.UNITY_ADS_REWARD_ITEMKEY_KEY, itemManager.getCurrentItem().getKey());
+					setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_REWARD_ITEM_KEY, itemManager.getCurrentItem().getKey());
 				}
 			}
 			catch (Exception e) {
@@ -629,12 +631,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 		JSONObject data = new JSONObject();
 		
 		try  {
-			data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN);
-			
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
+			
+			data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN);
+			data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ZONE_KEY, zone.getZoneId());
+			
 			if(zone.isIncentivized()) {
 				UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
-				data.put(UnityAdsConstants.UNITY_ADS_REWARD_ITEMKEY_KEY, itemManager.getCurrentItem().getKey());
+				data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_REWARD_ITEM_KEY, itemManager.getCurrentItem().getKey());
 			}
 		}
 		catch (Exception e) {

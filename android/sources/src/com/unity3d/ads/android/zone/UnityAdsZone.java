@@ -25,7 +25,7 @@ public class UnityAdsZone {
 		_options = zoneObject;
 		_zoneId = zoneObject.getString(UnityAdsConstants.UNITY_ADS_ZONE_ID_KEY);
 		_zoneName = zoneObject.getString(UnityAdsConstants.UNITY_ADS_ZONE_NAME_KEY);
-		_default = zoneObject.getBoolean(UnityAdsConstants.UNITY_ADS_ZONE_DEFAULT_KEY);
+		_default = zoneObject.optBoolean(UnityAdsConstants.UNITY_ADS_ZONE_DEFAULT_KEY, true);
 		
 		JSONArray allowClientOverrides = zoneObject.getJSONArray(UnityAdsConstants.UNITY_ADS_ZONE_ALLOW_CLIENT_OVERRIDES_KEY);
 		for(int i = 0; i < allowClientOverrides.length(); ++i) {

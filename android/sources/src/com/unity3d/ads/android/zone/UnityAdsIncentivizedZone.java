@@ -3,6 +3,7 @@ package com.unity3d.ads.android.zone;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
@@ -12,8 +13,8 @@ public class UnityAdsIncentivizedZone extends UnityAdsZone {
 	
 	public UnityAdsIncentivizedZone(JSONObject zoneObject) throws JSONException {
 		super(zoneObject);
-		String defaultItem = zoneObject.getString(UnityAdsConstants.UNITY_ADS_ZONE_DEFAULT_REWARD_ITEM_KEY);
-		_rewardItems = new UnityAdsRewardItemManager(zoneObject.getJSONArray(UnityAdsConstants.UNITY_ADS_ZONE_REWARD_ITEMS_KEY), defaultItem);
+		UnityAdsRewardItem defaultItem = new UnityAdsRewardItem(zoneObject.getJSONObject(UnityAdsConstants.UNITY_ADS_ZONE_DEFAULT_REWARD_ITEM_KEY));
+		_rewardItems = new UnityAdsRewardItemManager(zoneObject.getJSONArray(UnityAdsConstants.UNITY_ADS_ZONE_REWARD_ITEMS_KEY), defaultItem.getKey());
 	}
 	
 	@Override
