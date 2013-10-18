@@ -507,16 +507,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (canShowAds()) {
 			JSONObject setViewData = new JSONObject();
 			
-			try {
-				UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
-				
+			try {				
 				setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_INITCOMPLETE);
-				setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ZONE_KEY, zone.getZoneId());
-				
-				if(zone.isIncentivized()) {
-					UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
-					setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_REWARD_ITEM_KEY, itemManager.getCurrentItem().getKey());
-				}
 			}
 			catch (Exception e) {
 				dataOk = false;
