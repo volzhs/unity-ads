@@ -103,4 +103,15 @@ public class UnityAdsZoneManagerTest extends ActivityInstrumentationTestCase2<Un
 		
 		assertTrue(zoneManager.zoneCount() == 2);
 	}
+	
+	public void testZoneManagerClearZones() {
+		zoneManager = new UnityAdsZoneManager(new JSONArray(Arrays.asList(
+			nonIncentivizedZone,
+			incentivizedZone
+		)));
+		
+		assertTrue(zoneManager.zoneCount() == 2);
+		zoneManager.clear();
+		assertTrue(zoneManager.zoneCount() == 0);
+	}
 }

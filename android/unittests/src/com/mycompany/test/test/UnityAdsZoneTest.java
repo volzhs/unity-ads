@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.mycompany.test.UnityAdsTestStartActivity;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 
 public class UnityAdsZoneTest extends ActivityInstrumentationTestCase2<UnityAdsTestStartActivity> {
