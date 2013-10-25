@@ -39,6 +39,13 @@ public class UnityAdsZoneManager {
 		} 
 	}
 	
+	public UnityAdsZone getZone(String zoneId) {
+		if(_zones.containsKey(zoneId)) {
+			return _zones.get(zoneId);
+		}
+		return null;
+	}
+	
 	public UnityAdsZone getCurrentZone() {
 		return _currentZone;
 	}
