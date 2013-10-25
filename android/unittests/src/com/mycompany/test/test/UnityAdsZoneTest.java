@@ -19,6 +19,7 @@ public class UnityAdsZoneTest extends ActivityInstrumentationTestCase2<UnityAdsT
 	}
 	
 	@Override
+	@SuppressWarnings("serial")
 	public void setUp() throws Exception {
 		super.setUp();
 		JSONObject validZoneObject = new JSONObject(new HashMap<String, Object>(){{
@@ -33,6 +34,7 @@ public class UnityAdsZoneTest extends ActivityInstrumentationTestCase2<UnityAdsT
 		validZone = new UnityAdsZone(validZoneObject);
 	}
 	
+	@SuppressWarnings("serial")
 	public void testZoneValidOverrides() {
 		validZone.mergeOptions(new HashMap<String, Object>(){{
 			put("openAnimated", false);
@@ -40,6 +42,7 @@ public class UnityAdsZoneTest extends ActivityInstrumentationTestCase2<UnityAdsT
 		assertTrue(!validZone.openAnimated());
 	}
 	
+	@SuppressWarnings("serial")
 	public void testZoneInvalidOverrides() {
 		validZone.mergeOptions(new HashMap<String, Object>(){{
 			put("muteVideoSounds", true);

@@ -22,6 +22,7 @@ public class UnityAdsZoneManagerTest extends ActivityInstrumentationTestCase2<Un
 	}
 	
 	@Override
+	@SuppressWarnings("serial")
 	public void setUp() throws Exception {
 		super.setUp();
 		
