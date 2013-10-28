@@ -598,8 +598,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private void close () {
 		cancelPauseScreenTimer();
-		UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
-		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeRunner);
+		if(UnityAdsProperties.CURRENT_ACTIVITY != null) {
+			UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeRunner);
+		}
 	}
 	
 	private void open (String view) {
@@ -730,11 +732,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_pauseScreenTimer = new TimerTask() {
 			@Override
 			public void run() {
-				PowerManager pm = (PowerManager)UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext().getSystemService(Context.POWER_SERVICE);			
-				if (!pm.isScreenOn()) {
-					mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
-					close();
-					cancelPauseScreenTimer();
+				if(UnityAdsProperties.CURRENT_ACTIVITY != null) {
+					PowerManager pm = (PowerManager)UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext().getSystemService(Context.POWER_SERVICE);			
+					if (!pm.isScreenOn()) {
+						mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
+						close();
+						cancelPauseScreenTimer();
+					}
 				}
 			}
 		};
