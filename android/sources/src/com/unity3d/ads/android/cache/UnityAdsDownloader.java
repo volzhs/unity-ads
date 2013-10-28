@@ -126,9 +126,9 @@ public class UnityAdsDownloader {
 	}
 	
 	private static void cacheCampaign (UnityAdsCampaign campaign) {
-		if (UnityAdsProperties.CURRENT_ACTIVITY == null || UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext() == null) return;
+		if (UnityAdsProperties.getCurrentActivity() == null || UnityAdsProperties.getCurrentActivity().getBaseContext() == null) return;
 		
-		ConnectivityManager cm = (ConnectivityManager)UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager)UnityAdsProperties.getCurrentActivity().getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 	    
 		if (cm != null && cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
 			UnityAdsUtils.Log("Starting download for: " + campaign.getVideoFilename(), UnityAdsDownloader.class);

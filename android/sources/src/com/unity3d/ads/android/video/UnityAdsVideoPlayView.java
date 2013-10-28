@@ -111,8 +111,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	public void pauseVideo () {
 		purgeVideoPausedTimer();
 		
-		if (UnityAdsProperties.CURRENT_ACTIVITY != null && _videoView != null && _videoView.isPlaying()) {
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {			
+		if (UnityAdsProperties.getCurrentActivity() != null && _videoView != null && _videoView.isPlaying()) {
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {			
 				@Override
 				public void run() {
 					_videoView.pause();
@@ -179,7 +179,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	
 	/* INTERNAL METHODS */
 	private void storeVolume () {
-		AudioManager am = ((AudioManager)((Context)UnityAdsProperties.CURRENT_ACTIVITY).getSystemService(Context.AUDIO_SERVICE));
+		AudioManager am = ((AudioManager)((Context)UnityAdsProperties.getCurrentActivity()).getSystemService(Context.AUDIO_SERVICE));
 		int curVol = 0;
 		int maxVol = 0;
 		
@@ -203,8 +203,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	
 	
 	private void startVideo () {
-		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {			
+		if (UnityAdsProperties.getCurrentActivity() != null) {
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {			
 				@Override
 				public void run() {
 					_videoView.start();
@@ -481,7 +481,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 	
 	private void setBufferingTextVisibility(final int visibility, final boolean hasSkip, final boolean canSkip) {
-		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+		UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 			@Override
 			public void run() {
 				if(_bufferingText != null) {
@@ -602,7 +602,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				setBufferingTextVisibility(VISIBLE, true, true);
 			}
 			
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
 					if (_timeLeftInSecondsText != null) {
@@ -618,7 +618,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 					_skipTimeLeft = 0f;
 				
 				if (_skipTimeLeft == 0) {
-					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+					UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 						@Override
 						public void run() {
 							enableSkippingFromSkipText();
@@ -626,7 +626,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 					});
 				}
 				else {
-					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+					UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 						@Override
 						public void run() {
 							if (_skipTextView != null && !_videoHasStalled) {
@@ -638,7 +638,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				}
 			}
 			else if (_playHeadHasMoved && (_duration / 1000) <= _skipTimeInSeconds) {
-				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+				UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 					@Override
 					public void run() {
 						hideSkipText();
@@ -667,10 +667,10 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				UnityAdsUtils.Log("Could not get videoView buffering percentage", this);
 			}
 			
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null && !_playHeadHasMoved && _bufferingStartedMillis > 0 && 
+			if (UnityAdsProperties.getCurrentActivity() != null && !_playHeadHasMoved && _bufferingStartedMillis > 0 && 
 				(System.currentTimeMillis() - _bufferingStartedMillis) > (UnityAdsProperties.MAX_BUFFERING_WAIT_SECONDS * 1000)) {
 				this.cancel();
-				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
+				UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						UnityAdsUtils.Log("Buffering taking too long.. cancelling video play", this);
@@ -679,8 +679,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				});
 			}
 						
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null && _videoView != null && bufferPercentage < 15 && _videoView.getParent() == null) {				
-				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {					
+			if (UnityAdsProperties.getCurrentActivity() != null && _videoView != null && bufferPercentage < 15 && _videoView.getParent() == null) {				
+				UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {					
 					@Override
 					public void run() {
 						createAndAddBufferingView();
@@ -688,8 +688,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				});				
 			}
 			
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null && _videoPlayheadPrepared && _playHeadHasMoved) {
-				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
+			if (UnityAdsProperties.getCurrentActivity() != null && _videoPlayheadPrepared && _playHeadHasMoved) {
+				UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						hideBufferingView();

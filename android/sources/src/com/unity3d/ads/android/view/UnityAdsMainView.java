@@ -74,14 +74,14 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	/* PUBLIC METHODS */
 	
 	public void openAds (String view, JSONObject data) {
-		if (UnityAdsProperties.CURRENT_ACTIVITY != null && UnityAdsProperties.CURRENT_ACTIVITY.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
+		if (UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity().getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
 			webview.setWebViewCurrentView(view, data);
 			
 			if (this.getParent() != null && (ViewGroup)this.getParent() != null)
 				((ViewGroup)this.getParent()).removeView(this);
 			
 			if (this.getParent() == null)
-				UnityAdsProperties.CURRENT_ACTIVITY.addContentView(this, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
+				UnityAdsProperties.getCurrentActivity().addContentView(this, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 			
 			setViewState(UnityAdsMainViewState.WebView);
 		}
@@ -133,7 +133,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		
 		destroyVideoPlayerView();
 		setViewState(UnityAdsMainViewState.WebView);		
-		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		UnityAdsProperties.getCurrentActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 	}
 	
 	@Override
@@ -171,14 +171,14 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	}
 	
 	private void createVideoPlayerView () {
-		videoplayerview = new UnityAdsVideoPlayView(UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext(), this);
+		videoplayerview = new UnityAdsVideoPlayView(UnityAdsProperties.getCurrentActivity().getBaseContext(), this);
 		videoplayerview.setLayoutParams(new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 		videoplayerview.setId(1002);
 		addView(videoplayerview);
 	}
 	
 	private void createWebView () {
-		webview = new UnityAdsWebView(UnityAdsProperties.CURRENT_ACTIVITY, this, new UnityAdsWebBridge(UnityAds.instance));
+		webview = new UnityAdsWebView(UnityAdsProperties.getCurrentActivity(), this, new UnityAdsWebBridge(UnityAds.instance));
 		webview.setId(1003);
 		addView(webview, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 	}
@@ -256,13 +256,13 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (currentZone.useDeviceOrientationForVideo()) {
-			UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			UnityAdsProperties.getCurrentActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			
 			// UNSPECIFIED
 			targetOrientation = -1;
 		}
 		
-		UnityAdsProperties.CURRENT_ACTIVITY.setRequestedOrientation(targetOrientation);
+		UnityAdsProperties.getCurrentActivity().setRequestedOrientation(targetOrientation);
 		
 		focusToView(videoplayerview);
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);

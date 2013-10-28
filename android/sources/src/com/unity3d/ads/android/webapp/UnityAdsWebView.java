@@ -85,7 +85,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
 			_currentWebView = view;
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
 			UnityAdsUtils.Log("Send change view to WebApp: " + javascriptString, this);
 			
 			if (data != null) {
@@ -98,18 +98,18 @@ public class UnityAdsWebView extends WebView {
 				
 				UnityAdsUtils.Log("dataHasApiActionKey=" + data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) , this);
 				UnityAdsUtils.Log("actionEqualsWebViewApiOpen=" + action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) , this);
-				UnityAdsUtils.Log("isDebuggable=" + UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) , this);
+				UnityAdsUtils.Log("isDebuggable=" + UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) , this);
 				UnityAdsUtils.Log("runWebViewTests=" + UnityAdsProperties.RUN_WEBVIEW_TESTS , this);
 				UnityAdsUtils.Log("testJavaScriptContents=" + UnityAdsProperties.TEST_JAVASCRIPT , this);
 				
 				if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) &&
 					action != null &&
 					action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) &&
-					UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) &&
+					UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) &&
 					UnityAdsProperties.RUN_WEBVIEW_TESTS &&
 					UnityAdsProperties.TEST_JAVASCRIPT != null) {
 					UnityAdsUtils.Log("Running test-javascript: " + UnityAdsProperties.TEST_JAVASCRIPT , this);
-					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT));
+					UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT));
 					UnityAdsProperties.RUN_WEBVIEW_TESTS = false;
 				}
 			}
@@ -125,7 +125,7 @@ public class UnityAdsWebView extends WebView {
 
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
 			UnityAdsUtils.Log("Send native event to WebApp: " + javascriptString, this);
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
 		}
 	}
 	
@@ -167,7 +167,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
 			UnityAdsUtils.Log("Initializing WebView with JS call: " + initString, this);
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(initString));
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(initString));
 		}
 	}
 

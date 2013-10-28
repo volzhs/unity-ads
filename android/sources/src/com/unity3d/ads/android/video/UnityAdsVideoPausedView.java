@@ -42,7 +42,7 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 	}
 	
 	private void createView () {
-		DisplayMetrics metrics = UnityAdsProperties.CURRENT_ACTIVITY.getResources().getDisplayMetrics();
+		DisplayMetrics metrics = UnityAdsProperties.getCurrentActivity().getResources().getDisplayMetrics();
 		setBackgroundColor(0xC0000000);
 		
 		RelativeLayout.LayoutParams strokeParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -75,7 +75,7 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 	}
 	
 	private ImageView createOuterStroke (int id) {
-		DisplayMetrics metrics = UnityAdsProperties.CURRENT_ACTIVITY.getResources().getDisplayMetrics();
+		DisplayMetrics metrics = UnityAdsProperties.getCurrentActivity().getResources().getDisplayMetrics();
 		Bitmap bmp = Bitmap.createBitmap(Math.round(113 * metrics.density), Math.round(113 * metrics.density), Bitmap.Config.ARGB_4444);
 		Canvas cnv = new Canvas(bmp);
 		Paint pnt = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -90,7 +90,7 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 	}
 	
 	private ImageView createBall (int id) {
-		DisplayMetrics metrics = UnityAdsProperties.CURRENT_ACTIVITY.getResources().getDisplayMetrics();
+		DisplayMetrics metrics = UnityAdsProperties.getCurrentActivity().getResources().getDisplayMetrics();
 		Bitmap bmp = Bitmap.createBitmap(Math.round(101 * metrics.density), Math.round(101 * metrics.density), Bitmap.Config.ARGB_4444);
 		Canvas cnv = new Canvas(bmp);
 		Paint pnt = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -103,7 +103,7 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 	}
 	
 	private ImageView createTriangle (int id) {
-		DisplayMetrics metrics = UnityAdsProperties.CURRENT_ACTIVITY.getResources().getDisplayMetrics();
+		DisplayMetrics metrics = UnityAdsProperties.getCurrentActivity().getResources().getDisplayMetrics();
 		Bitmap bmp = Bitmap.createBitmap(Math.round(47 * metrics.density), Math.round(51 * metrics.density), Bitmap.Config.ARGB_4444);
 		Canvas cnv = new Canvas(bmp);
 		Paint pnt = new Paint(Paint.ANTI_ALIAS_FLAG);

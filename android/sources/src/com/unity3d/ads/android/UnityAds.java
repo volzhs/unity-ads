@@ -1,5 +1,6 @@
 package com.unity3d.ads.android;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Timer;
@@ -122,8 +123,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void changeActivity (Activity activity) {
 		if (activity == null) return;
 		
-		if (activity != null && !activity.equals(UnityAdsProperties.CURRENT_ACTIVITY)) {
-			UnityAdsProperties.CURRENT_ACTIVITY = activity;
+		if (activity != null && !activity.equals(UnityAdsProperties.getCurrentActivity())) {
+			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
 			
 			// Not the most pretty way to detect when the fullscreen activity is ready
 			if (activity != null &&
@@ -148,7 +149,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				_openRequestFromDeveloper = false;
 			}
 			else {
-				UnityAdsProperties.BASE_ACTIVITY = activity;
+				UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
 			}
 		}
 	}
@@ -425,8 +426,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 		}
 		
-		if (!dataFetchFailed && !sdkIsCurrent && UnityAdsUtils.isDebuggable(UnityAdsProperties.CURRENT_ACTIVITY)) {
-			_alertDialog = new AlertDialog.Builder(UnityAdsProperties.CURRENT_ACTIVITY).create();
+		if (!dataFetchFailed && !sdkIsCurrent && UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity())) {
+			_alertDialog = new AlertDialog.Builder(UnityAdsProperties.getCurrentActivity()).create();
 			_alertDialog.setTitle("Unity Ads");
 			_alertDialog.setMessage("You are not running the latest version of Unity Ads android. Please update your version (this dialog won't appear in release builds).");
 			_alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
@@ -574,9 +575,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private void openPlayStoreAsIntent (String playStoreId) {
 		UnityAdsUtils.Log("Opening playstore activity with storeId: " + playStoreId, this);
 		
-		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
+		if (UnityAdsProperties.getCurrentActivity() != null) {
 			try {
-				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + playStoreId)));
+				UnityAdsProperties.getCurrentActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + playStoreId)));
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Couldn't start PlayStore intent!", this);
@@ -587,9 +588,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private void openPlayStoreInBrowser (String url) {
 	    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with url: " + url, this);
 	    
-		if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
+		if (UnityAdsProperties.getCurrentActivity() != null) {
 			try {
-				UnityAdsProperties.CURRENT_ACTIVITY.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+				UnityAdsProperties.getCurrentActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 			}
 			catch (Exception e) {
 				UnityAdsUtils.Log("Couldn't start browser intent!", this);
@@ -617,8 +618,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		setListener(listener);
 		
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
-		UnityAdsProperties.BASE_ACTIVITY = activity;
-		UnityAdsProperties.CURRENT_ACTIVITY = activity;
+		UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
+		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
 		
 		UnityAdsUtils.Log("Is debuggable=" + UnityAdsUtils.isDebuggable(activity), this);
 		
@@ -636,7 +637,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private void close () {
 		cancelPauseScreenTimer();
 		UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
-		UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(closeRunner);
+		UnityAdsProperties.getCurrentActivity().runOnUiThread(closeRunner);
 	}
 	
 	private void open (String view) {
@@ -692,7 +693,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private void sendAdsReadyEvent () {
 		if (!_adsReadySent && _adsListener != null) {
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {				
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
 					UnityAdsUtils.Log("Unity Ads ready!", this);
@@ -704,7 +705,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	private void setupViews () {
-		mainview = new UnityAdsMainView(UnityAdsProperties.CURRENT_ACTIVITY, this);
+		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), this);
 	}
 
 	private void playVideo () {
@@ -721,20 +722,20 @@ public class UnityAds implements IUnityAdsCacheListener,
 				public void run() {
 					UnityAdsUtils.Log("Delayed video start", this);
 					UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
-					if (UnityAdsProperties.CURRENT_ACTIVITY != null)
-						UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
+					if (UnityAdsProperties.getCurrentActivity() != null)
+						UnityAdsProperties.getCurrentActivity().runOnUiThread(playVideoRunner);
 				}
 			}, delay);
 		}
 		else {
 			UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
-				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(playVideoRunner);
+			if (UnityAdsProperties.getCurrentActivity() != null)
+				UnityAdsProperties.getCurrentActivity().runOnUiThread(playVideoRunner);
 		}
 	}
 	
 	private void startAdsFullscreenActivity () {
-		Intent newIntent = new Intent(UnityAdsProperties.CURRENT_ACTIVITY, com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
+		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
 		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
 		
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
@@ -745,7 +746,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		newIntent.addFlags(flags);
 		
 		try {
-			UnityAdsProperties.BASE_ACTIVITY.startActivity(newIntent);
+			UnityAdsProperties.getBaseActivity().startActivity(newIntent);
 		}
 		catch (ActivityNotFoundException e) {
 			UnityAdsUtils.Log("Could not find activity: " + e.getStackTrace(), this);
@@ -773,7 +774,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_pauseScreenTimer = new TimerTask() {
 			@Override
 			public void run() {
-				PowerManager pm = (PowerManager)UnityAdsProperties.CURRENT_ACTIVITY.getBaseContext().getSystemService(Context.POWER_SERVICE);			
+				PowerManager pm = (PowerManager)UnityAdsProperties.getCurrentActivity().getBaseContext().getSystemService(Context.POWER_SERVICE);			
 				if (!pm.isScreenOn()) {
 					mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
 					close();
@@ -796,7 +797,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		@Override
 		public void run() {
 			
-			if (UnityAdsProperties.CURRENT_ACTIVITY.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
+			if (UnityAdsProperties.getCurrentActivity().getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
 				Boolean dataOk = true;			
 				JSONObject data = new JSONObject();
 				
@@ -816,15 +817,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 					testTimer.schedule(new TimerTask() {
 						@Override
 						public void run() {
-							UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
+							UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
 									mainview.closeAds(_data);
-									UnityAdsProperties.CURRENT_ACTIVITY.finish();
+									UnityAdsProperties.getCurrentActivity().finish();
 									
 									UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 									if (!currentZone.openAnimated()) {
-										UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
+										UnityAdsProperties.getCurrentActivity().overridePendingTransition(0, 0);
 									}
 
 									_showingAds = false;

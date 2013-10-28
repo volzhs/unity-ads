@@ -110,7 +110,7 @@ public class UnityAdsWebBridge {
 						try {
 							Intent i = new Intent(Intent.ACTION_VIEW);
 							i.setData(Uri.parse(clickUrl));
-							UnityAdsProperties.CURRENT_ACTIVITY.startActivity(i);
+							UnityAdsProperties.getCurrentActivity().startActivity(i);
 						}
 						catch (Exception e) {
 							UnityAdsUtils.Log("Could not start activity for opening URL: " + clickUrl + ", maybe malformed URL?", this);

@@ -1,5 +1,6 @@
 package com.unity3d.ads.android.properties;
 
+import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -18,8 +19,8 @@ public class UnityAdsProperties {
 	public static String UNITY_ADS_GAME_ID = null;
 	public static String UNITY_ADS_GAMER_ID = null;
 	public static Boolean TESTMODE_ENABLED = false;
-	public static Activity BASE_ACTIVITY = null;
-	public static Activity CURRENT_ACTIVITY = null;
+	public static WeakReference<Activity> BASE_ACTIVITY = null;
+	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean UNITY_ADS_DEBUG_MODE = false;
 	
@@ -90,8 +91,8 @@ public class UnityAdsProperties {
 			}
 		}
 		else {
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable(UnityAdsProperties.CURRENT_ACTIVITY) ? "false" : "true");
+			if (UnityAdsProperties.getCurrentActivity() != null) {
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity()) ? "false" : "true");
 			}
 		}
 		
@@ -104,10 +105,24 @@ public class UnityAdsProperties {
 		createCampaignQueryString();
 		String url = CAMPAIGN_DATA_URL;
 		
-		if (UnityAdsUtils.isDebuggable(BASE_ACTIVITY) && TEST_URL != null)
+		if (UnityAdsUtils.isDebuggable(getBaseActivity()) && TEST_URL != null)
 			url = TEST_URL;
 			
 		return String.format("%s%s", url, _campaignQueryString);
+	}
+	
+	public static Activity getBaseActivity() {
+		if(BASE_ACTIVITY != null) {
+			return BASE_ACTIVITY.get();
+		}
+		return null;
+	}
+	
+	public static Activity getCurrentActivity() {
+		if(CURRENT_ACTIVITY != null) {
+			return CURRENT_ACTIVITY.get();
+		}
+		return null;
 	}
 	
 	public static void setExtraParams (Map<String, String> params) {
