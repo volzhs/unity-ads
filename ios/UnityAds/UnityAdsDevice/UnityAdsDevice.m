@@ -290,57 +290,29 @@ int main(int argc, char *argv[]);
 }
 
 + (NSString *)analyticsMachineName {
-	NSString *machine = [self machineName];
-  
-	if ([machine isEqualToString:@"iPhone1,1"])
-		return kUnityAdsDeviceIphone;
-	else if ([machine isEqualToString:@"iPhone1,2"])
-		return kUnityAdsDeviceIphone3g;
-	else if ([machine isEqualToString:@"iPhone2,1"])
-		return kUnityAdsDeviceIphone3gs;
-	else if ([machine length] > 6 && [[self _substringOfString:machine toIndex:7] isEqualToString:@"iPhone3"])
-		return kUnityAdsDeviceIphone4;
-	else if ([machine length] > 6 && [[self _substringOfString:machine toIndex:7] isEqualToString:@"iPhone4"])
-		return kUnityAdsDeviceIphone4s;
-	else if ([machine length] > 6 && [[self _substringOfString:machine toIndex:7] isEqualToString:@"iPhone5"])
-		return kUnityAdsDeviceIphone5;
-	else if ([machine isEqualToString:@"iPod1,1"])
-		return kUnityAdsDeviceIpodTouch1gen;
-	else if ([machine isEqualToString:@"iPod2,1"])
-		return kUnityAdsDeviceIpodTouch2gen;
-	else if ([machine isEqualToString:@"iPod3,1"])
-		return kUnityAdsDeviceIpodTouch3gen;
-	else if ([machine isEqualToString:@"iPod4,1"])
-		return kUnityAdsDeviceIpodTouch4gen;
-	else if ([machine isEqualToString:@"iPod5,1"])
-		return kUnityAdsDeviceIpodTouch5gen;
-	else if ([machine length] > 4 && [[self _substringOfString:machine toIndex:5] isEqualToString:@"iPad1"])
-		return kUnityAdsDeviceIpad1;
-	else if ([machine length] > 4 && [[self _substringOfString:machine toIndex:5] isEqualToString:@"iPad2"])
-		return kUnityAdsDeviceIpad2;
-	else if ([machine length] > 4 && [[self _substringOfString:machine toIndex:5] isEqualToString:@"iPad3"])
-		return kUnityAdsDeviceIpad3;
-  
-  // Okay, it's a simulator, detect whether it's iPhone or iPad
-  
-  NSArray *components = [UnityAdsDevice getDeviceModelAsStringComponents];
-  if (components != nil && [components count] > 0) {
-    for (NSString *component in components) {
-      if ([component isEqualToString:kUnityAdsDeviceIpad]) {
-        return kUnityAdsDeviceIpad;
-      }
-      if ([component isEqualToString:kUnityAdsDeviceIphone]) {
-        return kUnityAdsDeviceIphone;
-      }
-      if ([component isEqualToString:kUnityAdsDeviceIpod]) {
-        return kUnityAdsDeviceIpod;
+  if([UnityAdsDevice isSimulator]) {
+    NSArray *components = [UnityAdsDevice getDeviceModelAsStringComponents];
+    if (components != nil && [components count] > 0) {
+      for (NSString *component in components) {
+        if ([component isEqualToString:kUnityAdsDeviceIpad]) {
+          return kUnityAdsDeviceIpad;
+        }
+        if ([component isEqualToString:kUnityAdsDeviceIphone]) {
+          return kUnityAdsDeviceIphone;
+        }
+        if ([component isEqualToString:kUnityAdsDeviceIpod]) {
+          return kUnityAdsDeviceIpod;
+        }
       }
     }
   }
-
-  // If everything else fails..
   
-	return kUnityAdsDeviceIosUnknown;
+	NSString *machine = [self machineName];
+  if(machine != nil) {
+    return machine;
+  } else {
+    return kUnityAdsDeviceIosUnknown;
+  }
 }
 
 + (NSString *)_md5StringFromString:(NSString *)string {

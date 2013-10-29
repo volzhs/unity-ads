@@ -156,21 +156,8 @@ NSString * const kUnityAdsTrackingEventTypeVideoEnd = @"view";
 /* Devicetypes */
 
 NSString * const kUnityAdsDeviceIphone = @"iphone";
-NSString * const kUnityAdsDeviceIphone3g = @"iphone3g";
-NSString * const kUnityAdsDeviceIphone3gs = @"iphone3gs";
-NSString * const kUnityAdsDeviceIphone4 = @"iphone4";
-NSString * const kUnityAdsDeviceIphone4s = @"iphone4s";
-NSString * const kUnityAdsDeviceIphone5 = @"iphone5";
 NSString * const kUnityAdsDeviceIpod = @"ipod";
-NSString * const kUnityAdsDeviceIpodTouch1gen = @"ipodtouch1gen";
-NSString * const kUnityAdsDeviceIpodTouch2gen = @"ipodtouch2gen";
-NSString * const kUnityAdsDeviceIpodTouch3gen = @"ipodtouch3gen";
-NSString * const kUnityAdsDeviceIpodTouch4gen = @"ipodtouch4gen";
-NSString * const kUnityAdsDeviceIpodTouch5gen = @"ipodtouch5gen";
 NSString * const kUnityAdsDeviceIpad = @"ipad";
-NSString * const kUnityAdsDeviceIpad1 = @"ipad1";
-NSString * const kUnityAdsDeviceIpad2 = @"ipad2";
-NSString * const kUnityAdsDeviceIpad3 = @"ipad3";
 NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 NSString * const kUnityAdsDeviceSimulator = @"simulator";
 

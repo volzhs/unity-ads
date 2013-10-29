@@ -170,24 +170,10 @@ extern NSString * const kUnityAdsTrackingEventTypeVideoEnd;
 /* Devicetypes */
 
 extern NSString * const kUnityAdsDeviceIphone;
-extern NSString * const kUnityAdsDeviceIphone3g;
-extern NSString * const kUnityAdsDeviceIphone3gs;
-extern NSString * const kUnityAdsDeviceIphone4;
-extern NSString * const kUnityAdsDeviceIphone4s;
-extern NSString * const kUnityAdsDeviceIphone5;
 extern NSString * const kUnityAdsDeviceIpod;
-extern NSString * const kUnityAdsDeviceIpodTouch1gen;
-extern NSString * const kUnityAdsDeviceIpodTouch2gen;
-extern NSString * const kUnityAdsDeviceIpodTouch3gen;
-extern NSString * const kUnityAdsDeviceIpodTouch4gen;
-extern NSString * const kUnityAdsDeviceIpodTouch5gen;
 extern NSString * const kUnityAdsDeviceIpad;
-extern NSString * const kUnityAdsDeviceIpad1;
-extern NSString * const kUnityAdsDeviceIpad2;
-extern NSString * const kUnityAdsDeviceIpad3;
 extern NSString * const kUnityAdsDeviceIosUnknown;
 extern NSString * const kUnityAdsDeviceSimulator;
-
 
 /* Init Query Params */
 
