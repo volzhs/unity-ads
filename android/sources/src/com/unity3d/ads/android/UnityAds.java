@@ -186,7 +186,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 			
 			if (currentZone != null) {
-				currentZone.mergeOptions(options);
+				if(options != null) {
+					currentZone.mergeOptions(options);
+				}
 				
 				if (currentZone.noOfferScreen()) {
 					if (webdata.getViewableVideoPlanCampaigns().size() > 0) {
@@ -194,15 +196,21 @@ public class UnityAds implements IUnityAdsCacheListener,
 						UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
 					}
 				}
-				Object gamerSid = options.get(UNITY_ADS_OPTION_GAMERSID_KEY);
-				if (gamerSid != null) {
-					String gamerSidString = gamerSid.toString();
-					if(gamerSidString.length() > 0) {
-						currentZone.setGamerSid(gamerSidString);
+				
+				if(options != null) {
+					Object gamerSid = options.get(UNITY_ADS_OPTION_GAMERSID_KEY);
+					if (gamerSid != null) {
+						String gamerSidString = gamerSid.toString();
+						if(gamerSidString.length() > 0) {
+							currentZone.setGamerSid(gamerSidString);
+						}
 					}
 				}
 				
-				return show();
+				_openRequestFromDeveloper = true;
+				_showingAds = true;
+				startAdsFullscreenActivity();
+				return _showingAds;
 			}
 					
 		}
@@ -211,14 +219,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public boolean show () {
-		if (canShow()) {
-			_openRequestFromDeveloper = true;
-			_showingAds = true;
-			startAdsFullscreenActivity();
-			return _showingAds;
-		}
-
-		return false;
+		return show(null);
 	}
 	
 	public boolean canShowAds () {
