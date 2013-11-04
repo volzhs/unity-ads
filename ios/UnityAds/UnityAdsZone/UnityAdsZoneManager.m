@@ -81,6 +81,8 @@ static UnityAdsZoneManager *sharedZoneManager = nil;
   if(zone != nil) {
     self._currentZone = zone;
     return true;
+  } else {
+    self._currentZone = nil;
   }
   return false;
 }
