@@ -21,7 +21,7 @@ public static class UnityAdsExternal {
 		Log ("UnityEditor: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName + ", debugModeEnabled=" + debugModeEnabled + ", useNativeUIWhenPossible=" + useNativeUIWhenPossible);
 	}
 	
-	public static bool show (bool openAnimated, bool noOfferscreen, string gamerSID, bool muteVideoSounds, bool videoUsesDeviceOrientation) {
+	public static bool show (string zoneId, string rewardItemKey, string options) {
 		Log ("UnityEditor: show()");
 		return false;
 	}
@@ -97,7 +97,7 @@ public static class UnityAdsExternal {
 	public static extern void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName, bool useNativeUIWhenPossible);
 	
 	[DllImport ("__Internal")]
-	public static extern bool show (bool openAnimated, bool noOfferscreen, string gamerSID, bool muteVideoSounds, bool videoUsesDeviceOrientation);
+	public static extern bool show (string zoneId, string rewardItemKey, string options);
 	
 	[DllImport ("__Internal")]
 	public static extern void hide ();
@@ -158,9 +158,9 @@ public static class UnityAdsExternal {
 		unityAdsUnity.Call("init", gameId, activity, testModeEnabled, debugModeEnabled, gameObjectName);
 	}
 	
-	public static bool show (bool openAnimated, bool noOfferscreen, string gamerSID, bool muteVideoSounds, bool videoUsesDeviceOrientation) {
+	public static bool show (sstring zoneId, string rewardItemKey, string options) {
 		Log ("UnityAndroid: show()");
-		return unityAdsUnity.Call<bool>("show", openAnimated, noOfferscreen, gamerSID, muteVideoSounds, videoUsesDeviceOrientation);
+		return unityAdsUnity.Call<bool>("show", zoneId, rewardItemKey, openAnimated, noOfferscreen, gamerSID, muteVideoSounds, videoUsesDeviceOrientation);
 	}
 	
 	public static void hide () {
