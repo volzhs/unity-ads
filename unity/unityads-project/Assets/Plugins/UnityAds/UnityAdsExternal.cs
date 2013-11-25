@@ -144,7 +144,7 @@ public static class UnityAdsExternal {
 #elif UNITY_ANDROID
 	private static AndroidJavaObject unityAds;
 	private static AndroidJavaObject unityAdsUnity;
-	private static AndroidJavaClass unityAdsClass;
+	private static AndroidJavaObject currentActivity;
 	
 	public static void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName, bool useNativeUIWhenPossible) {
 		if (useNativeUIWhenPossible) {
@@ -152,15 +152,14 @@ public static class UnityAdsExternal {
 		}
 		
 		Log("UnityAndroid: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName + ", debugModeEnabled=" + debugModeEnabled);
-		AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-		AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
+		currentActivity = (new AndroidJavaClass("com.unity3d.player.UnityPlayer")).GetStatic<AndroidJavaObject>("currentActivity");
 		unityAdsUnity = new AndroidJavaObject("com.unity3d.ads.android.unity3d.UnityAdsUnityWrapper");
-		unityAdsUnity.Call("init", gameId, activity, testModeEnabled, debugModeEnabled, gameObjectName);
+		unityAdsUnity.Call("init", gameId, currentActivity, testModeEnabled, debugModeEnabled, gameObjectName);
 	}
 	
-	public static bool show (sstring zoneId, string rewardItemKey, string options) {
+	public static bool show (string zoneId, string rewardItemKey, string options) {
 		Log ("UnityAndroid: show()");
-		return unityAdsUnity.Call<bool>("show", zoneId, rewardItemKey, openAnimated, noOfferscreen, gamerSID, muteVideoSounds, videoUsesDeviceOrientation);
+		return unityAdsUnity.Call<bool>("show", zoneId, rewardItemKey, options);
 	}
 	
 	public static void hide () {
