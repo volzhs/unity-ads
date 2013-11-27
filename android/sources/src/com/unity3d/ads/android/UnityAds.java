@@ -757,7 +757,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		@Override
 		public void run() {
 			
-			if (UnityAdsProperties.CURRENT_ACTIVITY.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
+			if (UnityAdsProperties.CURRENT_ACTIVITY != null && UnityAdsProperties.CURRENT_ACTIVITY.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
 				Boolean dataOk = true;			
 				JSONObject data = new JSONObject();
 				
@@ -772,29 +772,40 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 				if (dataOk) {
 					_data = data;
-					mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+					if(mainview != null && mainview.webview != null) {
+						mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+					}
 					Timer testTimer = new Timer();
 					testTimer.schedule(new TimerTask() {
 						@Override
 						public void run() {
-							UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									mainview.closeAds(_data);
-									UnityAdsProperties.CURRENT_ACTIVITY.finish();
-									
-									if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS == null || 
-										!UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) || 
-										UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(false))
-											UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
-									
-									UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS = null;
-									_showingAds = false;
-									
-									if (_adsListener != null)
-										_adsListener.onHide();
-								}
-							});
+							if(UnityAdsProperties.CURRENT_ACTIVITY != null) {
+								UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										if(mainview != null) {
+											mainview.closeAds(_data);
+										}
+										if(UnityAdsProperties.CURRENT_ACTIVITY != null) {
+											UnityAdsProperties.CURRENT_ACTIVITY.finish();
+										}
+										
+										if (UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS == null || 
+											!UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UNITY_ADS_OPTION_OPENANIMATED_KEY) || 
+											UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS.get(UNITY_ADS_OPTION_OPENANIMATED_KEY).equals(false)) {
+											if(UnityAdsProperties.CURRENT_ACTIVITY != null) {
+												UnityAdsProperties.CURRENT_ACTIVITY.overridePendingTransition(0, 0);
+											}
+										}	
+										
+										UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS = null;
+										_showingAds = false;
+										
+										if (_adsListener != null)
+											_adsListener.onHide();
+									}
+								});
+							}
 						}
 					}, 250);
 				}
