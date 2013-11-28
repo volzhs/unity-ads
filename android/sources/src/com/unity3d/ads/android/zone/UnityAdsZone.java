@@ -93,19 +93,21 @@ public class UnityAdsZone {
 	public void mergeOptions(Map<String, Object> options) {
 		try {
 			_options = new JSONObject(_initialOptions.toString());	
-			_gamerSid = null;
-		} catch(JSONException e) {}				
-		for(Map.Entry<String, Object> option : options.entrySet()) {
-			if(allowsOverride(option.getKey())) {
-				try {
-					_options.put(option.getKey(), option.getValue());
-				} catch(JSONException e) {
-					UnityAdsUtils.Log("Unable to set JSON value", this);
+			setGamerSid(null);
+		} catch(JSONException e) {}
+		if(options != null) {
+			for(Map.Entry<String, Object> option : options.entrySet()) {
+				if(allowsOverride(option.getKey())) {
+					try {
+						_options.put(option.getKey(), option.getValue());
+					} catch(JSONException e) {
+						UnityAdsUtils.Log("Unable to set JSON value", this);
+					}
 				}
 			}
-		}
-		if(options.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY)) {
-			setGamerSid((String)options.get(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
+			if(options.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY)) {
+				setGamerSid((String)options.get(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
+			}
 		}
 	}
 	
