@@ -109,27 +109,4 @@ public class UnityAdsRewardItemManagerTest extends ActivityInstrumentationTestCa
 		assertNull(itemManager.getCurrentItem());
 	}
 	
-	/*
-	 * - (void)testEmptyItems {
-  UnityAdsRewardItemManager * itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:@{} defaultItem:validItem1];
-  STAssertTrue(itemManager == nil, @"Invalid item manager was created");
-}
-
-- (void)testEmptyDefaultItem {
-  UnityAdsRewardItemManager * itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:@{@"testItemKey1": validItem1} defaultItem:nil];
-  STAssertTrue(itemManager == nil, @"Invalid item manager was created");
-}
-
-- (void)testMissingDefaultItem {
-  UnityAdsRewardItemManager * itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:@{@"testItemKey1": validItem1} defaultItem:validItem2];
-  STAssertTrue(itemManager == nil, @"Invalid item manager was created");
-}
-
-- (void)testValidItems {
-  UnityAdsRewardItemManager * itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:@{@"testItemKey1": validItem1, @"testItemKey2": validItem2} defaultItem:validItem2];
-  STAssertTrue(itemManager != nil, @"Valid item manager was not created");
-  STAssertTrue([itemManager itemCount] == 2, @"Invalid item count");
-}
-	 */
-	
 }
