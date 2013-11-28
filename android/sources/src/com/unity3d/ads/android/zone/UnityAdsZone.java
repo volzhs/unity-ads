@@ -7,11 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsZone {
 
+	private JSONObject _initialOptions = null;
 	private JSONObject _options = null;
 	
 	private String _zoneId = null;
@@ -22,6 +24,7 @@ public class UnityAdsZone {
 	private ArrayList<String> _allowClientOverrides = new ArrayList<String>();
 	
 	public UnityAdsZone(JSONObject zoneObject) throws JSONException {
+		_initialOptions = new JSONObject(zoneObject.toString());
 		_options = zoneObject;
 		_zoneId = zoneObject.getString(UnityAdsConstants.UNITY_ADS_ZONE_ID_KEY);
 		_zoneName = zoneObject.getString(UnityAdsConstants.UNITY_ADS_ZONE_NAME_KEY);
@@ -88,6 +91,10 @@ public class UnityAdsZone {
 	}
 	
 	public void mergeOptions(Map<String, Object> options) {
+		try {
+			_options = new JSONObject(_initialOptions.toString());	
+			_gamerSid = null;
+		} catch(JSONException e) {}				
 		for(Map.Entry<String, Object> option : options.entrySet()) {
 			if(allowsOverride(option.getKey())) {
 				try {
@@ -96,6 +103,9 @@ public class UnityAdsZone {
 					UnityAdsUtils.Log("Unable to set JSON value", this);
 				}
 			}
+		}
+		if(options.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY)) {
+			setGamerSid((String)options.get(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
 		}
 	}
 	
