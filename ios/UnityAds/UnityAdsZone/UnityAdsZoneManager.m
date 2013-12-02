@@ -12,6 +12,7 @@
 @interface UnityAdsZoneManager ()
 
 @property (nonatomic, strong) NSMutableDictionary * _zones;
+@property (nonatomic, strong) UnityAdsZone * _defaultZone;
 @property (nonatomic, strong) UnityAdsZone * _currentZone;
 
 @end
@@ -44,6 +45,9 @@ static UnityAdsZoneManager *sharedZoneManager = nil;
     if([self._zones objectForKey:zoneId] == nil) {
       [self._zones setObject:zone forKey:zoneId];
       ++addedZones;
+      if([zone isDefault]) {
+        self._defaultZone = zone;
+      }
       if([zone isDefault] && self._currentZone == nil) {
         self._currentZone = zone;
       }
@@ -66,12 +70,14 @@ static UnityAdsZoneManager *sharedZoneManager = nil;
 }
 
 - (BOOL)removeZone:(NSString *)zoneId {
-  if([self._zones objectForKey:zoneId] != nil) {
-    if([[self._currentZone getZoneId] isEqualToString:zoneId]) {
-      self._currentZone = nil;
+  if(![[self._defaultZone getZoneId] isEqualToString:zoneId]) {
+    if([self._zones objectForKey:zoneId] != nil) {
+      if([[self._currentZone getZoneId] isEqualToString:zoneId]) {
+        self._currentZone = nil;
+      }
+      [self._zones removeObjectForKey:zoneId];
+      return true;
     }
-    [self._zones removeObjectForKey:zoneId];
-    return true;
   }
   return false;
 }
@@ -82,7 +88,7 @@ static UnityAdsZoneManager *sharedZoneManager = nil;
     self._currentZone = zone;
     return true;
   } else {
-    self._currentZone = nil;
+    self._currentZone = self._defaultZone;
   }
   return false;
 }

@@ -13,6 +13,7 @@ import com.unity3d.ads.android.properties.UnityAdsConstants;
 public class UnityAdsZoneManager {
 
 	private Map<String, UnityAdsZone> _zones = null; 
+	private UnityAdsZone _defaultZone = null;
 	private UnityAdsZone _currentZone = null;
 	
 	public UnityAdsZoneManager(JSONArray zoneArray) {
@@ -26,6 +27,10 @@ public class UnityAdsZoneManager {
 					zone = new UnityAdsIncentivizedZone(jsonZone);
 				} else {
 					zone = new UnityAdsZone(jsonZone);
+				}
+				
+				if(zone.isDefault()) {
+					_defaultZone = zone;
 				}
 				
 				if(_currentZone == null && zone.isDefault()) {
@@ -55,7 +60,7 @@ public class UnityAdsZoneManager {
 			_currentZone = _zones.get(zoneId);
 			return true;
 		} else {
-			_currentZone = null;
+			_currentZone = _defaultZone;
 		}
 		return false;
 	}
