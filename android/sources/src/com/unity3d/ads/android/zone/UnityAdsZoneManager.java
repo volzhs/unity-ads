@@ -30,7 +30,7 @@ public class UnityAdsZoneManager {
 				}
 				
 				if(zone.isDefault()) {
-					_defaultZone = zone;
+					_defaultZone = new UnityAdsZone(jsonZone);
 				}
 				
 				if(_currentZone == null && zone.isDefault()) {
