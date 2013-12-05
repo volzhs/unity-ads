@@ -12,8 +12,9 @@
 #import <UnityAds/UnityAds.h>
 
 @interface UnityAdsInterstitial : NSObject <BurstlyAdInterstitialProtocol, UnityAdsDelegate> {
-    id<BurstlyAdInterstitialDelegate> _delegate;
-    NSMutableDictionary *_params;
+  id<BurstlyAdInterstitialDelegate> _delegate;
+  NSString * _zoneId;
+  NSMutableDictionary *_params;
 }
 
 - (id)initWithParams:(NSDictionary *)params;

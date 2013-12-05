@@ -17,16 +17,16 @@
  * @returns Initialized ad network adaptor.
  */
 - (id)initAdNetworkWithParams: (NSDictionary *)params {
-    NSString* gameId = [params objectForKey:@"gameId"];
-    if(gameId != nil) {
-        NSString *testModeValue = [params objectForKey:@"testMode"];
-        BOOL testMode = testModeValue != nil && [testModeValue isEqual: @true] ? YES : NO;
-        [[UnityAds sharedInstance] setTestMode:testMode];
-        [[UnityAds sharedInstance] setDebugMode:testMode];
-        [[UnityAds sharedInstance] startWithGameId:gameId];
-        return self;
-    }
-    return nil;
+  NSString* gameId = [params objectForKey:@"gameId"];
+  if(gameId != nil) {
+    NSString *testModeValue = [params objectForKey:@"testMode"];
+    BOOL testMode = testModeValue != nil && [testModeValue isEqual: @true] ? YES : NO;
+    [[UnityAds sharedInstance] setTestMode:testMode];
+    [[UnityAds sharedInstance] setDebugMode:testMode];
+    [[UnityAds sharedInstance] startWithGameId:gameId];
+    return self;
+  }
+  return nil;
 }
 
 /**
@@ -35,7 +35,7 @@
  * @returns Adaptor version. It can be used to target parameters in case of incompatibility between different versions of the same adaptor.
  */
 - (NSString *)adaptorVersion {
-    return @"1.0.1";
+  return @"1.0.2";
 }
 
 /**
@@ -44,7 +44,7 @@
  * @returns SDK version. It can be used to target parameters in case of incompatibility between different versions of the same adaptor.
  */
 - (NSString *)sdkVersion {
-    return [UnityAds getSDKVersion];
+  return [UnityAds getSDKVersion];
 }
 
 /**
@@ -55,7 +55,7 @@
  * @returns YES if user interface idiom is supported, otherwise returns NO.
  */
 - (BOOL)isIdiomSupported: (UIUserInterfaceIdiom)idiom {
-    return (idiom == UIUserInterfaceIdiomPad || idiom == UIUserInterfaceIdiomPhone);
+  return (idiom == UIUserInterfaceIdiomPad || idiom == UIUserInterfaceIdiomPhone);
 }
 
 /**
@@ -65,8 +65,8 @@
  * @returns Ad placement type. @see BurstlyAdPlacementType
  */
 - (BurstlyAdPlacementType)adPlacementTypeFor: (NSDictionary *)params {
-    // We don't do anything except interstitials
-    return BurstlyAdPlacementTypeInterstitial;
+  // We don't do anything except interstitials
+  return BurstlyAdPlacementTypeInterstitial;
 }
 
 /**
@@ -78,8 +78,8 @@
  * @returns Initialized instance of ad banner. Returned instance is NOT autoreleased.
  */
 - (id<BurstlyAdBannerProtocol>)newBannerAdWithParams: (NSDictionary *)params andError: (NSError **)error {
-    error = nil;
-    return nil;
+  error = nil;
+  return nil;
 }
 
 /**
@@ -91,10 +91,10 @@
  * @returns Initialized instance of ad interstitial. Returned instance is NOT autoreleased.
  */
 - (id<BurstlyAdInterstitialProtocol>)newInterstitialAdWithParams: (NSDictionary *)params andError: (NSError **)error {
-    error = nil;
-    UnityAdsInterstitial *interstitial = [[UnityAdsInterstitial alloc] initWithParams:params];
-    [[UnityAds sharedInstance] setDelegate:interstitial];
-    return interstitial;
+  error = nil;
+  UnityAdsInterstitial *interstitial = [[UnityAdsInterstitial alloc] initWithParams:params];
+  [[UnityAds sharedInstance] setDelegate:interstitial];
+  return interstitial;
 }
 
 @end
