@@ -18,9 +18,8 @@
 #import <UnityAds/UnityAds.h>
 
  
-@interface UnityAdsMopubEvent : MPInterstitialCustomEvent <UnityAdsDelegate>
-
-@property NSNumber *muteSoundsOption;
-@property NSNumber *deviceOrientationOption;
-
+@interface UnityAdsMopubEvent : MPInterstitialCustomEvent <UnityAdsDelegate> {
+  NSString * _zoneId;
+  NSMutableDictionary *_params;
+}
 @end
