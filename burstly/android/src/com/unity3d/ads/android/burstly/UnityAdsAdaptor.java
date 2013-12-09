@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.IUnityAdsListener;
@@ -21,17 +22,21 @@ import com.burstly.lib.component.IBurstlyAdaptorListener;
  */
 public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 	
-	public static final String UNITY_ADS_ADAPTOR_VERSION = "1.0.4";
+	public static final String UNITY_ADS_ADAPTOR_VERSION = "1.0.6";
 	
 	public static String FEATURE_PRECACHE = "precacheInterstitial";
 	
 	public final static String KEY_UNITY_ADS_GAME_ID ="unityads_game_id";
+	public final static String KEY_UNITY_ADS_ZONE_ID = "zoneId";
 	public final static String KEY_TEST_MODE = "unityads_test_mode";
 	public final static String KEY_CLIENT_TARGETING_PARAMS = "clientTargetingParams";
 	public final static String KEY_SKIP_OFFER_SCREEN = "skipOfferScreen";
 	public final static String KEY_DISABLE_REWARDS = "disableRewards";
 	
 	private String gameId = null;
+	private String zoneId = null;
+	
+	private Map<String, Object> options = null;
 	
 	private boolean campaignLoadingComplete = false;
 	
@@ -63,14 +68,8 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 	private IBurstlyAdaptorListener listener;
 	
 	/**
-	 * Custom SID, if any
-	 */
-	private String customSid = null;
-	
-	/**
 	 * Some options for showing Unity Ads
 	 */
-	private boolean skipOfferScreen = false;
 	private boolean disableRewards = false;
 
 	/**
@@ -147,12 +146,8 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 		}
 		
 		if(this.unityAds.canShow() && this.unityAds.canShowAds()) {
-			HashMap<String, Object> props = new HashMap<String, Object>();
-			if(this.customSid != null) {
-				props.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, this.customSid);
-			}
-			props.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, this.skipOfferScreen);
-			this.unityAds.show(props);
+			this.unityAds.setZone(this.zoneId);
+			this.unityAds.show(this.options);
 		}
 	}
 
@@ -181,6 +176,13 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 			throw new IllegalArgumentException("Server must return unityads_game_id");
 		}
 		
+		this.zoneId = (String)unityAdsParams.get(UnityAdsAdaptor.KEY_UNITY_ADS_ZONE_ID);
+		
+		this.options = new HashMap<String, Object>();
+		this.options.putAll(unityAdsParams);
+		
+		//WebView.setWebContentsDebuggingEnabled(true);
+		
 	    boolean testModeEnabled = "true".equals(unityAdsParams.get(UnityAdsAdaptor.KEY_TEST_MODE));
 	    UnityAds.setDebugMode(testModeEnabled);
 	    UnityAds.setTestMode(testModeEnabled);
@@ -188,18 +190,14 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 		this.unityAds = new UnityAds((Activity)this.mContext, this.gameId, this);
 		this.unityAds.setListener(this);
 		
-		// See if we have some options
-		this.skipOfferScreen = ("true".equals(unityAdsParams.get(UnityAdsAdaptor.KEY_SKIP_OFFER_SCREEN)));
-		this.disableRewards = ("true".equals(unityAdsParams.get(UnityAdsAdaptor.KEY_DISABLE_REWARDS)));
-		
 		// See if we have a custom user ID
 		if(unityAdsParams.get(UnityAdsAdaptor.KEY_CLIENT_TARGETING_PARAMS) != null) {
 			Map targetingParams = (Map)unityAdsParams.get(UnityAdsAdaptor.KEY_CLIENT_TARGETING_PARAMS);
 			if(targetingParams.get("sid") != null) {
 				if(!this.disableRewards)
-					this.customSid = targetingParams.get("sid").toString();
+					this.options.put("sid", targetingParams.get("sid").toString());
 				else 
-					this.customSid = "NO_REWARD";
+					this.options.put("sid", "NO_REWARD");
 			}
 		}
 		
