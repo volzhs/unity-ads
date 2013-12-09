@@ -17,12 +17,8 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 	private CustomEventInterstitialListener listener = null;
 	private UnityAds unityAdsInstance = null;
 	private String gameId = null;
-	
-	public static String UNITY_ADS_MOPUB_MUTE_OPTION = "muteSounds";
-	public static String UNITY_ADS_MOPUB_ORIENTATION_OPTION = "deviceOrientation";
-	
-	private boolean optionMute = false;
-	private boolean optionDeviceOrientation = false;
+	private String zoneId = null;
+	private Map<String, Object> options = null;
 
 	@Override
 	protected void loadInterstitial(Context context,
@@ -38,55 +34,28 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 		}
 		
 		this.gameId = serverExtras.get("gameId");
+		this.zoneId = serverExtras.get("zoneId");
 		
-		// First go through the local extras, then the server extras so we can easily
-		// over-ride the settings on the server-side
-		Map[] maps = new Map[] {localExtras, serverExtras};
-		
-		for(Map<String, String> opMap : maps) {
-			for(String key : opMap.keySet()) {
-				if(UNITY_ADS_MOPUB_MUTE_OPTION.equals(key)) {
-					if("true".equals(opMap.get(UNITY_ADS_MOPUB_MUTE_OPTION))) {
-						this.optionMute = true;
-					}
-				}
-				if(UNITY_ADS_MOPUB_ORIENTATION_OPTION.equals(key)) {
-					if("true".equals(opMap.get(UNITY_ADS_MOPUB_ORIENTATION_OPTION))) {
-						this.optionDeviceOrientation = true;
-					}
-				}
-			}
-		}
+		this.options = new HashMap<String, Object>();
+		this.options.putAll(localExtras);
+		this.options.putAll(serverExtras);
 		
 		UnityAds.setDebugMode(true);
 		this.unityAdsInstance = new UnityAds((Activity)context, gameId, this);
 		
-		Log.d("UnityAds", "initialized");
-		
-		
+		Log.d("UnityAds", "initialized");	
 	}
 
 	@Override
 	protected void showInterstitial() {
 		if(this.unityAdsInstance.canShowAds()) {
-			
-			HashMap<String, Object> options = new HashMap<String, Object>();
-			
-			// Always use no offer screen as MoPub is always non-incent
-			options.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, true);
-			
-			// Configured options
-			options.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, this.optionDeviceOrientation);
-			options.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, this.optionMute);
-			
+			this.unityAdsInstance.setZone(this.zoneId);			
 			this.unityAdsInstance.show(options);
 		}
 	}
 
 	@Override 
-	protected void onInvalidate() {
-
-	}
+	protected void onInvalidate() {}
 
 	@Override
 	public void onHide() {
@@ -101,7 +70,7 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 	@Override
 	public void onVideoStarted() {}
 	@Override
-	public void onVideoCompleted(String rewardItemKey) {}
+	public void onVideoCompleted(String rewardItemKey, boolean skipped) {}
 
 	@Override
 	public void onFetchCompleted() {
@@ -111,10 +80,6 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 
 	@Override
 	public void onFetchFailed() {
-		this.listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);
-		
+		this.listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);	
 	}
-	
-	
-
 }
