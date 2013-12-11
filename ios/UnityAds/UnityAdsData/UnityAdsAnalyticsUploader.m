@@ -237,7 +237,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 			NSString *url = [upload objectForKey:kUnityAdsAnalyticsSavedUploadURLKey];
 			NSString *body = [upload objectForKey:kUnityAdsAnalyticsSavedUploadBodyKey];
 			NSString *httpMethod = [upload objectForKey:kUnityAdsAnalyticsSavedUploadHTTPMethodKey];
-      NSNumber *retries = 0;
+      NSNumber *retries = @(0);
       
       if ([upload objectForKey:kUnityAdsAnalyticsUploaderRetriesKey] != nil) {
         retries = [upload objectForKey:kUnityAdsAnalyticsUploaderRetriesKey];
@@ -266,21 +266,23 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 	NSMutableArray *existingFailedUploads = [[[NSUserDefaults standardUserDefaults] arrayForKey:kUnityAdsAnalyticsSavedUploadsKey] mutableCopy];
 	
 	if (existingFailedUploads == nil) {
-    existingFailedUploads = [NSMutableArray array];
-  }
-  
+        existingFailedUploads = [NSMutableArray array];
+    }
+    
 	NSURLRequest *request = [upload objectForKey:kUnityAdsAnalyticsUploaderRequestKey];
 	NSMutableDictionary *failedUpload = [NSMutableDictionary dictionary];
 	
-  if ([request URL] != nil) {
+    if ([request URL] != nil) {
 		[failedUpload setObject:[[request URL] absoluteString] forKey:kUnityAdsAnalyticsSavedUploadURLKey];
-    
-    NSNumber *retries = 0;
-    if ([upload objectForKey:kUnityAdsAnalyticsUploaderRetriesKey] != nil)
-      retries = [upload objectForKey:kUnityAdsAnalyticsUploaderRetriesKey];
-      
+        
+        NSNumber *retries = @(0);
+        if ([upload objectForKey:kUnityAdsAnalyticsUploaderRetriesKey] != nil)
+        {
+            retries = [upload objectForKey:kUnityAdsAnalyticsUploaderRetriesKey];
+        }
+        
 		[failedUpload setObject:retries forKey:kUnityAdsAnalyticsUploaderRetriesKey];
-    
+        
 		if ([request HTTPBody] != nil) {
 			NSString *bodyString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
 			[failedUpload setObject:bodyString forKey:kUnityAdsAnalyticsSavedUploadBodyKey];

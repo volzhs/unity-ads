@@ -625,8 +625,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private void close () {
 		cancelPauseScreenTimer();
-		UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
-		UnityAdsProperties.getCurrentActivity().runOnUiThread(closeRunner);
+		if(UnityAdsProperties.getCurrentActivity() != null) {
+			UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(closeRunner);
+		}
 	}
 	
 	private void open (String view) {
@@ -763,11 +765,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_pauseScreenTimer = new TimerTask() {
 			@Override
 			public void run() {
-				PowerManager pm = (PowerManager)UnityAdsProperties.getCurrentActivity().getBaseContext().getSystemService(Context.POWER_SERVICE);			
-				if (!pm.isScreenOn()) {
-					mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
-					close();
-					cancelPauseScreenTimer();
+				if(UnityAdsProperties.CURRENT_ACTIVITY != null) {
+					PowerManager pm = (PowerManager)UnityAdsProperties.getCurrentActivity().getBaseContext().getSystemService(Context.POWER_SERVICE);			
+					if (!pm.isScreenOn()) {
+						mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
+						close();
+						cancelPauseScreenTimer();
+					}
 				}
 			}
 		};
@@ -784,9 +788,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private class UnityAdsCloseRunner implements Runnable {
 		JSONObject _data = null;
 		@Override
-		public void run() {
-			
-			if (UnityAdsProperties.getCurrentActivity().getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
+		public void run() {			
+			if (UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity().getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
 				Boolean dataOk = true;			
 				JSONObject data = new JSONObject();
 				
@@ -801,28 +804,36 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 				if (dataOk) {
 					_data = data;
-					mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+					if(mainview != null && mainview.webview != null) {
+						mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+					}
 					Timer testTimer = new Timer();
 					testTimer.schedule(new TimerTask() {
 						@Override
 						public void run() {
-							UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									mainview.closeAds(_data);
-									UnityAdsProperties.getCurrentActivity().finish();
-									
-									UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-									if (!currentZone.openAnimated()) {
-										UnityAdsProperties.getCurrentActivity().overridePendingTransition(0, 0);
+							if(UnityAdsProperties.getCurrentActivity() != null) {
+								UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										if(mainview != null) {
+											mainview.closeAds(_data);
+										}
+										if(UnityAdsProperties.getCurrentActivity() != null) {
+											UnityAdsProperties.getCurrentActivity().finish();
+										}
+										
+										UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+										if (!currentZone.openAnimated()) {
+											UnityAdsProperties.getCurrentActivity().overridePendingTransition(0, 0);
+										}	
+										
+										_showingAds = false;
+										
+										if (_adsListener != null)
+											_adsListener.onHide();
 									}
-
-									_showingAds = false;
-									
-									if (_adsListener != null)
-										_adsListener.onHide();
-								}
-							});
+								});
+							}
 						}
 					}, 250);
 				}

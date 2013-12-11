@@ -192,6 +192,11 @@
   UALOG_DEBUG(@"");
   if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) return NO;
 
+  // prevent double open / presenting twice (crash)
+  if(self.isOpen) {
+    return NO;
+  }
+
   [self selectState:requestedState];
 
   dispatch_async(dispatch_get_main_queue(), ^{
