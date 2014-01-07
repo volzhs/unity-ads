@@ -19,6 +19,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
@@ -85,7 +86,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
 			_currentWebView = view;
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 			UnityAdsUtils.Log("Send change view to WebApp: " + javascriptString, this);
 			
 			if (data != null) {
@@ -109,7 +110,7 @@ public class UnityAdsWebView extends WebView {
 					UnityAdsProperties.RUN_WEBVIEW_TESTS &&
 					UnityAdsProperties.TEST_JAVASCRIPT != null) {
 					UnityAdsUtils.Log("Running test-javascript: " + UnityAdsProperties.TEST_JAVASCRIPT , this);
-					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT));
+					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT, this));
 					UnityAdsProperties.RUN_WEBVIEW_TESTS = false;
 				}
 			}
@@ -125,7 +126,7 @@ public class UnityAdsWebView extends WebView {
 
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
 			UnityAdsUtils.Log("Send native event to WebApp: " + javascriptString, this);
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString));
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 		}
 	}
 	
@@ -166,7 +167,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
 			UnityAdsUtils.Log("Initializing WebView with JS call: " + initString, this);
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(initString));
+			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(initString, this));
 		}
 	}
 
@@ -342,16 +343,29 @@ public class UnityAdsWebView extends WebView {
 	private class UnityAdsJavascriptRunner implements Runnable {
 		
 		private String _jsString = null;
+		private WebView _webView = null;
 		
-		public UnityAdsJavascriptRunner (String jsString) {
+		public UnityAdsJavascriptRunner (String jsString, WebView webView) {
 			_jsString = jsString;
+			_webView = webView;
 		}
 		
 		@Override
 		public void run() {
 			if (_jsString != null) {
 				try {
-					loadUrl(_jsString);
+					if(Build.VERSION.SDK_INT >= 19) {
+						try
+						{
+							Method evaluateJavascript = WebView.class.getMethod("evaluateJavascript", String.class, ValueCallback.class);
+							evaluateJavascript.invoke(_webView, _jsString, null);
+						}
+						catch (Exception e) {
+							UnityAdsUtils.Log("Could not invoke evaluateJavascript", this);
+						}
+					} else {
+						loadUrl(_jsString);
+					}
 				}
 				catch (Exception e) {
 					UnityAdsUtils.Log("Error while processing JavaScriptString!", this);
