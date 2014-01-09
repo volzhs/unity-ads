@@ -14,6 +14,7 @@ import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
+import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
@@ -25,6 +26,7 @@ import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewState;
 import com.unity3d.ads.android.webapp.*;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -587,7 +589,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	private void init (Activity activity, String gameId, IUnityAdsListener listener) {
+	private void init (final Activity activity, String gameId, IUnityAdsListener listener) {
 		if (_initialized) return; 
 		
 		if(gameId.length() == 0) {
@@ -618,9 +620,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 		webdata = new UnityAdsWebData();
 		webdata.setWebDataListener(this);
 
-		if (webdata.initCampaigns()) {
-			_initialized = true;
-		}
+		new Thread(new Runnable() {
+			public void run() {
+				UnityAdsDevice.fetchAdvertisingTrackingInfo(activity);
+				if (webdata.initCampaigns()) {
+					_initialized = true;
+				}
+			}
+		}).start();	
 	}
 	
 	private void close () {

@@ -128,6 +128,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_OPENUDID_KEY = "openUdid";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_MACADDRESS_KEY = "macAddress";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY = "advertisingTrackingId";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY = "rawAdvertisingTrackingId";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY = "trackingEnabled";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SOFTWAREVERSION_KEY = "softwareVersion";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_HARDWAREVERSION_KEY = "hardwareVersion";

@@ -7,6 +7,7 @@ import java.util.Map;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient.Info;
 
 import android.app.Activity;
 
@@ -23,6 +24,8 @@ public class UnityAdsProperties {
 	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean UNITY_ADS_DEBUG_MODE = false;
+	
+	public static Info ADVERTISING_TRACKING_INFO = null;
 	
 	public static String TEST_DATA = null;
 	public static String TEST_URL = null;
@@ -49,21 +52,15 @@ public class UnityAdsProperties {
 			
 			if (!UnityAdsDevice.getAndroidId().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDID_KEY, URLEncoder.encode(UnityAdsDevice.getAndroidId(), "UTF-8"));
-			
-			if (!UnityAdsDevice.getTelephonyId().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TELEPHONYID_KEY, URLEncoder.encode(UnityAdsDevice.getTelephonyId(), "UTF-8"));
-			
-			if (!UnityAdsDevice.getAndroidSerial().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SERIALID_KEY, URLEncoder.encode(UnityAdsDevice.getAndroidSerial(), "UTF-8"));
 
-			if (!UnityAdsDevice.getOpenUdid().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_OPENUDID_KEY, URLEncoder.encode(UnityAdsDevice.getOpenUdid(), "UTF-8"));
-			
 			if (!UnityAdsDevice.getMacAddress().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_MACADDRESS_KEY, URLEncoder.encode(UnityAdsDevice.getMacAddress(), "UTF-8"));
-
-			if (!UnityAdsDevice.getOdin1Id().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ODIN1ID_KEY, URLEncoder.encode(UnityAdsDevice.getOdin1Id(), "UTF-8"));
+			
+			if(UnityAdsProperties.ADVERTISING_TRACKING_INFO != null) {
+				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY, UnityAdsProperties.ADVERTISING_TRACKING_INFO.isLimitAdTrackingEnabled() ? 0 : 1);
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY, URLEncoder.encode(UnityAdsProperties.ADVERTISING_TRACKING_INFO.getId(), "UTF-8"));
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY, URLEncoder.encode(UnityAdsProperties.ADVERTISING_TRACKING_INFO.getId(), "UTF-8"));
+			}
 			
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_PLATFORM_KEY, "android");
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_GAMEID_KEY, URLEncoder.encode(UnityAdsProperties.UNITY_ADS_GAME_ID, "UTF-8"));
