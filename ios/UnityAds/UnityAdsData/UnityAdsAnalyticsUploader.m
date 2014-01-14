@@ -167,6 +167,24 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
       id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
       trackingQuery = [NSString stringWithFormat:@"%@?%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamZoneIdKey, [currentZone getZoneId]];
       
+      if ([UnityAdsDevice getIOSMajorVersion] < 7) {
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamMacAddressKey, [UnityAdsDevice md5MACAddressString]];
+      }
+      
+      id advertisingIdentifierString = [UnityAdsDevice advertisingIdentifier];
+      id md5AdvertisingIdentifierString = [UnityAdsDevice md5AdvertisingIdentifierString];
+      
+      // Add advertisingTrackingId info if identifier is available
+      if (advertisingIdentifierString != nil) {
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamRawAdvertisingTrackingIdKey, advertisingIdentifierString];
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamAdvertisingTrackingIdKey, md5AdvertisingIdentifierString];
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%i", trackingQuery, kUnityAdsInitQueryParamTrackingEnabledKey, [UnityAdsDevice canUseTracking]];
+      }
+      
+      trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamSoftwareVersionKey, [UnityAdsDevice softwareVersion]];
+      trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamDeviceTypeKey, [UnityAdsDevice analyticsMachineName]];
+      trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamConnectionTypeKey, [UnityAdsDevice currentConnectionType]];
+      
       if([currentZone isIncentivized]) {
         id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
         trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamRewardItemKey, [itemManager getCurrentItem].key];
