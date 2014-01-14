@@ -5,11 +5,6 @@ import java.lang.reflect.Method;
 
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.data.UnityAdsDevice;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -24,6 +19,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsWebView extends WebView {
 
@@ -144,11 +144,7 @@ public class UnityAdsWebView extends WebView {
 
 				if (!UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN.equals(UnityAdsDevice.getAndroidSerial()))
 					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SERIALID_KEY, UnityAdsDevice.getAndroidSerial());
-
-				if (!UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN.equals(UnityAdsDevice.getTelephonyId()))
-					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_TELEPHONYID_KEY, UnityAdsDevice.getTelephonyId());
 				
-				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_OPENUDID_KEY, UnityAdsDevice.getOpenUdid());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY, UnityAdsDevice.getMacAddress());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY, UnityAdsConstants.UNITY_ADS_VERSION);
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);

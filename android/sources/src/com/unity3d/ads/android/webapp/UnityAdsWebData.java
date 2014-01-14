@@ -26,8 +26,8 @@ import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.zone.UnityAdsZone;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
+import com.unity3d.ads.android.zone.UnityAdsZone;
 import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 public class UnityAdsWebData {

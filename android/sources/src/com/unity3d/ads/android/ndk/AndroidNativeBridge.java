@@ -5,11 +5,13 @@
 
 package com.unity3d.ads.android.ndk;
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.util.Log;
+
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.IUnityAdsListener;
-import java.util.*;
 
 /**
  * The Unity Ads Android JDK <-> NDK bridge

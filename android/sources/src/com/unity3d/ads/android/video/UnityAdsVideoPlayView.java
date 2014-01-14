@@ -5,17 +5,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.view.UnityAdsBufferingView;
-import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
-import com.unity3d.ads.android.view.UnityAdsMuteVideoButton.UnityAdsMuteVideoButtonState;
-import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
-import com.unity3d.ads.android.webapp.UnityAdsWebData;
-import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
-import com.unity3d.ads.android.zone.UnityAdsZone;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -27,6 +16,17 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
+import com.unity3d.ads.android.view.UnityAdsBufferingView;
+import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
+import com.unity3d.ads.android.view.UnityAdsMuteVideoButton.UnityAdsMuteVideoButtonState;
+import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
+import com.unity3d.ads.android.webapp.UnityAdsWebData;
+import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
+import com.unity3d.ads.android.zone.UnityAdsZone;
 
 public class UnityAdsVideoPlayView extends RelativeLayout {
 	private static final int FILL_PARENT = -1;

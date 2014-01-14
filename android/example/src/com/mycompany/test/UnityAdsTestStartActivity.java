@@ -4,12 +4,6 @@ package com.mycompany.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.IUnityAdsListener;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-
-import com.mycompany.test.R;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +16,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.unity3d.ads.android.UnityAds;
+import com.unity3d.ads.android.IUnityAdsListener;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsTestStartActivity extends Activity implements IUnityAdsListener {
 	private UnityAds ai = null;
@@ -45,7 +43,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		Log.d(UnityAdsConstants.LOG_NAME, "Init Unity Ads");
 		
 		UnityAds.setDebugMode(true);
-		UnityAds.setTestMode(true);
+		//UnityAds.setTestMode(true);
 		
 		_optionsView = ((RelativeLayout)findViewById(R.id.optionsView));
 		

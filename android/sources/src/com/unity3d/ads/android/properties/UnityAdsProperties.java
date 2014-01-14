@@ -4,12 +4,12 @@ import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import android.app.Activity;
+
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient.Info;
-
-import android.app.Activity;
 
 public class UnityAdsProperties {
 	public static String CAMPAIGN_DATA_URL = "https://impact.applifier.com/mobile/campaigns";
@@ -92,7 +92,7 @@ public class UnityAdsProperties {
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity()) ? "false" : "true");
 			}
 		}
-		
+				
 		_campaignQueryString = queryString;
 	}
 	

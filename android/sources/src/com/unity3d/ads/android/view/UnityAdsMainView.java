@@ -5,21 +5,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
-import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
-import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
-import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
-import com.unity3d.ads.android.webapp.UnityAdsWebData;
-import com.unity3d.ads.android.webapp.UnityAdsWebView;
-import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
-import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
-import com.unity3d.ads.android.zone.UnityAdsZone;
-
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
@@ -30,6 +15,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+
+import com.unity3d.ads.android.UnityAds;
+import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
+import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
+import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
+import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
+import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
+import com.unity3d.ads.android.webapp.UnityAdsWebData;
+import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
+import com.unity3d.ads.android.webapp.UnityAdsWebView;
+import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
+import com.unity3d.ads.android.zone.UnityAdsZone;
 
 public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebViewListener, 
 																		IUnityAdsVideoPlayerListener {

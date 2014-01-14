@@ -1,7 +1,5 @@
 package com.unity3d.ads.android.video;
 
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,6 +16,8 @@ import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsVideoPausedView extends RelativeLayout {
 	private ImageView _playButtonBase = null;

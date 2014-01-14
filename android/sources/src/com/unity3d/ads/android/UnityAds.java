@@ -8,26 +8,6 @@ import java.util.TimerTask;
 
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.cache.UnityAdsCacheManager;
-import com.unity3d.ads.android.cache.UnityAdsDownloader;
-import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
-import com.unity3d.ads.android.campaign.UnityAdsCampaign;
-import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
-import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
-import com.unity3d.ads.android.data.UnityAdsDevice;
-import com.unity3d.ads.android.item.UnityAdsRewardItem;
-import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.view.UnityAdsMainView;
-import com.unity3d.ads.android.view.IUnityAdsMainViewListener;
-import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewAction;
-import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewState;
-import com.unity3d.ads.android.webapp.*;
-import com.unity3d.ads.android.zone.UnityAdsZone;
-import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -37,6 +17,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
+
+import com.unity3d.ads.android.cache.UnityAdsCacheManager;
+import com.unity3d.ads.android.cache.UnityAdsDownloader;
+import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
+import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
+import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.unity3d.ads.android.item.UnityAdsRewardItem;
+import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
+import com.unity3d.ads.android.view.UnityAdsMainView;
+import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewAction;
+import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewState;
+import com.unity3d.ads.android.view.IUnityAdsMainViewListener;
+import com.unity3d.ads.android.webapp.UnityAdsWebData;
+import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
+import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
+import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
+import com.unity3d.ads.android.zone.UnityAdsZone;
 
 
 public class UnityAds implements IUnityAdsCacheListener, 

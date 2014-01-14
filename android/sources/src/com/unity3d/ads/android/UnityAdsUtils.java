@@ -15,10 +15,6 @@ import java.util.ArrayList;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.unity3d.ads.android.campaign.UnityAdsCampaign;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -28,6 +24,10 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.os.Environment;
 import android.util.Log;
+
+import com.unity3d.ads.android.campaign.UnityAdsCampaign;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsUtils {
 

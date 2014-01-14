@@ -1,7 +1,5 @@
 package com.unity3d.ads.android.view;
 
-import com.unity3d.ads.android.UnityAdsUtils;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,6 +16,8 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.unity3d.ads.android.UnityAdsUtils;
 
 public class UnityAdsBufferingView extends LinearLayout {
 
