@@ -204,7 +204,6 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   [webAppValues setValue: [[UnityAdsCampaignManager sharedInstance] campaignData] forKey:kUnityAdsWebViewDataParamCampaignDataKey];
   [webAppValues setValue: @"ios"                                                         forKey:kUnityAdsWebViewDataParamPlatformKey];
   [webAppValues setValue: [UnityAdsDevice md5DeviceId]                            forKey:kUnityAdsWebViewDataParamDeviceIdKey];
-  [webAppValues setValue: [UnityAdsDevice md5OpenUDIDString]                      forKey:kUnityAdsWebViewDataParamOpenUdidIdKey];
   [webAppValues setValue: [UnityAdsDevice md5MACAddressString]                    forKey:kUnityAdsWebViewDataParamMacAddressKey];
   [webAppValues setValue: [[UnityAdsProperties sharedInstance] adsVersion]     forKey:kUnityAdsWebViewDataParamSdkVersionKey];
   [webAppValues setValue: [[UnityAdsProperties sharedInstance] adsGameId]      forKey:kUnityAdsWebViewDataParamGameIdKey];

@@ -82,6 +82,8 @@ static UnityAdsProperties *sharedProperties = nil;
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamEncryptionKey, [UnityAdsDevice isEncrypted] ? @"true" : @"false"];
   }
   
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, @"forceWebViewUrl", @"http://ads-dev.local/index.html"];
+  
   return queryParams;
 }
 

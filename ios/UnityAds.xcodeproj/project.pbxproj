@@ -89,8 +89,6 @@
 		7894D915171FF7AD000CFC99 /* UnityAdsNoWebViewEndScreenBottomBarContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D913171FF7AC000CFC99 /* UnityAdsNoWebViewEndScreenBottomBarContent.m */; };
 		7894D91817200A8D000CFC99 /* UnityAdsImageViewRoundedCorners.h in Headers */ = {isa = PBXBuildFile; fileRef = 7894D91617200A8B000CFC99 /* UnityAdsImageViewRoundedCorners.h */; };
 		7894D91917200A8D000CFC99 /* UnityAdsImageViewRoundedCorners.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D91717200A8B000CFC99 /* UnityAdsImageViewRoundedCorners.m */; };
-		78AC201A1622EFEA007DE419 /* UnityAdsOpenUDID.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */; };
-		78AC201B1622EFEA007DE419 /* UnityAdsOpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */; };
 		78AC20211622EFF3007DE419 /* UnityAdsAnalyticsUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */; };
 		78AC20221622EFF3007DE419 /* UnityAdsAnalyticsUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC201E1622EFF3007DE419 /* UnityAdsAnalyticsUploader.m */; };
 		78AC20231622EFF3007DE419 /* UnityAdsCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC201F1622EFF3007DE419 /* UnityAdsCache.h */; };
@@ -238,8 +236,6 @@
 		7894D913171FF7AC000CFC99 /* UnityAdsNoWebViewEndScreenBottomBarContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsNoWebViewEndScreenBottomBarContent.m; sourceTree = "<group>"; };
 		7894D91617200A8B000CFC99 /* UnityAdsImageViewRoundedCorners.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsImageViewRoundedCorners.h; sourceTree = "<group>"; };
 		7894D91717200A8B000CFC99 /* UnityAdsImageViewRoundedCorners.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsImageViewRoundedCorners.m; sourceTree = "<group>"; };
-		78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsOpenUDID.h; sourceTree = "<group>"; };
-		78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsOpenUDID.m; sourceTree = "<group>"; };
 		78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsAnalyticsUploader.h; sourceTree = "<group>"; };
 		78AC201E1622EFF3007DE419 /* UnityAdsAnalyticsUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsAnalyticsUploader.m; sourceTree = "<group>"; };
 		78AC201F1622EFF3007DE419 /* UnityAdsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsCache.h; sourceTree = "<group>"; };
@@ -575,7 +571,6 @@
 				786F5D61163142BB00FD34C4 /* UnityAdsDevice */,
 				7894D8D9170EF56B000CFC99 /* UnityAdsInitializer */,
 				99A8515617FABF620090F8FF /* UnityAdsItem */,
-				CC6C7D8C1523390A00B1B783 /* UnityAdsOpenUDID */,
 				78057A0D1643CADB005EF487 /* UnityAdsProperties */,
 				CC496CAF15078AB000AF335E /* UnityAdsSBJSON */,
 				78CB842C16255EB200E94915 /* UnityAdsURLProtocol */,
@@ -630,15 +625,6 @@
 			path = UnityAdsSBJSON;
 			sourceTree = "<group>";
 		};
-		CC6C7D8C1523390A00B1B783 /* UnityAdsOpenUDID */ = {
-			isa = PBXGroup;
-			children = (
-				78AC20181622EFEA007DE419 /* UnityAdsOpenUDID.h */,
-				78AC20191622EFEA007DE419 /* UnityAdsOpenUDID.m */,
-			);
-			path = UnityAdsOpenUDID;
-			sourceTree = "<group>";
-		};
 		CCF83B871733A13200DA12C1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -686,7 +672,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78AC201A1622EFEA007DE419 /* UnityAdsOpenUDID.h in Headers */,
 				78AC20211622EFF3007DE419 /* UnityAdsAnalyticsUploader.h in Headers */,
 				78AC20231622EFF3007DE419 /* UnityAdsCache.h in Headers */,
 				78AC202B1622EFFD007DE419 /* UnityAdsCampaign.h in Headers */,
@@ -937,7 +922,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78AC201B1622EFEA007DE419 /* UnityAdsOpenUDID.m in Sources */,
 				78AC20221622EFF3007DE419 /* UnityAdsAnalyticsUploader.m in Sources */,
 				78AC20241622EFF3007DE419 /* UnityAdsCache.m in Sources */,
 				78AC202C1622EFFD007DE419 /* UnityAdsCampaign.m in Sources */,
