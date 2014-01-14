@@ -51,11 +51,7 @@ static UnityAdsProperties *sharedProperties = nil;
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamSdkVersionKey, kUnityAdsVersion];
   
   if ([UnityAdsDevice getIOSMajorVersion] < 7) {
-    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOpenUdidKey, [UnityAdsDevice md5OpenUDIDString]];
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamMacAddressKey, [UnityAdsDevice md5MACAddressString]];
-    if ([UnityAdsDevice ODIN1] != nil) {
-      queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamOdin1IdKey, [UnityAdsDevice ODIN1]];
-    }
   }
   
   id advertisingIdentifierString = [UnityAdsDevice advertisingIdentifier];
@@ -85,8 +81,6 @@ static UnityAdsProperties *sharedProperties = nil;
   else {
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamEncryptionKey, [UnityAdsDevice isEncrypted] ? @"true" : @"false"];
   }
-  
-  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, @"forceWebViewUrl", @"http://ads-dev.local/index.html"];
   
   return queryParams;
 }

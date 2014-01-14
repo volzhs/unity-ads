@@ -93,8 +93,6 @@ public class UnityAdsProperties {
 			}
 		}
 		
-		queryString = String.format("%s&%s=%s", queryString, "forceWebViewUrl", "http://ads-dev.local/index.html");
-		
 		_campaignQueryString = queryString;
 	}
 	
