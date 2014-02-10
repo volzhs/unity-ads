@@ -79,7 +79,9 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY = "bypassAppSheet";
 	public static final String UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY = "allowSkipVideoInSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY = "disableBackButtonForSeconds";
-	
+	public static final String UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY = "refreshCampaignsAfterViewed";
+	public static final String UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY = "refreshCampaignsAfterSeconds";
+
 	/* Reward Item JSON Properties */
 	public static final String UNITY_ADS_REWARD_ITEMKEY_KEY = "itemKey";
 	public static final String UNITY_ADS_REWARD_NAME_KEY = "name";

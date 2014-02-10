@@ -29,6 +29,10 @@ public class UnityAdsProperties {
 	public static Map<String, Object> UNITY_ADS_DEVELOPER_OPTIONS = null;
 	public static int ALLOW_VIDEO_SKIP = 0;
 	public static int ALLOW_BACK_BUTTON_SKIP = 0;
+	public static int CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
+	public static int CAMPAIGN_REFRESH_VIEWS_MAX = 0;
+	public static int CAMPAIGN_REFRESH_SECONDS = 0;
+
 	
 	public static String TEST_DATA = null;
 	public static String TEST_URL = null;

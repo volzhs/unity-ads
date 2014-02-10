@@ -466,6 +466,17 @@ public class UnityAdsWebData {
 					UnityAdsProperties.ALLOW_VIDEO_SKIP = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY);
 				}
 				
+				// Refresh campaigns after "n" endscreens
+				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY)) {
+					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
+					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY);
+				}
+				
+				// Refresh campaigns after "n" seconds
+				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY)) {
+					UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY);
+				}
+				
 				// Parse campaigns
 				if (validData) {
 					JSONArray campaigns = data.getJSONArray(UnityAdsConstants.UNITY_ADS_CAMPAIGNS_KEY);
