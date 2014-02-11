@@ -61,6 +61,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _adsReadySent = false;
 	private boolean _webAppLoaded = false;
 	private boolean _openRequestFromDeveloper = false;
+	private boolean _refreshAfterVideoEnd = false;
 	private AlertDialog _alertDialog = null;
 		
 	private TimerTask _pauseScreenTimer = null;
@@ -753,6 +754,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private void refreshCampaigns() {
+		if(_refreshAfterVideoEnd) {
+			_refreshAfterVideoEnd = false;
+			webdata.initCampaigns();
+			return;
+		}
+
 		if (UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0) {
 			UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 
@@ -783,8 +790,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 			_campaignRefreshTimerTask = new TimerTask() {
 				@Override
 				public void run() {
-					UnityAdsUtils.Log("Refreshing ad plan to get new data", this);
-					webdata.initCampaigns();
+					if(!_showingAds) {
+						UnityAdsUtils.Log("Refreshing ad plan to get new data", this);
+						webdata.initCampaigns();
+					} else {
+						UnityAdsUtils.Log("Refreshing ad plan after current ad", this);
+						_refreshAfterVideoEnd = true;
+					}
 				}
 			};
 
