@@ -61,7 +61,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _adsReadySent = false;
 	private boolean _webAppLoaded = false;
 	private boolean _openRequestFromDeveloper = false;
-	private boolean _refreshAfterVideoEnd = false;
+	private boolean _refreshAfterShowAds = false;
 	private AlertDialog _alertDialog = null;
 		
 	private TimerTask _pauseScreenTimer = null;
@@ -313,8 +313,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onMainViewAction (UnityAdsMainViewAction action) {
 		switch (action) {
 			case BackButtonPressed:
-				if (_showingAds)
+				if (_showingAds) {
 					close();
+					checkRefreshAfterShowAds();
+				}
 				break;
 			case VideoStart:
 				if (_adsListener != null)
@@ -754,9 +756,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private void refreshCampaigns() {
-		if(_refreshAfterVideoEnd) {
-			_refreshAfterVideoEnd = false;
-			webdata.initCampaigns();
+		if (checkRefreshAfterShowAds()) {
 			return;
 		}
 
@@ -781,6 +781,17 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 
+	private boolean checkRefreshAfterShowAds() {
+		if(_refreshAfterShowAds) {
+			_refreshAfterShowAds = false;
+			UnityAdsUtils.Log("Starting delayed ad plan refresh", this);
+			webdata.initCampaigns();
+			return true;
+		}
+
+		return false;
+	}
+
 	private void setupCampaignRefreshTimer() {
 		if(UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS > 0) {
 			if(_campaignRefreshTimer != null) {
@@ -795,7 +806,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 						webdata.initCampaigns();
 					} else {
 						UnityAdsUtils.Log("Refreshing ad plan after current ad", this);
-						_refreshAfterVideoEnd = true;
+						_refreshAfterShowAds = true;
 					}
 				}
 			};
