@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
+import android.os.SystemClock;
 
 
 public class UnityAds implements IUnityAdsCacheListener, 
@@ -68,6 +69,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private Timer _pauseTimer = null;
 	private TimerTask _campaignRefreshTimerTask = null;
 	private Timer _campaignRefreshTimer = null;
+	private long _campaignRefreshTimerDeadline = 0;
 	
 	// Listeners
 	private IUnityAdsListener _adsListener = null;
@@ -760,6 +762,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 			return;
 		}
 
+		if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
+			removeCampaignRefreshTimer();
+			webdata.initCampaigns();
+			return;
+		}
+
 		if (UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0) {
 			UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 
@@ -793,11 +801,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	private void setupCampaignRefreshTimer() {
-		if(UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS > 0) {
-			if(_campaignRefreshTimer != null) {
-				_campaignRefreshTimer.cancel();
-			}
+		removeCampaignRefreshTimer();
 
+		if(UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS > 0) {
 			_campaignRefreshTimerTask = new TimerTask() {
 				@Override
 				public void run() {
@@ -811,11 +817,21 @@ public class UnityAds implements IUnityAdsCacheListener,
 				}
 			};
 
+			_campaignRefreshTimerDeadline = SystemClock.elapsedRealtime() + UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS * 1000;
+
 			_campaignRefreshTimer = new Timer();
 			_campaignRefreshTimer.schedule(_campaignRefreshTimerTask, UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS * 1000);
 		}
 	}
-	
+
+	private void removeCampaignRefreshTimer() {
+		_campaignRefreshTimerDeadline = 0;
+
+		if(_campaignRefreshTimer != null) {
+			_campaignRefreshTimer.cancel();
+		}
+	}
+
 	/* INTERNAL CLASSES */
 
 	// FIX: Could these 2 classes be moved to MainView
