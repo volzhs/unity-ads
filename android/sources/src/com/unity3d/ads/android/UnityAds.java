@@ -317,7 +317,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case BackButtonPressed:
 				if (_showingAds) {
 					close();
-					checkRefreshAfterShowAds();
 				}
 				break;
 			case VideoStart:
@@ -326,17 +325,17 @@ public class UnityAds implements IUnityAdsCacheListener,
 				cancelPauseScreenTimer();
 				break;
 			case VideoEnd:
+				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), false);
-					refreshCampaigns();
 				}
 				break;
 			case VideoSkipped:
+				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), true);
-					refreshCampaigns();
 				}
 				break;
 			case RequestRetryVideoPlay:
@@ -758,19 +757,21 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private void refreshCampaigns() {
-		if (checkRefreshAfterShowAds()) {
+		if(_refreshAfterShowAds) {
+			_refreshAfterShowAds = false;
+			UnityAdsUtils.Log("Starting delayed ad plan refresh", this);
+			webdata.initCampaigns();
 			return;
 		}
 
 		if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
 			removeCampaignRefreshTimer();
+			UnityAdsUtils.Log("Refreshing ad plan from server due to timer deadline", this);
 			webdata.initCampaigns();
 			return;
 		}
 
 		if (UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0) {
-			UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
-
 			if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
 				UnityAdsUtils.Log("Refreshing ad plan from server due to endscreen limit", this);
 				webdata.initCampaigns();
@@ -787,17 +788,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		} else {
 			UnityAdsUtils.Log("Unable to read video data to determine if ad plans should be refreshed", this);
 		}
-	}
-
-	private boolean checkRefreshAfterShowAds() {
-		if(_refreshAfterShowAds) {
-			_refreshAfterShowAds = false;
-			UnityAdsUtils.Log("Starting delayed ad plan refresh", this);
-			webdata.initCampaigns();
-			return true;
-		}
-
-		return false;
 	}
 
 	private void setupCampaignRefreshTimer() {
@@ -884,9 +874,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 										
 										UnityAdsProperties.UNITY_ADS_DEVELOPER_OPTIONS = null;
 										_showingAds = false;
-										
+
 										if (_adsListener != null)
 											_adsListener.onHide();
+
+										refreshCampaigns();
 									}
 								});
 							}
