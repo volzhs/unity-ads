@@ -41,6 +41,7 @@ public class UnityAdsWebData {
 	private int _totalLoadersHaveRun = 0;
 	
 	private boolean _isLoading = false;
+	private boolean _initInProgress = false;
 	
 	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
 		@SuppressLint("DefaultLocale")
@@ -131,11 +132,17 @@ public class UnityAdsWebData {
 	}
 
 	public boolean initCampaigns () {
+		if(_initInProgress) {
+			return true;
+		}
+
 		if (UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) && UnityAdsProperties.TEST_DATA != null) {
 			campaignDataReceived(UnityAdsProperties.TEST_DATA);
 			return true;
 		}
-		
+
+		_initInProgress = true;
+
 		String url = UnityAdsProperties.getCampaignQueryUrl();
 		String[] parts = url.split("\\?");
 		
@@ -435,7 +442,9 @@ public class UnityAdsWebData {
 	
 	private void campaignDataReceived (String json) {
 		Boolean validData = true;
-		
+
+		_initInProgress = false;
+
 		try {
 			_campaignJson = new JSONObject(json);
 			JSONObject data = null;
