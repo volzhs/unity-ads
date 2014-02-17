@@ -38,6 +38,18 @@ import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
 import com.unity3d.ads.android.zone.UnityAdsZone;
+import com.unity3d.ads.android.webapp.*;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.os.PowerManager;
+import android.os.SystemClock;
 
 
 public class UnityAds implements IUnityAdsCacheListener, 
@@ -68,10 +80,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private boolean _adsReadySent = false;
 	private boolean _webAppLoaded = false;
 	private boolean _openRequestFromDeveloper = false;
+	private boolean _refreshAfterShowAds = false;
 	private AlertDialog _alertDialog = null;
 		
 	private TimerTask _pauseScreenTimer = null;
 	private Timer _pauseTimer = null;
+	private TimerTask _campaignRefreshTimerTask = null;
+	private Timer _campaignRefreshTimer = null;
+	private long _campaignRefreshTimerDeadline = 0;
 	
 	// Listeners
 	private IUnityAdsListener _adsListener = null;
@@ -341,8 +357,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public void onMainViewAction (UnityAdsMainViewAction action) {
 		switch (action) {
 			case BackButtonPressed:
-				if (_showingAds)
+				if (_showingAds) {
 					close();
+				}
 				break;
 			case VideoStart:
 				if (_adsListener != null)
@@ -350,12 +367,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 				cancelPauseScreenTimer();
 				break;
 			case VideoEnd:
+				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), false);
 				}
 				break;
 			case VideoSkipped:
+				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), true);
@@ -367,8 +386,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				break;
 		}
 	}
-	
-	
+
 	// IUnityAdsCacheListener
 	@Override
 	public void onCampaignUpdateStarted () {	
@@ -407,6 +425,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 			
 			if (!dataFetchFailed) {
+				setupCampaignRefreshTimer();
+				
 				if (jsonData.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDK_IS_CURRENT_KEY)) {
 					try {
 						sdkIsCurrent = jsonData.getBoolean(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDK_IS_CURRENT_KEY);
@@ -437,7 +457,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	@Override
 	public void onWebDataFailed () {
-		if (_adsListener != null)
+		if (_adsListener != null && !_adsReadySent)
 			_adsListener.onFetchFailed();
 	}
 	
@@ -788,7 +808,72 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_pauseTimer.scheduleAtFixedRate(_pauseScreenTimer, 0, 50);
 	}
 	
-	
+	private void refreshCampaigns() {
+		if(_refreshAfterShowAds) {
+			_refreshAfterShowAds = false;
+			UnityAdsUtils.Log("Starting delayed ad plan refresh", this);
+			webdata.initCampaigns();
+			return;
+		}
+
+		if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
+			removeCampaignRefreshTimer();
+			UnityAdsUtils.Log("Refreshing ad plan from server due to timer deadline", this);
+			webdata.initCampaigns();
+			return;
+		}
+
+		if (UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0) {
+			if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
+				UnityAdsUtils.Log("Refreshing ad plan from server due to endscreen limit", this);
+				webdata.initCampaigns();
+				return;
+			}
+		}
+
+		if (webdata != null && webdata.getVideoPlanCampaigns() != null) {
+			if(webdata.getViewableVideoPlanCampaigns().size() == 0) {
+				UnityAdsUtils.Log("All available videos watched, refreshing ad plan from server", this);
+				webdata.initCampaigns();
+				return;
+			}
+		} else {
+			UnityAdsUtils.Log("Unable to read video data to determine if ad plans should be refreshed", this);
+		}
+	}
+
+	private void setupCampaignRefreshTimer() {
+		removeCampaignRefreshTimer();
+
+		if(UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS > 0) {
+			_campaignRefreshTimerTask = new TimerTask() {
+				@Override
+				public void run() {
+					if(!_showingAds) {
+						UnityAdsUtils.Log("Refreshing ad plan to get new data", this);
+						webdata.initCampaigns();
+					} else {
+						UnityAdsUtils.Log("Refreshing ad plan after current ad", this);
+						_refreshAfterShowAds = true;
+					}
+				}
+			};
+
+			_campaignRefreshTimerDeadline = SystemClock.elapsedRealtime() + UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS * 1000;
+
+			_campaignRefreshTimer = new Timer();
+			_campaignRefreshTimer.schedule(_campaignRefreshTimerTask, UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS * 1000);
+		}
+	}
+
+	private void removeCampaignRefreshTimer() {
+		_campaignRefreshTimerDeadline = 0;
+
+		if(_campaignRefreshTimer != null) {
+			_campaignRefreshTimer.cancel();
+		}
+	}
+
 	/* INTERNAL CLASSES */
 
 	// FIX: Could these 2 classes be moved to MainView
@@ -836,9 +921,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 										}	
 										
 										_showingAds = false;
-										
+
 										if (_adsListener != null)
 											_adsListener.onHide();
+
+										refreshCampaigns();
 									}
 								});
 							}

@@ -81,6 +81,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY = "bypassAppSheet";
 	public static final String UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY = "allowSkipVideoInSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY = "disableBackButtonForSeconds";
+	public static final String UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY = "refreshCampaignsAfterViewed";
+	public static final String UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY = "refreshCampaignsAfterSeconds";
 	
 	/* Zone JSON Properties */
 	public static final String UNITY_ADS_ZONES_KEY = "zones";
@@ -97,7 +99,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_ZONE_ALLOW_VIDEO_SKIP_IN_SECONDS_KEY = "allowVideoSkipInSeconds";
 	public static final String UNITY_ADS_ZONE_DISABLE_BACK_BUTTON_FOR_SECONDS = "disableBackButtonForSeconds";
 	public static final String UNITY_ADS_ZONE_ALLOW_CLIENT_OVERRIDES_KEY = "allowClientOverrides";
-	
+
 	/* Reward Item JSON Properties */
 	public static final String UNITY_ADS_REWARD_ITEMKEY_KEY = "key";
 	public static final String UNITY_ADS_REWARD_NAME_KEY = "name";

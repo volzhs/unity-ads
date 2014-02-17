@@ -14,6 +14,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
@@ -338,16 +339,29 @@ public class UnityAdsWebView extends WebView {
 	private class UnityAdsJavascriptRunner implements Runnable {
 		
 		private String _jsString = null;
+		private WebView _webView = null;
 		
-		public UnityAdsJavascriptRunner (String jsString) {
+		public UnityAdsJavascriptRunner (String jsString, WebView webView) {
 			_jsString = jsString;
+			_webView = webView;
 		}
 		
 		@Override
 		public void run() {
 			if (_jsString != null) {
 				try {
-					loadUrl(_jsString);
+					if(Build.VERSION.SDK_INT >= 19) {
+						try
+						{
+							Method evaluateJavascript = WebView.class.getMethod("evaluateJavascript", String.class, ValueCallback.class);
+							evaluateJavascript.invoke(_webView, _jsString, null);
+						}
+						catch (Exception e) {
+							UnityAdsUtils.Log("Could not invoke evaluateJavascript", this);
+						}
+					} else {
+						loadUrl(_jsString);
+					}
 				}
 				catch (Exception e) {
 					UnityAdsUtils.Log("Error while processing JavaScriptString!", this);

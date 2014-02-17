@@ -44,6 +44,7 @@ public class UnityAdsWebData {
 	private int _totalLoadersHaveRun = 0;
 	
 	private boolean _isLoading = false;
+	private boolean _initInProgress = false;
 	
 	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
 		@SuppressLint("DefaultLocale")
@@ -135,11 +136,17 @@ public class UnityAdsWebData {
 	}
 
 	public boolean initCampaigns () {
+		if(_initInProgress) {
+			return true;
+		}
+
 		if (UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) && UnityAdsProperties.TEST_DATA != null) {
 			campaignDataReceived(UnityAdsProperties.TEST_DATA);
 			return true;
 		}
-		
+
+		_initInProgress = true;
+
 		String url = UnityAdsProperties.getCampaignQueryUrl();
 		String[] parts = url.split("\\?");
 		
@@ -431,7 +438,9 @@ public class UnityAdsWebData {
 	
 	private void campaignDataReceived (String json) {
 		Boolean validData = true;
-		
+
+		_initInProgress = false;
+
 		try {
 			_campaignJson = new JSONObject(json);
 			JSONObject data = null;
@@ -456,6 +465,22 @@ public class UnityAdsWebData {
 				UnityAdsProperties.ANALYTICS_BASE_URL = data.getString(UnityAdsConstants.UNITY_ADS_ANALYTICS_URL_KEY);
 				UnityAdsProperties.UNITY_ADS_BASE_URL = data.getString(UnityAdsConstants.UNITY_ADS_URL_KEY);
 				UnityAdsProperties.UNITY_ADS_GAMER_ID = data.getString(UnityAdsConstants.UNITY_ADS_GAMER_ID_KEY);
+				
+				// Parse allow video skipping in "n" seconds
+				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY)) {
+					UnityAdsProperties.ALLOW_VIDEO_SKIP = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY);
+				}
+				
+				// Refresh campaigns after "n" endscreens
+				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY)) {
+					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
+					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY);
+				}
+				
+				// Refresh campaigns after "n" seconds
+				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY)) {
+					UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY);
+				}
 				
 				// Parse campaigns
 				if (validData) {
