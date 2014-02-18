@@ -38,17 +38,7 @@ import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
 import com.unity3d.ads.android.zone.UnityAdsZone;
-import com.unity3d.ads.android.webapp.*;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.PowerManager;
 import android.os.SystemClock;
 
 

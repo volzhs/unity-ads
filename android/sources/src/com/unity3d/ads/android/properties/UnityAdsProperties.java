@@ -25,9 +25,6 @@ public class UnityAdsProperties {
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean UNITY_ADS_DEBUG_MODE = false;
 	public static Info ADVERTISING_TRACKING_INFO = null;
-	public static Map<String, Object> UNITY_ADS_DEVELOPER_OPTIONS = null;
-	public static int ALLOW_VIDEO_SKIP = 0;
-	public static int ALLOW_BACK_BUTTON_SKIP = 0;
 	public static int CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
 	public static int CAMPAIGN_REFRESH_VIEWS_MAX = 0;
 	public static int CAMPAIGN_REFRESH_SECONDS = 0;

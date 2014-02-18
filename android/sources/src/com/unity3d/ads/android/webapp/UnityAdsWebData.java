@@ -466,11 +466,6 @@ public class UnityAdsWebData {
 				UnityAdsProperties.UNITY_ADS_BASE_URL = data.getString(UnityAdsConstants.UNITY_ADS_URL_KEY);
 				UnityAdsProperties.UNITY_ADS_GAMER_ID = data.getString(UnityAdsConstants.UNITY_ADS_GAMER_ID_KEY);
 				
-				// Parse allow video skipping in "n" seconds
-				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY)) {
-					UnityAdsProperties.ALLOW_VIDEO_SKIP = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY);
-				}
-				
 				// Refresh campaigns after "n" endscreens
 				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY)) {
 					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
