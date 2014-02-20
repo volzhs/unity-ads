@@ -5,11 +5,6 @@ import java.lang.reflect.Method;
 
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.data.UnityAdsDevice;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -25,6 +20,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsWebView extends WebView {
 
@@ -86,7 +86,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
 			_currentWebView = view;
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 			UnityAdsUtils.Log("Send change view to WebApp: " + javascriptString, this);
 			
 			if (data != null) {
@@ -99,18 +99,18 @@ public class UnityAdsWebView extends WebView {
 				
 				UnityAdsUtils.Log("dataHasApiActionKey=" + data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) , this);
 				UnityAdsUtils.Log("actionEqualsWebViewApiOpen=" + action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) , this);
-				UnityAdsUtils.Log("isDebuggable=" + UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) , this);
+				UnityAdsUtils.Log("isDebuggable=" + UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) , this);
 				UnityAdsUtils.Log("runWebViewTests=" + UnityAdsProperties.RUN_WEBVIEW_TESTS , this);
 				UnityAdsUtils.Log("testJavaScriptContents=" + UnityAdsProperties.TEST_JAVASCRIPT , this);
 				
 				if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) &&
 					action != null &&
 					action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) &&
-					UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) &&
+					UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) &&
 					UnityAdsProperties.RUN_WEBVIEW_TESTS &&
 					UnityAdsProperties.TEST_JAVASCRIPT != null) {
 					UnityAdsUtils.Log("Running test-javascript: " + UnityAdsProperties.TEST_JAVASCRIPT , this);
-					UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT, this));
+					UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT, this));
 					UnityAdsProperties.RUN_WEBVIEW_TESTS = false;
 				}
 			}
@@ -126,7 +126,7 @@ public class UnityAdsWebView extends WebView {
 
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
 			UnityAdsUtils.Log("Send native event to WebApp: " + javascriptString, this);
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 		}
 	}
 	
@@ -145,16 +145,13 @@ public class UnityAdsWebView extends WebView {
 
 				if (!UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN.equals(UnityAdsDevice.getAndroidSerial()))
 					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SERIALID_KEY, UnityAdsDevice.getAndroidSerial());
-
-				if (!UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN.equals(UnityAdsDevice.getTelephonyId()))
-					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_TELEPHONYID_KEY, UnityAdsDevice.getTelephonyId());
 				
-				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_OPENUDID_KEY, UnityAdsDevice.getOpenUdid());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY, UnityAdsDevice.getMacAddress());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY, UnityAdsConstants.UNITY_ADS_VERSION);
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_GAMEID_KEY, UnityAdsProperties.UNITY_ADS_GAME_ID);
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_ZONES_KEY, UnityAdsWebData.getZoneManager().getZonesJson());
 				
 				// Tracking data
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY, UnityAdsDevice.getSoftwareVersion());
@@ -167,7 +164,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
 			UnityAdsUtils.Log("Initializing WebView with JS call: " + initString, this);
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsJavascriptRunner(initString, this));
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(initString, this));
 		}
 	}
 
@@ -219,7 +216,6 @@ public class UnityAdsWebView extends WebView {
 		getSettings().setLightTouchEnabled(false);
 		getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
 		getSettings().setSupportMultipleWindows(false);
-		getSettings().setPluginsEnabled(false);
 		getSettings().setAllowFileAccess(false);
 		
 		setHorizontalScrollBarEnabled(false);

@@ -1,16 +1,15 @@
 package com.unity3d.ads.android.properties;
 
+import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import org.json.JSONObject;
+import android.app.Activity;
 
-import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
-
-import android.app.Activity;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient.Info;
 
 public class UnityAdsProperties {
 	public static String CAMPAIGN_DATA_URL = "https://impact.applifier.com/mobile/campaigns";
@@ -20,15 +19,15 @@ public class UnityAdsProperties {
 	public static String CAMPAIGN_QUERY_STRING = null;
 	public static String UNITY_ADS_GAME_ID = null;
 	public static String UNITY_ADS_GAMER_ID = null;
-	public static String GAMER_SID = null;
 	public static Boolean TESTMODE_ENABLED = false;
-	public static Activity BASE_ACTIVITY = null;
-	public static Activity CURRENT_ACTIVITY = null;
+	public static WeakReference<Activity> BASE_ACTIVITY = null;
+	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean UNITY_ADS_DEBUG_MODE = false;
-	public static Map<String, Object> UNITY_ADS_DEVELOPER_OPTIONS = null;
-	public static int ALLOW_VIDEO_SKIP = 0;
-	public static int ALLOW_BACK_BUTTON_SKIP = 0;
+	public static Info ADVERTISING_TRACKING_INFO = null;
+	public static int CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
+	public static int CAMPAIGN_REFRESH_VIEWS_MAX = 0;
+	public static int CAMPAIGN_REFRESH_SECONDS = 0;
 	
 	public static String TEST_DATA = null;
 	public static String TEST_URL = null;
@@ -55,21 +54,15 @@ public class UnityAdsProperties {
 			
 			if (!UnityAdsDevice.getAndroidId().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDID_KEY, URLEncoder.encode(UnityAdsDevice.getAndroidId(), "UTF-8"));
-			
-			if (!UnityAdsDevice.getTelephonyId().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TELEPHONYID_KEY, URLEncoder.encode(UnityAdsDevice.getTelephonyId(), "UTF-8"));
-			
-			if (!UnityAdsDevice.getAndroidSerial().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SERIALID_KEY, URLEncoder.encode(UnityAdsDevice.getAndroidSerial(), "UTF-8"));
 
-			if (!UnityAdsDevice.getOpenUdid().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_OPENUDID_KEY, URLEncoder.encode(UnityAdsDevice.getOpenUdid(), "UTF-8"));
-			
 			if (!UnityAdsDevice.getMacAddress().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_MACADDRESS_KEY, URLEncoder.encode(UnityAdsDevice.getMacAddress(), "UTF-8"));
-
-			if (!UnityAdsDevice.getOdin1Id().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ODIN1ID_KEY, URLEncoder.encode(UnityAdsDevice.getOdin1Id(), "UTF-8"));
+			
+			if(UnityAdsProperties.ADVERTISING_TRACKING_INFO != null) {
+				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY, UnityAdsProperties.ADVERTISING_TRACKING_INFO.isLimitAdTrackingEnabled() ? 0 : 1);
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY, URLEncoder.encode(UnityAdsProperties.ADVERTISING_TRACKING_INFO.getId(), "UTF-8"));
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY, URLEncoder.encode(UnityAdsProperties.ADVERTISING_TRACKING_INFO.getId(), "UTF-8"));
+			}
 			
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_PLATFORM_KEY, "android");
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_GAMEID_KEY, URLEncoder.encode(UnityAdsProperties.UNITY_ADS_GAME_ID, "UTF-8"));
@@ -97,66 +90,36 @@ public class UnityAdsProperties {
 			}
 		}
 		else {
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null) {
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable(UnityAdsProperties.CURRENT_ACTIVITY) ? "false" : "true");
+			if (UnityAdsProperties.getCurrentActivity() != null) {
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity()) ? "false" : "true");
 			}
 		}
-		
+				
 		_campaignQueryString = queryString;
-	}
-	
-	public static JSONObject getDeveloperOptionsAsJson () {
-		if (UNITY_ADS_DEVELOPER_OPTIONS != null) {
-			JSONObject options = new JSONObject();
-			
-			boolean noOfferscreen = false;
-			boolean openAnimated = false;
-			boolean muteVideoSounds = false;
-			boolean videoUsesDeviceOrientation = false;
-			
-			try {
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY))
-					noOfferscreen = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY);
-				
-				options.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, noOfferscreen);
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY))
-					openAnimated = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY);
-				
-				options.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, openAnimated);
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS))
-					muteVideoSounds = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS);
-				
-				options.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, muteVideoSounds);
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY))
-					options.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY));
-				
-				if (UNITY_ADS_DEVELOPER_OPTIONS.containsKey(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION))
-					videoUsesDeviceOrientation = (Boolean)UNITY_ADS_DEVELOPER_OPTIONS.get(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION);
-				
-				options.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, videoUsesDeviceOrientation);
-
-			}
-			catch (Exception e) {
-				UnityAdsUtils.Log("Could not create JSON", UnityAdsProperties.class);
-			}
-
-			return options;
-		}
-		
-		return null;
 	}
 	
 	public static String getCampaignQueryUrl () {
 		createCampaignQueryString();
 		String url = CAMPAIGN_DATA_URL;
 		
-		if (UnityAdsUtils.isDebuggable(BASE_ACTIVITY) && TEST_URL != null)
+		if (UnityAdsUtils.isDebuggable(getBaseActivity()) && TEST_URL != null)
 			url = TEST_URL;
 			
 		return String.format("%s%s", url, _campaignQueryString);
+	}
+	
+	public static Activity getBaseActivity() {
+		if(BASE_ACTIVITY != null) {
+			return BASE_ACTIVITY.get();
+		}
+		return null;
+	}
+	
+	public static Activity getCurrentActivity() {
+		if(CURRENT_ACTIVITY != null) {
+			return CURRENT_ACTIVITY.get();
+		}
+		return null;
 	}
 	
 	public static void setExtraParams (Map<String, String> params) {

@@ -12,7 +12,7 @@
 @protocol UnityAdsCampaignManagerDelegate <NSObject>
 
 @required
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID;
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns gamerID:(NSString *)gamerID;
 - (void)campaignManagerCampaignDataReceived;
 - (void)campaignManagerCampaignDataFailed;
 
@@ -24,10 +24,6 @@
 @property (nonatomic, strong) NSArray *campaigns;
 @property (nonatomic, strong) NSDictionary *campaignData;
 @property (nonatomic, strong) UnityAdsCampaign *selectedCampaign;
-@property (nonatomic, strong) UnityAdsRewardItem *defaultRewardItem;
-@property (nonatomic, strong) NSArray *rewardItems;
-@property (nonatomic, strong) NSArray *rewardItemKeys;
-@property (nonatomic, strong) NSString *currentRewardItemKey;
 
 - (void)updateCampaigns;
 - (NSURL *)getVideoURLForCampaign:(UnityAdsCampaign *)campaign;
@@ -36,9 +32,6 @@
 - (UnityAdsCampaign *)getCampaignWithITunesId:(NSString *)iTunesId;
 - (UnityAdsCampaign *)getCampaignWithClickUrl:(NSString *)clickUrl;
 - (NSArray *)getViewableCampaigns;
-- (BOOL)setSelectedRewardItemKey:(NSString *)rewardItemKey;
-- (UnityAdsRewardItem *)getCurrentRewardItem;
-- (NSDictionary *)getPublicRewardItemDetails:(NSString *)rewardItemKey;
 
 + (id)sharedInstance;
 

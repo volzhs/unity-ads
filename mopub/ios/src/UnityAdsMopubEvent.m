@@ -18,87 +18,92 @@
 
 @implementation UnityAdsMopubEvent
 
-static NSString *DEVICE_ORIENTATION_KEY = @"deviceOrientation";
-static NSString *MUTE_SOUNDS_KEY = @"muteSounds";
+static NSString const * const kUnityAdsOptionZoneIdKey = @"zoneId";
 
 @synthesize delegate;
-@synthesize muteSoundsOption;
-@synthesize deviceOrientationOption;
 
 - (void)requestInterstitialWithCustomEventInfo:(NSDictionary *)info {
-    [[UnityAds sharedInstance] startWithGameId:[info objectForKey:@"gameId"]];
-    [[UnityAds sharedInstance] setDelegate:self];
-    
-    // Default options
-    self.muteSoundsOption = @false;
-    self.deviceOrientationOption = @false;
-    
-    // Parse the options, if we have any
-    NSEnumerator *keySet = [info keyEnumerator];
-    for(NSObject *key in keySet) {
-        if([key isKindOfClass:[NSString class]]) {
-            if([MUTE_SOUNDS_KEY isEqualToString:(NSString*)key]) {
-                if([@"true" isEqualToString:(NSString *)[info objectForKey:MUTE_SOUNDS_KEY]]) {
-                    self.muteSoundsOption = @true;
-                }
-            }
-            if([DEVICE_ORIENTATION_KEY isEqualToString:(NSString*)key]) {
-                if([@"true" isEqualToString:(NSString *)[info objectForKey:DEVICE_ORIENTATION_KEY]]) {
-                    self.deviceOrientationOption = @true;
-                }                
-            }
-            
-        }
+  [[UnityAds sharedInstance] setDebugMode:YES];
+  [[UnityAds sharedInstance] startWithGameId:[info objectForKey:@"gameId"]];
+  [[UnityAds sharedInstance] setDelegate:self];
+  
+  // Parse the options, if we have any
+  _params = [[NSMutableDictionary alloc] init];
+  _zoneId = [info objectForKey:kUnityAdsOptionZoneIdKey];
+  
+  NSString *noOfferScreenValue = [info objectForKey:kUnityAdsOptionNoOfferscreenKey];
+  NSString *openAnimatedValue = [info objectForKey:kUnityAdsOptionOpenAnimatedKey];
+  NSString *gamerSidValue = [info objectForKey:kUnityAdsOptionGamerSIDKey];
+  NSString *muteVideoSoundsValue = [info objectForKey:kUnityAdsOptionMuteVideoSounds];
+  NSString *videoUsesDeviceOrientationValue = [info objectForKey:kUnityAdsOptionVideoUsesDeviceOrientation];
+  
+  if(noOfferScreenValue != nil) {
+    [_params setObject:noOfferScreenValue forKey:kUnityAdsOptionNoOfferscreenKey];
+  }
+  if(openAnimatedValue != nil) {
+    [_params setObject:openAnimatedValue forKey:kUnityAdsOptionOpenAnimatedKey];
+  }
+  if(gamerSidValue != nil) {
+    [_params setObject:gamerSidValue forKey:kUnityAdsOptionGamerSIDKey];
+  }
+  if(muteVideoSoundsValue != nil) {
+    [_params setObject:muteVideoSoundsValue forKey:kUnityAdsOptionMuteVideoSounds];
+  }
+  if(videoUsesDeviceOrientationValue != nil) {
+    [_params setObject:videoUsesDeviceOrientationValue forKey:kUnityAdsOptionVideoUsesDeviceOrientation];
+  }
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    if([[UnityAds sharedInstance] canShowAds]) {
+      [self.delegate interstitialCustomEvent:self didLoadAd:nil];
     }
-    
+  });
 }
 
 - (void)showInterstitialFromRootViewController:(UIViewController *)rootViewController {
-    if([[UnityAds sharedInstance] canShowAds]) {
-        [[UnityAds sharedInstance] setViewController:rootViewController showImmediatelyInNewController:NO];
-        [[UnityAds sharedInstance] show:
-         @{kUnityAdsOptionNoOfferscreenKey:@true,
-             kUnityAdsOptionMuteVideoSounds:self.muteSoundsOption,
-             kUnityAdsOptionVideoUsesDeviceOrientation:self.deviceOrientationOption}];
-    }
+  if([[UnityAds sharedInstance] canShowAds]) {
+    [[UnityAds sharedInstance] setViewController:rootViewController showImmediatelyInNewController:NO];
+    [[UnityAds sharedInstance] setZone:_zoneId];
+    [[UnityAds sharedInstance] show:_params];
+  }
 }
 
-- (void)unityAds:(UnityAds *)unityAds completedVideoWithRewardItemKey:(NSString *)rewardItemKey {
-    // Ignored, as no support for incentivised ads via Mopub
+- (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped {
+  // Ignored, as no support for incentivised ads via Mopub
 }
 
 - (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
-    [self.delegate interstitialCustomEvent:self didLoadAd:nil];
+  [self.delegate interstitialCustomEvent:self didLoadAd:nil];
 }
 
 - (void)unityAdsFetchFailed:(UnityAds *)unityAds {
-    NSMutableDictionary* details = [NSMutableDictionary dictionary];
-    [details setValue:@"No ads available" forKey:NSLocalizedDescriptionKey];
-    [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError:[NSError errorWithDomain:@"unityads_sdk" code:404 userInfo:details]];
+  NSMutableDictionary* details = [NSMutableDictionary dictionary];
+  [details setValue:@"No ads available" forKey:NSLocalizedDescriptionKey];
+  [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError:[NSError errorWithDomain:@"unityads_sdk" code:404 userInfo:details]];
 }
 
 - (void)unityAdsDidHide:(UnityAds *)unityAds {
-    [self.delegate interstitialCustomEventDidDisappear:self];
+  [self.delegate interstitialCustomEventDidDisappear:self];
 }
 
 - (void)unityAdsDidShow:(UnityAds *)unityAds {
-    [self.delegate interstitialCustomEventDidAppear:self];
+  [self.delegate interstitialCustomEventDidAppear:self];
 }
 
 - (void)unityAdsVideoStarted:(UnityAds *)unityAds {
-    // Ignored
+  // Ignored
 }
 
 - (void)unityAdsWillHide:(UnityAds *)unityAds {
-    [self.delegate interstitialCustomEventWillDisappear:self];
+  [self.delegate interstitialCustomEventWillDisappear:self];
 }
 
 - (void)unityAdsWillShow:(UnityAds *)unityAds {
-    [self.delegate interstitialCustomEventWillAppear:self];
+  [self.delegate interstitialCustomEventWillAppear:self];
 }
 
 - (void)unityAdsWillLeaveApplication:(UnityAds *)unityAds {
-    [self.delegate interstitialCustomEventWillLeaveApplication:self];
+  [self.delegate interstitialCustomEventWillLeaveApplication:self];
 }
 
 @end

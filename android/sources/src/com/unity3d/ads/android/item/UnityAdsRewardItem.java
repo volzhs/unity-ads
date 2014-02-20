@@ -1,4 +1,4 @@
-package com.unity3d.ads.android.campaign;
+package com.unity3d.ads.android.item;
 
 import java.util.HashMap;
 import java.util.Map;

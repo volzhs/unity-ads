@@ -39,7 +39,7 @@ public class UnityAdsWebBridge {
 		}
 	}
 	
-	private IUnityAdsWebBrigeListener _listener = null;
+	private IUnityAdsWebBridgeListener _listener = null;
 	
 	private UnityAdsWebEvent getEventType (String event) {
 		for (UnityAdsWebEvent evt : UnityAdsWebEvent.values()) {
@@ -50,7 +50,7 @@ public class UnityAdsWebBridge {
 		return null;
 	}
 	
-	public UnityAdsWebBridge (IUnityAdsWebBrigeListener listener) {
+	public UnityAdsWebBridge (IUnityAdsWebBridgeListener listener) {
 		_listener = listener;
 	}
 	
@@ -110,7 +110,7 @@ public class UnityAdsWebBridge {
 						try {
 							Intent i = new Intent(Intent.ACTION_VIEW);
 							i.setData(Uri.parse(clickUrl));
-							UnityAdsProperties.CURRENT_ACTIVITY.startActivity(i);
+							UnityAdsProperties.getCurrentActivity().startActivity(i);
 						}
 						catch (Exception e) {
 							UnityAdsUtils.Log("Could not start activity for opening URL: " + clickUrl + ", maybe malformed URL?", this);

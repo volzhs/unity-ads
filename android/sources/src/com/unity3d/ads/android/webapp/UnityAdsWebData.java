@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -21,9 +22,13 @@ import android.os.AsyncTask;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
-import com.unity3d.ads.android.campaign.UnityAdsRewardItem;
+import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
+import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
+import com.unity3d.ads.android.zone.UnityAdsZone;
+import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 public class UnityAdsWebData {
 	
@@ -33,14 +38,13 @@ public class UnityAdsWebData {
 	private ArrayList<UnityAdsUrlLoader> _urlLoaders = null;
 	private ArrayList<UnityAdsUrlLoader> _failedUrlLoaders = null;
 	private UnityAdsUrlLoader _currentLoader = null;
-	private UnityAdsRewardItem _defaultRewardItem = null;
-	private ArrayList<UnityAdsRewardItem> _rewardItems = null;
-	private UnityAdsRewardItem _currentRewardItem = null;
+	private static UnityAdsZoneManager _zoneManager = null;
 	private int _totalUrlsSent = 0;
 	private int _totalLoadersCreated = 0;
 	private int _totalLoadersHaveRun = 0;
 	
 	private boolean _isLoading = false;
+	private boolean _initInProgress = false;
 	
 	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
 		@SuppressLint("DefaultLocale")
@@ -80,6 +84,7 @@ public class UnityAdsWebData {
 			return output;
 		}
 		
+		@SuppressLint("DefaultLocale")
 		public static UnityAdsRequestType getValueOf (String value) {
 			if (VideoPlan.toString().equals(value.toLowerCase()))
 				return VideoPlan;
@@ -131,17 +136,23 @@ public class UnityAdsWebData {
 	}
 
 	public boolean initCampaigns () {
-		if (UnityAdsUtils.isDebuggable(UnityAdsProperties.BASE_ACTIVITY) && UnityAdsProperties.TEST_DATA != null) {
+		if(_initInProgress) {
+			return true;
+		}
+
+		if (UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) && UnityAdsProperties.TEST_DATA != null) {
 			campaignDataReceived(UnityAdsProperties.TEST_DATA);
 			return true;
 		}
-		
+
+		_initInProgress = true;
+
 		String url = UnityAdsProperties.getCampaignQueryUrl();
 		String[] parts = url.split("\\?");
 		
 		UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(parts[0], parts[1], UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.VideoPlan, 0);
-		if (UnityAdsProperties.CURRENT_ACTIVITY != null)
-			UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(ulc);
+		if (UnityAdsProperties.getCurrentActivity() != null)
+			UnityAdsProperties.getCurrentActivity().runOnUiThread(ulc);
 		
 		checkFailedUrls();			
 
@@ -159,14 +170,50 @@ public class UnityAdsWebData {
 			viewUrl = String.format("%s%s/video/%s/%s", viewUrl, UnityAdsProperties.UNITY_ADS_GAMER_ID, position.toString(), campaign.getCampaignId());
 			viewUrl = String.format("%s/%s", viewUrl, UnityAdsProperties.UNITY_ADS_GAME_ID);
 			
-			String queryParams = String.format("%s=%s", UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
+			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+			String queryParams = String.format("%s=%s", UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_ZONE_KEY, currentZone.getZoneId());
 			
-			if (UnityAdsProperties.GAMER_SID != null)
-				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMERSID_KEY, UnityAdsProperties.GAMER_SID);
+			try {
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_DEVICEID_KEY, URLEncoder.encode(UnityAdsDevice.getAndroidId(), "UTF-8"));
+				
+				if (!UnityAdsDevice.getAndroidId().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
+					queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDID_KEY, URLEncoder.encode(UnityAdsDevice.getAndroidId(), "UTF-8"));
+
+				if (!UnityAdsDevice.getMacAddress().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
+					queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_MACADDRESS_KEY, URLEncoder.encode(UnityAdsDevice.getMacAddress(), "UTF-8"));
+				
+				if(UnityAdsProperties.ADVERTISING_TRACKING_INFO != null) {
+					queryParams = String.format("%s&%s=%d", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY, UnityAdsProperties.ADVERTISING_TRACKING_INFO.isLimitAdTrackingEnabled() ? 0 : 1);
+					queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY, URLEncoder.encode(UnityAdsProperties.ADVERTISING_TRACKING_INFO.getId(), "UTF-8"));
+					queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY, URLEncoder.encode(UnityAdsProperties.ADVERTISING_TRACKING_INFO.getId(), "UTF-8"));
+				}
+				
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_PLATFORM_KEY, "android");
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_GAMEID_KEY, URLEncoder.encode(UnityAdsProperties.UNITY_ADS_GAME_ID, "UTF-8"));
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SDKVERSION_KEY, URLEncoder.encode(UnityAdsConstants.UNITY_ADS_VERSION, "UTF-8"));
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SOFTWAREVERSION_KEY, URLEncoder.encode(UnityAdsDevice.getSoftwareVersion(), "UTF-8"));
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_HARDWAREVERSION_KEY, URLEncoder.encode(UnityAdsDevice.getHardwareVersion(), "UTF-8"));
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY, URLEncoder.encode(UnityAdsDevice.getConnectionType(), "UTF-8"));
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString(), UnityAdsProperties.class);
+			}
+			
+			if(currentZone.isIncentivized()) {
+				UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)currentZone).itemManager();
+			    queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, itemManager.getCurrentItem().getKey());
+			}
+			
+			if (currentZone.getGamerSid() != null) {
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMERSID_KEY, currentZone.getGamerSid());
+			}
 			
 			UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(viewUrl, queryParams, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_POST, UnityAdsRequestType.VideoViewed, 0);
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
-				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(ulc);
+			if (UnityAdsProperties.getCurrentActivity() != null)
+				UnityAdsProperties.getCurrentActivity().runOnUiThread(ulc);
 			
 			progressSent = true;
 		}
@@ -181,14 +228,21 @@ public class UnityAdsWebData {
 			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_EVENTTYPE_KEY, eventType);
 			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_TRACKINGID_KEY, UnityAdsProperties.UNITY_ADS_GAMER_ID);
 			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_PROVIDERID_KEY, campaign.getCampaignId());
-			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, getCurrentRewardItemKey());
 			
-			if (UnityAdsProperties.GAMER_SID != null)
-				analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMERSID_KEY, UnityAdsProperties.GAMER_SID);
+			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+			analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_ZONE_KEY, currentZone.getZoneId());
+			
+			if(currentZone.isIncentivized()) {
+				UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)currentZone).itemManager();
+				analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY, itemManager.getCurrentItem().getKey());
+			}		
+			
+			if (currentZone.getGamerSid() != null)
+				analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMERSID_KEY, currentZone.getGamerSid());
 			
 			UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(viewUrl, analyticsUrl, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.Analytics, 0);
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
-				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(ulc);
+			if (UnityAdsProperties.getCurrentActivity() != null)
+				UnityAdsProperties.getCurrentActivity().runOnUiThread(ulc);
 		}
 	}
 	
@@ -198,22 +252,9 @@ public class UnityAdsWebData {
 			_campaigns = null;
 		}
 		
-		if (_defaultRewardItem != null) {
-			_defaultRewardItem.clearData();
-			_defaultRewardItem = null;
-		}
-		
-		if (_rewardItems != null) {
-			for (UnityAdsRewardItem rewardItem : _rewardItems)
-				rewardItem.clearData();
-			
-			_rewardItems.clear();
-			_rewardItems = null;
-		}
-		
-		if (_currentRewardItem != null) {
-			_currentRewardItem.clearData();
-			_currentRewardItem = null;
+		if (_zoneManager != null) {
+			_zoneManager.clear();
+			_zoneManager = null;
 		}
 		
 		_campaignJson = null;
@@ -245,49 +286,11 @@ public class UnityAdsWebData {
 			return _campaignJson.toString();
 		
 		return null;
+	}	
+	
+	public static UnityAdsZoneManager getZoneManager() {
+		return _zoneManager;
 	}
-	
-	
-	// Multiple reward items
-	
-	public ArrayList<UnityAdsRewardItem> getRewardItems () {
-		return _rewardItems;
-	}
-	
-	public UnityAdsRewardItem getDefaultRewardItem () {
-		return _defaultRewardItem;
-	}
-	
-	public String getCurrentRewardItemKey () {
-		if (_currentRewardItem != null)
-			return _currentRewardItem.getKey();
-		
-		return null;
-	}
-	
-	public UnityAdsRewardItem getRewardItemByKey (String rewardItemKey) {
-		if (_rewardItems != null) {
-			for (UnityAdsRewardItem rewardItem : _rewardItems) {
-				if (rewardItem.getKey().equals(rewardItemKey))
-					return rewardItem;
-			}
-		}
-		
-		if (_defaultRewardItem != null && _defaultRewardItem.getKey().equals(rewardItemKey))
-			return _defaultRewardItem;
-		
-		return null;
-	}
-	
-	public void setCurrentRewardItem (UnityAdsRewardItem rewardItem) {
-		if (_currentRewardItem != null && !_currentRewardItem.equals(rewardItem)) {
-			_currentRewardItem = rewardItem;
-		}
-		else {
-			UnityAdsUtils.Log("Problem setting current reward item: " + _currentRewardItem + ", " + rewardItem, this);
-		}
-	}
-	
 	
 	/* INTERNAL METHODS */
 	
@@ -381,8 +384,8 @@ public class UnityAdsWebData {
 								UnityAdsRequestType.getValueOf(failedUrl.getString(UnityAdsConstants.UNITY_ADS_FAILED_URL_REQUESTTYPE_KEY)), 
 								failedUrl.getInt(UnityAdsConstants.UNITY_ADS_FAILED_URL_RETRIES_KEY) + 1);
 						
-						if (UnityAdsProperties.CURRENT_ACTIVITY != null)
-							UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(ulc);
+						if (UnityAdsProperties.getCurrentActivity() != null)
+							UnityAdsProperties.getCurrentActivity().runOnUiThread(ulc);
 					}
 				}
 			}
@@ -435,7 +438,9 @@ public class UnityAdsWebData {
 	
 	private void campaignDataReceived (String json) {
 		Boolean validData = true;
-		
+
+		_initInProgress = false;
+
 		try {
 			_campaignJson = new JSONObject(json);
 			JSONObject data = null;
@@ -453,7 +458,7 @@ public class UnityAdsWebData {
 				if (!data.has(UnityAdsConstants.UNITY_ADS_URL_KEY)) validData = false;
 				if (!data.has(UnityAdsConstants.UNITY_ADS_GAMER_ID_KEY)) validData = false;
 				if (!data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGNS_KEY)) validData = false;
-				if (!data.has(UnityAdsConstants.UNITY_ADS_REWARD_ITEM_KEY)) validData = false;
+				if (!data.has(UnityAdsConstants.UNITY_ADS_ZONES_KEY)) validData = false;
 				
 				// Parse basic properties
 				UnityAdsProperties.WEBVIEW_BASE_URL = data.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_URL_KEY);
@@ -461,9 +466,15 @@ public class UnityAdsWebData {
 				UnityAdsProperties.UNITY_ADS_BASE_URL = data.getString(UnityAdsConstants.UNITY_ADS_URL_KEY);
 				UnityAdsProperties.UNITY_ADS_GAMER_ID = data.getString(UnityAdsConstants.UNITY_ADS_GAMER_ID_KEY);
 				
-				// Parse allow video skipping in "n" seconds
-				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY)) {
-					UnityAdsProperties.ALLOW_VIDEO_SKIP = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY);
+				// Refresh campaigns after "n" endscreens
+				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY)) {
+					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
+					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY);
+				}
+				
+				// Refresh campaigns after "n" seconds
+				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY)) {
+					UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY);
 				}
 				
 				// Parse campaigns
@@ -479,38 +490,13 @@ public class UnityAdsWebData {
 				
 				UnityAdsUtils.Log("Parsed total of " + _campaigns.size() + " campaigns", this);
 				
-				// Parse default reward item
+				// Zone parsing
 				if (validData) {
-					_defaultRewardItem = new UnityAdsRewardItem(data.getJSONObject(UnityAdsConstants.UNITY_ADS_REWARD_ITEM_KEY));
-					if (!_defaultRewardItem.hasValidData()) {
-						campaignDataFailed();
-						return;
+					if(_zoneManager != null) {
+						_zoneManager.clear();
+						_zoneManager = null;
 					}
-					
-					UnityAdsUtils.Log("Parsed default rewardItem: " + _defaultRewardItem.getName() + ", " + _defaultRewardItem.getKey(), this);
-					_currentRewardItem = _defaultRewardItem;
-				}
-				
-				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY)) {
-					UnityAdsProperties.ALLOW_BACK_BUTTON_SKIP = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY);
-				}
-				
-				// Parse possible multiple reward items
-				if (validData && data.has(UnityAdsConstants.UNITY_ADS_REWARD_ITEMS_KEY)) {
-					JSONArray rewardItems = data.getJSONArray(UnityAdsConstants.UNITY_ADS_REWARD_ITEMS_KEY);
-					UnityAdsRewardItem currentRewardItem = null;
-					
-					for (int i = 0; i < rewardItems.length(); i++) {
-						currentRewardItem = new UnityAdsRewardItem(rewardItems.getJSONObject(i));
-						if (currentRewardItem.hasValidData()) {
-							if (_rewardItems == null)
-								_rewardItems = new ArrayList<UnityAdsRewardItem>();
-							
-							_rewardItems.add(currentRewardItem);
-						}
-					}
-					
-					UnityAdsUtils.Log("Parsed total of " + _rewardItems.size() + " reward items", this);
+					_zoneManager = new UnityAdsZoneManager(data.getJSONArray(UnityAdsConstants.UNITY_ADS_ZONES_KEY));
 				}
 			}
 			else {
@@ -697,8 +683,8 @@ public class UnityAdsWebData {
 		}
 		
 		private void cancelInMainThread () {
-			if (UnityAdsProperties.CURRENT_ACTIVITY != null)
-				UnityAdsProperties.CURRENT_ACTIVITY.runOnUiThread(new UnityAdsCancelUrlLoaderRunner(this));
+			if (UnityAdsProperties.getCurrentActivity() != null)
+				UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsCancelUrlLoaderRunner(this));
 		}
 		
 		@Override

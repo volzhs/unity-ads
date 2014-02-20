@@ -14,6 +14,9 @@
 #import "../UnityAdsViewState/UnityAdsViewStateDefaultEndScreen.h"
 #import "../UnityAdsViewState/UnityAdsViewStateDefaultSpinner.h"
 
+#import "../UnityAdsZone/UnityAdsZoneManager.h"
+#import "../UnityAdsZone/UnityAdsIncentivizedZone.h"
+
 @implementation UnityAdsDefaultInitializer
 
 - (void)initAds:(NSDictionary *)options {
@@ -61,7 +64,7 @@
 
 #pragma mark - UnityAdsCampaignManagerDelegate
 
-- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns rewardItem:(UnityAdsRewardItem *)rewardItem gamerID:(NSString *)gamerID {
+- (void)campaignManager:(UnityAdsCampaignManager *)campaignManager updatedWithCampaigns:(NSArray *)campaigns gamerID:(NSString *)gamerID {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 }
@@ -97,7 +100,13 @@
   dispatch_async(dispatch_get_main_queue(), ^{
     [self checkForVersionAndShowAlertDialog];
     
-    [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIInitComplete, kUnityAdsItemKeyKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key}];
+    id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+    if([currentZone isIncentivized]) {
+      id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+      [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIInitComplete, kUnityAdsItemKeyKey:[itemManager getCurrentItem].key}];
+    } else {
+      [[UnityAdsWebAppController sharedInstance] setWebViewCurrentView:kUnityAdsWebViewViewTypeNone data:@{kUnityAdsWebViewAPIActionKey:kUnityAdsWebViewAPIInitComplete}];
+    }    
     
     if (self.delegate != nil) {
       [self.delegate initComplete];

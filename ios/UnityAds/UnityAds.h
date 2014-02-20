@@ -67,6 +67,8 @@ typedef enum {
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds;
 - (BOOL)canShowAds;
 - (BOOL)canShow;
+- (BOOL)setZone:(NSString *)zoneId;
+- (BOOL)setZone:(NSString *)zoneId withRewardItem:(NSString *)rewardItemKey;
 - (BOOL)show:(NSDictionary *)options;
 - (BOOL)show;
 - (BOOL)hide;

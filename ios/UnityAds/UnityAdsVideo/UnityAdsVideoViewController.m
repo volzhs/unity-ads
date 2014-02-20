@@ -11,11 +11,11 @@
 #import "UnityAdsVideoViewController.h"
 #import "UnityAdsVideoPlayer.h"
 #import "UnityAdsVideoView.h"
-#import "../UnityAdsProperties/UnityAdsShowOptionsParser.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsVideoMuteButton.h"
 #import "../UnityAdsBundle/UnityAdsBundle.h"
 #import "../UnityAdsView/UnityAdsMainViewController.h"
+#import "../UnityAdsZone/UnityAdsZoneManager.h"
 
 @interface UnityAdsVideoViewController ()
   @property (nonatomic, strong) UnityAdsVideoView *videoView;
@@ -97,7 +97,8 @@
 }
 
 - (void)_makeOrientation {
-  if (![[UnityAdsShowOptionsParser sharedInstance] useDeviceOrientationForVideo]) {
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if (![currentZone useDeviceOrientationForVideo]) {
     if (UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation)) {
       double maxValue = fmax(self.view.superview.bounds.size.width, self.view.superview.bounds.size.height);
       double minValue = fmin(self.view.superview.bounds.size.width, self.view.superview.bounds.size.height);
@@ -123,7 +124,8 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-  if ([[UnityAdsShowOptionsParser sharedInstance] useDeviceOrientationForVideo]) {
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if ([currentZone useDeviceOrientationForVideo]) {
     return YES;
   }
   return UIInterfaceOrientationIsLandscape(interfaceOrientation);
@@ -134,7 +136,8 @@
 }
 
 - (BOOL)shouldAutorotate {
-  if ([[UnityAdsShowOptionsParser sharedInstance] useDeviceOrientationForVideo]) {
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if ([currentZone useDeviceOrientationForVideo]) {
     return YES;
   }
   return NO;
@@ -161,7 +164,8 @@
   AVURLAsset *asset = [AVURLAsset URLAssetWithURL:self.currentPlayingVideoUrl options:nil];
   AVMutableAudioMix *audioZeroMix = nil;
   
-  if ([[UnityAdsShowOptionsParser sharedInstance] muteVideoSounds]) {
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if ([currentZone muteVideoSounds]) {
     NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
     NSMutableArray *allAudioParams = [NSMutableArray array];
     
@@ -178,7 +182,7 @@
   
   AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
   
-  if ([[UnityAdsShowOptionsParser sharedInstance] muteVideoSounds]) {
+  if ([currentZone muteVideoSounds]) {
     [item setAudioMix:audioZeroMix];
   }
   
@@ -289,7 +293,8 @@
 - (void)videoPlaybackStarted {
   UALOG_DEBUG(@"");
   self.bufferingLabel.hidden = YES;
-  if ([[UnityAdsProperties sharedInstance] allowVideoSkipInSeconds] == 0) {
+  UnityAdsZone * currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if ([currentZone allowVideoSkipInSeconds] == 0) {
     self.skipLabel.hidden = YES;
   }
   [self hideOverlayAfter:3.0f];
@@ -326,7 +331,8 @@
 #pragma mark - Video Skip Label
 
 - (void)createVideoSkipLabel {
-  if (self.skipLabel == nil && self.videoOverlayView != nil) {
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if (self.skipLabel == nil && self.videoOverlayView != nil && [currentZone allowVideoSkipInSeconds] > 0) {
     UALOG_DEBUG(@"Create video skip label");
     self.skipLabel = [[UIButton alloc] initWithFrame:CGRectMake(3, 0, 300, 20)];
     self.skipLabel.backgroundColor = [UIColor clearColor];
@@ -361,7 +367,8 @@
   [self.muteButton addTarget:self action:@selector(muteVideoButtonPressed:) forControlEvents:UIControlEventTouchDown];
   [self.muteButton setFrame:CGRectMake(0.0f, self.view.bounds.size.height - self.muteButton.bounds.size.height + 16, self.muteButton.frame.size.width, self.muteButton.frame.size.height)];
   
-  if ([[UnityAdsShowOptionsParser sharedInstance] muteVideoSounds]) {
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if ([currentZone muteVideoSounds]) {
     self.isMuted = true;
     self.muteButton.selected = self.isMuted;
   }
@@ -472,8 +479,10 @@
 	Float64 current = CMTimeGetSeconds(currentTime);
   Float64 timeLeft = duration - current;
   Float64 timeUntilSkip = -1;
-  if ([[UnityAdsProperties sharedInstance] allowVideoSkipInSeconds] > 0) {
-    timeUntilSkip = [[UnityAdsProperties sharedInstance] allowVideoSkipInSeconds] - current;
+  
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if ([currentZone allowVideoSkipInSeconds] > 0) {
+    timeUntilSkip = [currentZone allowVideoSkipInSeconds] - current;
   }
   
   if (timeLeft < 0)

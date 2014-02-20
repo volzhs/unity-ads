@@ -56,6 +56,8 @@ extern NSString * const kUnityAdsWebViewDataParamMacAddressKey;
 extern NSString * const kUnityAdsWebViewDataParamSdkVersionKey;
 extern NSString * const kUnityAdsWebViewDataParamSdkIsCurrentKey;
 extern NSString * const kUnityAdsWebViewDataParamIosVersionKey;
+extern NSString * const kUnityAdsWebViewDataParamZoneKey;
+extern NSString * const kUnityAdsWebViewDataParamZonesKey;
 
 extern NSString * const kUnityAdsWebViewEventDataCampaignIdKey;
 extern NSString * const kUnityAdsWebViewEventDataRewatchKey;
@@ -150,6 +152,7 @@ extern NSString * const kUnityAdsInitQueryParamOdin1IdKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamEventTypeKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamTrackingIdKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamProviderIdKey;
+extern NSString * const kUnityAdsAnalyticsQueryParamZoneIdKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamRewardItemKey;
 extern NSString * const kUnityAdsAnalyticsQueryParamGamerSIDKey;
 
@@ -167,24 +170,10 @@ extern NSString * const kUnityAdsTrackingEventTypeVideoEnd;
 /* Devicetypes */
 
 extern NSString * const kUnityAdsDeviceIphone;
-extern NSString * const kUnityAdsDeviceIphone3g;
-extern NSString * const kUnityAdsDeviceIphone3gs;
-extern NSString * const kUnityAdsDeviceIphone4;
-extern NSString * const kUnityAdsDeviceIphone4s;
-extern NSString * const kUnityAdsDeviceIphone5;
 extern NSString * const kUnityAdsDeviceIpod;
-extern NSString * const kUnityAdsDeviceIpodTouch1gen;
-extern NSString * const kUnityAdsDeviceIpodTouch2gen;
-extern NSString * const kUnityAdsDeviceIpodTouch3gen;
-extern NSString * const kUnityAdsDeviceIpodTouch4gen;
-extern NSString * const kUnityAdsDeviceIpodTouch5gen;
 extern NSString * const kUnityAdsDeviceIpad;
-extern NSString * const kUnityAdsDeviceIpad1;
-extern NSString * const kUnityAdsDeviceIpad2;
-extern NSString * const kUnityAdsDeviceIpad3;
 extern NSString * const kUnityAdsDeviceIosUnknown;
 extern NSString * const kUnityAdsDeviceSimulator;
-
 
 /* Init Query Params */
 
@@ -228,6 +217,22 @@ extern NSString * const kUnityAdsGoogleAnalyticsEventBufferingDurationKey;
 extern NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey;
 extern NSString * const kUnityAdsGoogleAnalyticsEventValueKey;
 extern NSString * const kUnityAdsGoogleAnalyticsEventTypeKey;
+
+/* Zones */
+
+extern NSString * const kUnityAdsZonesRootKey;
+extern NSString * const kUnityAdsZoneIdKey;
+extern NSString * const kUnityAdsZoneNameKey;
+extern NSString * const kUnityAdsZoneDefaultKey;
+extern NSString * const kUnityAdsZoneIsIncentivizedKey;
+extern NSString * const kUnityAdsZoneRewardItemsKey;
+extern NSString * const kUnityAdsZoneDefaultRewardItemKey;
+extern NSString * const kUnityAdsZoneAllowOverrides;
+extern NSString * const kUnityAdsZoneNoOfferScreenKey;
+extern NSString * const kUnityAdsZoneOpenAnimatedKey;
+extern NSString * const kUnityAdsZoneMuteVideoSoundsKey;
+extern NSString * const kUnityAdsZoneUseDeviceOrientationForVideoKey;
+extern NSString * const kUnityAdsZoneAllowVideoSkipInSecondsKey;
 
 @interface UnityAdsConstants : NSObject
 

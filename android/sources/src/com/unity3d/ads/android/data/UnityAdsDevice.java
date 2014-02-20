@@ -5,17 +5,21 @@ import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
 
-import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
+
+import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class UnityAdsDevice {
 	
@@ -28,20 +32,7 @@ public class UnityAdsDevice {
 	}
 	
 	public static int getDeviceType () {
-		return UnityAdsProperties.CURRENT_ACTIVITY.getResources().getConfiguration().screenLayout;
-	}
-	
-	public static String getOdin1Id () {
-		String odin1ID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		
-		try {
-			odin1ID = UnityAdsUtils.SHA1(Secure.getString(UnityAdsProperties.CURRENT_ACTIVITY.getContentResolver(), Secure.ANDROID_ID));
-		}
-		catch (Exception e) {
-			UnityAdsUtils.Log("Could not resolve ODIN1 Id: " + e.getMessage(), UnityAdsDevice.class);
-		}
-		
-		return odin1ID;
+		return UnityAdsProperties.getCurrentActivity().getResources().getConfiguration().screenLayout;
 	}
 
 	@SuppressLint("DefaultLocale")
@@ -49,7 +40,7 @@ public class UnityAdsDevice {
 		String androidID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		
 		try {
-			androidID = UnityAdsUtils.Md5(Secure.getString(UnityAdsProperties.CURRENT_ACTIVITY.getContentResolver(), Secure.ANDROID_ID));
+			androidID = UnityAdsUtils.Md5(Secure.getString(UnityAdsProperties.getCurrentActivity().getContentResolver(), Secure.ANDROID_ID));
 			androidID = androidID.toLowerCase();
 		}
 		catch (Exception e) {
@@ -57,21 +48,6 @@ public class UnityAdsDevice {
 		}
 		
 		return androidID;
-	}
-	
-	public static String getTelephonyId () {
-		String telephonyID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		
-		try {
-			TelephonyManager tmanager = (TelephonyManager)UnityAdsProperties.CURRENT_ACTIVITY.getSystemService(Context.TELEPHONY_SERVICE);
-			telephonyID = UnityAdsUtils.Md5(tmanager.getDeviceId());
-			telephonyID = telephonyID.toLowerCase();
-		}
-		catch (Exception e) {
-			UnityAdsUtils.Log("Problems fetching telephonyId: " + e.getMessage(), UnityAdsDevice.class);
-		}
-		
-		return telephonyID;
 	}
 	
 	public static String getAndroidSerial () {
@@ -98,6 +74,14 @@ public class UnityAdsDevice {
 		}
 		
 		return buildMacAddressFromInterface(intf);
+    }
+    
+    public static void fetchAdvertisingTrackingInfo(final Activity context) {
+    	if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS) {
+    		try {
+    			UnityAdsProperties.ADVERTISING_TRACKING_INFO = AdvertisingIdClient.getAdvertisingIdInfo(context);
+    		} catch(Exception e) {}
+    	}
     }
 	
     @SuppressLint("DefaultLocale")
@@ -152,13 +136,6 @@ public class UnityAdsDevice {
         
     	return null;
     }
-    
-	public static String getOpenUdid () {
-		String deviceId = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		UnityAdsOpenUDID.syncContext(UnityAdsProperties.CURRENT_ACTIVITY);
-		deviceId = UnityAdsUtils.Md5(UnityAdsOpenUDID.getOpenUDIDInContext());
-		return deviceId.toLowerCase();
-	}
 	
 	public static String getConnectionType () {
 		if (isUsingWifi()) {
@@ -171,12 +148,12 @@ public class UnityAdsDevice {
 	@SuppressWarnings("deprecation")
 	public static boolean isUsingWifi () {
 		ConnectivityManager mConnectivity = null;
-		mConnectivity = (ConnectivityManager)UnityAdsProperties.CURRENT_ACTIVITY.getSystemService(Context.CONNECTIVITY_SERVICE);
+		mConnectivity = (ConnectivityManager)UnityAdsProperties.getCurrentActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		if (mConnectivity == null)
 			return false;
 
-		TelephonyManager mTelephony = (TelephonyManager)UnityAdsProperties.CURRENT_ACTIVITY.getSystemService(Context.TELEPHONY_SERVICE);
+		TelephonyManager mTelephony = (TelephonyManager)UnityAdsProperties.getCurrentActivity().getSystemService(Context.TELEPHONY_SERVICE);
 		// Skip if no connection, or background data disabled
 		NetworkInfo info = mConnectivity.getActiveNetworkInfo();
 		if (info == null || !mConnectivity.getBackgroundDataSetting() || !mConnectivity.getActiveNetworkInfo().isConnected() || mTelephony == null) {
@@ -193,7 +170,7 @@ public class UnityAdsDevice {
 	}
 	
 	public static int getScreenDensity () {
-		return UnityAdsProperties.CURRENT_ACTIVITY.getResources().getDisplayMetrics().densityDpi;
+		return UnityAdsProperties.getCurrentActivity().getResources().getDisplayMetrics().densityDpi;
 	}
 	
 	public static int getScreenSize () {

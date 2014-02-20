@@ -41,6 +41,8 @@ NSString * const kUnityAdsWebViewDataParamMacAddressKey = @"macAddress";
 NSString * const kUnityAdsWebViewDataParamSdkVersionKey = @"sdkVersion";
 NSString * const kUnityAdsWebViewDataParamIosVersionKey = @"iOSVersion";
 NSString * const kUnityAdsWebViewDataParamSdkIsCurrentKey = @"sdkIsCurrent";
+NSString * const kUnityAdsWebViewDataParamZoneKey = @"zone";
+NSString * const kUnityAdsWebViewDataParamZonesKey = @"zones";
 
 NSString * const kUnityAdsWebViewEventDataCampaignIdKey = @"campaignId";
 NSString * const kUnityAdsWebViewEventDataRewatchKey = @"rewatch";
@@ -98,7 +100,7 @@ NSString * const kUnityAdsCampaignAllowVideoSkipKey = @"allowSkipVideoInSeconds"
 
 /* Reward Item JSON Properties */
 
-NSString * const kUnityAdsRewardItemKeyKey = @"itemKey";
+NSString * const kUnityAdsRewardItemKeyKey = @"key";
 NSString * const kUnityAdsRewardNameKey = @"name";
 NSString * const kUnityAdsRewardPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemKey = @"item";
@@ -136,6 +138,7 @@ NSString * const kUnityAdsAnalyticsQueryParamGameIdKey = @"gameId";
 NSString * const kUnityAdsAnalyticsQueryParamEventTypeKey = @"type";
 NSString * const kUnityAdsAnalyticsQueryParamTrackingIdKey = @"trackingId";
 NSString * const kUnityAdsAnalyticsQueryParamProviderIdKey = @"providerId";
+NSString * const kUnityAdsAnalyticsQueryParamZoneIdKey = @"zone";
 NSString * const kUnityAdsAnalyticsQueryParamRewardItemKey = @"rewardItem";
 NSString * const kUnityAdsAnalyticsQueryParamGamerSIDKey = @"sid";
 
@@ -153,21 +156,8 @@ NSString * const kUnityAdsTrackingEventTypeVideoEnd = @"view";
 /* Devicetypes */
 
 NSString * const kUnityAdsDeviceIphone = @"iphone";
-NSString * const kUnityAdsDeviceIphone3g = @"iphone3g";
-NSString * const kUnityAdsDeviceIphone3gs = @"iphone3gs";
-NSString * const kUnityAdsDeviceIphone4 = @"iphone4";
-NSString * const kUnityAdsDeviceIphone4s = @"iphone4s";
-NSString * const kUnityAdsDeviceIphone5 = @"iphone5";
 NSString * const kUnityAdsDeviceIpod = @"ipod";
-NSString * const kUnityAdsDeviceIpodTouch1gen = @"ipodtouch1gen";
-NSString * const kUnityAdsDeviceIpodTouch2gen = @"ipodtouch2gen";
-NSString * const kUnityAdsDeviceIpodTouch3gen = @"ipodtouch3gen";
-NSString * const kUnityAdsDeviceIpodTouch4gen = @"ipodtouch4gen";
-NSString * const kUnityAdsDeviceIpodTouch5gen = @"ipodtouch5gen";
 NSString * const kUnityAdsDeviceIpad = @"ipad";
-NSString * const kUnityAdsDeviceIpad1 = @"ipad1";
-NSString * const kUnityAdsDeviceIpad2 = @"ipad2";
-NSString * const kUnityAdsDeviceIpad3 = @"ipad3";
 NSString * const kUnityAdsDeviceIosUnknown = @"iosUnknown";
 NSString * const kUnityAdsDeviceSimulator = @"simulator";
 
@@ -215,6 +205,22 @@ NSString * const kUnityAdsGoogleAnalyticsEventBufferingDurationKey = @"buffering
 NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey = @"cachingDuration";
 NSString * const kUnityAdsGoogleAnalyticsEventValueKey = @"eventValue";
 NSString * const kUnityAdsGoogleAnalyticsEventTypeKey = @"eventType";
+
+/* Zones */
+
+NSString * const kUnityAdsZonesRootKey = @"zones";
+NSString * const kUnityAdsZoneIdKey = @"id";
+NSString * const kUnityAdsZoneNameKey = @"name";
+NSString * const kUnityAdsZoneDefaultKey = @"default";
+NSString * const kUnityAdsZoneIsIncentivizedKey = @"incentivised";
+NSString * const kUnityAdsZoneRewardItemsKey = @"rewardItems";
+NSString * const kUnityAdsZoneDefaultRewardItemKey = @"defaultRewardItem";
+NSString * const kUnityAdsZoneAllowOverrides = @"allowClientOverrides";
+NSString * const kUnityAdsZoneNoOfferScreenKey = @"noOfferScreen";
+NSString * const kUnityAdsZoneOpenAnimatedKey = @"openAnimated";
+NSString * const kUnityAdsZoneMuteVideoSoundsKey = @"muteVideoSounds";
+NSString * const kUnityAdsZoneUseDeviceOrientationForVideoKey = @"useDeviceOrientationForVideo";
+NSString * const kUnityAdsZoneAllowVideoSkipInSecondsKey = @"allowVideoSkipInSeconds";
 
 @implementation UnityAdsConstants
 

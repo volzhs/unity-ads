@@ -6,12 +6,13 @@
 #import "UnityAds.h"
 #import "UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "UnityAdsCampaign/UnityAdsCampaign.h"
-#import "UnityAdsCampaign/UnityAdsRewardItem.h"
+#import "UnityAdsItem/UnityAdsRewardItem.h"
 #import "UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsProperties/UnityAdsProperties.h"
 #import "UnityAdsView/UnityAdsMainViewController.h"
-#import "UnityAdsProperties/UnityAdsShowOptionsParser.h"
+#import "UnityAdsZone/UnityAdsZoneManager.h"
+#import "UnityAdsZone/UnityAdsIncentivizedZone.h"
 
 #import "UnityAdsInitializer/UnityAdsDefaultInitializer.h"
 #import "UnityAdsInitializer/UnityAdsNoWebViewInitializer.h"
@@ -154,26 +155,46 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	return [self adsCanBeShown];
 }
 
+- (BOOL)setZone:(NSString *)zoneId {
+  if (![[UnityAdsMainViewController sharedInstance] mainControllerVisible]) {
+    return [[UnityAdsZoneManager sharedInstance] setCurrentZone:zoneId];
+  }
+  return FALSE;
+}
+
+- (BOOL)setZone:(NSString *)zoneId withRewardItem:(NSString *)rewardItemKey {
+  if([self setZone:zoneId]) {
+    return [self setRewardItemKey:rewardItemKey];
+  }
+  return FALSE;
+}
+
 - (BOOL)show:(NSDictionary *)options {
   UAAssertV([NSThread mainThread], false);
   if (![UnityAds isSupported]) return false;
   if (![self canShow]) return false;
   
   UnityAdsViewStateType state = kUnityAdsViewStateTypeOfferScreen;
-  [[UnityAdsShowOptionsParser sharedInstance] parseOptions:options];
   
-  // If Unity Ads is in "No WebView" -mode, always skip offerscreen
-  if (self.mode == kUnityAdsModeNoWebView)
-    [[UnityAdsShowOptionsParser sharedInstance] setNoOfferScreen:true];
-  
-  if ([[UnityAdsShowOptionsParser sharedInstance] noOfferScreen]) {
-    if (![self canShowAds]) return false;
-    state = kUnityAdsViewStateTypeVideoPlayer;
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if(currentZone) {
+    [currentZone mergeOptions:options];
+    
+    // If Unity Ads is in "No WebView" -mode, always skip offerscreen
+    if (self.mode == kUnityAdsModeNoWebView)
+      [currentZone setNoOfferScreen:true];
+    
+    if ([currentZone noOfferScreen]) {
+      if (![self canShowAds]) return false;
+      state = kUnityAdsViewStateTypeVideoPlayer;
+    }
+    
+    [[UnityAdsMainViewController sharedInstance] openAds:[currentZone openAnimated] inState:state withOptions:options];
+    
+    return true;
+  } else {
+    return false;
   }
-  
-  [[UnityAdsMainViewController sharedInstance] openAds:[[UnityAdsShowOptionsParser sharedInstance] openAnimated] inState:state withOptions:options];
-  
-  return true;
 }
 
 - (BOOL)show {
@@ -181,42 +202,70 @@ static UnityAds *sharedUnityAdsInstance = nil;
 }
 
 - (BOOL)hasMultipleRewardItems {
-  if ([[UnityAdsCampaignManager sharedInstance] rewardItems] != nil && [[[UnityAdsCampaignManager sharedInstance] rewardItems] count] > 0) {
-    return true;
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if(currentZone && [currentZone isIncentivized]) {
+    id rewardManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+    if(rewardManager != nil && [rewardManager itemCount] > 1) {
+      return TRUE;
+    }
   }
-  
-  return false;
+  return FALSE;
 }
 
 - (NSArray *)getRewardItemKeys {
-  return [[UnityAdsCampaignManager sharedInstance] rewardItemKeys];
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if(currentZone && [currentZone isIncentivized]) {
+    return [[((UnityAdsIncentivizedZone *)currentZone) itemManager] allItems];
+  }
+  return nil;
 }
 
 - (NSString *)getDefaultRewardItemKey {
-  return [[UnityAdsCampaignManager sharedInstance] defaultRewardItem].key;
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if(currentZone && [currentZone isIncentivized]) {
+    return [[((UnityAdsIncentivizedZone *)currentZone) itemManager] getDefaultItem].key;
+  }
+  return nil;
 }
 
 - (NSString *)getCurrentRewardItemKey {
-  return [[UnityAdsCampaignManager sharedInstance] currentRewardItemKey];
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if(currentZone && [currentZone isIncentivized]) {
+    return [[((UnityAdsIncentivizedZone *)currentZone) itemManager] getCurrentItem].key;
+  }
+  return nil;
+
 }
 
 - (BOOL)setRewardItemKey:(NSString *)rewardItemKey {
   if (![[UnityAdsMainViewController sharedInstance] mainControllerVisible]) {
-    return [[UnityAdsCampaignManager sharedInstance] setSelectedRewardItemKey:rewardItemKey];
+    id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+    if(currentZone && [currentZone isIncentivized]) {
+      return [[((UnityAdsIncentivizedZone *)currentZone) itemManager] setCurrentItem:rewardItemKey];
+    }
   }
-  
   return false;
 }
 
 - (void)setDefaultRewardItemAsRewardItem {
-  [[UnityAdsCampaignManager sharedInstance] setSelectedRewardItemKey:[self getDefaultRewardItemKey]];
+  if (![[UnityAdsMainViewController sharedInstance] mainControllerVisible]) {
+    id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+    if(currentZone && [currentZone isIncentivized]) {
+      id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+      [itemManager setCurrentItem:[itemManager getDefaultItem].key];
+    }
+  }
 }
 
 - (NSDictionary *)getRewardItemDetailsWithKey:(NSString *)rewardItemKey {
-  if ([self hasMultipleRewardItems] && rewardItemKey != nil) {
-    return [[UnityAdsCampaignManager sharedInstance] getPublicRewardItemDetails:rewardItemKey];
+  id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+  if(currentZone && [currentZone isIncentivized]) {
+    id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+    id item = [itemManager getItem:rewardItemKey];
+    if(item != nil) {
+      return [item getDetails];
+    }
   }
-  
   return nil;
 }
 
@@ -285,10 +334,9 @@ static UnityAds *sharedUnityAdsInstance = nil;
 }
 
 - (BOOL)adsCanBeShown {
-  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && [[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem] != nil && self.initializer != nil && [self.initializer initWasSuccessfull]) {
+  if ([[UnityAdsCampaignManager sharedInstance] campaigns] != nil && [[[UnityAdsCampaignManager sharedInstance] campaigns] count] > 0 && self.initializer != nil && [self.initializer initWasSuccessfull]) {
 		return true;
   }
-  
   return false;
 }
 
@@ -367,7 +415,13 @@ static UnityAds *sharedUnityAdsInstance = nil;
     [[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
     
     if (self.delegate != nil) {
-      [self.delegate unityAdsVideoCompleted:self rewardItemKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key skipped:FALSE];
+      NSString *key = nil;
+      id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+      if([currentZone isIncentivized]) {
+        id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+        key = [itemManager getCurrentItem].key;
+      }
+      [self.delegate unityAdsVideoCompleted:self rewardItemKey:key skipped:FALSE];
     }
   }
 }
@@ -380,7 +434,13 @@ static UnityAds *sharedUnityAdsInstance = nil;
     [[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
     
     if (self.delegate != nil) {
-      [self.delegate unityAdsVideoCompleted:self rewardItemKey:[[UnityAdsCampaignManager sharedInstance] getCurrentRewardItem].key skipped:TRUE];
+      NSString *key = nil;
+      id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
+      if([currentZone isIncentivized]) {
+        id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
+        key = [itemManager getCurrentItem].key;
+      }
+      [self.delegate unityAdsVideoCompleted:self rewardItemKey:key skipped:TRUE];
     }
   }
 }

@@ -8,57 +8,61 @@
 
 #import "UnityAdsInterstitial.h"
 
+static NSString const * const kUnityAdsOptionZoneIdKey = @"zoneId";
+
 @implementation UnityAdsInterstitial
 
 @synthesize delegate = _delegate;
 
 - (id)initWithParams:(NSDictionary *)params {
-    self = [super init];
-    if(self != nil) {
-        _params = [[NSMutableDictionary alloc] init];
-                
-        NSString *noOfferScreenValue = [params objectForKey:kUnityAdsOptionNoOfferscreenKey];
-        NSString *openAnimatedValue = [params objectForKey:kUnityAdsOptionOpenAnimatedKey];
-        NSString *gamerSidValue = [params objectForKey:kUnityAdsOptionGamerSIDKey];
-        NSString *muteVideoSoundsValue = [params objectForKey:kUnityAdsOptionMuteVideoSounds];
-        NSString *videoUsesDeviceOrientationValue = [params objectForKey:kUnityAdsOptionVideoUsesDeviceOrientation];
-        
-        if(noOfferScreenValue != nil) {
-            [_params setObject:noOfferScreenValue forKey:kUnityAdsOptionNoOfferscreenKey];
-        }
-        if(openAnimatedValue != nil) {
-            [_params setObject:openAnimatedValue forKey:kUnityAdsOptionOpenAnimatedKey];
-        }
-        if(gamerSidValue != nil) {
-            [_params setObject:gamerSidValue forKey:kUnityAdsOptionGamerSIDKey];
-        }
-        if(muteVideoSoundsValue != nil) {
-            [_params setObject:muteVideoSoundsValue forKey:kUnityAdsOptionMuteVideoSounds];
-        }
-        if(videoUsesDeviceOrientationValue != nil) {
-            [_params setObject:videoUsesDeviceOrientationValue forKey:kUnityAdsOptionVideoUsesDeviceOrientation];
-        }
+  self = [super init];
+  if(self != nil) {
+    _params = [[NSMutableDictionary alloc] init];
+    
+    _zoneId = [params objectForKey:kUnityAdsOptionZoneIdKey];
+    
+    NSString *noOfferScreenValue = [params objectForKey:kUnityAdsOptionNoOfferscreenKey];
+    NSString *openAnimatedValue = [params objectForKey:kUnityAdsOptionOpenAnimatedKey];
+    NSString *gamerSidValue = [params objectForKey:kUnityAdsOptionGamerSIDKey];
+    NSString *muteVideoSoundsValue = [params objectForKey:kUnityAdsOptionMuteVideoSounds];
+    NSString *videoUsesDeviceOrientationValue = [params objectForKey:kUnityAdsOptionVideoUsesDeviceOrientation];
+    
+    if(noOfferScreenValue != nil) {
+      [_params setObject:noOfferScreenValue forKey:kUnityAdsOptionNoOfferscreenKey];
     }
-    return self;
+    if(openAnimatedValue != nil) {
+      [_params setObject:openAnimatedValue forKey:kUnityAdsOptionOpenAnimatedKey];
+    }
+    if(gamerSidValue != nil) {
+      [_params setObject:gamerSidValue forKey:kUnityAdsOptionGamerSIDKey];
+    }
+    if(muteVideoSoundsValue != nil) {
+      [_params setObject:muteVideoSoundsValue forKey:kUnityAdsOptionMuteVideoSounds];
+    }
+    if(videoUsesDeviceOrientationValue != nil) {
+      [_params setObject:videoUsesDeviceOrientationValue forKey:kUnityAdsOptionVideoUsesDeviceOrientation];
+    }
+  }
+  return self;
 }
 
 - (void)dealloc {
-    [_params dealloc];
-    [super dealloc];
+  [_params dealloc];
+  [super dealloc];
 }
 
 /**
  * Starts ad loading on a background thread and immediately returns control.
- * As long as Unity Ads has campaigns available, call the ad loaded delegate. 
+ * As long as Unity Ads has campaigns available, call the ad loaded delegate.
  */
 - (void)loadInterstitialInBackground {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if([[UnityAds sharedInstance] canShowAds]) {
-            [[self delegate] interstitialDidLoadAd:self];
-        } else {
-            [[self delegate] interstitial:self didFailToLoadAdWithError:[NSError errorWithDomain:@"UnityAds" code:0 userInfo:nil]];
-        }
-    });
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    if([[UnityAds sharedInstance] canShowAds]) {
+      [[self delegate] interstitialDidLoadAd:self];
+    } else {
+      [[self delegate] interstitial:self didFailToLoadAdWithError:[NSError errorWithDomain:@"UnityAds" code:0 userInfo:nil]];
+    }
+  });
 }
 
 /**
@@ -72,9 +76,10 @@
  *
  */
 - (void)presentInterstitial {
-    UALOG_DEBUG(@"");
-    [[UnityAds sharedInstance] setViewController:[[self delegate] viewControllerForModalPresentation] showImmediatelyInNewController:NO];
-    [[UnityAds sharedInstance] show:_params];
+  UALOG_DEBUG(@"");
+  [[UnityAds sharedInstance] setViewController:[[self delegate] viewControllerForModalPresentation] showImmediatelyInNewController:NO];
+  [[UnityAds sharedInstance] setZone:_zoneId];
+  [[UnityAds sharedInstance] show:_params];
 }
 
 /*=
@@ -85,20 +90,20 @@
 }
 
 -(void)unityAdsFetchCompleted:(UnityAds *)unityAds {
-    [[self delegate] interstitialDidLoadAd:self];
+  [[self delegate] interstitialDidLoadAd:self];
 }
 
 -(void)unityAdsDidShow:(UnityAds *)unityAds {
-    [[self delegate] interstitialWillPresentFullScreen:self];
-    [[self delegate] interstitialDidPresentFullScreen:self];
+  [[self delegate] interstitialWillPresentFullScreen:self];
+  [[self delegate] interstitialDidPresentFullScreen:self];
 }
 
 -(void)unityAdsDidHide:(UnityAds *)unityAds {
-    [[self delegate] interstitialDidDismissFullScreen:self];
+  [[self delegate] interstitialDidDismissFullScreen:self];
 }
 
 -(void)unityAdsWillLeaveApplication:(UnityAds *)unityAds {
-    [[self delegate] interstitialWillLeaveApplication:self];
+  [[self delegate] interstitialWillLeaveApplication:self];
 }
 
 @end

@@ -99,13 +99,29 @@ extern "C" {
         }
     }
     
-	bool show (bool openAnimated, bool noOfferscreen, const char *gamerSID, bool muteVideoSounds, bool useDeviceOrientationForVideo) {
-        NSNumber *noOfferscreenObjectiveC = [NSNumber numberWithBool:noOfferscreen];
-        NSNumber *openAnimatedObjectiveC = [NSNumber numberWithBool:openAnimated];
+	bool show (const char * rawZoneId, const char * rawRewardItemKey, const char * rawOptionsString) {
+        NSString * zoneId = UnityAdsCreateNSString(rawZoneId);
+        NSString * rewardItemKey = UnityAdsCreateNSString(rawRewardItemKey);
+        NSString * optionsString = UnityAdsCreateNSString(rawOptionsString);
+        
+        NSMutableDictionary *optionsDictionary = nil;
+        if([optionsString length] > 0) {
+            optionsDictionary = [[NSMutableDictionary alloc] init];
+            [[optionsString componentsSeparatedByString:@","] enumerateObjectsUsingBlock:^(id rawOptionPair, NSUInteger idx, BOOL *stop) {
+                NSArray *optionPair = [rawOptionPair componentsSeparatedByString:@":"];
+                [optionsDictionary setValue:optionPair[1] forKey:optionPair[0]];
+            }];
+        }
 
         if ([[UnityAds sharedInstance] canShowAds] && [[UnityAds sharedInstance] canShow]) {
-            NSDictionary *props = @{kUnityAdsOptionGamerSIDKey: UnityAdsCreateNSString(gamerSID), kUnityAdsOptionNoOfferscreenKey: noOfferscreenObjectiveC, kUnityAdsOptionOpenAnimatedKey: openAnimatedObjectiveC, kUnityAdsOptionVideoUsesDeviceOrientation:@(useDeviceOrientationForVideo), kUnityAdsOptionMuteVideoSounds:@(muteVideoSounds)};
-            return [[UnityAds sharedInstance] show:props];
+            
+            if([rewardItemKey length] > 0) {
+                [[UnityAds sharedInstance] setZone:zoneId withRewardItem:rewardItemKey];
+            } else {
+                [[UnityAds sharedInstance] setZone:zoneId];
+            }
+            
+            return [[UnityAds sharedInstance] show:optionsDictionary];
         }
         
         return false;

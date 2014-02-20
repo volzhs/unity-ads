@@ -9,7 +9,7 @@
 #import "UnityAdsViewStateDefaultEndScreen.h"
 
 #import "../UnityAdsProperties/UnityAdsConstants.h"
-#import "../UnityAdsCampaign/UnityAdsRewardItem.h"
+#import "../UnityAdsItem/UnityAdsRewardItem.h"
 
 @implementation UnityAdsViewStateDefaultEndScreen
 

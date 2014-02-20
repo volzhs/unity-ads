@@ -1,8 +1,5 @@
 package com.unity3d.ads.android.view;
 
-import com.unity3d.ads.android.data.UnityAdsDevice;
-import com.unity3d.ads.android.data.UnityAdsGraphicsBundle;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
@@ -10,6 +7,9 @@ import android.util.DisplayMetrics;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.unity3d.ads.android.data.UnityAdsGraphicsBundle;
 
 public class UnityAdsMuteVideoButton extends ImageButton {
 
