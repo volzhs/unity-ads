@@ -96,7 +96,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_ZONE_OPEN_ANIMATED_KEY = "openAnimated";
 	public static final String UNITY_ADS_ZONE_NO_OFFER_SCREEN_KEY = "noOfferScreen";
 	public static final String UNITY_ADS_ZONE_USE_DEVICE_ORIENTATION_FOR_VIDEO_KEY = "useDeviceOrientationForVideo";
-	public static final String UNITY_ADS_ZONE_ALLOW_VIDEO_SKIP_IN_SECONDS_KEY = "allowVideoSkipInSeconds";
+	public static final String UNITY_ADS_ZONE_ALLOW_VIDEO_SKIP_IN_SECONDS_KEY = "allowSkipVideoInSeconds";
 	public static final String UNITY_ADS_ZONE_DISABLE_BACK_BUTTON_FOR_SECONDS = "disableBackButtonForSeconds";
 	public static final String UNITY_ADS_ZONE_ALLOW_CLIENT_OVERRIDES_KEY = "allowClientOverrides";
 
