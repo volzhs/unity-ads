@@ -221,7 +221,8 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		if ((UnityAdsProperties.SELECTED_CAMPAIGN != null &&
 			UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) ||
 			_currentState != UnityAdsMainViewState.VideoPlayer || 
-			(_currentState == UnityAdsMainViewState.VideoPlayer && videoplayerview != null && videoplayerview.getSecondsUntilBackButtonAllowed() == 0)) {
+			(_currentState == UnityAdsMainViewState.VideoPlayer && videoplayerview != null && videoplayerview.getSecondsUntilBackButtonAllowed() == 0) ||
+			(_currentState == UnityAdsMainViewState.VideoPlayer && UnityAdsWebData.getZoneManager().getCurrentZone().disableBackButtonForSeconds() == 0)) {
 			sendActionToListener(UnityAdsMainViewAction.BackButtonPressed);
 		}
 		else {
