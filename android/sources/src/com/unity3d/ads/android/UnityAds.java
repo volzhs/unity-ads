@@ -174,6 +174,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public boolean setZone(String zoneId) {
 		if(!_showingAds) {
+			if(UnityAdsWebData.getZoneManager() == null) {
+				throw new IllegalStateException("Unable to set zone before campaigns are available");
+			}
+			
 			return UnityAdsWebData.getZoneManager().setCurrentZone(zoneId);
 		}		
 		return false;
