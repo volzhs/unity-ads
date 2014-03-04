@@ -168,7 +168,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		urlString = [urlString stringByAppendingString:[[UnityAdsProperties sharedInstance] campaignQueryString]];
   
   UALOG_DEBUG(@"UrlString %@", urlString);
-	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:60];
 	self.urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	[self.urlConnection start];
 }
@@ -278,7 +278,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
   [self _campaignDataReceived];
-  [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 static int retryCount = 0;
@@ -296,8 +295,6 @@ static int retryCount = 0;
       [self.delegate campaignManagerCampaignDataFailed];
     });
   }
-  
-  [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 
@@ -310,8 +307,6 @@ static int retryCount = 0;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[self.delegate campaignManager:self updatedWithCampaigns:self.campaigns gamerID:[[UnityAdsProperties sharedInstance] gamerId]];
 	});
-  
-  [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 @end
