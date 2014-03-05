@@ -78,6 +78,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_ITUNESID_KEY = "iTunesId";
 	public static final String UNITY_ADS_CAMPAIGN_STOREID_KEY = "storeId";
 	public static final String UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY = "cacheVideo";
+	public static final String UNITY_ADS_CAMPAIGN_ALLOW_CACHE_KEY = "allowCache";
 	public static final String UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY = "bypassAppSheet";
 	public static final String UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY = "allowSkipVideoInSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY = "disableBackButtonForSeconds";
