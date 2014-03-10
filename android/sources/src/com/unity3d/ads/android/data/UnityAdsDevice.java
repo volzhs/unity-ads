@@ -83,9 +83,12 @@ public class UnityAdsDevice {
     			Class<?> AdvertisingClientId = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient");
         		Method getAdvertisingIdInfo = AdvertisingClientId.getMethod("getAdvertisingIdInfo", Context.class);
         		UnityAdsDevice.ADVERTISING_TRACKING_INFO = getAdvertisingIdInfo.invoke(null, context);
-    		}
-    		
-    	} catch(Exception e) {}
+    		} else {
+    			UnityAdsUtils.Log("Unable to fetch advertising tracking info", UnityAdsDevice.class);
+    		}  		
+    	} catch(Exception e) {
+    		UnityAdsUtils.Log("Warning! Google Play Services is needed to access Android advertising identifier. Please add Google Play Services to your game.", UnityAdsDevice.class);
+    	}
     }
     
     public static String getAdvertisingTrackingId() {
