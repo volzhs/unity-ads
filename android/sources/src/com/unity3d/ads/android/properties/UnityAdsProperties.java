@@ -9,7 +9,6 @@ import android.app.Activity;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient.Info;
 
 public class UnityAdsProperties {
 	public static String CAMPAIGN_DATA_URL = "https://impact.applifier.com/mobile/campaigns";
@@ -24,7 +23,6 @@ public class UnityAdsProperties {
 	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean UNITY_ADS_DEBUG_MODE = false;
-	public static Info ADVERTISING_TRACKING_INFO = null;
 	public static int CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
 	public static int CAMPAIGN_REFRESH_VIEWS_MAX = 0;
 	public static int CAMPAIGN_REFRESH_SECONDS = 0;
@@ -58,10 +56,14 @@ public class UnityAdsProperties {
 			if (!UnityAdsDevice.getMacAddress().equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN))
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_MACADDRESS_KEY, URLEncoder.encode(UnityAdsDevice.getMacAddress(), "UTF-8"));
 			
-			if(UnityAdsProperties.ADVERTISING_TRACKING_INFO != null) {
-				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY, UnityAdsProperties.ADVERTISING_TRACKING_INFO.isLimitAdTrackingEnabled() ? 0 : 1);
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY, URLEncoder.encode(UnityAdsProperties.ADVERTISING_TRACKING_INFO.getId(), "UTF-8"));
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY, URLEncoder.encode(UnityAdsProperties.ADVERTISING_TRACKING_INFO.getId(), "UTF-8"));
+			if(UnityAdsDevice.ADVERTISING_TRACKING_INFO != null) {
+				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY, UnityAdsDevice.isLimitAdTrackingEnabled() ? 0 : 1);
+				String rawAdvertisingTrackingId = UnityAdsDevice.getAdvertisingTrackingId();
+				if(rawAdvertisingTrackingId != null) {
+					String advertisingTrackingId = UnityAdsUtils.Md5(rawAdvertisingTrackingId).toLowerCase();
+					queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY, URLEncoder.encode(advertisingTrackingId, "UTF-8"));
+					queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY, URLEncoder.encode(rawAdvertisingTrackingId, "UTF-8"));					
+				}
 			}
 			
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_PLATFORM_KEY, "android");
