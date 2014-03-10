@@ -5,18 +5,18 @@
 
 #import <Foundation/Foundation.h>
 
-@class UnityAdsCache;
+@class UnityAdsCacheManager;
 @class UnityAdsCampaign;
 
 @protocol UnityAdsCacheDelegate <NSObject>
 
 @required
-- (void)cache:(UnityAdsCache *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
-- (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache;
+- (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
+- (void)cacheFinishedCachingCampaigns:(UnityAdsCacheManager *)cache;
 
 @end
 
-@interface UnityAdsCache : NSObject
+@interface UnityAdsCacheManager : NSObject
 
 @property (nonatomic, weak) id<UnityAdsCacheDelegate> delegate;
 

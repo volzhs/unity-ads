@@ -4,18 +4,18 @@
 //
 
 #import "UnityAds.h"
-#import "UnityAdsCampaign/UnityAdsCampaignManager.h"
-#import "UnityAdsCampaign/UnityAdsCampaign.h"
-#import "UnityAdsItem/UnityAdsRewardItem.h"
-#import "UnityAdsData/UnityAdsAnalyticsUploader.h"
-#import "UnityAdsDevice/UnityAdsDevice.h"
-#import "UnityAdsProperties/UnityAdsProperties.h"
-#import "UnityAdsView/UnityAdsMainViewController.h"
-#import "UnityAdsZone/UnityAdsZoneManager.h"
-#import "UnityAdsZone/UnityAdsIncentivizedZone.h"
+#import "UnityAdsCampaignManager.h"
+#import "UnityAdsCampaign.h"
+#import "UnityAdsRewardItem.h"
+#import "UnityAdsAnalyticsUploader.h"
+#import "UnityAdsDevice.h"
+#import "UnityAdsProperties.h"
+#import "UnityAdsMainViewController.h"
+#import "UnityAdsZoneManager.h"
+#import "UnityAdsIncentivizedZone.h"
 
-#import "UnityAdsInitializer/UnityAdsDefaultInitializer.h"
-#import "UnityAdsInitializer/UnityAdsNoWebViewInitializer.h"
+#import "UnityAdsDefaultInitializer.h"
+#import "UnityAdsNoWebViewInitializer.h"
 
 NSString * const kUnityAdsRewardItemPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemNameKey = @"name";
