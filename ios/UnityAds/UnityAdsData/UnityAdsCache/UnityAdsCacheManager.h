@@ -12,6 +12,7 @@
 @protocol UnityAdsCacheManagerDelegate <NSObject>
 @optional
 - (void)cache:(UnityAdsCacheManager *)cache failedToCacheCampaign:(UnityAdsCampaign *)campaign;
+- (void)cache:(UnityAdsCacheManager *)cache cancelledCaching:(UnityAdsCampaign *)campaign;
 
 @required
 - (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
