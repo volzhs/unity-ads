@@ -13,7 +13,6 @@
 
 @required
 - (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
-- (void)cacheFinishedCachingCampaigns:(UnityAdsCacheManager *)cache;
 
 @end
 

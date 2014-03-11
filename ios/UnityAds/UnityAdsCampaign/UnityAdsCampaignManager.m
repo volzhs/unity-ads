@@ -301,10 +301,7 @@ static int retryCount = 0;
 #pragma mark - UnityAdsCacheDelegate
 
 - (void)cache:(UnityAdsCacheManager *)cacheManager finishedCachingCampaign:(UnityAdsCampaign *)campaign {
-}
-
-- (void)cacheFinishedCachingCampaigns:(UnityAdsCacheManager *)cacheManager {
-	dispatch_async(dispatch_get_main_queue(), ^{
+  dispatch_async(dispatch_get_main_queue(), ^{
 		[self.delegate campaignManager:self updatedWithCampaigns:self.campaigns gamerID:[[UnityAdsProperties sharedInstance] gamerId]];
 	});
 }
