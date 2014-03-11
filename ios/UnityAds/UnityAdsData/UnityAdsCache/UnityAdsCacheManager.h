@@ -1,3 +1,4 @@
+
 //
 //  UnityAdsCache.h
 //  Copyright (c) 2012 Unity Technologies. All rights reserved.
@@ -20,10 +21,10 @@
 
 @property (nonatomic, weak) id<UnityAdsCacheDelegate> delegate;
 
-- (void)cacheCampaigns:(NSArray *)campaigns;
+- (void)cacheCampaign:(UnityAdsCampaign *)campaignToCache;
 - (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign;
-- (void)cancelAllDownloads;
 - (BOOL)isCampaignVideoCached:(UnityAdsCampaign *)campaign;
+- (void)cancelAllDownloads;
 
 @end

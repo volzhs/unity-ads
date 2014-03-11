@@ -129,7 +129,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       NSString *gamerId = [jsonDictionary objectForKey:kUnityAdsGamerIDKey];
       
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
-      [self.cacheManager cacheCampaigns:self.campaigns];
+//      [self.cacheManager cacheCampaigns:self.campaigns];
       
       dispatch_async(dispatch_get_main_queue(), ^(void) {
         [self.delegate campaignManagerCampaignDataReceived];
