@@ -7,8 +7,10 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
+#import "UnityAdsCampaign.h"
+#import "UnityAdsCacheManager.h"
 
-@interface UnityAdsCacheManagerTests : SenTestCase
+@interface UnityAdsCacheManagerTests : SenTestCase <UnityAdsCacheManagerDelegate>
 
 @end
 
@@ -27,5 +29,18 @@ extern void __gcov_flush();
   [super tearDown];
 }
 
+- (void)testCacheEmptyCampaign {
+  UnityAdsCacheManager * cacheManager = [UnityAdsCacheManager new];
+  UnityAdsCampaign * campaignToCache = [UnityAdsCampaign new];
+  [cacheManager cacheCampaign:campaignToCache];
+}
+
+- (void)cache:(UnityAdsCacheManager *)cache failedToCacheCampaign:(UnityAdsCampaign *)campaign {
+  
+}
+
+- (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign {
+  
+}
 
 @end
