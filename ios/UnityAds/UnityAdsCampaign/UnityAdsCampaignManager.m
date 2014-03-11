@@ -15,7 +15,7 @@
 #import "UnityAdsZoneParser.h"
 #import "UnityAdsZoneManager.h"
 
-@interface UnityAdsCampaignManager () <NSURLConnectionDelegate, UnityAdsCacheDelegate>
+@interface UnityAdsCampaignManager () <NSURLConnectionDelegate, UnityAdsCacheManagerDelegate>
 @property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
 @property (nonatomic, strong) UnityAdsCacheManager *cacheManager;
