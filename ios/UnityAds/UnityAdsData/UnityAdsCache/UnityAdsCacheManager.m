@@ -93,9 +93,13 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	return self;
 }
 
+- (BOOL)_isValidCampaignToCache:(UnityAdsCampaign *)campaignToCache {
+  return [self campaignExistsInQueue:campaignToCache];
+}
+
 - (void)cacheCampaign:(UnityAdsCampaign *)campaignToCache {
   @synchronized(self) {
-    if ([self campaignExistsInQueue:campaignToCache]) return;
+    if (![self _isValidCampaignToCache:campaignToCache]) return;
     UnityAdsCacheOperation * cacheOperation = [UnityAdsCacheOperation new];
     cacheOperation.campaignToCache = campaignToCache;
     cacheOperation.delegate = self;
