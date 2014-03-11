@@ -24,7 +24,7 @@ NSString * const kUnityAdsCacheEntryCampaignIDKey = @"kUnityAdsCacheEntryCampaig
 NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameKey";
 NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeKey";
 
-@interface UnityAdsCacheManager () <NSURLConnectionDelegate, UnityAdsCacheOperationDelegate>
+@interface UnityAdsCacheManager () <UnityAdsCacheOperationDelegate>
 @property (nonatomic, strong) NSOperationQueue * cacheOperationsQueue;
 @property (nonatomic, strong) NSMutableDictionary *campaignsOperations;
 @end
@@ -162,6 +162,12 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 }
 
 - (void)operationFailed:(UnityAdsCacheOperation *)cacheOperation {
+  @synchronized(self) {
+    [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
+  }
+}
+
+- (void)operationCancelled:(UnityAdsCacheOperation *)cacheOperation {
   @synchronized(self) {
     [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
   }
