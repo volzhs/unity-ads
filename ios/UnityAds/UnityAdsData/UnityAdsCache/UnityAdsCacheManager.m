@@ -41,10 +41,10 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 }
 
 - (NSString *)_videoFilenameForCampaign:(UnityAdsCampaign *)campaign {
-    if ([campaign.trailerDownloadableURL lastPathComponent] == nil || [campaign.trailerDownloadableURL lastPathComponent].length < 3) {
-        return [NSString stringWithFormat:@"%@-%@", campaign.id, @"failed.mp4"];
-    }
-    
+  if ([campaign.trailerDownloadableURL lastPathComponent] == nil || [campaign.trailerDownloadableURL lastPathComponent].length < 3) {
+    return [NSString stringWithFormat:@"%@-%@", campaign.id, @"failed.mp4"];
+  }
+  
 	return [NSString stringWithFormat:@"%@-%@", campaign.id, [campaign.trailerDownloadableURL lastPathComponent]];
 }
 
@@ -84,36 +84,36 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	UAAssertV(![NSThread isMainThread], nil);
 	
 	if ((self = [super init])) {
-        UALOG_DEBUG(@"creating downloadqueue");
-        self.cacheOperationsQueue = [NSOperationQueue new];
-        [self.cacheOperationsQueue setMaxConcurrentOperationCount:1];
-        self.campaignsOperations = [NSMutableDictionary new];
+    UALOG_DEBUG(@"creating downloadqueue");
+    self.cacheOperationsQueue = [NSOperationQueue new];
+    [self.cacheOperationsQueue setMaxConcurrentOperationCount:1];
+    self.campaignsOperations = [NSMutableDictionary new];
 	}
 	
 	return self;
 }
 
 - (void)cacheCampaign:(UnityAdsCampaign *)campaignToCache {
-    @synchronized(self) {
-        if ([self campaignExistsInQueue:campaignToCache]) return;
-        UnityAdsCacheOperation * cacheOperation = [UnityAdsCacheOperation new];
-        cacheOperation.campaignToCache = campaignToCache;
-        cacheOperation.delegate = self;
-        self.campaignsOperations[campaignToCache.id] = cacheOperation;
-        [self.cacheOperationsQueue addOperation:cacheOperation];
-    }
+  @synchronized(self) {
+    if ([self campaignExistsInQueue:campaignToCache]) return;
+    UnityAdsCacheOperation * cacheOperation = [UnityAdsCacheOperation new];
+    cacheOperation.campaignToCache = campaignToCache;
+    cacheOperation.delegate = self;
+    self.campaignsOperations[campaignToCache.id] = cacheOperation;
+    [self.cacheOperationsQueue addOperation:cacheOperation];
+  }
 }
 
 - (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign {
-    @synchronized(self) {
-        return self.campaignsOperations[campaign.id] != nil;
-    }
+  @synchronized(self) {
+    return self.campaignsOperations[campaign.id] != nil;
+  }
 }
 
 - (BOOL)isCampaignVideoCached:(UnityAdsCampaign *)campaign {
-    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self _videoPathForCampaign:campaign]];
-    UALOG_DEBUG(@"File exists at path: %@, %i", [self _videoPathForCampaign:campaign], exists);
-    return exists;
+  BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self _videoPathForCampaign:campaign]];
+  UALOG_DEBUG(@"File exists at path: %@, %i", [self _videoPathForCampaign:campaign], exists);
+  return exists;
 }
 
 - (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign {
@@ -122,7 +122,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 			UALOG_DEBUG(@"Input is nil.");
 			return nil;
 		}
-        
+    
 		NSString *path = [self _videoPathForCampaign:campaign];
 		
 		return [NSURL fileURLWithPath:path];
@@ -130,15 +130,15 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 }
 
 - (void)cancelAllDownloads {
-    @synchronized(self) {
-        [self.cacheOperationsQueue cancelAllOperations];
-    }
+  @synchronized(self) {
+    [self.cacheOperationsQueue cancelAllOperations];
+  }
 }
 
 - (void)_removeCacheOperationForCampaign:(UnityAdsCampaign *)campaign {
-    @synchronized(self) {
-        [self.campaignsOperations removeObjectForKey:campaign.id];
-    }
+  @synchronized(self) {
+    [self.campaignsOperations removeObjectForKey:campaign.id];
+  }
 }
 
 #pragma mark ----
@@ -146,21 +146,21 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 #pragma mark ----
 
 - (void)operationStarted:(UnityAdsCacheOperation *)cacheOperation {
-    @synchronized(self) {
-        [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
-    }
+  @synchronized(self) {
+    [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
+  }
 }
 
 - (void)operationFinished:(UnityAdsCacheOperation *)cacheOperation {
-    @synchronized(self) {
-        [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
-    }
+  @synchronized(self) {
+    [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
+  }
 }
 
 - (void)operationFailed:(UnityAdsCacheOperation *)cacheOperation {
-    @synchronized(self) {
-        [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
-    }
+  @synchronized(self) {
+    [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
+  }
 }
 
 @end
