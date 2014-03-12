@@ -6,9 +6,36 @@
 //  Copyright (c) 2014 Unity Technologies. All rights reserved.
 //
 
-#import "UnityAdsCacheOperation.h"
+#import "UnityAdsCacheCampaignOperation.h"
 
-@implementation UnityAdsCacheOperation
+@interface UnityAdsCacheVideoOperation : NSOperation {
+  
+}
+
+@property (nonatomic, weak) NSURL * videoURL;
+
+@end
+
+@implementation UnityAdsCacheVideoOperation
+
+- (void)threadBlocked:(BOOL (^)())isThreadBlocked {
+	@autoreleasepool {
+		NSPort *port = [[NSPort alloc] init];
+		[port scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		
+		while(isThreadBlocked()) {
+			@autoreleasepool {
+				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+			}
+		}
+	}
+}
+
+- (void)main {
+  sleep(10);
+}
+
 #pragma mark - NSURLConnectionDelegate
 
 //- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -60,5 +87,55 @@
 //	UALOG_DEBUG(@"%@", error);
 //	[self _downloadFinishedWithFailure:YES];
 //}
+
+
+@end
+
+@interface UnityAdsCacheCampaignOperation () {
+@private
+  NSOperationQueue * _internalQueue;
+}
+
+
+@end
+
+@implementation UnityAdsCacheCampaignOperation
+
+- (void)threadBlocked:(BOOL (^)())isThreadBlocked {
+	@autoreleasepool {
+		NSPort *port = [[NSPort alloc] init];
+		[port scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		
+		while(isThreadBlocked()) {
+			@autoreleasepool {
+				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+			}
+		}
+	}
+}
+
+- (id)init
+{
+  self = [super init];
+  if (self) {
+    _internalQueue = [[NSOperationQueue alloc]init];
+    [_internalQueue setMaxConcurrentOperationCount:1];
+  }
+  return self;
+}
+
+- (void)main {
+  [self.delegate operationStarted:self];
+  UnityAdsCacheVideoOperation * cacheVideoOperation = [UnityAdsCacheVideoOperation new];
+  cacheVideoOperation.videoURL = self.campaignToCache.trailerDownloadableURL;
+  [_internalQueue addOperation:cacheVideoOperation];
+  [self threadBlocked:^BOOL{
+    @synchronized(_internalQueue){
+      return _internalQueue.operationCount != 0;
+    }
+  }];
+  [self.delegate operationFinished:self];
+}
 
 @end

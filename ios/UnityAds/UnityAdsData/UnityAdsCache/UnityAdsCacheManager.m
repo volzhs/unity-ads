@@ -8,7 +8,7 @@
 #import "UnityAdsCampaign.h"
 #import "UnityAdsInstrumentation.h"
 #import "UnityAdsConstants.h"
-#import "UnityAdsCacheOperation.h"
+#import "UnityAdsCacheCampaignOperation.h"
 
 NSString * const kUnityAdsCacheCampaignKey = @"kUnityAdsCacheCampaignKey";
 NSString * const kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";
@@ -127,7 +127,7 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
     
     if ([self campaignExistsInQueue:campaignToCache]) return;
     
-    UnityAdsCacheOperation * cacheOperation = [UnityAdsCacheOperation new];
+    UnityAdsCacheCampaignOperation * cacheOperation = [UnityAdsCacheCampaignOperation new];
     cacheOperation.campaignToCache = campaignToCache;
     cacheOperation.delegate = self;
     self.campaignsOperations[campaignToCache.id] = cacheOperation;
@@ -176,25 +176,26 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 #pragma mark UnityAdsCacheOperationDelegate
 #pragma mark ----
 
-- (void)operationStarted:(UnityAdsCacheOperation *)cacheOperation {
+- (void)operationStarted:(UnityAdsCacheCampaignOperation *)cacheOperation {
   @synchronized(self) {
     [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
   }
 }
 
-- (void)operationFinished:(UnityAdsCacheOperation *)cacheOperation {
+- (void)operationFinished:(UnityAdsCacheCampaignOperation *)cacheOperation {
+  @synchronized(self) {
+    [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
+    [self.delegate cache:self finishedCachingCampaign:cacheOperation.campaignToCache];
+  }
+}
+
+- (void)operationFailed:(UnityAdsCacheCampaignOperation *)cacheOperation {
   @synchronized(self) {
     [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
   }
 }
 
-- (void)operationFailed:(UnityAdsCacheOperation *)cacheOperation {
-  @synchronized(self) {
-    [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
-  }
-}
-
-- (void)operationCancelled:(UnityAdsCacheOperation *)cacheOperation {
+- (void)operationCancelled:(UnityAdsCacheCampaignOperation *)cacheOperation {
   @synchronized(self) {
     [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
   }
