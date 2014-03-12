@@ -9,6 +9,10 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "UnityAdsCampaign.h"
 #import "UnityAdsCacheManager.h"
+#import "UnityAdsSBJsonParser.h"
+#import "NSObject+UnityAdsSBJson.h"
+#import "UnityAdsCampaignManager.h"
+#import "UnityAdsConstants.h"
 
 typedef enum {
   CachingResultUndefined = 0,
@@ -20,6 +24,7 @@ typedef enum {
 @interface UnityAdsCacheManagerTests : SenTestCase <UnityAdsCacheManagerDelegate> {
   @private
   CachingResult cachingResult;
+  UnityAdsCacheManager * _cacheManager;
 }
 
 @end
@@ -44,22 +49,92 @@ extern void __gcov_flush();
 - (void)setUp
 {
   [super setUp];
+  _cacheManager = [UnityAdsCacheManager new];
+  _cacheManager.delegate = self;
   // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
 - (void)tearDown {
   __gcov_flush();
   [super tearDown];
+  _cacheManager = nil;
+}
+
+- (void)testCacheNilCampaign {
+  cachingResult = CachingResultUndefined;
+  UnityAdsCampaign * campaignToCache = nil;
+  [_cacheManager cacheCampaign:campaignToCache];
+  STAssertTrue(cachingResult == CachingResultFailed,
+               @"caching should fail instantly in same thread when caching nil campaign");
 }
 
 - (void)testCacheEmptyCampaign {
   cachingResult = CachingResultUndefined;
-  UnityAdsCacheManager * cacheManager = [UnityAdsCacheManager new];
   UnityAdsCampaign * campaignToCache = [UnityAdsCampaign new];
-  [cacheManager cacheCampaign:campaignToCache];
+  [_cacheManager cacheCampaign:campaignToCache];
+  
   STAssertTrue(cachingResult == CachingResultFailed,
                @"caching should fail instantly in same thread when caching empty campaign");
 }
+
+- (void)testCachePartiallyFilledCampaign {
+  cachingResult = CachingResultUndefined;
+  UnityAdsCampaign * campaignToCache = [UnityAdsCampaign new];
+  campaignToCache.id = @"tmp";
+  [_cacheManager cacheCampaign:campaignToCache];
+  
+  STAssertTrue(cachingResult == CachingResultFailed,
+               @"caching should fail instantly in same thread when caching partially empty campaign");
+  
+  campaignToCache.id = @"tmp";
+  campaignToCache.isValidCampaign = NO;
+  [_cacheManager cacheCampaign:campaignToCache];
+  
+  STAssertTrue(cachingResult == CachingResultFailed,
+               @"caching should fail instantly in same thread when caching partially empty campaign");
+  
+  campaignToCache.id = @"tmp";
+  campaignToCache.isValidCampaign = YES;
+  [_cacheManager cacheCampaign:campaignToCache];
+  
+  STAssertTrue(cachingResult == CachingResultFailed,
+               @"caching should fail instantly in same thread when caching partially empty campaign");
+}
+
+- (void)testCacheCampaignFilledWithWrongValues {
+  cachingResult = CachingResultUndefined;
+  UnityAdsCampaign * campaignToCache = [UnityAdsCampaign new];
+  campaignToCache.id = @"tmp";
+  campaignToCache.isValidCampaign = YES;
+  campaignToCache.trailerDownloadableURL = [NSURL URLWithString:@"tmp"];
+  [_cacheManager cacheCampaign:campaignToCache];
+  
+  STAssertTrue(cachingResult == CachingResultFailed,
+               @"caching should fail campaign filled with wrong values");
+}
+
+- (void)testCacheSingleValidCampaign {
+  cachingResult = CachingResultUndefined;
+  NSError * error = nil;
+  NSStringEncoding encoding = NSStringEncodingConversionAllowLossy;
+  NSString * pathToResource = [[NSBundle bundleForClass:[self class]] pathForResource:@"jsonData.txt" ofType:nil];
+  NSString * jsonString = [[NSString alloc] initWithContentsOfFile:pathToResource
+                                                      usedEncoding:&encoding
+                                                             error:&error];
+  NSDictionary * jsonDataDictionary = [jsonString JSONValue];
+  NSDictionary *jsonDictionary = [jsonDataDictionary objectForKey:kUnityAdsJsonDataRootKey];
+  NSArray  * campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
+  NSArray * campaigns = [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(deserializeCampaigns:) withObject:campaignsDataArray];
+  STAssertTrue(jsonString != nil, @"empty json string");
+  UnityAdsCampaign * campaignToCache = campaigns[0];
+  STAssertTrue(campaignToCache != nil, @"campaign is nil");
+  [_cacheManager cacheCampaign:campaignToCache];
+  
+//  STAssertTrue(cachingResult == CachingResultFailed,
+//               @"caching should fail campaign filled with wrong values");
+}
+
+#pragma mark - UnityAdsCacheManagerDelegate
 
 - (void)cache:(UnityAdsCacheManager *)cache failedToCacheCampaign:(UnityAdsCampaign *)campaign {
   @synchronized(self) {
@@ -73,7 +148,7 @@ extern void __gcov_flush();
   }
 }
 
-- (void)cache:(UnityAdsCacheManager *)cache cancelledCaching:(UnityAdsCampaign *)campaign {
+- (void)cache:(UnityAdsCacheManager *)cache cancelledCachingCampaign:(UnityAdsCampaign *)campaign {
   @synchronized(self) {
     cachingResult = CachingResultCancelled;
   }

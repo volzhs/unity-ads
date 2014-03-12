@@ -93,15 +93,40 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 	return self;
 }
 
+- (BOOL)campaignHasValidCache:(UnityAdsCampaign *)campaignToCache {
+  return NO;
+}
+
 - (BOOL)_isValidCampaignToCache:(UnityAdsCampaign *)campaignToCache {
   @synchronized(self) {
-    return ![self campaignExistsInQueue:campaignToCache];
+    return campaignToCache.id != nil && campaignToCache.isValidCampaign && campaignToCache.trailerDownloadableURL;
+  }
+}
+
+- (void)cacheCampaigns:(NSArray *)campaigns {
+  @synchronized(self) {
+    if (!campaigns.count) return;
+    [campaigns enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+      UnityAdsCampaign * campaigntoCache = nil;
+      if ([obj isKindOfClass:[UnityAdsCampaign class]]) {
+        campaigntoCache = (UnityAdsCampaign *)obj;
+        [self cacheCampaign:campaigntoCache];
+      }
+    }];
   }
 }
 
 - (void)cacheCampaign:(UnityAdsCampaign *)campaignToCache {
   @synchronized(self) {
-    if (![self _isValidCampaignToCache:campaignToCache]) return;
+    if (![self _isValidCampaignToCache:campaignToCache]) {
+      if ([self.delegate respondsToSelector:@selector(cache:failedToCacheCampaign:)]) {
+        [self.delegate cache:self failedToCacheCampaign:campaignToCache];
+      }
+      return;
+    }
+    
+    if ([self campaignExistsInQueue:campaignToCache]) return;
+    
     UnityAdsCacheOperation * cacheOperation = [UnityAdsCacheOperation new];
     cacheOperation.campaignToCache = campaignToCache;
     cacheOperation.delegate = self;

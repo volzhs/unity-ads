@@ -176,6 +176,19 @@
 		C822D7AE18CF4E56007AAE44 /* UnityAdsViewStateEndScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894D8D6170EC939000CFC99 /* UnityAdsViewStateEndScreen.m */; };
 		C822D7AF18CF4E67007AAE44 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99FE3C2917E8880000845E0B /* AVFoundation.framework */; };
 		C822D7B018CF4EC2007AAE44 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99FE3C1117E87E1400845E0B /* SenTestingKit.framework */; };
+		C86FABB218D06C56009EDE8F /* jsonData.txt in Resources */ = {isa = PBXBuildFile; fileRef = C86FABB118D06C56009EDE8F /* jsonData.txt */; };
+		C86FABB318D075F7009EDE8F /* UnityAdsSBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E933B1652487B009667F6 /* UnityAdsSBJsonUTF8Stream.m */; };
+		C86FABB418D075F7009EDE8F /* UnityAdsSBJsonStreamWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E932F1652482B009667F6 /* UnityAdsSBJsonStreamWriter.m */; };
+		C86FABB518D075F7009EDE8F /* UnityAdsSBJsonStreamWriterAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E93311652482C009667F6 /* UnityAdsSBJsonStreamWriterAccumulator.m */; };
+		C86FABB618D075F7009EDE8F /* UnityAdsSBJsonStreamWriterState.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E93331652482D009667F6 /* UnityAdsSBJsonStreamWriterState.m */; };
+		C86FABB718D075F7009EDE8F /* UnityAdsSBJsonTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E932B165246F5009667F6 /* UnityAdsSBJsonTokeniser.m */; };
+		C86FABB818D075F7009EDE8F /* UnityAdsSBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E931B165246A6009667F6 /* UnityAdsSBJsonStreamParser.m */; };
+		C86FABB918D075F7009EDE8F /* UnityAdsSBJsonStreamParserAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E931D165246A6009667F6 /* UnityAdsSBJsonStreamParserAccumulator.m */; };
+		C86FABBA18D075F7009EDE8F /* UnityAdsSBJsonStreamParserAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E931F165246A6009667F6 /* UnityAdsSBJsonStreamParserAdapter.m */; };
+		C86FABBB18D075F7009EDE8F /* UnityAdsSBJsonStreamParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E9321165246A6009667F6 /* UnityAdsSBJsonStreamParserState.m */; };
+		C86FABBC18D075F7009EDE8F /* UnityAdsSBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E930E165245DC009667F6 /* UnityAdsSBJsonParser.m */; };
+		C86FABBD18D075F7009EDE8F /* UnityAdsSBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E9310165245DC009667F6 /* UnityAdsSBJsonWriter.m */; };
+		C86FABBE18D075F7009EDE8F /* NSObject+UnityAdsSBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 784E9312165245DC009667F6 /* NSObject+UnityAdsSBJson.m */; };
 		CC095C991733A30E00A0BD3C /* UnityAdsBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = CC095C971733A30E00A0BD3C /* UnityAdsBundle.h */; settings = {ATTRIBUTES = (); }; };
 		CC095C9A1733A30E00A0BD3C /* UnityAdsBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = CC095C981733A30E00A0BD3C /* UnityAdsBundle.m */; };
 		CC095CAE17377C2C00A0BD3C /* UnityAdsVideoMuteButton.h in Headers */ = {isa = PBXBuildFile; fileRef = CC095CAC17377C2C00A0BD3C /* UnityAdsVideoMuteButton.h */; };
@@ -330,6 +343,7 @@
 		C822D76618CF4A94007AAE44 /* UnityAdsCacheManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsCacheManagerTests.m; sourceTree = "<group>"; };
 		C822D79518CF4DA6007AAE44 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C822D79D18CF4DE9007AAE44 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		C86FABB118D06C56009EDE8F /* jsonData.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = jsonData.txt; sourceTree = "<group>"; };
 		CC095C971733A30E00A0BD3C /* UnityAdsBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsBundle.h; sourceTree = "<group>"; };
 		CC095C981733A30E00A0BD3C /* UnityAdsBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsBundle.m; sourceTree = "<group>"; };
 		CC095CAC17377C2C00A0BD3C /* UnityAdsVideoMuteButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsVideoMuteButton.h; sourceTree = "<group>"; };
@@ -566,6 +580,7 @@
 		99FE3C1817E87E1500845E0B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C86FABB118D06C56009EDE8F /* jsonData.txt */,
 				99FE3C1917E87E1500845E0B /* UnityAdsTests-Info.plist */,
 				99FE3C1A17E87E1500845E0B /* InfoPlist.strings */,
 				99FE3C2017E87E1500845E0B /* UnityAdsTests-Prefix.pch */,
@@ -882,6 +897,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C86FABB218D06C56009EDE8F /* jsonData.txt in Resources */,
 				99FE3C1C17E87E1500845E0B /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -979,16 +995,22 @@
 				C822D7A818CF4E56007AAE44 /* UnityAdsNativeButton.m in Sources */,
 				C822D7A918CF4E56007AAE44 /* UnityAdsImageView.m in Sources */,
 				C822D7AA18CF4E56007AAE44 /* UnityAdsNoWebViewEndScreenBottomBar.m in Sources */,
+				C86FABB818D075F7009EDE8F /* UnityAdsSBJsonStreamParser.m in Sources */,
+				C86FABBE18D075F7009EDE8F /* NSObject+UnityAdsSBJson.m in Sources */,
+				C86FABBD18D075F7009EDE8F /* UnityAdsSBJsonWriter.m in Sources */,
 				C822D7AB18CF4E56007AAE44 /* UnityAdsNoWebViewEndScreenBottomBarContent.m in Sources */,
+				C86FABB318D075F7009EDE8F /* UnityAdsSBJsonUTF8Stream.m in Sources */,
 				C822D7AC18CF4E56007AAE44 /* UnityAdsImageViewRoundedCorners.m in Sources */,
 				C822D7AD18CF4E56007AAE44 /* UnityAdsViewStateVideoPlayer.m in Sources */,
 				C822D7AE18CF4E56007AAE44 /* UnityAdsViewStateEndScreen.m in Sources */,
+				C86FABB718D075F7009EDE8F /* UnityAdsSBJsonTokeniser.m in Sources */,
 				C822D76D18CF4CF8007AAE44 /* UnityAds.m in Sources */,
 				C822D76E18CF4CF8007AAE44 /* UnityAdsCacheManager.m in Sources */,
 				C822D76F18CF4CF8007AAE44 /* UnityAdsCacheOperation.m in Sources */,
 				C822D77018CF4CF8007AAE44 /* UnityAdsInstrumentation.m in Sources */,
 				C822D77118CF4CF8007AAE44 /* UnityAdsAnalyticsUploader.m in Sources */,
 				C822D77218CF4CF8007AAE44 /* UnityAdsProperties.m in Sources */,
+				C86FABB618D075F7009EDE8F /* UnityAdsSBJsonStreamWriterState.m in Sources */,
 				C822D78F18CF4D66007AAE44 /* UnityAdsCampaign.m in Sources */,
 				C822D77318CF4CF8007AAE44 /* UnityAdsConstants.m in Sources */,
 				C822D79C18CF4DDB007AAE44 /* UnityAdsViewStateNoWebViewVideoPlayer.m in Sources */,
@@ -1002,21 +1024,27 @@
 				C822D79018CF4D6F007AAE44 /* UnityAdsDefaultInitializer.m in Sources */,
 				C822D76818CF4CAA007AAE44 /* UnityAdsIncentivizedZone.m in Sources */,
 				99FE3C2617E87E9200845E0B /* UnityAdsZoneTests.m in Sources */,
+				C86FABB518D075F7009EDE8F /* UnityAdsSBJsonStreamWriterAccumulator.m in Sources */,
 				C822D79318CF4D91007AAE44 /* UnityAdsWebAppController.m in Sources */,
 				C822D79818CF4DB8007AAE44 /* UnityAdsViewStateDefaultEndScreen.m in Sources */,
+				C86FABB918D075F7009EDE8F /* UnityAdsSBJsonStreamParserAccumulator.m in Sources */,
+				C86FABBA18D075F7009EDE8F /* UnityAdsSBJsonStreamParserAdapter.m in Sources */,
 				C822D78E18CF4D5D007AAE44 /* UnityAdsCampaignManager.m in Sources */,
 				C822D79218CF4D86007AAE44 /* UnityAdsNoWebViewInitializer.m in Sources */,
 				99A8516A17FC45160090F8FF /* UnityAdsRewardItemManagerTests.m in Sources */,
+				C86FABBB18D075F7009EDE8F /* UnityAdsSBJsonStreamParserState.m in Sources */,
 				C822D76C18CF4CDF007AAE44 /* UnityAdsZoneParser.m in Sources */,
 				C822D79118CF4D7C007AAE44 /* UnityAdsMainViewController.m in Sources */,
 				C822D79418CF4D98007AAE44 /* UnityAdsZoneManager.m in Sources */,
 				9945F95D180575A000A97B70 /* UnityAdsZoneManagerTests.m in Sources */,
 				C822D79718CF4DB0007AAE44 /* UnityAdsInitializer.m in Sources */,
+				C86FABB418D075F7009EDE8F /* UnityAdsSBJsonStreamWriter.m in Sources */,
 				C822D78D18CF4D47007AAE44 /* UnityAdsDevice.m in Sources */,
 				9945F95B180572A200A97B70 /* UnityAdsZoneParserTests.m in Sources */,
 				99A8516817FC41C00090F8FF /* UnityAdsRewardItemTests.m in Sources */,
 				C822D76A18CF4CC9007AAE44 /* UnityAdsRewardItem.m in Sources */,
 				C822D79918CF4DC3007AAE44 /* UnityAdsViewStateDefaultSpinner.m in Sources */,
+				C86FABBC18D075F7009EDE8F /* UnityAdsSBJsonParser.m in Sources */,
 				C822D76918CF4CBD007AAE44 /* UnityAdsRewardItemManager.m in Sources */,
 				C822D76718CF4A94007AAE44 /* UnityAdsCacheManagerTests.m in Sources */,
 			);

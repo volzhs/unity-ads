@@ -12,7 +12,7 @@
 @protocol UnityAdsCacheManagerDelegate <NSObject>
 @optional
 - (void)cache:(UnityAdsCacheManager *)cache failedToCacheCampaign:(UnityAdsCampaign *)campaign;
-- (void)cache:(UnityAdsCacheManager *)cache cancelledCaching:(UnityAdsCampaign *)campaign;
+- (void)cache:(UnityAdsCacheManager *)cache cancelledCachingCampaign:(UnityAdsCampaign *)campaign;
 
 @required
 - (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
@@ -23,6 +23,7 @@
 
 @property (nonatomic, weak) id<UnityAdsCacheManagerDelegate> delegate;
 
+- (void)cacheCampaigns:(NSArray *)campaigns;
 - (void)cacheCampaign:(UnityAdsCampaign *)campaignToCache;
 - (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign;
 - (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign;
