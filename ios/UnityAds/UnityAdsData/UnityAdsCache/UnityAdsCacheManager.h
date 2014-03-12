@@ -13,6 +13,7 @@
 @optional
 - (void)cache:(UnityAdsCacheManager *)cache failedToCacheCampaign:(UnityAdsCampaign *)campaign;
 - (void)cache:(UnityAdsCacheManager *)cache cancelledCachingCampaign:(UnityAdsCampaign *)campaign;
+- (void)cache:(UnityAdsCacheManager *)cache cancelledCachingAllCampaigns:(NSArray *)campaigns;
 
 @required
 - (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
