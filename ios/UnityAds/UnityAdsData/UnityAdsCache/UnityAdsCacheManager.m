@@ -10,20 +10,6 @@
 #import "UnityAdsConstants.h"
 #import "UnityAdsCacheCampaignOperation.h"
 
-NSString * const kUnityAdsCacheCampaignKey = @"kUnityAdsCacheCampaignKey";
-NSString * const kUnityAdsCacheConnectionKey = @"kUnityAdsCacheConnectionKey";
-NSString * const kUnityAdsCacheFilePathKey = @"kUnityAdsCacheFilePathKey";
-NSString * const kUnityAdsCacheURLRequestKey = @"kUnityAdsCacheURLRequestKey";
-NSString * const kUnityAdsCacheIndexKey = @"kUnityAdsCacheIndexKey";
-NSString * const kUnityAdsCacheResumeKey = @"kUnityAdsCacheResumeKey";
-
-NSString * const kUnityAdsCacheDownloadResumeExpected = @"kUnityAdsCacheDownloadResumeExpected";
-NSString * const kUnityAdsCacheDownloadNewDownload = @"kUnityAdsCacheDownloadNewDownload";
-
-NSString * const kUnityAdsCacheEntryCampaignIDKey = @"kUnityAdsCacheEntryCampaignIDKey";
-NSString * const kUnityAdsCacheEntryFilenameKey = @"kUnityAdsCacheEntryFilenameKey";
-NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeKey";
-
 @interface UnityAdsCacheManager () <UnityAdsCacheOperationDelegate>
 @property (nonatomic, strong) NSOperationQueue * cacheOperationsQueue;
 @property (nonatomic, strong) NSMutableDictionary *campaignsOperations;
@@ -129,6 +115,8 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
     
     UnityAdsCacheCampaignOperation * cacheOperation = [UnityAdsCacheCampaignOperation new];
     cacheOperation.campaignToCache = campaignToCache;
+    cacheOperation.directoryPath = [self _cachePath];
+    cacheOperation.filePathURL = [[self localVideoURLForCampaign:campaignToCache] relativePath];
     cacheOperation.delegate = self;
     self.campaignsOperations[campaignToCache.id] = cacheOperation;
     [self.cacheOperationsQueue addOperation:cacheOperation];
@@ -168,7 +156,11 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (void)_removeCacheOperationForCampaign:(UnityAdsCampaign *)campaign {
   @synchronized(self) {
+    if (!campaign.id) return;
     [self.campaignsOperations removeObjectForKey:campaign.id];
+    if (!self.campaignsOperations.count) {
+      [self.delegate cache:self finishedCachingAllCampaigns:nil];
+    }
   }
 }
 
@@ -184,19 +176,21 @@ NSString * const kUnityAdsCacheEntryFilesizeKey = @"kUnityAdsCacheEntryFilesizeK
 
 - (void)operationFinished:(UnityAdsCacheCampaignOperation *)cacheOperation {
   @synchronized(self) {
-    [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
     [self.delegate cache:self finishedCachingCampaign:cacheOperation.campaignToCache];
+    [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
   }
 }
 
 - (void)operationFailed:(UnityAdsCacheCampaignOperation *)cacheOperation {
   @synchronized(self) {
+    [self.delegate cache:self failedToCacheCampaign:cacheOperation.campaignToCache];
     [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
   }
 }
 
 - (void)operationCancelled:(UnityAdsCacheCampaignOperation *)cacheOperation {
   @synchronized(self) {
+    [self.delegate cache:self cancelledCachingCampaign:cacheOperation.campaignToCache];
     [self _removeCacheOperationForCampaign:cacheOperation.campaignToCache];
   }
 }

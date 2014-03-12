@@ -16,12 +16,13 @@
 
 @required
 - (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
+- (void)cache:(UnityAdsCacheManager *)cache finishedCachingAllCampaigns:(NSArray *)campaigns;
 
 @end
 
 @interface UnityAdsCacheManager : NSObject
 
-@property (nonatomic, weak) id<UnityAdsCacheManagerDelegate> delegate;
+@property (nonatomic, weak) id <UnityAdsCacheManagerDelegate> delegate;
 
 - (void)cacheCampaigns:(NSArray *)campaigns;
 - (void)cacheCampaign:(UnityAdsCampaign *)campaignToCache;
