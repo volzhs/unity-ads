@@ -185,13 +185,11 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     if ([self.cacheManager campaignExistsInQueue:campaign withResourceType:ResourceTypeTrailerVideo]) {
       [self.cacheManager cancelCacheForCampaign:campaign withResourceType:ResourceTypeTrailerVideo];
     }
-		if (videoURL == nil || ![campaign shouldCacheVideo] || ![self.cacheManager is:ResourceTypeTrailerVideo cachedForCampaign:campaign])
+		if (videoURL == nil || ![self.cacheManager is:ResourceTypeTrailerVideo cachedForCampaign:campaign])
     {
       UALOG_DEBUG(@"Campaign is not cached!");
       videoURL = campaign.trailerStreamingURL;
     }
-    
-    
 		return videoURL;
 	}
 }
