@@ -24,7 +24,7 @@
 
 @property (nonatomic, weak) id <UnityAdsCacheManagerDelegate> delegate;
 
-- (void)cache:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
+- (BOOL)cache:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
 - (NSURL *)localURLFor:(ResourceType)resourceType ofCampaign:(UnityAdsCampaign *)campaign;
 - (BOOL)is:(ResourceType)resourceType cachedForCampaign:(UnityAdsCampaign *)campaign;
 - (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;

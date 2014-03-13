@@ -26,7 +26,7 @@ static NSString * const kUnityAdsCacheOperationKey = @"kUnityAdsCacheOperationKe
 static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOperationCampaignKey";
 
 
-@interface UnityAdsCacheManager () <UnityAdsFileCacheOperationDelegate>
+@interface UnityAdsCacheManager () <UnityAdsCacheOperationDelegate>
 @property (nonatomic, strong) NSOperationQueue * cacheOperationsQueue;
 @property (nonatomic, strong) NSMutableDictionary *campaignsOperations;
 @end
@@ -97,9 +97,9 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
 }
 
 - (BOOL)isCampaignVideoCached:(UnityAdsCampaign *)campaign {
-  BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self _videoPathForCampaign:campaign]];
-  UALOG_DEBUG(@"File exists at path: %@, %i", [self _videoPathForCampaign:campaign], exists);
-  return exists;
+  BOOL cached = [self _filesizeForPath:[self _videoPathForCampaign:campaign]] == campaign.expectedTrailerSize && campaign.expectedTrailerSize;
+  UALOG_DEBUG(@"File exists at path: %@, %i", [self _videoPathForCampaign:campaign], cached);
+  return cached;
 }
 
 #pragma mark - Public
@@ -136,19 +136,32 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
 	}
 }
 
-- (void)cache:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign {
+- (BOOL)_isCampaignValid:(UnityAdsCampaign *)campaign {
+  return campaign != nil && campaign.expectedTrailerSize;
+}
+
+- (BOOL)cache:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign {
   @synchronized(self) {
-    if ([self campaignExistsInQueue:campaign withResourceType:resourceType]) return;
-    UnityAdsCacheFileOperation * cacheOperation = [UnityAdsCacheFileOperation new];
-    cacheOperation.directoryPath = [self _cachePath];
-    cacheOperation.downloadURL = [self _downloadURLFor:resourceType of:campaign];
-    cacheOperation.filePath = [[self localURLFor:resourceType ofCampaign:campaign] relativePath];
+    if ([self campaignExistsInQueue:campaign withResourceType:resourceType] ||
+        ![self _isCampaignValid:campaign]) return NO;
+    
+    UnityAdsCacheOperation * cacheOperation = nil;
+    if (resourceType == ResourceTypeTrailerVideo) {
+      UnityAdsCacheFileOperation  * tmp = [UnityAdsCacheFileOperation new];
+      tmp.directoryPath = [self _cachePath];
+      tmp.downloadURL = [self _downloadURLFor:resourceType of:campaign];
+      tmp.filePath = [[self localURLFor:resourceType ofCampaign:campaign] relativePath];
+      tmp.expectedFileSize = campaign.expectedTrailerSize;
+      cacheOperation = tmp;
+    }
+    
     cacheOperation.delegate = self;
     cacheOperation.operationKey = [self operationKey:campaign resourceType:resourceType];
     cacheOperation.resourceType = resourceType;
     self.campaignsOperations[[self operationKey:campaign resourceType:resourceType]] = @{ kUnityAdsCacheOperationKey : cacheOperation,
                                                                                           kUnityAdsCacheOperationCampaignKey : campaign};
     [self.cacheOperationsQueue addOperation:cacheOperation];
+    return YES;
   }
 }
 
@@ -161,7 +174,7 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
     default:
       break;
   }
-  return NO;
+  return result;
 }
 
 - (NSString *)operationKey:(UnityAdsCampaign *)campaign resourceType:(ResourceType)resourceType {
@@ -181,7 +194,7 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
   }
 }
 
-- (void)_removeOperation:(UnityAdsCacheFileOperation *)cacheOperation {
+- (void)_removeOperation:(UnityAdsCacheOperation *)cacheOperation {
   @synchronized(self) {
     if (!cacheOperation.operationKey) return;
     [self.campaignsOperations removeObjectForKey:cacheOperation.operationKey];
@@ -195,7 +208,7 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
 #pragma mark UnityAdsFileCacheOperationDelegate
 #pragma mark ----
 
-- (void)operationStarted:(UnityAdsCacheFileOperation *)cacheOperation  {
+- (void)operationStarted:(UnityAdsCacheOperation *)cacheOperation  {
   @synchronized(self) {
     if ([self.delegate respondsToSelector:@selector(startedCaching:forCampaign:)]) {
       NSDictionary * operationInfo = self.campaignsOperations[cacheOperation.operationKey];
@@ -206,7 +219,7 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
   }
 }
 
-- (void)operationFinished:(UnityAdsCacheFileOperation *)cacheOperation {
+- (void)operationFinished:(UnityAdsCacheOperation *)cacheOperation {
   @synchronized(self) {
     if ([self.delegate respondsToSelector:@selector(finishedCaching:forCampaign:)]) {
       NSDictionary * operationInfo = self.campaignsOperations[cacheOperation.operationKey];
@@ -217,7 +230,7 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
   }
 }
 
-- (void)operationFailed:(UnityAdsCacheFileOperation *)cacheOperation {
+- (void)operationFailed:(UnityAdsCacheOperation *)cacheOperation {
   @synchronized(self) {
     if ([self.delegate respondsToSelector:@selector(failedCaching:forCampaign:)]) {
       NSDictionary * operationInfo = self.campaignsOperations[cacheOperation.operationKey];
@@ -228,7 +241,7 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
   }
 }
 
-- (void)operationCancelled:(UnityAdsCacheFileOperation *)cacheOperation {
+- (void)operationCancelled:(UnityAdsCacheOperation *)cacheOperation {
   @synchronized(self) {
     if ([self.delegate respondsToSelector:@selector(cancelledCaching:forCampaign:)]) {
       NSDictionary * operationInfo = self.campaignsOperations[cacheOperation.operationKey];
