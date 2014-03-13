@@ -20,13 +20,11 @@ typedef enum {
   CachingResultFinishedAll,
   CachingResultFailed,
   CachingResultCancelled,
-  CachingResultCancelledAll,
-  
 } CachingResult;
 
 @interface UnityAdsCacheManagerTests : SenTestCase <UnityAdsCacheManagerDelegate> {
 @private
-  CachingResult cachingResult;
+  CachingResult _cachingResult;
   UnityAdsCacheManager * _cacheManager;
 }
 
@@ -50,11 +48,17 @@ extern void __gcov_flush();
 	}
 }
 
+- (NSString *)_cachePath {
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+	return [[paths objectAtIndex:0] stringByAppendingPathComponent:@"unityads"];
+}
+
 - (void)setUp
 {
   [super setUp];
   _cacheManager = [UnityAdsCacheManager new];
   _cacheManager.delegate = self;
+  [[NSFileManager defaultManager] removeItemAtPath:[self _cachePath] error:nil];
   // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
@@ -65,66 +69,100 @@ extern void __gcov_flush();
 }
 
 - (void)testCacheNilCampaign {
-  cachingResult = CachingResultUndefined;
+  _cachingResult = CachingResultUndefined;
   UnityAdsCampaign * campaignToCache = nil;
-  [_cacheManager cacheCampaign:campaignToCache];
-  STAssertTrue(cachingResult == CachingResultFailed,
+  [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaignToCache];
+  
+  [self threadBlocked:^BOOL{
+    @synchronized(self) {
+      return _cachingResult != CachingResultFinishedAll;
+    }
+  }];
+  
+  STAssertTrue(_cachingResult == CachingResultFailed,
                @"caching should fail instantly in same thread when caching nil campaign");
 }
 
 - (void)testCacheEmptyCampaign {
-  cachingResult = CachingResultUndefined;
+  _cachingResult = CachingResultUndefined;
   UnityAdsCampaign * campaignToCache = [UnityAdsCampaign new];
-  [_cacheManager cacheCampaign:campaignToCache];
+  [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaignToCache];
   
-  STAssertTrue(cachingResult == CachingResultFailed,
+  [self threadBlocked:^BOOL{
+    @synchronized(self) {
+      return _cachingResult != CachingResultFinishedAll;
+    }
+  }];
+  
+  STAssertTrue(_cachingResult == CachingResultFailed,
                @"caching should fail instantly in same thread when caching empty campaign");
 }
 
 - (void)testCachePartiallyFilledCampaign {
-  cachingResult = CachingResultUndefined;
+  _cachingResult = CachingResultUndefined;
   UnityAdsCampaign * campaignToCache = [UnityAdsCampaign new];
   campaignToCache.id = @"tmp";
-  [_cacheManager cacheCampaign:campaignToCache];
+  [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaignToCache];
   
-  STAssertTrue(cachingResult == CachingResultFailed,
+  [self threadBlocked:^BOOL{
+    @synchronized(self) {
+      return _cachingResult != CachingResultFinishedAll;
+    }
+  }];
+  
+  STAssertTrue(_cachingResult == CachingResultFailed,
                @"caching should fail instantly in same thread when caching partially empty campaign");
   
+  _cachingResult = CachingResultUndefined;
   campaignToCache.id = @"tmp";
   campaignToCache.isValidCampaign = NO;
-  [_cacheManager cacheCampaign:campaignToCache];
+  [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaignToCache];
   
-  STAssertTrue(cachingResult == CachingResultFailed,
+  [self threadBlocked:^BOOL{
+    @synchronized(self) {
+      return _cachingResult != CachingResultFinishedAll;
+    }
+  }];
+  
+  STAssertTrue(_cachingResult == CachingResultFailed,
                @"caching should fail instantly in same thread when caching partially empty campaign");
   
+  _cachingResult = CachingResultUndefined;
   campaignToCache.id = @"tmp";
   campaignToCache.isValidCampaign = YES;
-  [_cacheManager cacheCampaign:campaignToCache];
+  [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaignToCache];
   
-  STAssertTrue(cachingResult == CachingResultFailed,
+  
+  [self threadBlocked:^BOOL{
+    @synchronized(self) {
+      return _cachingResult != CachingResultFinishedAll;
+    }
+  }];
+  
+  STAssertTrue(_cachingResult == CachingResultFailed,
                @"caching should fail instantly in same thread when caching partially empty campaign");
 }
 
 - (void)testCacheCampaignFilledWithWrongValues {
-  cachingResult = CachingResultUndefined;
+  _cachingResult = CachingResultUndefined;
   UnityAdsCampaign * campaignToCache = [UnityAdsCampaign new];
   campaignToCache.id = @"tmp";
   campaignToCache.isValidCampaign = YES;
   campaignToCache.trailerDownloadableURL = [NSURL URLWithString:@"tmp"];
-  [_cacheManager cacheCampaign:campaignToCache];
+  [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaignToCache];
   
   [self threadBlocked:^BOOL{
     @synchronized(self) {
-      return cachingResult == CachingResultUndefined;
+      return _cachingResult != CachingResultFinishedAll;
     }
   }];
   
-  STAssertTrue(cachingResult == CachingResultFailed,
+  STAssertTrue(_cachingResult == CachingResultFailed,
                @"caching should fail campaign filled with wrong values");
 }
 
 - (void)testCacheSingleValidCampaign {
-  cachingResult = CachingResultUndefined;
+  _cachingResult = CachingResultUndefined;
   NSError * error = nil;
   NSStringEncoding encoding = NSStringEncodingConversionAllowLossy;
   NSString * pathToResource = [[NSBundle bundleForClass:[self class]] pathForResource:@"jsonData.txt" ofType:nil];
@@ -138,20 +176,20 @@ extern void __gcov_flush();
   STAssertTrue(jsonString != nil, @"empty json string");
   UnityAdsCampaign * campaignToCache = campaigns[0];
   STAssertTrue(campaignToCache != nil, @"campaign is nil");
-  [_cacheManager cacheCampaign:campaignToCache];
+  [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaignToCache];
   
   [self threadBlocked:^BOOL{
     @synchronized(self) {
-      return cachingResult != CachingResultFinishedAll;
+      return _cachingResult != CachingResultFinishedAll;
     }
   }];
   
-  STAssertTrue(cachingResult == CachingResultFinishedAll,
+  STAssertTrue(_cachingResult == CachingResultFinishedAll,
                @"caching should be ok when caching valid campaigns");
 }
 
 - (void)testCacheAllCampaigns {
-  cachingResult = CachingResultUndefined;
+  _cachingResult = CachingResultUndefined;
   NSError * error = nil;
   NSStringEncoding encoding = NSStringEncodingConversionAllowLossy;
   NSString * pathToResource = [[NSBundle bundleForClass:[self class]] pathForResource:@"jsonData.txt" ofType:nil];
@@ -163,19 +201,21 @@ extern void __gcov_flush();
   NSArray  * campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
   NSArray * campaigns = [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(deserializeCampaigns:) withObject:campaignsDataArray];
   STAssertTrue(jsonString != nil, @"empty json string");
-  [_cacheManager cacheCampaigns:campaigns];
+  [campaigns  enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
+    [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaign];
+  }];
   [self threadBlocked:^BOOL{
     @synchronized(self) {
-      return cachingResult != CachingResultFinishedAll;
+      return _cachingResult != CachingResultFinishedAll;
     }
   }];
   
-  STAssertTrue(cachingResult == CachingResultFinishedAll,
+  STAssertTrue(_cachingResult == CachingResultFinishedAll,
                @"caching should be ok when caching valid campaigns");
 }
 
 - (void)testCancelAllOperatons {
-  cachingResult = CachingResultUndefined;
+  _cachingResult = CachingResultUndefined;
   NSError * error = nil;
   NSStringEncoding encoding = NSStringEncodingConversionAllowLossy;
   NSString * pathToResource = [[NSBundle bundleForClass:[self class]] pathForResource:@"jsonData.txt" ofType:nil];
@@ -187,48 +227,44 @@ extern void __gcov_flush();
   NSArray  * campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
   NSArray * campaigns = [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(deserializeCampaigns:) withObject:campaignsDataArray];
   STAssertTrue(jsonString != nil, @"empty json string");
-  [_cacheManager cacheCampaigns:campaigns];
+  [campaigns  enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
+    [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaign];
+  }];
   sleep(4);
   [_cacheManager cancelAllDownloads];
   [self threadBlocked:^BOOL{
     @synchronized(self) {
-      return cachingResult != CachingResultCancelledAll;
+      return _cachingResult != CachingResultFinishedAll;
     }
   }];
   
-  STAssertTrue(cachingResult == CachingResultCancelledAll,
+  STAssertTrue(_cachingResult == CachingResultFinishedAll,
                @"caching should be ok when caching valid campaigns");
 }
 
 #pragma mark - UnityAdsCacheManagerDelegate
 
-- (void)cache:(UnityAdsCacheManager *)cache failedToCacheCampaign:(UnityAdsCampaign *)campaign {
+- (void)finishedCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign {
   @synchronized(self) {
-    cachingResult = CachingResultFailed;
+    _cachingResult = CachingResultFinished;
   }
 }
 
-- (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign {
+- (void)failedCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign {
   @synchronized(self) {
-    cachingResult = CachingResultFinished;
+    _cachingResult = CachingResultFailed;
   }
 }
 
-- (void)cache:(UnityAdsCacheManager *)cache cancelledCachingCampaign:(UnityAdsCampaign *)campaign {
+- (void)cancelledCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign {
   @synchronized(self) {
-    cachingResult = CachingResultCancelled;
+    _cachingResult = CachingResultCancelled;
   }
 }
 
-- (void)cache:(UnityAdsCacheManager *)cache finishedCachingAllCampaigns:(NSArray *)campaigns {
+- (void)cacheQueueEmpty {
   @synchronized(self) {
-    cachingResult = CachingResultFinishedAll;
-  }
-}
-
-- (void)cache:(UnityAdsCacheManager *)cache cancelledCachingAllCampaigns:(NSArray *)campaigns {
-  @synchronized(self) {
-    cachingResult = CachingResultCancelledAll;
+    _cachingResult = CachingResultFinishedAll;
   }
 }
 

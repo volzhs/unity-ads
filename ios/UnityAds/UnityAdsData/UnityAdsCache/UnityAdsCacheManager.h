@@ -5,31 +5,29 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UnityAdsCacheFileOperation.h"
+
 
 @class UnityAdsCacheManager;
 @class UnityAdsCampaign;
 
 @protocol UnityAdsCacheManagerDelegate <NSObject>
 @optional
-- (void)cache:(UnityAdsCacheManager *)cache failedToCacheCampaign:(UnityAdsCampaign *)campaign;
-- (void)cache:(UnityAdsCacheManager *)cache cancelledCachingCampaign:(UnityAdsCampaign *)campaign;
-- (void)cache:(UnityAdsCacheManager *)cache cancelledCachingAllCampaigns:(NSArray *)campaigns;
-
-@required
-- (void)cache:(UnityAdsCacheManager *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign;
-- (void)cache:(UnityAdsCacheManager *)cache finishedCachingAllCampaigns:(NSArray *)campaigns;
-
+- (void)startedCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
+- (void)finishedCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
+- (void)failedCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
+- (void)cancelledCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
+- (void)cacheQueueEmpty;
 @end
 
 @interface UnityAdsCacheManager : NSObject
 
 @property (nonatomic, weak) id <UnityAdsCacheManagerDelegate> delegate;
 
-- (void)cacheCampaigns:(NSArray *)campaigns;
-- (void)cacheCampaign:(UnityAdsCampaign *)campaignToCache;
-- (NSURL *)localVideoURLForCampaign:(UnityAdsCampaign *)campaign;
-- (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign;
-- (BOOL)isCampaignVideoCached:(UnityAdsCampaign *)campaign;
+- (void)cache:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
+- (NSURL *)localURLFor:(ResourceType)resourceType ofCampaign:(UnityAdsCampaign *)campaign;
+- (BOOL)is:(ResourceType)resourceType cachedForCampaign:(UnityAdsCampaign *)campaign;
+- (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;
 - (void)cancelAllDownloads;
 
 @end
