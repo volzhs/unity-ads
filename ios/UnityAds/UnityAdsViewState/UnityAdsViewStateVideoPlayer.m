@@ -79,6 +79,7 @@
 - (void)startVideoPlayback:(BOOL)createVideoController withDelegate:(id)videoControllerDelegate {
   if ([[UnityAdsMainViewController sharedInstance] isOpen]) {
     [self.videoController playCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+    [[UnityAdsCampaignManager sharedInstance] cacheNextCampaignAfter:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
   }
 }
 

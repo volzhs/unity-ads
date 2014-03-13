@@ -129,6 +129,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       NSString *gamerId = [jsonDictionary objectForKey:kUnityAdsGamerIDKey];
       
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
+      [self.cacheManager cache:ResourceTypeTrailerVideo forCampaign:self.campaigns[0]];
 //      [self.cacheManager cacheCampaigns:self.campaigns];
       
       dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -181,9 +182,10 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		}
 		
 		NSURL *videoURL = [self.cacheManager localURLFor:ResourceTypeTrailerVideo ofCampaign:campaign];
-		if (videoURL == nil || [self.cacheManager campaignExistsInQueue:campaign withResourceType:ResourceTypeTrailerVideo] ||
-        ![campaign shouldCacheVideo] ||
-        ![self.cacheManager is:ResourceTypeTrailerVideo cachedForCampaign:campaign])
+    if ([self.cacheManager campaignExistsInQueue:campaign withResourceType:ResourceTypeTrailerVideo]) {
+      [self.cacheManager cancelCacheForCampaign:campaign withResourceType:ResourceTypeTrailerVideo];
+    }
+		if (videoURL == nil || ![campaign shouldCacheVideo] || ![self.cacheManager is:ResourceTypeTrailerVideo cachedForCampaign:campaign])
     {
       UALOG_DEBUG(@"Campaign is not cached!");
       videoURL = campaign.trailerStreamingURL;
@@ -192,6 +194,20 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     
 		return videoURL;
 	}
+}
+
+- (void)cacheNextCampaignAfter:(UnityAdsCampaign *)currentCampaign {
+  __block NSUInteger currentIndex = 0;
+  [self.campaigns enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
+    if ([campaign.id isEqualToString:currentCampaign.id]) {
+      currentIndex = idx + 1;
+      *stop = YES;
+    }
+  }];
+  
+  if (currentIndex <= self.campaigns.count - 1) {
+    [self.cacheManager cache:ResourceTypeTrailerVideo forCampaign:self.campaigns[currentIndex]];
+  }
 }
 
 - (UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId {

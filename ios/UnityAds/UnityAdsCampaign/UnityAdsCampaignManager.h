@@ -20,7 +20,7 @@
 
 @interface UnityAdsCampaignManager : NSObject
 
-@property (nonatomic, weak) id<UnityAdsCampaignManagerDelegate> delegate;
+@property (nonatomic, weak) id <UnityAdsCampaignManagerDelegate> delegate;
 @property (nonatomic, strong) NSArray *campaigns;
 @property (nonatomic, strong) NSDictionary *campaignData;
 @property (nonatomic, strong) UnityAdsCampaign *selectedCampaign;
@@ -32,6 +32,7 @@
 - (UnityAdsCampaign *)getCampaignWithITunesId:(NSString *)iTunesId;
 - (UnityAdsCampaign *)getCampaignWithClickUrl:(NSString *)clickUrl;
 - (NSArray *)getViewableCampaigns;
+- (void)cacheNextCampaignAfter:(UnityAdsCampaign *)currentCampaign;
 
 + (id)sharedInstance;
 
