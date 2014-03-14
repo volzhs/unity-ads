@@ -78,8 +78,10 @@
 
 - (void)startVideoPlayback:(BOOL)createVideoController withDelegate:(id)videoControllerDelegate {
   if ([[UnityAdsMainViewController sharedInstance] isOpen]) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+      [[UnityAdsCampaignManager sharedInstance] cacheNextCampaignAfter:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+    });
     [self.videoController playCampaign:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
-    [[UnityAdsCampaignManager sharedInstance] cacheNextCampaignAfter:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
   }
 }
 

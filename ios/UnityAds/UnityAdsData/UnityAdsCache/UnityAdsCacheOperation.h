@@ -17,7 +17,7 @@ typedef enum {
 
 @protocol UnityAdsCacheOperationDelegate <NSObject>
 
-@optional
+@required
 - (void)operationStarted:(UnityAdsCacheOperation *)cacheOperation;
 - (void)operationFinished:(UnityAdsCacheOperation *)cacheOperation;
 - (void)operationFailed:(UnityAdsCacheOperation *)cacheOperation;
