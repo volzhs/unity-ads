@@ -344,7 +344,38 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 		sendActionToListener(UnityAdsMainViewAction.VideoSkipped);
 	}
-	
+
+	// Almost like onVideoSkip but this is a bit different situation
+	// This covers situations where user has e.g. pressed home button and hidden the video instead of pressing skip button
+	public void onVideoHidden() {
+		Map<String, Object> values = null;
+		values = new HashMap<String, Object>();
+		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, videoplayerview.getBufferingDuration());
+		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_HIDDEN);
+		UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);
+
+		if (videoplayerview != null) {
+			videoplayerview.setKeepScreenOn(false);
+		}
+
+		removeFromMainView(videoplayerview);
+		videoplayerview = null;
+
+		setViewState(UnityAdsMainViewState.WebView);
+		UnityAdsProperties.getCurrentActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
+		JSONObject params = new JSONObject();
+		try {
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+		}
+		catch (Exception e) {
+			UnityAdsUtils.Log("Could not create JSON", this);
+		}
+		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
+
+		sendActionToListener(UnityAdsMainViewAction.VideoSkipped);
+	}
+
 	// IUnityAdsWebViewListener
 	@Override
 	public void onWebAppLoaded () {

@@ -13,4 +13,5 @@ public interface IUnityAdsVideoPlayerListener extends IUnityAdsViewListener,
 	public void onVideoPlaybackStarted ();
 	public void onVideoPlaybackError ();
 	public void onVideoSkip ();
+	public void onVideoHidden ();
 }
