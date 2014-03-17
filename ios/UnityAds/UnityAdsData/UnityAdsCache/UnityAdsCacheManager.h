@@ -17,8 +17,7 @@
 - (void)finishedCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
 - (void)failedCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
 - (void)cancelledCaching:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
-#warning TODO - add results of all execution - about failed and finished cancelled operations
-- (void)cacheQueueEmpty;
+- (void)cachingQueueEmpty;
 @end
 
 @interface UnityAdsCacheManager : NSObject
