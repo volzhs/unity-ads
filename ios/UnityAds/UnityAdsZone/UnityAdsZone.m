@@ -77,7 +77,7 @@
   [self._options setObject:stringValue forKey:kUnityAdsZoneNoOfferScreenKey];
 }
 
-- (int)allowVideoSkipInSeconds {
+- (NSInteger)allowVideoSkipInSeconds {
   return [[self._options valueForKey:kUnityAdsZoneAllowVideoSkipInSecondsKey] integerValue];
 }
 

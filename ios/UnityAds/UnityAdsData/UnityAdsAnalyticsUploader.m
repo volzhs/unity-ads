@@ -323,7 +323,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
   
   if ([httpResponse statusCode] >= 400) {
-    UALOG_DEBUG(@"ERROR FECTHING URL: %i", [httpResponse statusCode]);
+    UALOG_DEBUG(@"ERROR FECTHING URL: %li", [httpResponse statusCode]);
     [self _saveFailedUpload:self.currentUpload];
   }
 }

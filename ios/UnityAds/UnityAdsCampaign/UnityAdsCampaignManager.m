@@ -183,13 +183,15 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		
 		NSURL *videoURL = [self.cacheManager localURLFor:ResourceTypeTrailerVideo ofCampaign:campaign];
     if ([self.cacheManager campaignExistsInQueue:campaign withResourceType:ResourceTypeTrailerVideo]) {
+      UALOG_DEBUG(@"Cancel caching video for campaign %@", campaign.id);
       [self.cacheManager cancelCacheForCampaign:campaign withResourceType:ResourceTypeTrailerVideo];
     }
 		if (videoURL == nil || ![self.cacheManager is:ResourceTypeTrailerVideo cachedForCampaign:campaign])
     {
-      UALOG_DEBUG(@"Campaign is not cached!");
+      UALOG_DEBUG(@"Choosing streaming URL for campaign %@", campaign.id);
       videoURL = campaign.trailerStreamingURL;
     }
+    UALOG_DEBUG(@"Choosing trailer URL for campaign %@", campaign.id);
 		return videoURL;
 	}
 }
