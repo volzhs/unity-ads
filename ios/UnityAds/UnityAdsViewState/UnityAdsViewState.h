@@ -23,7 +23,6 @@
 
 @property (nonatomic, weak) id<UnityAdsViewStateDelegate> delegate;
 @property (nonatomic, assign) BOOL waitingToBeShown;
-@property (nonatomic, strong) UIViewController *storeController;
 
 - (UnityAdsViewStateType)getStateType;
 
@@ -34,7 +33,5 @@
 - (void)wasShown;
 
 - (void)applyOptions:(NSDictionary *)options;
-
-- (void)preloadAppSheetWithId:(NSString *)iTunesId;
 - (void)openAppStoreWithData:(NSDictionary *)data inViewController:(UIViewController *)targetViewController;
 @end

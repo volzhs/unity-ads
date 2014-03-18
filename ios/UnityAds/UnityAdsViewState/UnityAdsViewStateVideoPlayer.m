@@ -8,6 +8,7 @@
 
 #import "UnityAdsViewStateVideoPlayer.h"
 #import "../UnityAdsVideo/UnityAdsVideoViewController.h"
+#import "UnityAdsAppSheetManager.h"
 
 @implementation UnityAdsViewStateVideoPlayer
 
@@ -19,7 +20,7 @@
   if ([[UnityAdsCampaignManager sharedInstance] selectedCampaign] != nil &&
       ![[UnityAdsCampaignManager sharedInstance] selectedCampaign].bypassAppSheet &&
       ![[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed) {
-    [self preloadAppSheetWithId:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].itunesID];
+    [[UnityAdsAppSheetManager sharedInstance] preloadAppSheetWithId:[[UnityAdsCampaignManager sharedInstance] selectedCampaign].itunesID];
   }
   
   self.checkIfWatched = YES;
@@ -32,10 +33,6 @@
   UALOG_DEBUG(@"");
   [super exitState:options];
   [self dismissVideoController];
-  
-  if (self.storeController != nil) {
-    self.storeController = nil;
-  }
 }
 
 - (void)applyOptions:(NSDictionary *)options {
