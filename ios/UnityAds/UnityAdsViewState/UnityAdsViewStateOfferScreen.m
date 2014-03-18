@@ -1,12 +1,12 @@
 //
-//  UnityAdsViewStateDefaultOffers.m
+//  UnityAdsViewStateOfferScreen.m
 //  UnityAds
 //
 //  Created by Pekka Palmu on 4/4/13.
 //  Copyright (c) 2013 Unity Technologies. All rights reserved.
 //
 
-#import "UnityAdsViewStateDefaultOffers.h"
+#import "UnityAdsViewStateOfferScreen.h"
 
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
@@ -18,7 +18,7 @@
 #import "../UnityAdsZone/UnityAdsZoneManager.h"
 #import "../UnityAdsZone/UnityAdsIncentivizedZone.h"
 
-@implementation UnityAdsViewStateDefaultOffers
+@implementation UnityAdsViewStateOfferScreen
 
 - (UnityAdsViewStateType)getStateType {
   return kUnityAdsViewStateTypeOfferScreen;

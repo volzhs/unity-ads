@@ -1,5 +1,5 @@
 //
-//  UnityAdsViewStateDefaultSpinner.h
+//  UnityAdsViewStateOfferScreen.h
 //  UnityAds
 //
 //  Created by Pekka Palmu on 4/4/13.
@@ -8,6 +8,6 @@
 
 #import "UnityAdsViewState.h"
 
-@interface UnityAdsViewStateDefaultSpinner : UnityAdsViewState
+@interface UnityAdsViewStateOfferScreen : UnityAdsViewState
 
 @end

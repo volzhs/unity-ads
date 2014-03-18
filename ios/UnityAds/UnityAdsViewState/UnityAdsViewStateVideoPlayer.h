@@ -12,7 +12,7 @@
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAds.h"
 
-@interface UnityAdsViewStateVideoPlayer : UnityAdsViewState
+@interface UnityAdsViewStateVideoPlayer : UnityAdsViewState <UnityAdsVideoControllerDelegate>
   @property (nonatomic, strong) UnityAdsVideoViewController *videoController;
   @property (nonatomic, assign) BOOL checkIfWatched;
 

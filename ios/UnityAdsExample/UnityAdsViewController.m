@@ -24,8 +24,6 @@
 @synthesize optionsId;
 @synthesize loadingImage;
 @synthesize contentView;
-@synthesize webviewSwitch;
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -66,10 +64,6 @@
         UALOG_DEBUG(@"Setting optionsId");
         // TEST STUFF, DO NOT USE IN PRODUCTION APPS
         [[UnityAds sharedInstance] setTestOptionsId:self.optionsId.text];
-    }
-    
-    if (!self.webviewSwitch.isOn) {
-        [[UnityAds sharedInstance] setAdsMode:kUnityAdsModeNoWebView];
     }
     
     // Initialize Unity Ads

@@ -14,10 +14,9 @@
 #import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 
-#import "../UnityAdsViewState/UnityAdsViewStateDefaultOffers.h"
-#import "../UnityAdsViewState/UnityAdsViewStateDefaultVideoPlayer.h"
-#import "../UnityAdsViewState/UnityAdsViewStateDefaultEndScreen.h"
-#import "../UnityAdsViewState/UnityAdsViewStateDefaultSpinner.h"
+#import "../UnityAdsViewState/UnityAdsViewStateOfferScreen.h"
+#import "../UnityAdsViewState/UnityAdsViewStateVideoPlayer.h"
+#import "../UnityAdsViewState/UnityAdsViewStateEndScreen.h"
 
 #import "../UnityAds.h"
 

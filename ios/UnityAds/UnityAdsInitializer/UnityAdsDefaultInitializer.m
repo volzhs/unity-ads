@@ -9,10 +9,9 @@
 #import "UnityAdsDefaultInitializer.h"
 
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
-#import "../UnityAdsViewState/UnityAdsViewStateDefaultOffers.h"
-#import "../UnityAdsViewState/UnityAdsViewStateDefaultVideoPlayer.h"
-#import "../UnityAdsViewState/UnityAdsViewStateDefaultEndScreen.h"
-#import "../UnityAdsViewState/UnityAdsViewStateDefaultSpinner.h"
+#import "../UnityAdsViewState/UnityAdsViewStateOfferScreen.h"
+#import "../UnityAdsViewState/UnityAdsViewStateVideoPlayer.h"
+#import "../UnityAdsViewState/UnityAdsViewStateEndScreen.h"
 
 #import "../UnityAdsZone/UnityAdsZoneManager.h"
 #import "../UnityAdsZone/UnityAdsIncentivizedZone.h"
@@ -23,10 +22,9 @@
 	UALOG_DEBUG(@"");
   [super initAds:options];
   
-  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateDefaultOffers alloc] init]];
-  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateDefaultVideoPlayer alloc] init]];
-  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateDefaultEndScreen alloc] init]];
-  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateDefaultSpinner alloc] init]];
+  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateOfferScreen alloc] init]];
+  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateVideoPlayer alloc] init]];
+  [[UnityAdsMainViewController sharedInstance] applyViewStateHandler:[[UnityAdsViewStateEndScreen alloc] init]];
   
   [UnityAdsWebAppController sharedInstance];
   [[UnityAdsWebAppController sharedInstance] setDelegate:self];

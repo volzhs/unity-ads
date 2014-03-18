@@ -15,7 +15,6 @@
 #import "UnityAdsZone/UnityAdsIncentivizedZone.h"
 
 #import "UnityAdsInitializer/UnityAdsDefaultInitializer.h"
-#import "UnityAdsInitializer/UnityAdsNoWebViewInitializer.h"
 
 NSString * const kUnityAdsRewardItemPictureKey = @"picture";
 NSString * const kUnityAdsRewardItemNameKey = @"name";
@@ -28,7 +27,6 @@ NSString * const kUnityAdsOptionVideoUsesDeviceOrientation = @"useDeviceOrientat
 
 @interface UnityAds () <UnityAdsInitializerDelegate, UnityAdsMainViewControllerDelegate>
   @property (nonatomic, strong) UnityAdsInitializer *initializer;
-  @property (nonatomic, assign) UnityAdsMode mode;
   @property (nonatomic, assign) Boolean debug;
 @end
 
@@ -56,10 +54,6 @@ NSString * const kUnityAdsOptionVideoUsesDeviceOrientation = @"useDeviceOrientat
 
 + (NSString *)getSDKVersion {
   return [[UnityAdsProperties sharedInstance] adsVersion];
-}
-
-- (void)setAdsMode:(UnityAdsMode)adsMode {
-  self.mode = adsMode;
 }
 
 - (void)setDebugMode:(BOOL)debugMode {
@@ -127,7 +121,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	[[UnityAdsProperties sharedInstance] setAdsGameId:gameId];
   [[UnityAdsMainViewController sharedInstance] setDelegate:self];
   
-  self.initializer = [self selectInitializerFromMode:self.mode];
+  self.initializer = [[UnityAdsDefaultInitializer alloc] init];
   
   if (self.initializer != nil) {
     [self.initializer setDelegate:self];
@@ -179,10 +173,6 @@ static UnityAds *sharedUnityAdsInstance = nil;
   id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
   if(currentZone) {
     [currentZone mergeOptions:options];
-    
-    // If Unity Ads is in "No WebView" -mode, always skip offerscreen
-    if (self.mode == kUnityAdsModeNoWebView)
-      [currentZone setNoOfferScreen:true];
     
     if ([currentZone noOfferScreen]) {
       if (![self canShowAds]) return false;
@@ -338,17 +328,6 @@ static UnityAds *sharedUnityAdsInstance = nil;
 		return true;
   }
   return false;
-}
-
-- (UnityAdsInitializer *)selectInitializerFromMode:(UnityAdsMode)mode {
-  switch (mode) {
-    case kUnityAdsModeDefault:
-      return [[UnityAdsDefaultInitializer alloc] init];
-    case kUnityAdsModeNoWebView:
-      return [[UnityAdsNoWebViewInitializer alloc] init];
-  }
-  
-  return nil;
 }
 
 #pragma mark - Private data refreshing

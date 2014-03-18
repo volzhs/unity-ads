@@ -15,7 +15,6 @@ typedef enum {
   kUnityAdsViewStateTypeEndScreen,
   kUnityAdsViewStateTypeVideoPlayer,
   kUnityAdsViewStateTypeNone,
-  kUnityAdsViewStateTypeSpinner,
   kUnityAdsViewStateTypeInvalid
 } UnityAdsViewStateType;
 

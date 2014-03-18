@@ -35,16 +35,12 @@ extern "C" {
 
 @implementation UnityAdsUnityWrapper
 
-- (id)initWithGameId:(NSString*)gameId testModeOn:(bool)testMode debugModeOn:(bool)debugMode withGameObjectName:(NSString*)gameObjectName useNativeUI:(bool)useNativeWhenPossible {
+- (id)initWithGameId:(NSString*)gameId testModeOn:(bool)testMode debugModeOn:(bool)debugMode withGameObjectName:(NSString*)gameObjectName {
     self = [super init];
     
     if (self != nil) {
         self.gameObjectName = gameObjectName;
         self.gameId = gameId;
-        
-        if (useNativeWhenPossible) {
-            [[UnityAds sharedInstance] setAdsMode:kUnityAdsModeNoWebView];
-        }
         
         [[UnityAds sharedInstance] setDelegate:self];
         [[UnityAds sharedInstance] setDebugMode:debugMode];
@@ -93,9 +89,9 @@ extern "C" {
 
 
 extern "C" {
-    void init (const char *gameId, bool testMode, bool debugMode, const char *gameObjectName, bool useNativeUI) {
+    void init (const char *gameId, bool testMode, bool debugMode, const char *gameObjectName) {
         if (unityAds == NULL) {
-            unityAds = [[UnityAdsUnityWrapper alloc] initWithGameId:UnityAdsCreateNSString(gameId) testModeOn:testMode debugModeOn:debugMode withGameObjectName:UnityAdsCreateNSString(gameObjectName) useNativeUI:useNativeUI];
+            unityAds = [[UnityAdsUnityWrapper alloc] initWithGameId:UnityAdsCreateNSString(gameId) testModeOn:testMode debugModeOn:debugMode withGameObjectName:UnityAdsCreateNSString(gameObjectName)];
         }
     }
     
