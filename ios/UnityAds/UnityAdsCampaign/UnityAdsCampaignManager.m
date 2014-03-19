@@ -184,8 +184,9 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     {
       UALOG_DEBUG(@"Choosing streaming URL for campaign %@", campaign.id);
       videoURL = campaign.trailerStreamingURL;
+    } else {
+      UALOG_DEBUG(@"Choosing trailer URL for campaign %@", campaign.id);
     }
-    UALOG_DEBUG(@"Choosing trailer URL for campaign %@", campaign.id);
 		return videoURL;
 	}
 }
