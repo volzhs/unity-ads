@@ -28,7 +28,7 @@ typedef enum {
 @interface UnityAdsCacheOperation : NSOperation
 
 @property (nonatomic, assign) id <UnityAdsCacheOperationDelegate> delegate;
-@property (nonatomic, assign) NSUInteger expectedFileSize;
+@property (nonatomic, assign) long long expectedFileSize;
 @property (nonatomic, copy)   NSString * operationKey;
 @property (nonatomic, assign) ResourceType resourceType;
 
