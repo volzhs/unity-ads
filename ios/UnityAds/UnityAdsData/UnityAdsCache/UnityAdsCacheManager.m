@@ -31,7 +31,15 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
 @property (nonatomic, strong) NSMutableDictionary *campaignsOperations;
 @end
 
+static UnityAdsCacheManager * _inst = nil;
+
 @implementation UnityAdsCacheManager
+
++ sharedInstance {
+  @synchronized (self) {
+    return _inst == nil ? _inst = [[self class] new] : _inst;
+  }
+}
 
 #pragma mark - Private
 
@@ -138,7 +146,7 @@ static NSString * const kUnityAdsCacheOperationCampaignKey = @"kUnityAdsCacheOpe
 
 - (BOOL)_isCampaignValid:(UnityAdsCampaign *)campaign {
   @synchronized(self) {
-    return campaign != nil && campaign.expectedTrailerSize;
+    return campaign != nil && campaign.expectedTrailerSize && campaign.id && campaign.allowedToCacheVideo;
   }
 }
 

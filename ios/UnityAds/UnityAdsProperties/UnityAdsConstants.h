@@ -108,6 +108,7 @@ extern NSString * const kUnityAdsCampaignIDKey;
 extern NSString * const kUnityAdsCampaignTaglineKey;
 extern NSString * const kUnityAdsCampaignStoreIDKey;
 extern NSString * const kUnityAdsCampaignCacheVideoKey;
+extern NSString * const kUnityAdsCampaignAllowedToCacheVideoKey;
 extern NSString * const kUnityAdsCampaignBypassAppSheet;
 extern NSString * const kUnityAdsCampaignExpectedFileSize;
 extern NSString * const kUnityAdsCampaignGameIconKey;

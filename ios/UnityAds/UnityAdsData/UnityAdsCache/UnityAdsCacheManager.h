@@ -24,11 +24,15 @@
 
 @property (nonatomic, weak) id <UnityAdsCacheManagerDelegate> delegate;
 
-- (void)cancelCacheForCampaign:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;
 - (BOOL)cache:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
+- (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;
+
 - (NSURL *)localURLFor:(ResourceType)resourceType ofCampaign:(UnityAdsCampaign *)campaign;
 - (BOOL)is:(ResourceType)resourceType cachedForCampaign:(UnityAdsCampaign *)campaign;
-- (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;
+
+- (void)cancelCacheForCampaign:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;
 - (void)cancelAllDownloads;
+
++ sharedInstance;
 
 @end

@@ -127,6 +127,13 @@
   NSString *itunesID = [itunesIDValue isKindOfClass:[NSNumber class]] ? [itunesIDValue stringValue] : itunesIDValue;
   UAAssertV(itunesID != nil && [itunesID length] > 0, nil);
   self.itunesID = itunesID;
+
+  self.allowedToCacheVideo = NO;
+  if ([data objectForKey:kUnityAdsCampaignAllowedToCacheVideoKey] != nil) {
+    if ([[data valueForKey:kUnityAdsCampaignAllowedToCacheVideoKey] boolValue] != 0) {
+      self.allowedToCacheVideo = YES;
+    }
+  }
   
   self.shouldCacheVideo = NO;
   if ([data objectForKey:kUnityAdsCampaignCacheVideoKey] != nil) {
