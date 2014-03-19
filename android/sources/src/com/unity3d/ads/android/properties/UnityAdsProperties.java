@@ -119,7 +119,11 @@ public class UnityAdsProperties {
 	
 	public static Activity getCurrentActivity() {
 		if(CURRENT_ACTIVITY != null) {
-			return CURRENT_ACTIVITY.get();
+			if(CURRENT_ACTIVITY.get() != null) {
+				return CURRENT_ACTIVITY.get();
+			} else {
+				return BASE_ACTIVITY.get();
+			}
 		}
 		return null;
 	}
