@@ -7,7 +7,11 @@
 //
 
 #import "UnityAdsUnityWrapper.h"
+#if UNITY_VERSION >= 420
+#import "UnityAppController.h"
+#else
 #import "AppController.h"
+#endif
 
 static UnityAdsUnityWrapper *unityAds = NULL;
 
