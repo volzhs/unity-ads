@@ -6,19 +6,18 @@
 #import "UnityAdsCampaignManager.h"
 #import "UnityAdsCampaign.h"
 #import "UnityAdsRewardItem.h"
-#import "../UnityAds.h"
-#import "../UnityAdsSBJSON/UnityAdsSBJsonParser.h"
-#import "../UnityAdsData/UnityAdsCache.h"
-#import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
-#import "../UnityAdsProperties/UnityAdsProperties.h"
-#import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "UnityAds.h"
+#import "UnityAdsSBJsonParser.h"
+#import "UnityAdsCacheManager.h"
+#import "NSObject+UnityAdsSBJson.h"
+#import "UnityAdsProperties.h"
+#import "UnityAdsConstants.h"
 #import "UnityAdsZoneParser.h"
 #import "UnityAdsZoneManager.h"
 
-@interface UnityAdsCampaignManager () <NSURLConnectionDelegate, UnityAdsCacheDelegate>
+@interface UnityAdsCampaignManager () <NSURLConnectionDelegate>
 @property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSMutableData *campaignDownloadData;
-@property (nonatomic, strong) UnityAdsCache *cache;
 @end
 
 @implementation UnityAdsCampaignManager
@@ -129,7 +128,12 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       NSString *gamerId = [jsonDictionary objectForKey:kUnityAdsGamerIDKey];
       
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
-      [self.cache cacheCampaigns:self.campaigns];
+      
+      [self.campaigns enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
+        if (campaign.shouldCacheVideo) {
+          [[UnityAdsCacheManager sharedInstance] cache:ResourceTypeTrailerVideo forCampaign:campaign];
+        }
+      }];
       
       dispatch_async(dispatch_get_main_queue(), ^(void) {
         [self.delegate campaignManagerCampaignDataReceived];
@@ -147,17 +151,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 
 #pragma mark - Public
-
-- (id)init {
-	UAAssertV(![NSThread isMainThread], nil);
-	
-	if ((self = [super init])) {
-		_cache = [[UnityAdsCache alloc] init];
-		_cache.delegate = self;
-	}
-	
-	return self;
-}
 
 - (void)updateCampaigns {
 	UAAssert(![NSThread isMainThread]);
@@ -179,17 +172,37 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			UALOG_DEBUG(@"Input is nil.");
 			return nil;
 		}
+    
+    UnityAdsCacheManager * cacheManager = [UnityAdsCacheManager sharedInstance];
 		
-		NSURL *videoURL = [self.cache localVideoURLForCampaign:campaign];
-		if (videoURL == nil || [self.cache campaignExistsInQueue:campaign] || ![campaign shouldCacheVideo] || ![self.cache isCampaignVideoCached:campaign]) {
-      UALOG_DEBUG(@"Campaign is not cached!");
-      videoURL = campaign.trailerStreamingURL;
+		NSURL *videoURL = [cacheManager localURLFor:ResourceTypeTrailerVideo ofCampaign:campaign];
+    if ([cacheManager campaignExistsInQueue:campaign withResourceType:ResourceTypeTrailerVideo]) {
+      UALOG_DEBUG(@"Cancel caching video for campaign %@", campaign.id);
+      [cacheManager cancelCacheForCampaign:campaign withResourceType:ResourceTypeTrailerVideo];
     }
-    
-    UALOG_DEBUG(@"%@ and %i", videoURL.absoluteString, [self.cache campaignExistsInQueue:campaign]);
-    
+		if (![cacheManager is:ResourceTypeTrailerVideo cachedForCampaign:campaign])
+    {
+      UALOG_DEBUG(@"Choosing streaming URL for campaign %@", campaign.id);
+      videoURL = campaign.trailerStreamingURL;
+    } else {
+      UALOG_DEBUG(@"Choosing trailer URL for campaign %@", campaign.id);
+    }
 		return videoURL;
 	}
+}
+
+- (void)cacheNextCampaignAfter:(UnityAdsCampaign *)currentCampaign {
+  __block NSUInteger currentIndex = 0;
+  [self.campaigns enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
+    if ([campaign.id isEqualToString:currentCampaign.id]) {
+      currentIndex = idx + 1;
+      *stop = YES;
+    }
+  }];
+  
+  if (currentIndex <= self.campaigns.count - 1) {
+    [[UnityAdsCacheManager sharedInstance] cache:ResourceTypeTrailerVideo forCampaign:self.campaigns[currentIndex]];
+  }
 }
 
 - (UnityAdsCampaign *)getCampaignWithId:(NSString *)campaignId {
@@ -258,13 +271,11 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	[self.urlConnection cancel];
 	self.urlConnection = nil;
 	
-	[self.cache cancelAllDownloads];
+	[[UnityAdsCacheManager sharedInstance] cancelAllDownloads];
 }
 
 - (void)dealloc {
-	self.cache.delegate = nil;
 }
-
 
 #pragma mark - NSURLConnectionDelegate
 
@@ -300,11 +311,8 @@ static int retryCount = 0;
 
 #pragma mark - UnityAdsCacheDelegate
 
-- (void)cache:(UnityAdsCache *)cache finishedCachingCampaign:(UnityAdsCampaign *)campaign {
-}
-
-- (void)cacheFinishedCachingCampaigns:(UnityAdsCache *)cache {
-	dispatch_async(dispatch_get_main_queue(), ^{
+- (void)cache:(UnityAdsCacheManager *)cacheManager finishedCachingCampaign:(UnityAdsCampaign *)campaign {
+  dispatch_async(dispatch_get_main_queue(), ^{
 		[self.delegate campaignManager:self updatedWithCampaigns:self.campaigns gamerID:[[UnityAdsProperties sharedInstance] gamerId]];
 	});
 }

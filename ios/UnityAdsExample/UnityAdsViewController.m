@@ -94,7 +94,7 @@
         //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
         
         NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{
-          kUnityAdsOptionNoOfferscreenKey:@false,
+          kUnityAdsOptionNoOfferscreenKey:@true,
           kUnityAdsOptionOpenAnimatedKey:@true,
           kUnityAdsOptionGamerSIDKey:@"gom",
           kUnityAdsOptionMuteVideoSounds:@false,

@@ -94,6 +94,7 @@ NSString * const kUnityAdsCampaignIDKey = @"id";
 NSString * const kUnityAdsCampaignTaglineKey = @"tagLine";
 NSString * const kUnityAdsCampaignStoreIDKey = @"iTunesId";
 NSString * const kUnityAdsCampaignCacheVideoKey = @"cacheVideo";
+NSString * const kUnityAdsCampaignAllowedToCacheVideoKey = @"allowCache";
 NSString * const kUnityAdsCampaignBypassAppSheet = @"bypassAppSheet";
 NSString * const kUnityAdsCampaignExpectedFileSize = @"trailerSize";
 NSString * const kUnityAdsCampaignAllowVideoSkipKey = @"allowSkipVideoInSeconds";

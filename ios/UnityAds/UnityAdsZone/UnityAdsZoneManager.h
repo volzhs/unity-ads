@@ -24,6 +24,6 @@
 - (BOOL)setCurrentZone:(NSString *)zoneId;
 - (UnityAdsZone *)getCurrentZone;
 
-- (int)zoneCount;
+- (NSUInteger)zoneCount;
 
 @end
