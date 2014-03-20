@@ -7,7 +7,6 @@ public class UnityAds : MonoBehaviour {
 	public string gameId = "";
 	public bool debugModeEnabled = false;
 	public bool testModeEnabled = false;
-	public bool useNativeUiWhenPossible = false;
 	
 	private static UnityAds sharedInstance;
 	private static bool _campaignsAvailable = false;
@@ -60,7 +59,7 @@ public class UnityAds : MonoBehaviour {
 				sharedInstance = (UnityAds) FindObjectOfType(typeof(UnityAds));
 
 				#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
-				UnityAdsExternal.init(sharedInstance.gameId, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name, sharedInstance.useNativeUiWhenPossible);
+				UnityAdsExternal.init(sharedInstance.gameId, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name);
 				#endif
 			}
 

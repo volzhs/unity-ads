@@ -207,7 +207,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 						UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
 					}
 				}
-				
+
+				UnityAdsDownloader.stopAllDownloads();
+
 				_openRequestFromDeveloper = true;
 				_showingAds = true;
 				startAdsFullscreenActivity();

@@ -23,11 +23,6 @@ extern NSString * const kUnityAdsOptionGamerSIDKey;
 extern NSString * const kUnityAdsOptionMuteVideoSounds;
 extern NSString * const kUnityAdsOptionVideoUsesDeviceOrientation;
 
-typedef enum {
-  kUnityAdsModeDefault,
-  kUnityAdsModeNoWebView,
-} UnityAdsMode;
-
 @class UnityAds;
 @class SKStoreProductViewController;
 
@@ -58,7 +53,6 @@ typedef enum {
 - (void)setTestDeveloperId:(NSString *)developerId;
 - (void)setTestOptionsId:(NSString *)optionsId;
 - (void)setDebugMode:(BOOL)debugMode;
-- (void)setAdsMode:(UnityAdsMode)adsMode;
 - (void)setTestMode:(BOOL)testModeEnabled;
 
 - (BOOL)isDebugMode;

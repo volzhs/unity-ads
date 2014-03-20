@@ -17,11 +17,10 @@ import android.telephony.TelephonyManager;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class UnityAdsDevice {
+
+	public static Object ADVERTISING_TRACKING_INFO = null;
 	
 	public static String getSoftwareVersion () {
 		return "" + Build.VERSION.SDK_INT;
@@ -77,10 +76,44 @@ public class UnityAdsDevice {
     }
     
     public static void fetchAdvertisingTrackingInfo(final Activity context) {
-    	if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS) {
-    		try {
-    			UnityAdsProperties.ADVERTISING_TRACKING_INFO = AdvertisingIdClient.getAdvertisingIdInfo(context);
-    		} catch(Exception e) {}
+    	try {
+    		Class<?> GooglePlayServicesUtil = Class.forName("com.google.android.gms.common.GooglePlayServicesUtil");
+    		Method isGooglePlayServicesAvailable = GooglePlayServicesUtil.getMethod("isGooglePlayServicesAvailable", Context.class);
+    		if(isGooglePlayServicesAvailable.invoke(null, context).equals(0)) { // ConnectionResult.SUCCESS
+    			Class<?> AdvertisingClientId = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient");
+        		Method getAdvertisingIdInfo = AdvertisingClientId.getMethod("getAdvertisingIdInfo", Context.class);
+        		UnityAdsDevice.ADVERTISING_TRACKING_INFO = getAdvertisingIdInfo.invoke(null, context);
+    		} else {
+    			UnityAdsUtils.Log("Unable to fetch advertising tracking info", UnityAdsDevice.class);
+    		}  		
+    	} catch(Exception e) {
+    		UnityAdsUtils.Log("Warning! Google Play Services is needed to access Android advertising identifier. Please add Google Play Services to your game.", UnityAdsDevice.class);
+    	}
+    }
+    
+    public static String getAdvertisingTrackingId() {
+    	try {
+    		if(UnityAdsDevice.ADVERTISING_TRACKING_INFO != null) {
+        		Class<?> Info = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient$Info");
+        		Method getId = Info.getMethod("getId");
+        		return (String)getId.invoke(UnityAdsDevice.ADVERTISING_TRACKING_INFO);
+        	}
+    		return null;
+    	} catch(Exception e) {
+    		return null;
+    	}
+    }
+    
+    public static boolean isLimitAdTrackingEnabled() {
+    	try {
+    		if(UnityAdsDevice.ADVERTISING_TRACKING_INFO != null) {
+        		Class<?> Info = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient$Info");
+        		Method isLimitAdTrackingEnabled = Info.getMethod("isLimitAdTrackingEnabled");
+        		return (Boolean)isLimitAdTrackingEnabled.invoke(UnityAdsDevice.ADVERTISING_TRACKING_INFO);
+        	}
+    		return false;
+    	} catch(Exception e) {
+    		return false;
     	}
     }
 	
