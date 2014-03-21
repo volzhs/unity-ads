@@ -201,8 +201,6 @@ static UnityAdsCacheManager * _inst = nil;
   }
 }
 
-
-
 - (NSString *)operationKey:(UnityAdsCampaign *)campaign resourceType:(ResourceType)resourceType {
   @synchronized(self) {
     return [NSString stringWithFormat:@"%@-%d", campaign.id, resourceType];

@@ -68,7 +68,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 }
 
 - (void)_processCampaignDownloadData {
-
+  
   if (self.campaignDownloadData == nil) {
     dispatch_async(dispatch_get_main_queue(), ^(void) {
       [self.delegate campaignManagerCampaignDataFailed];
@@ -124,7 +124,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       if ([jsonDictionary objectForKey:kUnityAdsWebViewDataParamSdkIsCurrentKey] != nil) {
         [[UnityAdsProperties sharedInstance] setSdkIsCurrent:[[jsonDictionary objectForKey:kUnityAdsWebViewDataParamSdkIsCurrentKey] boolValue]];
       }
-
+      
       NSString *gamerId = [jsonDictionary objectForKey:kUnityAdsGamerIDKey];
       
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
@@ -178,7 +178,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 		NSURL *videoURL = [cacheManager localURLFor:ResourceTypeTrailerVideo ofCampaign:campaign];
     if ([cacheManager campaignExistsInQueue:campaign withResourceType:ResourceTypeTrailerVideo]) {
       UALOG_DEBUG(@"Cancel caching video for campaign %@", campaign.id);
-      [cacheManager cancelCacheForCampaign:campaign withResourceType:ResourceTypeTrailerVideo];
+      [cacheManager cancelAllDownloads];
     }
 		if (![cacheManager is:ResourceTypeTrailerVideo cachedForCampaign:campaign])
     {
@@ -192,16 +192,18 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 }
 
 - (void)cacheNextCampaignAfter:(UnityAdsCampaign *)currentCampaign {
-  __block NSUInteger currentIndex = 0;
-  [self.campaigns enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
-    if ([campaign.id isEqualToString:currentCampaign.id]) {
-      currentIndex = idx + 1;
-      *stop = YES;
+  @synchronized(self.campaigns) {
+    __block NSUInteger currentIndex = 0;
+    [self.campaigns enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
+      if ([campaign.id isEqualToString:currentCampaign.id]) {
+        currentIndex = idx + 1;
+        *stop = YES;
+      }
+    }];
+    
+    if (currentIndex <= self.campaigns.count - 1) {
+      [[UnityAdsCacheManager sharedInstance] cache:ResourceTypeTrailerVideo forCampaign:self.campaigns[currentIndex]];
     }
-  }];
-  
-  if (currentIndex <= self.campaigns.count - 1) {
-    [[UnityAdsCacheManager sharedInstance] cache:ResourceTypeTrailerVideo forCampaign:self.campaigns[currentIndex]];
   }
 }
 
