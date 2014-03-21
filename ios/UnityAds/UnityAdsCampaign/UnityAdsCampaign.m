@@ -161,7 +161,6 @@
   }
 
   NSString *customClickURLString = [data objectForKey:kUnityAdsCampaignCustomClickURLKey];
-  if (customClickURLString == nil) failedData = true;
   UAAssertV([customClickURLString isKindOfClass:[NSString class]], nil);
   
   if (customClickURLString != nil && [customClickURLString length] > 4) {
