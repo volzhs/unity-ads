@@ -138,10 +138,12 @@ public class UnityAdsWebView extends WebView {
 				// Basic data
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_CAMPAIGNDATA_KEY, data);
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_PLATFORM_KEY, "android");
-				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_DEVICEID_KEY, UnityAdsDevice.getAndroidId());
+				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_DEVICEID_KEY, UnityAdsDevice.getAndroidId(true));
 				
-				if (!UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN.equals(UnityAdsDevice.getAndroidId()))
-					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_ANDROIDID_KEY, UnityAdsDevice.getAndroidId());
+				if (!UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN.equals(UnityAdsDevice.getAndroidId(false))) {
+					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_ANDROIDID_KEY, UnityAdsDevice.getAndroidId(true));
+					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_RAWANDROIDID_KEY, UnityAdsDevice.getAndroidId(false));
+				}
 
 				if (!UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN.equals(UnityAdsDevice.getAndroidSerial()))
 					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SERIALID_KEY, UnityAdsDevice.getAndroidSerial());

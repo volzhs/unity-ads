@@ -35,15 +35,20 @@ public class UnityAdsDevice {
 	}
 
 	@SuppressLint("DefaultLocale")
-	public static String getAndroidId () {
+	public static String getAndroidId (boolean md5hashed) {
 		String androidID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		
 		try {
-			androidID = UnityAdsUtils.Md5(Secure.getString(UnityAdsProperties.getCurrentActivity().getContentResolver(), Secure.ANDROID_ID));
-			androidID = androidID.toLowerCase();
+			androidID = Secure.getString(UnityAdsProperties.getCurrentActivity().getContentResolver(), Secure.ANDROID_ID);
+
+			if(md5hashed) {
+				androidID = UnityAdsUtils.Md5(androidID);
+				androidID = androidID.toLowerCase();
+			}
 		}
 		catch (Exception e) {
 			UnityAdsUtils.Log("Problems fetching androidId: " + e.getMessage(), UnityAdsDevice.class);
+			return UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		}
 		
 		return androidID;
