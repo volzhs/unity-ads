@@ -22,6 +22,10 @@
   
   [super enterState:options];
   
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    [[UnityAdsCampaignManager sharedInstance] cacheNextCampaignAfter:[[UnityAdsCampaignManager sharedInstance] selectedCampaign]];
+  });
+  
   if (![[[[UnityAdsWebAppController sharedInstance] webView] superview] isEqual:[[UnityAdsMainViewController sharedInstance] view]]) {
     [[[UnityAdsMainViewController sharedInstance] view] addSubview:[[UnityAdsWebAppController sharedInstance] webView]];
     [[[UnityAdsWebAppController sharedInstance] webView] setFrame:[[UnityAdsMainViewController sharedInstance] view].bounds];
