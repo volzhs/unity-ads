@@ -109,7 +109,15 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		}
 	}
 
-	
+	public boolean isCampaignCached(UnityAdsCampaign campaign) {
+		return UnityAdsUtils.isFileInCache(campaign.getVideoFilename());
+	}
+
+	public void cacheNextVideo(UnityAdsCampaign campaign) {
+		UnityAdsCampaignHandler campaignHandler = new UnityAdsCampaignHandler(campaign);
+		campaignHandler.downloadCampaign();
+	}
+
 	// EVENT METHDOS
 	
 	@Override

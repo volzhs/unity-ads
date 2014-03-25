@@ -202,9 +202,19 @@ public class UnityAds implements IUnityAdsCacheListener,
 				currentZone.mergeOptions(options);
 				
 				if (currentZone.noOfferScreen()) {
-					if (webdata.getViewableVideoPlanCampaigns().size() > 0) {
-						UnityAdsCampaign selectedCampaign = webdata.getViewableVideoPlanCampaigns().get(0);
+					ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
+
+					if (viewableCampaigns.size() > 0) {
+						UnityAdsCampaign selectedCampaign = viewableCampaigns.get(0);
 						UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
+
+						if(viewableCampaigns.size() > 1) {
+							UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
+
+							if(cachemanager.isCampaignCached(selectedCampaign) && !cachemanager.isCampaignCached(nextCampaign) && nextCampaign.allowCacheVideo()) {
+								cachemanager.cacheNextVideo(nextCampaign);
+							}
+						}
 					}
 				}
 

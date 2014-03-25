@@ -79,7 +79,19 @@ public class UnityAdsCampaign {
 		}
 		return false;
 	}
-	
+
+	public Boolean allowCacheVideo () {
+		if (checkDataIntegrity()) {
+			try {
+				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOW_CACHE_KEY);
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("allowCacheVideo: key not found for campaign: " + getCampaignId() + ", returning false", this);
+			}			
+		}
+		return false;
+	}
+
 	public Boolean shouldBypassAppSheet () {
 		if (checkDataIntegrity()) {
 			try {

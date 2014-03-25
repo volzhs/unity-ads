@@ -83,7 +83,24 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		}
 		*/
 	}
-		
+
+	public void downloadCampaign() {
+		if (!UnityAdsUtils.isFileInCache(_campaign.getVideoFilename()) && UnityAdsUtils.canUseExternalStorage()) {
+			if (!hasDownloads())
+				UnityAdsDownloader.addListener(this);
+			
+			addCampaignToDownloads();			
+		}
+		else if (!isFileOk(_campaign.getVideoFilename()) && UnityAdsUtils.canUseExternalStorage()) {
+			if (!hasDownloads())
+				UnityAdsDownloader.addListener(this);
+
+			UnityAdsUtils.removeFile(_campaign.getVideoFilename());
+			UnityAdsDownloader.addListener(this);
+			addCampaignToDownloads();
+		}		
+	}
+
 	public void clearData () {
 		if (_handlerListener != null)
 			_handlerListener = null;
