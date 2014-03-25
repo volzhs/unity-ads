@@ -350,16 +350,16 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	public void onVideoHidden() {
 		Map<String, Object> values = null;
 		values = new HashMap<String, Object>();
-		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, videoplayerview.getBufferingDuration());
+		if(videoplayerview != null) {
+			values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, videoplayerview.getBufferingDuration());
+		}
 		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_HIDDEN);
 		UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);
 
 		if (videoplayerview != null) {
 			videoplayerview.setKeepScreenOn(false);
+			videoplayerview = null;
 		}
-
-		removeFromMainView(videoplayerview);
-		videoplayerview = null;
 
 		setViewState(UnityAdsMainViewState.WebView);
 		UnityAdsProperties.getCurrentActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
