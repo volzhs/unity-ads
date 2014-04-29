@@ -8,7 +8,7 @@ public class UnityAdsConstants {
 	public static final String PENDING_REQUESTS_FILENAME = "pendingrequests.dat";
 
 	/* Unity Ads */
-	public static final String UNITY_ADS_VERSION = "1100";
+	public static final String UNITY_ADS_VERSION = "1200";
 	public static final String UNITY_ADS_REQUEST_METHOD_POST = "POST";
 	public static final String UNITY_ADS_REQUEST_METHOD_GET = "GET";
 	
