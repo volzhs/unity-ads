@@ -320,8 +320,10 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
 		
-		UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
-		UnityAdsProperties.SELECTED_CAMPAIGN = null;
+		if(UnityAdsProperties.SELECTED_CAMPAIGN != null) {
+			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
+			UnityAdsProperties.SELECTED_CAMPAIGN = null;
+		}
 	}
 	
 	public void onVideoSkip () {

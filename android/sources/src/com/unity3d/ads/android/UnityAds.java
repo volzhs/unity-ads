@@ -818,7 +818,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if(_refreshAfterShowAds) {
 			_refreshAfterShowAds = false;
 			UnityAdsUtils.Log("Starting delayed ad plan refresh", this);
-			webdata.initCampaigns();
+			if(webdata != null) {
+				webdata.initCampaigns();
+			}
 			return;
 		}
 
@@ -921,10 +923,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 											UnityAdsProperties.getCurrentActivity().finish();
 										}
 										
-										UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-										if (!currentZone.openAnimated()) {
-											UnityAdsProperties.getCurrentActivity().overridePendingTransition(0, 0);
-										}	
+										if(UnityAdsWebData.getZoneManager() != null) {
+											UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+											if (!currentZone.openAnimated()) {
+												UnityAdsProperties.getCurrentActivity().overridePendingTransition(0, 0);
+											}	
+										}
 										
 										_showingAds = false;
 
