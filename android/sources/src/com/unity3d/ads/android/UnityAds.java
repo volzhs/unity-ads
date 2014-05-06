@@ -65,6 +65,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static UnityAdsMainView mainview = null;
 	
 	// Temporary data
+	private boolean _instanceInitialized = false;
 	private boolean _initialized = false;
 	private boolean _showingAds = false;
 	private boolean _adsReadySent = false;
@@ -617,7 +618,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private void init (final Activity activity, String gameId, IUnityAdsListener listener) {
-		if (_initialized) return; 
+		if (instance != null && instance._instanceInitialized) return;
 		
 		if(gameId.length() == 0) {
 			throw new IllegalArgumentException("gameId is empty");
@@ -646,6 +647,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		cachemanager.setDownloadListener(this);
 		webdata = new UnityAdsWebData();
 		webdata.setWebDataListener(this);
+		
+		_instanceInitialized = true;
 
 		new Thread(new Runnable() {
 			public void run() {
