@@ -38,6 +38,7 @@ public class UnityAdsWebData {
 	private ArrayList<UnityAdsUrlLoader> _urlLoaders = null;
 	private ArrayList<UnityAdsUrlLoader> _failedUrlLoaders = null;
 	private UnityAdsUrlLoader _currentLoader = null;
+	private Object _urlLoaderLock = null;
 	private static UnityAdsZoneManager _zoneManager = null;
 	private int _totalUrlsSent = 0;
 	private int _totalLoadersCreated = 0;
@@ -97,7 +98,8 @@ public class UnityAdsWebData {
 		}
 	};
 	
-	public UnityAdsWebData () {	
+	public UnityAdsWebData () {
+		_urlLoaderLock = new Object();
 	}
 	
 	public void setWebDataListener (IUnityAdsWebDataListener listener) {
@@ -267,19 +269,21 @@ public class UnityAdsWebData {
 	}
 	
 	public void stopAllRequests () {
-		if (_urlLoaders != null) {
-			_urlLoaders.clear();
-			_urlLoaders = null;
-		}
+		synchronized(_urlLoaderLock) {
+			if (_urlLoaders != null) {
+				_urlLoaders.clear();
+				_urlLoaders = null;
+			}
 		
-		if (_failedUrlLoaders != null) {
-			_failedUrlLoaders.clear();
-			_failedUrlLoaders = null;
-		}
+			if (_failedUrlLoaders != null) {
+				_failedUrlLoaders.clear();
+				_failedUrlLoaders = null;
+			}
 		
-		if (_currentLoader != null) {
-			_currentLoader.cancel(true);
-			_currentLoader = null;
+			if (_currentLoader != null) {
+				_currentLoader.cancel(true);
+				_currentLoader = null;
+			}
 		}
 	}
 	
@@ -301,18 +305,22 @@ public class UnityAdsWebData {
 	/* INTERNAL METHODS */
 	
 	private void addLoader (UnityAdsUrlLoader loader) {
-		if (_urlLoaders == null)
-			_urlLoaders = new ArrayList<UnityAdsWebData.UnityAdsUrlLoader>();
+		synchronized(_urlLoaderLock) {
+			if (_urlLoaders == null)
+				_urlLoaders = new ArrayList<UnityAdsWebData.UnityAdsUrlLoader>();
 		
-		_urlLoaders.add(loader);
+			_urlLoaders.add(loader);
+		}
 	}
 	
-	private void startNextLoader () {		
-		if (_urlLoaders != null && _urlLoaders.size() > 0 && !_isLoading) {
-			UnityAdsUtils.Log("Starting next URL loader", this);
-			_isLoading = true;
-			_currentLoader = (UnityAdsUrlLoader)_urlLoaders.remove(0).execute();
-		}			
+	private void startNextLoader () {
+		synchronized(_urlLoaderLock) {
+			if (_urlLoaders != null && _urlLoaders.size() > 0 && !_isLoading) {
+				UnityAdsUtils.Log("Starting next URL loader", this);
+				_isLoading = true;
+				_currentLoader = (UnityAdsUrlLoader)_urlLoaders.remove(0).execute();
+			}
+		}
 	}
 	
 	private void urlLoadCompleted (UnityAdsUrlLoader loader) {
@@ -406,39 +414,41 @@ public class UnityAdsWebData {
 	}
 	
 	private void writeFailedUrl (UnityAdsUrlLoader loader) {
-		if (loader == null) return;
-		if (_failedUrlLoaders == null)
-			_failedUrlLoaders = new ArrayList<UnityAdsWebData.UnityAdsUrlLoader>();
-		
-		if (!_failedUrlLoaders.contains(loader)) {
-			_failedUrlLoaders.add(loader);
-		}
-		
-		JSONObject failedUrlsJson = new JSONObject();
-		JSONArray failedUrlsArray = new JSONArray();
-		
-		try {
-			JSONObject failedUrl = null;
-			for (UnityAdsUrlLoader failedLoader : _failedUrlLoaders) {
-				failedUrl = new JSONObject();
-				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_URL_KEY, failedLoader.getBaseUrl());
-				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_REQUESTTYPE_KEY, failedLoader.getRequestType());
-				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_METHODTYPE_KEY, failedLoader.getHTTPMethod());
-				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_BODY_KEY, failedLoader.getQueryParams());				
-				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_RETRIES_KEY, failedLoader.getRetries());
-				
-				failedUrlsArray.put(failedUrl);
+		synchronized(_urlLoaderLock) {
+			if (loader == null) return;
+			if (_failedUrlLoaders == null)
+				_failedUrlLoaders = new ArrayList<UnityAdsWebData.UnityAdsUrlLoader>();
+			
+			if (!_failedUrlLoaders.contains(loader)) {
+				_failedUrlLoaders.add(loader);
 			}
 			
-			failedUrlsJson.put("data", failedUrlsArray);
-		}
-		catch (Exception e) {
-			UnityAdsUtils.Log("Error collecting failed urls", this);
-		}
-		
-		if (_failedUrlLoaders != null && _failedUrlLoaders.size() > 0 && UnityAdsUtils.canUseExternalStorage()) {
-			File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
-			UnityAdsUtils.writeFile(pendingRequestFile, failedUrlsJson.toString());
+			JSONObject failedUrlsJson = new JSONObject();
+			JSONArray failedUrlsArray = new JSONArray();
+			
+			try {
+				JSONObject failedUrl = null;
+				for (UnityAdsUrlLoader failedLoader : _failedUrlLoaders) {
+					failedUrl = new JSONObject();
+					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_URL_KEY, failedLoader.getBaseUrl());
+					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_REQUESTTYPE_KEY, failedLoader.getRequestType());
+					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_METHODTYPE_KEY, failedLoader.getHTTPMethod());
+					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_BODY_KEY, failedLoader.getQueryParams());				
+					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_RETRIES_KEY, failedLoader.getRetries());
+					
+					failedUrlsArray.put(failedUrl);
+				}
+				
+				failedUrlsJson.put("data", failedUrlsArray);
+			}
+			catch (Exception e) {
+				UnityAdsUtils.Log("Error collecting failed urls", this);
+			}
+			
+			if (_failedUrlLoaders != null && _failedUrlLoaders.size() > 0 && UnityAdsUtils.canUseExternalStorage()) {
+				File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
+				UnityAdsUtils.writeFile(pendingRequestFile, failedUrlsJson.toString());
+			}
 		}
 	}
 	
