@@ -200,6 +200,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 			
 			if (currentZone != null) {
+				UnityAdsDownloader.stopAllDownloads();
+				
 				currentZone.mergeOptions(options);
 				
 				if (currentZone.noOfferScreen()) {
@@ -218,8 +220,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 						}
 					}
 				}
-
-				UnityAdsDownloader.stopAllDownloads();
 
 				_openRequestFromDeveloper = true;
 				_showingAds = true;
