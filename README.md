@@ -9,6 +9,8 @@ For iOS: https://developers.everyplay.com/documentation/GameAds-Integration-Guid
 
 For Android: https://developers.everyplay.com/documentation/GameAds-Integration-Guide-for-Android
 
+General documentation: https://developers.everyplay.com/documentation/GameAds-Publishers-Documentation
+
 Unity Ads SDK is licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html)
 
 In any issues, please file in issue with us in this Github repository, or log a ticket with us by emailing support@applifier.zendesk.com
