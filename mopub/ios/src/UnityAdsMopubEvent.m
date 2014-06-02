@@ -23,7 +23,7 @@ static NSString const * const kUnityAdsOptionZoneIdKey = @"zoneId";
 @synthesize delegate;
 
 - (void)requestInterstitialWithCustomEventInfo:(NSDictionary *)info {
-  [[UnityAds sharedInstance] setDebugMode:YES];
+  [[UnityAds sharedInstance] setDebugMode:TRUE];
   [[UnityAds sharedInstance] startWithGameId:[info objectForKey:@"gameId"]];
   [[UnityAds sharedInstance] setDelegate:self];
   
@@ -53,15 +53,13 @@ static NSString const * const kUnityAdsOptionZoneIdKey = @"zoneId";
     [_params setObject:videoUsesDeviceOrientationValue forKey:kUnityAdsOptionVideoUsesDeviceOrientation];
   }
   
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    if([[UnityAds sharedInstance] canShowAds]) {
-      [self.delegate interstitialCustomEvent:self didLoadAd:nil];
-    }
-  });
+  if([[UnityAds sharedInstance] canShow] && [[UnityAds sharedInstance] canShowAds]) {
+    [self.delegate interstitialCustomEvent:self didLoadAd:nil];
+  }
 }
 
 - (void)showInterstitialFromRootViewController:(UIViewController *)rootViewController {
-  if([[UnityAds sharedInstance] canShowAds]) {
+  if([[UnityAds sharedInstance] canShow] && [[UnityAds sharedInstance] canShowAds]) {
     [[UnityAds sharedInstance] setViewController:rootViewController showImmediatelyInNewController:NO];
     [[UnityAds sharedInstance] setZone:_zoneId];
     [[UnityAds sharedInstance] show:_params];
