@@ -15,7 +15,6 @@ import com.mopub.mobileads.MoPubErrorCode;
 public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUnityAdsListener {
 	
 	private CustomEventInterstitialListener listener = null;
-	private UnityAds unityAdsInstance = null;
 	private String gameId = null;
 	private String zoneId = null;
 	private Map<String, Object> options = null;
@@ -24,62 +23,75 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 	protected void loadInterstitial(Context context,
 			CustomEventInterstitialListener customEventInterstitialListener,
 			Map<String, Object> localExtras, Map<String, String> serverExtras) {
-		Log.i("UnityAds", "Got loadInterstitial");
-		this.listener = customEventInterstitialListener;
+		listener = customEventInterstitialListener;	
 		
-		// The gameId must be sent from the server-side
 		if(serverExtras.get("gameId") == null || !(serverExtras.get("gameId") instanceof String)) {
-			this.listener.onInterstitialFailed(MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
+			listener.onInterstitialFailed(MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
 			return;
 		}
 		
-		this.gameId = serverExtras.get("gameId");
-		this.zoneId = serverExtras.get("zoneId");
+		gameId = serverExtras.get("gameId");
+		zoneId = serverExtras.get("zoneId");
 		
-		this.options = new HashMap<String, Object>();
-		this.options.putAll(localExtras);
-		this.options.putAll(serverExtras);
+		options = new HashMap<String, Object>();
+		options.putAll(localExtras);
+		options.putAll(serverExtras);
 		
-		UnityAds.setDebugMode(true);
-		this.unityAdsInstance = new UnityAds((Activity)context, gameId, this);
-		
-		Log.d("UnityAds", "initialized");	
+		if(UnityAds.instance == null) {
+			new UnityAds((Activity)context, gameId, this);
+		} else {
+			UnityAds.instance.changeActivity((Activity)context);
+			UnityAds.instance.setListener(this);
+			listener.onInterstitialLoaded();
+		}		
 	}
 
 	@Override
 	protected void showInterstitial() {
-		if(this.unityAdsInstance.canShowAds()) {
-			this.unityAdsInstance.setZone(this.zoneId);			
-			this.unityAdsInstance.show(options);
+		if(UnityAds.instance.canShow() && UnityAds.instance.canShowAds()) {
+			UnityAds.instance.setZone(zoneId);			
+			UnityAds.instance.show(options);
+		} else {
+			listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);
 		}
 	}
 
 	@Override 
-	protected void onInvalidate() {}
+	protected void onInvalidate() {
+		Log.d("UnityAds", "onInvalidate");
+	}
 
 	@Override
 	public void onHide() {
-		this.listener.onInterstitialDismissed();
+		Log.d("UnityAds", "onHide");
+		listener.onInterstitialDismissed();
 	}
 
 	@Override
 	public void onShow() {
-		this.listener.onInterstitialShown();
+		Log.d("UnityAds", "onShow");
+		listener.onInterstitialShown();
 	}
 	
 	@Override
-	public void onVideoStarted() {}
+	public void onVideoStarted() {
+		Log.d("UnityAds", "onVideoStarted");
+	}
+	
 	@Override
-	public void onVideoCompleted(String rewardItemKey, boolean skipped) {}
+	public void onVideoCompleted(String rewardItemKey, boolean skipped) {
+		Log.d("UnityAds", "onVideoCompleted - " + rewardItemKey + " - " + skipped);
+	}
 
 	@Override
 	public void onFetchCompleted() {
 		Log.d("UnityAds", "onFetchCompleted");
-		this.listener.onInterstitialLoaded();
+		listener.onInterstitialLoaded();
 	}
 
 	@Override
 	public void onFetchFailed() {
-		this.listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);	
+		Log.d("UnityAds", "onFetchFailed");
+		listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);	
 	}
 }
