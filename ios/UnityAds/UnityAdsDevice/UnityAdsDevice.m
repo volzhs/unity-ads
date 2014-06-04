@@ -21,6 +21,8 @@
 #import <dlfcn.h>
 #import <mach-o/dyld.h>
 
+#import <AdSupport/AdSupport.h>
+
 /* The encryption info struct and constants are missing from the iPhoneSimulator SDK,
  * but not from the iPhoneOS or Mac OS X SDKs. Since one doesn't ever ship a Simulator
  * binary, we'll just provide the definitions here.
@@ -138,56 +140,26 @@ int main(int argc, char *argv[]);
 }
 
 + (NSString *)advertisingIdentifier {
-	NSString *identifier = nil;
-	
-	Class advertisingManagerClass = NSClassFromString(@"ASIdentifierManager");
-	if ([advertisingManagerClass respondsToSelector:@selector(sharedManager)]) {
-		id advertisingManager = [[advertisingManagerClass class] performSelector:@selector(sharedManager)];
-		BOOL enabled = YES; // Not sure what to do with this value.
-    
-		if ([advertisingManager respondsToSelector:@selector(isAdvertisingTrackingEnabled)]) {
-			NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[advertisingManagerClass instanceMethodSignatureForSelector:@selector(isAdvertisingTrackingEnabled)]];
-			[invocation setSelector:@selector(isAdvertisingTrackingEnabled)];
-			[invocation setTarget:advertisingManager];
-			[invocation invoke];
-			[invocation getReturnValue:&enabled];
-		}
-		
-		//UALOG_DEBUG(@"Ad tracking %@.", enabled ? @"enabled" : @"disabled");
-    
-		if ([advertisingManager respondsToSelector:@selector(advertisingIdentifier)]) {
-			id advertisingIdentifier = [advertisingManager performSelector:@selector(advertisingIdentifier)];
-			if (advertisingIdentifier != nil && [advertisingIdentifier respondsToSelector:@selector(UUIDString)]) {
-				id uuid = [advertisingIdentifier performSelector:@selector(UUIDString)];
-				if ([uuid isKindOfClass:[NSString class]])
-					identifier = uuid;
-			}
-		}
-	}
-	
-	return identifier;
+  NSString *identifier = nil;
+
+  Class advertisingManagerClass = NSClassFromString(@"ASIdentifierManager");
+
+  if (advertisingManagerClass != nil) {
+    identifier = [[[advertisingManagerClass sharedManager] advertisingIdentifier] UUIDString];
+  }
+
+  return identifier;
 }
 
 + (BOOL)canUseTracking {
   Class advertisingManagerClass = NSClassFromString(@"ASIdentifierManager");
-	if ([advertisingManagerClass respondsToSelector:@selector(sharedManager)])
-	{
-		id advertisingManager = [[advertisingManagerClass class] performSelector:@selector(sharedManager)];
-		BOOL enabled = YES; // Not sure what to do with this value.
-    
-		if ([advertisingManager respondsToSelector:@selector(isAdvertisingTrackingEnabled)])
-		{
-			NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[advertisingManagerClass instanceMethodSignatureForSelector:@selector(isAdvertisingTrackingEnabled)]];
-			[invocation setSelector:@selector(isAdvertisingTrackingEnabled)];
-			[invocation setTarget:advertisingManager];
-			[invocation invoke];
-			[invocation getReturnValue:&enabled];
-      
-      return enabled;
-		}
+  BOOL enabled = YES;
+
+  if (advertisingManagerClass != nil) {
+    enabled = [[advertisingManagerClass sharedManager] isAdvertisingTrackingEnabled];
   }
-  
-  return YES;
+
+  return enabled;
 }
 
 + (NSString *)macAddress {
