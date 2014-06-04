@@ -11,7 +11,7 @@
 #import "../UnityAds.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 
-NSString * const kUnityAdsVersion = @"1202";
+NSString * const kUnityAdsVersion = @"1206";
 
 @implementation UnityAdsProperties
 

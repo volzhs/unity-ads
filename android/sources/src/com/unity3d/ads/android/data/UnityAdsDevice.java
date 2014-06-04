@@ -6,12 +6,10 @@ import java.util.Collections;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
 import com.unity3d.ads.android.UnityAdsUtils;
@@ -19,9 +17,6 @@ import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsDevice {
-
-	public static Object ADVERTISING_TRACKING_INFO = null;
-	
 	public static String getSoftwareVersion () {
 		return "" + Build.VERSION.SDK_INT;
 	}
@@ -29,99 +24,19 @@ public class UnityAdsDevice {
 	public static String getHardwareVersion () {
 		return Build.MANUFACTURER + " " + Build.MODEL;
 	}
-	
+
 	public static int getDeviceType () {
 		return UnityAdsProperties.getCurrentActivity().getResources().getConfiguration().screenLayout;
 	}
 
-	@SuppressLint("DefaultLocale")
-	public static String getAndroidId (boolean md5hashed) {
-		String androidID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		
-		try {
-			androidID = Secure.getString(UnityAdsProperties.getCurrentActivity().getContentResolver(), Secure.ANDROID_ID);
-
-			if(md5hashed) {
-				androidID = UnityAdsUtils.Md5(androidID);
-				androidID = androidID.toLowerCase();
-			}
-		}
-		catch (Exception e) {
-			UnityAdsUtils.Log("Problems fetching androidId: " + e.getMessage(), UnityAdsDevice.class);
-			return UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		}
-		
-		return androidID;
-	}
-	
-	public static String getAndroidSerial () {
-		String androidSerial = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		
-		try {
-	        Class<?> c = Class.forName("android.os.SystemProperties");
-	        Method get = c.getMethod("get", String.class);
-	        androidSerial = (String) get.invoke(c, "ro.serialno");
-	        androidSerial = UnityAdsUtils.Md5(androidSerial);
-	        androidSerial = androidSerial.toLowerCase();
-	    } 
-		catch (Exception e) {
-	    }
-		
-		return androidSerial;
-	}
-	
-    public static String getMacAddress() {
-		NetworkInterface intf = null;
-		intf = getInterfaceFor("eth0");		
-		if (intf == null) {
-			intf = getInterfaceFor("wlan0");
-		}
-		
-		return buildMacAddressFromInterface(intf);
-    }
-    
-    public static void fetchAdvertisingTrackingInfo(final Activity context) {
-    	try {
-    		Class<?> GooglePlayServicesUtil = Class.forName("com.google.android.gms.common.GooglePlayServicesUtil");
-    		Method isGooglePlayServicesAvailable = GooglePlayServicesUtil.getMethod("isGooglePlayServicesAvailable", Context.class);
-    		if(isGooglePlayServicesAvailable.invoke(null, context).equals(0)) { // ConnectionResult.SUCCESS
-    			Class<?> AdvertisingClientId = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient");
-        		Method getAdvertisingIdInfo = AdvertisingClientId.getMethod("getAdvertisingIdInfo", Context.class);
-        		UnityAdsDevice.ADVERTISING_TRACKING_INFO = getAdvertisingIdInfo.invoke(null, context);
-    		} else {
-    			UnityAdsUtils.Log("Unable to fetch advertising tracking info", UnityAdsDevice.class);
-    		}  		
-    	} catch(Exception e) {
-    		UnityAdsUtils.Log("Warning! Google Play Services is needed to access Android advertising identifier. Please add Google Play Services to your game.", UnityAdsDevice.class);
-    	}
-    }
-    
     public static String getAdvertisingTrackingId() {
-    	try {
-    		if(UnityAdsDevice.ADVERTISING_TRACKING_INFO != null) {
-        		Class<?> Info = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient$Info");
-        		Method getId = Info.getMethod("getId");
-        		return (String)getId.invoke(UnityAdsDevice.ADVERTISING_TRACKING_INFO);
-        	}
-    		return null;
-    	} catch(Exception e) {
-    		return null;
-    	}
+    	return UnityAdsAdvertisingID.getAdvertisingTrackingId();
     }
-    
+
     public static boolean isLimitAdTrackingEnabled() {
-    	try {
-    		if(UnityAdsDevice.ADVERTISING_TRACKING_INFO != null) {
-        		Class<?> Info = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient$Info");
-        		Method isLimitAdTrackingEnabled = Info.getMethod("isLimitAdTrackingEnabled");
-        		return (Boolean)isLimitAdTrackingEnabled.invoke(UnityAdsDevice.ADVERTISING_TRACKING_INFO);
-        	}
-    		return false;
-    	} catch(Exception e) {
-    		return false;
-    	}
+    	return UnityAdsAdvertisingID.getLimitedAdTracking();
     }
-	
+
     @SuppressLint("DefaultLocale")
 	public static String buildMacAddressFromInterface (NetworkInterface intf) {
 		byte[] mac = null;
