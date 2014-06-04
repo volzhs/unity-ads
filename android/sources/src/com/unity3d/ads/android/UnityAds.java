@@ -24,7 +24,7 @@ import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
-import com.unity3d.ads.android.data.UnityAdsAdvertisingID;
+import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
@@ -652,7 +652,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 		new Thread(new Runnable() {
 			public void run() {
-				UnityAdsAdvertisingID.init(activity);
+				UnityAdsDevice.fetchAdvertisingTrackingInfo(activity);
 				if (webdata.initCampaigns()) {
 					_initialized = true;
 				}
