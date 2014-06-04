@@ -147,7 +147,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
   if ([keyPath isEqual:@"currentItem.status"]) {
-    UALOG_DEBUG(@"VIDEOPLAYERITEM_STATUS: %li", self.currentItem.status);
+    UALOG_DEBUG(@"VIDEOPLAYERITEM_STATUS: %li", (long)self.currentItem.status);
     
     AVPlayerItemStatus playerItemStatus = self.currentItem.status;
     if (playerItemStatus == AVPlayerItemStatusReadyToPlay) {
