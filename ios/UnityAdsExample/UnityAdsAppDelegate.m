@@ -21,16 +21,11 @@
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+  self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
 	if ([self.window respondsToSelector:@selector(setRootViewController:)]) {
-        NSString *xibName = @"UnityAdsViewController";
-        
-        /*
-        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPhone) {
-            xibName = @"UnityAds_iPad";
-        }*/
-        
+    NSString *xibName = @"UnityAdsViewController";
+
 		self.viewController = [[UnityAdsViewController alloc] initWithNibName:xibName bundle:nil];
 		self.window.rootViewController = self.viewController;
 	}
@@ -39,17 +34,17 @@
 		view.backgroundColor = [UIColor greenColor];
 		[self.window addSubview:view];
 	}
-	
-    [self.window makeKeyAndVisible];
-    return YES;
+
+  [self.window makeKeyAndVisible];
+  return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [self.viewController.loadingImage setImage:[UIImage imageNamed:@"unityads_loading"]];
-    [self.viewController.openButton setEnabled:NO];
+  [self.viewController.loadingImage setImage:[UIImage imageNamed:@"unityads_loading"]];
+  [self.viewController.openButton setEnabled:NO];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
