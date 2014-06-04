@@ -29,6 +29,7 @@ import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
+import com.unity3d.ads.android.view.UnityAdsFullscreenActivity;
 import com.unity3d.ads.android.view.UnityAdsMainView;
 import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewAction;
 import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewState;
@@ -662,9 +663,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private void close () {
 		cancelPauseScreenTimer();
-		if(UnityAdsProperties.getCurrentActivity() != null) {
+		if(UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
 			UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
 			UnityAdsProperties.getCurrentActivity().runOnUiThread(closeRunner);
+		}
+		else {
+			UnityAdsUtils.Log("Did not close", this);
 		}
 	}
 	
@@ -915,21 +919,24 @@ public class UnityAds implements IUnityAdsCacheListener,
 					testTimer.schedule(new TimerTask() {
 						@Override
 						public void run() {
-							if(UnityAdsProperties.getCurrentActivity() != null) {
-								UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {
+ 							final Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+ 							if(currentActivity != null) {
+ 								currentActivity.runOnUiThread(new Runnable() {
 									@Override
 									public void run() {
 										if(mainview != null) {
 											mainview.closeAds(_data);
 										}
-										if(UnityAdsProperties.getCurrentActivity() != null) {
-											UnityAdsProperties.getCurrentActivity().finish();
+ 										if(currentActivity != null &&
+ 										   currentActivity instanceof UnityAdsFullscreenActivity &&
+ 										   !currentActivity.isFinishing() && !UnityAdsProperties.isActivityDestroyed(currentActivity)) {
+ 											currentActivity.finish();
 										}
 										
 										if(UnityAdsWebData.getZoneManager() != null) {
 											UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 											if (!currentZone.openAnimated()) {
-												UnityAdsProperties.getCurrentActivity().overridePendingTransition(0, 0);
+ 												currentActivity.overridePendingTransition(0, 0);
 											}	
 										}
 										

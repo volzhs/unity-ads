@@ -1,6 +1,7 @@
 package com.unity3d.ads.android.properties;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -120,10 +121,11 @@ public class UnityAdsProperties {
 	}
 	
 	public static Activity getCurrentActivity() {
-		if(CURRENT_ACTIVITY != null) {
+		if(CURRENT_ACTIVITY != null && CURRENT_ACTIVITY.get() != null && !CURRENT_ACTIVITY.get().isFinishing() && !isActivityDestroyed(CURRENT_ACTIVITY.get())) {
 			if(CURRENT_ACTIVITY.get() != null) {
 				return CURRENT_ACTIVITY.get();
-			} else {
+			}
+			else {
 				return BASE_ACTIVITY.get();
 			}
 		}
@@ -142,5 +144,34 @@ public class UnityAdsProperties {
 		if (params.containsKey("testJavaScript")) {
 			TEST_JAVASCRIPT = params.get("testJavaScript");
 		}
+	}
+
+	private static boolean _seenIsDestroyed = false;
+	public static boolean isActivityDestroyed(Activity activity) {
+		boolean isDestroyed = false;
+		Method isDestroyedMethod = null;
+
+		try {
+			isDestroyedMethod = Activity.class.getMethod("isDestroyed");
+		}
+		catch (Exception e) {
+			if (_seenIsDestroyed == false) {
+				_seenIsDestroyed = true;
+				UnityAdsUtils.Log("Couldn't get isDestroyed -method", UnityAdsProperties.class);
+			}
+		}
+
+		if (isDestroyedMethod != null) {
+			if (activity != null) {
+				try {
+					isDestroyed = (Boolean) isDestroyedMethod.invoke(activity);
+				}
+				catch (Exception e) {
+					UnityAdsUtils.Log("Error running isDestroyed -method", UnityAdsProperties.class);
+				}
+			}
+		}
+
+		return isDestroyed;
 	}
 }

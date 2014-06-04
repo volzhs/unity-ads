@@ -8,5 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="/Users/rikshot/unity-ads/android/sources/jar/unity-ads-android.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
