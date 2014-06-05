@@ -68,7 +68,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 					public void run() {
 						UnityAds.setTestMode(_testMode);
 						UnityAds.setDebugMode(_debugMode);
-						_unityAds = new UnityAds(_startupActivity, _gameId, listener);
+						UnityAds.init(_startupActivity, _gameId, listener);
 					}
 				});
 			}
@@ -118,10 +118,11 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return _unityAds.canShow();
 	}
 	
+	/*
 	public void stopAll () {
 		if (_unityAds == null) return;
 		_unityAds.stopAll();
-	}
+	}*/
 	
 	public boolean hasMultipleRewardItems () {
 		if (_unityAds == null) return false;

@@ -23,6 +23,7 @@ import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
+import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
 import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
@@ -44,12 +45,14 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 
 	// Listener
 	private IUnityAdsMainViewListener _listener = null;
+	private IUnityAdsWebBridgeListener _webBridgeListener = null;
 	private UnityAdsMainViewState _currentState = UnityAdsMainViewState.WebView;
 
 	
-	public UnityAdsMainView(Context context, IUnityAdsMainViewListener listener) {
+	public UnityAdsMainView(Context context, IUnityAdsMainViewListener listener, IUnityAdsWebBridgeListener webBridgeListener) {
 		super(context);
 		_listener = listener;
+		_webBridgeListener = webBridgeListener;
 		init();
 	}
 	
@@ -178,7 +181,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	}
 	
 	private void createWebView () {
-		webview = new UnityAdsWebView(UnityAdsProperties.getCurrentActivity(), this, new UnityAdsWebBridge(UnityAds.instance));
+		webview = new UnityAdsWebView(UnityAdsProperties.getCurrentActivity(), this, new UnityAdsWebBridge(_webBridgeListener));
 		webview.setId(1003);
 		addView(webview, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 	}

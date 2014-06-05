@@ -64,17 +64,6 @@
             	 android:height="36dp"
             	 android:visibility="invisible"/>
     
-    <ImageView android:id="@+id/unityads_status"
-         	   android:layout_alignParentBottom="true" 
-        	   android:layout_centerHorizontal="true"
-        	   android:layout_width="wrap_content" 
-               android:layout_height="wrap_content"
-               android:src="@drawable/unityads_loading"
-               android:contentDescription="@+string/loadingstatus"
-               android:layout_marginBottom="59dp"
-               android:visibility="invisible"
-               />
-    
     <TextView android:width="240dp"
               android:height="240dp"
               android:gravity="center"
@@ -137,4 +126,16 @@
             	  android:id="@+id/options_id_data"/>
         
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/unityads_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_above="@+id/startAdsButton"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@+string/loadingstatus"
+        android:src="@drawable/unityads_loading"
+        android:visibility="invisible" />
+
 </RelativeLayout>

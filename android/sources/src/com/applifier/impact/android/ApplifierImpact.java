@@ -25,9 +25,6 @@ public class ApplifierImpact implements IUnityAdsListener {
 	// Impact components
 	public static ApplifierImpact instance = null;
 	
-	// Temporary data
-	private boolean _instanceInitialized = false;
-	
 	// Listeners
 	private IApplifierImpactListener _impactListener = null;
 	
@@ -43,11 +40,7 @@ public class ApplifierImpact implements IUnityAdsListener {
 	private void init (final Activity activity, String gameId, IApplifierImpactListener listener) {
 		instance = this;
 		setImpactListener(listener);
-
-		if (!_instanceInitialized && UnityAds.instance == null) {
-			_instanceInitialized = true;
-			new UnityAds(activity, gameId, this);
-		}
+		UnityAds.init(activity, gameId, this);
 	}
 
 	
@@ -89,35 +82,35 @@ public class ApplifierImpact implements IUnityAdsListener {
 	}
 	
 	public void changeActivity (Activity activity) {
-		UnityAds.instance.changeActivity(activity);
+		UnityAds.changeActivity(activity);
 	}
 	
 	public boolean hideImpact () {
-		return UnityAds.instance.hide();
+		return UnityAds.hide();
 	}
 	
 	public boolean setZone(String zoneId) {
-		return UnityAds.instance.setZone(zoneId);
+		return UnityAds.setZone(zoneId);
 	}
 	
 	public boolean setZone(String zoneId, String rewardItemKey) {
-		return UnityAds.instance.setZone(zoneId, rewardItemKey);
+		return UnityAds.setZone(zoneId, rewardItemKey);
 	}
 	
 	public boolean showImpact (Map<String, Object> options) {
-		return UnityAds.instance.show(options);
+		return UnityAds.show(options);
 	}
 	
 	public boolean showImpact () {
-		return UnityAds.instance.show();
+		return UnityAds.show();
 	}
 	
 	public boolean canShowCampaigns () {
-		return UnityAds.instance.canShowAds();
+		return UnityAds.canShowAds();
 	}
 	
 	public boolean canShowImpact () {
-		return UnityAds.instance.canShow();
+		return UnityAds.canShow();
 	}
 
 	public void stopAll () {
@@ -127,31 +120,31 @@ public class ApplifierImpact implements IUnityAdsListener {
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
 	
 	public boolean hasMultipleRewardItems () {
-		return UnityAds.instance.hasMultipleRewardItems();
+		return UnityAds.hasMultipleRewardItems();
 	}
 	
 	public ArrayList<String> getRewardItemKeys () {
-		return UnityAds.instance.getRewardItemKeys();
+		return UnityAds.getRewardItemKeys();
 	}
 	
 	public String getDefaultRewardItemKey () {
-		return UnityAds.instance.getDefaultRewardItemKey();
+		return UnityAds.getDefaultRewardItemKey();
 	}
 	
 	public String getCurrentRewardItemKey () {
-		return UnityAds.instance.getCurrentRewardItemKey();
+		return UnityAds.getCurrentRewardItemKey();
 	}
 	
 	public boolean setRewardItemKey (String rewardItemKey) {
-		return UnityAds.instance.setRewardItemKey(rewardItemKey);
+		return UnityAds.setRewardItemKey(rewardItemKey);
 	}
 	
 	public void setDefaultRewardItemAsRewardItem () {
-		UnityAds.instance.setDefaultRewardItemAsRewardItem();
+		UnityAds.setDefaultRewardItemAsRewardItem();
 	}
 	
 	public Map<String, String> getRewardItemDetailsWithKey (String rewardItemKey) {
-		return UnityAds.instance.getRewardItemDetailsWithKey(rewardItemKey);
+		return UnityAds.getRewardItemDetailsWithKey(rewardItemKey);
 	}
 	
 	@Override

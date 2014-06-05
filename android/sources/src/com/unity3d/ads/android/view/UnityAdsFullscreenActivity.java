@@ -11,23 +11,15 @@ public class UnityAdsFullscreenActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onCreate()", this);
-    	
-    	if (UnityAds.instance != null)
-    		UnityAds.instance.changeActivity(this);
-    	else
-        	UnityAdsUtils.Log("onCreate() Unity Ads instance is NULL!", this);
+    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onCreate()", this);    	
+   		UnityAds.changeActivity(this);
     }
     
     @Override
     public void onResume () {
     	super.onResume();
     	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onResume()", this);
-    	
-    	if (UnityAds.instance != null)
-    		UnityAds.instance.changeActivity(this);
-    	else
-        	UnityAdsUtils.Log("onResume() Unity Ads instance is NULL!", this);
+   		UnityAds.changeActivity(this);
     }
     
     @Override

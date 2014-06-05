@@ -60,39 +60,43 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static final String UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION = "useDeviceOrientationForVideo";
 
 	// Unity Ads components
-	public static UnityAds instance = null;
 	public static UnityAdsCacheManager cachemanager = null;
 	public static UnityAdsWebData webdata = null;
 	public static UnityAdsMainView mainview = null;
 	
 	// Temporary data
-	private boolean _instanceInitialized = false;
-	private boolean _initialized = false;
-	private boolean _showingAds = false;
-	private boolean _adsReadySent = false;
-	private boolean _webAppLoaded = false;
-	private boolean _openRequestFromDeveloper = false;
-	private boolean _refreshAfterShowAds = false;
-	private AlertDialog _alertDialog = null;
+	private static boolean _initialized = false;
+	private static boolean _showingAds = false;
+	private static boolean _adsReadySent = false;
+	private static boolean _webAppLoaded = false;
+	private static boolean _openRequestFromDeveloper = false;
+	private static boolean _refreshAfterShowAds = false;
+	private static AlertDialog _alertDialog = null;
 		
-	private TimerTask _pauseScreenTimer = null;
-	private Timer _pauseTimer = null;
-	private TimerTask _campaignRefreshTimerTask = null;
-	private Timer _campaignRefreshTimer = null;
-	private long _campaignRefreshTimerDeadline = 0;
+	private static TimerTask _pauseScreenTimer = null;
+	private static Timer _pauseTimer = null;
+	private static TimerTask _campaignRefreshTimerTask = null;
+	private static Timer _campaignRefreshTimer = null;
+	private static long _campaignRefreshTimerDeadline = 0;
+	
+	private static UnityAds _instance = null;
 	
 	// Listeners
-	private IUnityAdsListener _adsListener = null;
+	private static IUnityAdsListener _adsListener = null;
 	
 	
+	/*
 	public UnityAds (Activity activity, String gameId) {
 		init(activity, gameId, null);
 	}
 	
 	public UnityAds (Activity activity, String gameId, IUnityAdsListener listener) {
 		init(activity, gameId, listener);
-	}
+	}*/
 
+	
+	private UnityAds () {
+	}
 	
 	/* PUBLIC STATIC METHODS */
 	
@@ -127,11 +131,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	/* PUBLIC METHODS */
 	
-	public void setListener (IUnityAdsListener listener) {
+	public static void setListener (IUnityAdsListener listener) {
 		_adsListener = listener;
 	}
 	
-	public void changeActivity (Activity activity) {
+	public static void changeActivity (Activity activity) {
 		if (activity == null) return;
 		
 		if (activity != null && !activity.equals(UnityAdsProperties.getCurrentActivity())) {
@@ -150,7 +154,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 					
 					if (_openRequestFromDeveloper) {
 						view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
-						UnityAdsUtils.Log("changeActivity: This open request is from the developer, setting start view", this);
+						UnityAdsDeviceLog.debug("This open request is from the developer, setting start view");
 					}
 					
 					if (view != null)
@@ -165,7 +169,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	public boolean hide () {
+	public static boolean hide () {
 		if (_showingAds) {
 			close();
 			return true;
@@ -174,7 +178,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 	
-	public boolean setZone(String zoneId) {
+	public static boolean setZone(String zoneId) {
 		if(!_showingAds) {
 			if(UnityAdsWebData.getZoneManager() == null) {
 				throw new IllegalStateException("Unable to set zone before campaigns are available");
@@ -185,7 +189,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 	
-	public boolean setZone(String zoneId, String rewardItemKey) {
+	public static boolean setZone(String zoneId, String rewardItemKey) {
 		if(!_showingAds && setZone(zoneId)) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 			if(currentZone.isIncentivized()) {
@@ -196,7 +200,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 	
-	public boolean show (Map<String, Object> options) {
+	public static boolean show (Map<String, Object> options) {
 		if (canShow()) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 			
@@ -233,11 +237,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 	
-	public boolean show () {
+	public static boolean show () {
 		return show(null);
 	}
 	
-	public boolean canShowAds () {
+	public static boolean canShowAds () {
 		return mainview != null && 
 			mainview.webview != null && 
 			mainview.webview.isWebAppLoaded() && 
@@ -247,7 +251,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
 	
-	public boolean canShow () {
+	public static boolean canShow () {
 		return !_showingAds && 
 			mainview != null && 
 			mainview.webview != null && 
@@ -258,8 +262,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 			webdata.getVideoPlanCampaigns().size() > 0;
 	}
 
-	public void stopAll () {
-		UnityAdsUtils.Log("stopAll()", this);
+	/*
+	public static void stopAll () {
+		UnityAdsDeviceLog.debug("This open request is from the developer, setting start view");
 		if (mainview != null && mainview.videoplayerview != null)
 			mainview.videoplayerview.clearVideoPlayer();
 		if (mainview != null && mainview.webview != null)
@@ -275,12 +280,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.BASE_ACTIVITY = null;
 		UnityAdsProperties.CURRENT_ACTIVITY = null;
 		UnityAdsProperties.SELECTED_CAMPAIGN = null;
-	}
-	
+	}*/	
 	
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
 	
-	public boolean hasMultipleRewardItems () {
+	public static boolean hasMultipleRewardItems () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if(zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
@@ -289,7 +293,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 	
-	public ArrayList<String> getRewardItemKeys () {
+	public static ArrayList<String> getRewardItemKeys () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if(zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
@@ -304,7 +308,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return null;
 	}
 	
-	public String getDefaultRewardItemKey () {
+	public static String getDefaultRewardItemKey () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if(zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
@@ -313,7 +317,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return null;
 	}
 	
-	public String getCurrentRewardItemKey () {
+	public static String getCurrentRewardItemKey () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if(zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
@@ -322,7 +326,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return null;
 	}
 	
-	public boolean setRewardItemKey (String rewardItemKey) {
+	public static boolean setRewardItemKey (String rewardItemKey) {
 		if (canShow()) {
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 			if(zone.isIncentivized()) {
@@ -333,7 +337,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 	
-	public void setDefaultRewardItemAsRewardItem () {
+	public static void setDefaultRewardItemAsRewardItem () {
 		if (canShow()) {
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 			if(zone.isIncentivized()) {
@@ -343,7 +347,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	public Map<String, String> getRewardItemDetailsWithKey (String rewardItemKey) {
+	public static Map<String, String> getRewardItemDetailsWithKey (String rewardItemKey) {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if(zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
@@ -352,7 +356,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				return rewardItem.getDetails();
 			}
 			else {
-				UnityAdsUtils.Log("Could not fetch reward item: " + rewardItemKey, this);
+				UnityAdsDeviceLog.info("Could not fetch reward item: " + rewardItemKey);
 			}
 		}
 		return null;
@@ -592,34 +596,34 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	/* PRIVATE METHODS */
 	
-	private void openPlayStoreAsIntent (String playStoreId) {
-		UnityAdsUtils.Log("Opening playstore activity with storeId: " + playStoreId, this);
+	private static void openPlayStoreAsIntent (String playStoreId) {
+		UnityAdsDeviceLog.debug("Opening playstore activity with storeId: " + playStoreId);
 		
 		if (UnityAdsProperties.getCurrentActivity() != null) {
 			try {
 				UnityAdsProperties.getCurrentActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + playStoreId)));
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Couldn't start PlayStore intent!", this);
+				UnityAdsDeviceLog.error("Couldn't start PlayStore intent!");
 			}
 		}
 	}
 	
-	private void openPlayStoreInBrowser (String url) {
-	    UnityAdsUtils.Log("Could not open PlayStore activity, opening in browser with url: " + url, this);
+	private static void openPlayStoreInBrowser (String url) {
+		UnityAdsDeviceLog.debug("Opening playStore in browser: " + url);
 	    
 		if (UnityAdsProperties.getCurrentActivity() != null) {
 			try {
 				UnityAdsProperties.getCurrentActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Couldn't start browser intent!", this);
+				UnityAdsDeviceLog.error("Couldn't start browser intent!");
 			}
 		}
 	}
 	
-	private void init (final Activity activity, String gameId, IUnityAdsListener listener) {
-		if (instance != null && instance._instanceInitialized) return;
+	public static void init (final Activity activity, String gameId, IUnityAdsListener listener) {
+		if (_instance != null || _initialized) return;
 		
 		if(gameId.length() == 0) {
 			throw new IllegalArgumentException("gameId is empty");
@@ -633,23 +637,25 @@ public class UnityAds implements IUnityAdsCacheListener,
 				throw new IllegalArgumentException("gameId does not parse as an integer");
 			}
 		}
-		
-		instance = this;
+
+		if (_instance == null) {
+			_instance = new UnityAds();
+		}
+
 		setListener(listener);
 		
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
 		UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
 		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
 		
-		UnityAdsUtils.Log("Is debuggable=" + UnityAdsUtils.isDebuggable(activity), this);
-		
+		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable(activity));
 		
 		cachemanager = new UnityAdsCacheManager();
-		cachemanager.setDownloadListener(this);
+		cachemanager.setDownloadListener(_instance);
 		webdata = new UnityAdsWebData();
-		webdata.setWebDataListener(this);
+		webdata.setWebDataListener(_instance);
 		
-		_instanceInitialized = true;
+		//_instanceInitialized = true;
 
 		new Thread(new Runnable() {
 			public void run() {
@@ -661,18 +667,18 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}).start();	
 	}
 	
-	private void close () {
+	private static void close () {
 		cancelPauseScreenTimer();
 		if(UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
 			UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
 			UnityAdsProperties.getCurrentActivity().runOnUiThread(closeRunner);
 		}
 		else {
-			UnityAdsUtils.Log("Did not close", this);
+			UnityAdsDeviceLog.debug("Did not close");
 		}
 	}
 	
-	private void open (String view) {
+	private static void open (String view) {
 		Boolean dataOk = true;			
 		JSONObject data = new JSONObject();
 		
@@ -691,10 +697,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 			dataOk = false;
 		}
 
-		UnityAdsUtils.Log("open() dataOk: " + dataOk, this);
+		UnityAdsDeviceLog.debug("DataOk: " + dataOk);
 		
 		if (dataOk && view != null) {
-			UnityAdsUtils.Log("open() opening with view:" + view + " and data:" + data.toString(), this);
+			UnityAdsDeviceLog.debug("Opening with view:" + view + " and data:" + data.toString());
 			
 			if (mainview != null) {
 				mainview.openAds(view, data);
@@ -710,20 +716,20 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 
-	private void setup () {
+	private static void setup () {
 		initCache();
 		setupViews();
 	}
 	
-	private void initCache () {
+	private static void initCache () {
 		if (_initialized) {
-			UnityAdsUtils.Log("Init cache", this);
+			UnityAdsDeviceLog.debug("Init cache");
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
 			cachemanager.updateCache(webdata.getVideoPlanCampaigns());				
 		}
 	}
 	
-	private void sendAdsReadyEvent () {
+	private static void sendAdsReadyEvent () {
 		if (!_adsReadySent && _adsListener != null) {
 			UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 				@Override
@@ -736,23 +742,23 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 
-	private void setupViews () {
-		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), this);
+	private static void setupViews () {
+		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
 	}
 
-	private void playVideo () {
+	private static void playVideo () {
 		playVideo(0);
 	}
 	
-	private void playVideo (long delay) {
-		UnityAdsUtils.Log("Running threaded", this);
+	private static void playVideo (long delay) {
+		UnityAdsDeviceLog.debug("Running threaded");
 		
 		if (delay > 0) {
 			Timer delayTimer = new Timer();
 			delayTimer.schedule(new TimerTask() {
 				@Override
 				public void run() {
-					UnityAdsUtils.Log("Delayed video start", this);
+					UnityAdsDeviceLog.debug("Delayed video start");
 					UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
 					if (UnityAdsProperties.getCurrentActivity() != null)
 						UnityAdsProperties.getCurrentActivity().runOnUiThread(playVideoRunner);
@@ -766,7 +772,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	private void startAdsFullscreenActivity () {
+	private static void startAdsFullscreenActivity () {
 		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
 		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
 		
@@ -781,14 +787,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsProperties.getBaseActivity().startActivity(newIntent);
 		}
 		catch (ActivityNotFoundException e) {
-			UnityAdsUtils.Log("Could not find activity: " + e.getStackTrace(), this);
+			UnityAdsDeviceLog.error("Could not find activity: " + e.getStackTrace());
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Weird error: " + e.getStackTrace(), this);
+			UnityAdsDeviceLog.error("Weird error: " + e.getStackTrace());
 		}
 	}
 	
-	private void cancelPauseScreenTimer () {
+	private static void cancelPauseScreenTimer () {
 		if (_pauseScreenTimer != null) {
 			_pauseScreenTimer.cancel();
 		}
@@ -802,7 +808,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_pauseTimer = null;
 	}
 	
-	private void createPauseScreenTimer () {
+	private static void createPauseScreenTimer () {
 		_pauseScreenTimer = new TimerTask() {
 			@Override
 			public void run() {
@@ -821,10 +827,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_pauseTimer.scheduleAtFixedRate(_pauseScreenTimer, 0, 50);
 	}
 	
-	private void refreshCampaigns() {
+	private static void refreshCampaigns() {
 		if(_refreshAfterShowAds) {
 			_refreshAfterShowAds = false;
-			UnityAdsUtils.Log("Starting delayed ad plan refresh", this);
+			UnityAdsDeviceLog.debug("Starting delayed ad plan refresh");
 			if(webdata != null) {
 				webdata.initCampaigns();
 			}
@@ -833,14 +839,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 		if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
 			removeCampaignRefreshTimer();
-			UnityAdsUtils.Log("Refreshing ad plan from server due to timer deadline", this);
+			UnityAdsDeviceLog.debug("Refreshing ad plan from server due to timer deadline");
 			webdata.initCampaigns();
 			return;
 		}
 
 		if (UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0) {
 			if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
-				UnityAdsUtils.Log("Refreshing ad plan from server due to endscreen limit", this);
+				UnityAdsDeviceLog.debug("Refreshing ad plan from server due to endscreen limit");
 				webdata.initCampaigns();
 				return;
 			}
@@ -848,16 +854,16 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 		if (webdata != null && webdata.getVideoPlanCampaigns() != null) {
 			if(webdata.getViewableVideoPlanCampaigns().size() == 0) {
-				UnityAdsUtils.Log("All available videos watched, refreshing ad plan from server", this);
+				UnityAdsDeviceLog.debug("All available videos watched, refreshing ad plan from server");
 				webdata.initCampaigns();
 				return;
 			}
 		} else {
-			UnityAdsUtils.Log("Unable to read video data to determine if ad plans should be refreshed", this);
+			UnityAdsDeviceLog.error("Unable to read video data to determine if ad plans should be refreshed");
 		}
 	}
 
-	private void setupCampaignRefreshTimer() {
+	private static void setupCampaignRefreshTimer() {
 		removeCampaignRefreshTimer();
 
 		if(UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS > 0) {
@@ -881,7 +887,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 
-	private void removeCampaignRefreshTimer() {
+	private static void removeCampaignRefreshTimer() {
 		_campaignRefreshTimerDeadline = 0;
 
 		if(_campaignRefreshTimer != null) {
@@ -893,7 +899,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	// FIX: Could these 2 classes be moved to MainView
 	
-	private class UnityAdsCloseRunner implements Runnable {
+	private static class UnityAdsCloseRunner implements Runnable {
 		JSONObject _data = null;
 		@Override
 		public void run() {			
@@ -956,7 +962,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	private class UnityAdsPlayVideoRunner implements Runnable {
+	private static class UnityAdsPlayVideoRunner implements Runnable {
 		
 		@Override
 		public void run() {			

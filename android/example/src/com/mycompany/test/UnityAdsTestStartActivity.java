@@ -22,7 +22,6 @@ import com.unity3d.ads.android.IUnityAdsListener;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsTestStartActivity extends Activity implements IUnityAdsListener {
-	private UnityAds ai = null;
 	private UnityAdsTestStartActivity _self = null;
 	private Button _piButton = null;
 	private Button _startButton = null;
@@ -39,7 +38,6 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
         _self = this;
         
         setContentView(R.layout.main);
-        //((ImageView)findViewById(R.id.playbtn)).setAlpha(80);
 		Log.d(UnityAdsConstants.LOG_NAME, "Init Unity Ads");
 		
 		UnityAds.setDebugMode(true);
@@ -70,9 +68,9 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		    	_statusImage.setVisibility(View.VISIBLE);
 		    	UnityAds.setTestDeveloperId(((EditText)findViewById(R.id.developer_id_data)).getText().toString());
 		    	UnityAds.setTestOptionsId(((EditText)findViewById(R.id.options_id_data)).getText().toString());
-				ai = new UnityAds(_self, "16", _self);
-	    		ai.changeActivity(_self);
-	    		ai.setListener(_self);
+				UnityAds.init(_self, "16", _self);
+				UnityAds.changeActivity(_self);
+				UnityAds.setListener(_self);
 			}
 		});
     }
@@ -82,10 +80,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onResume()");
     	super.onResume();
     	
-    	if (ai != null) {
-    		ai.changeActivity(this);
-    		ai.setListener(this);
-    	}
+   		UnityAds.changeActivity(this);
+   		UnityAds.setListener(this);
     }
     
 	@Override
@@ -99,7 +95,6 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	public boolean onOptionsItemSelected (MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.kill:
-		    	ai.stopAll();
 		    	System.runFinalizersOnExit(true);		
 				finish();
 		    	Log.d(UnityAdsConstants.LOG_NAME, "Quitting");
@@ -118,18 +113,15 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	
     @Override
 	public void onHide () {
-    	
     }
     
     @Override
 	public void onShow () {
-    	
     }
 	
 	// Unity Ads video events
     @Override
-	public void onVideoStarted () {
-    	
+	public void onVideoStarted () {   	
     }
     
     @Override
@@ -137,7 +129,6 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     	if(skipped) {
     		Log.d(UnityAdsConstants.LOG_NAME, "Video was skipped!");
     	}
-    	_statusImage.setImageResource(R.drawable.unityads_reward);
     }
 	
 	// Unity Ads campaign events
@@ -168,10 +159,10 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, false);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, false);
 				
-				UnityAds.instance.show(optionsMap);
+				UnityAds.show(optionsMap);
 				
 				// Open without options (defaults)
-				//UnityAds.instance.show();
+				//UnityAds.show();
 			}
 		});
     	_openButton.setVisibility(View.VISIBLE);
