@@ -58,11 +58,6 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 	private Context mContext = null;
 	
 	/**
-	 * The UnityAds instance
-	 */
-	private UnityAds unityAds = null;
-	
-	/**
 	 * Our AdaptorListener
 	 */
 	private IBurstlyAdaptorListener listener;
@@ -82,11 +77,6 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 
 	@Override
 	public void destroy() {
-		// Tell Unity Ads to shut down
-		if(this.unityAds != null) {
-			this.unityAds.stopAll();
-		}
-
 	}
 
 	@Override
@@ -100,8 +90,8 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 	}
 	
 	private void notifyBurstlyOfAdLoading() {
-		Log.d("burstly_unityads", "notifyBurstlyOfAdLoading: " + this.unityAds.canShowAds());
-		if(this.unityAds.canShowAds()) {
+		Log.d("burstly_unityads", "notifyBurstlyOfAdLoading: " + UnityAds.canShowAds());
+		if(UnityAds.canShowAds()) {
 			this.listener.didLoad(this.getNetworkName(), true);
 			if(this.adShowRequested) {
 				// We've been requested to show stuff
@@ -145,9 +135,9 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 			return;
 		}
 		
-		if(this.unityAds.canShow() && this.unityAds.canShowAds()) {
-			this.unityAds.setZone(this.zoneId);
-			this.unityAds.show(this.options);
+		if(UnityAds.canShow() && UnityAds.canShowAds()) {
+			UnityAds.setZone(this.zoneId);
+			UnityAds.show(this.options);
 		}
 	}
 
@@ -186,9 +176,8 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 	    boolean testModeEnabled = "true".equals(unityAdsParams.get(UnityAdsAdaptor.KEY_TEST_MODE));
 	    UnityAds.setDebugMode(testModeEnabled);
 	    UnityAds.setTestMode(testModeEnabled);
-		
-		this.unityAds = new UnityAds((Activity)this.mContext, this.gameId, this);
-		this.unityAds.setListener(this);
+
+	    UnityAds.init((Activity)this.mContext, this.gameId, this);
 		
 		// See if we have a custom user ID
 		if(unityAdsParams.get(UnityAdsAdaptor.KEY_CLIENT_TARGETING_PARAMS) != null) {
