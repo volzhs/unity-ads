@@ -232,7 +232,6 @@
 
 - (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped {
 	NSLog(@"unityAdsVideoCompleted:rewardItemKey:skipped -- key: %@ -- skipped: %@", rewardItemKey, skipped ? @"true" : @"false");
-  [self.loadingImage setImage:[UIImage imageNamed:@"unityads_reward"]];
 }
 
 #else
