@@ -131,11 +131,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
 			
 			// Not the most pretty way to detect when the fullscreen activity is ready
-			if (activity != null &&
-				activity.getClass() != null &&
-				activity.getClass().getName() != null &&
-				activity.getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
-				
+			if (activity != null && activity instanceof UnityAdsFullscreenActivity) {
 				String view = null;
 				
 				if (mainview != null && mainview.webview != null) {
@@ -872,7 +868,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		JSONObject _data = null;
 		@Override
 		public void run() {			
-			if (UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity().getClass().getName().equals(UnityAdsConstants.UNITY_ADS_FULLSCREEN_ACTIVITY_CLASSNAME)) {
+			if (UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
 				Boolean dataOk = true;			
 				JSONObject data = new JSONObject();
 				
