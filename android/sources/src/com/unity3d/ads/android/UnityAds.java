@@ -213,7 +213,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 				_openRequestFromDeveloper = true;
 				_showingAds = true;
-				startAdsFullscreenActivity();
+				startFullscreenActivity();
 				return _showingAds;
 			}
 					
@@ -377,7 +377,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
 		
 		if (canShowAds())
-			sendAdsReadyEvent();
+			sendReadyEvent();
 	}
 	
 	@Override
@@ -506,7 +506,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			
 			if (dataOk) {
 				mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
-				sendAdsReadyEvent();			
+				sendReadyEvent();			
 			}
 		}
 	}
@@ -694,7 +694,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	private static void sendAdsReadyEvent () {
+	private static void sendReadyEvent () {
 		if (!_adsReadySent && _adsListener != null) {
 			UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 				@Override
@@ -737,7 +737,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	private static void startAdsFullscreenActivity () {
+	private static void startFullscreenActivity () {
 		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
 		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
 		
