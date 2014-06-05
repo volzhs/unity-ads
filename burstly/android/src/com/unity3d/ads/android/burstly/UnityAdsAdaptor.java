@@ -5,12 +5,11 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.IUnityAdsListener;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.burstly.lib.component.IBurstlyAdaptor;
 import com.burstly.lib.component.IBurstlyAdaptorListener;
 
@@ -90,7 +89,7 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 	}
 	
 	private void notifyBurstlyOfAdLoading() {
-		Log.d("burstly_unityads", "notifyBurstlyOfAdLoading: " + UnityAds.canShowAds());
+		UnityAdsDeviceLog.debug("notifyBurstlyOfAdLoading: " + UnityAds.canShowAds());
 		if(UnityAds.canShowAds()) {
 			this.listener.didLoad(this.getNetworkName(), true);
 			if(this.adShowRequested) {
@@ -105,8 +104,7 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
  
 	@Override
 	public void precacheInterstitialAd() {
-		
-		Log.d("burstly_unityads", "UnityAdsAdaptor.precacheInterstitialAd()");
+		UnityAdsDeviceLog.entered();
 		
 		// Do nothing, as Unity Ads by default precaches interstitials
 		if(this.campaignLoadingComplete) {
@@ -149,18 +147,15 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 			throws IllegalArgumentException {
 		
 		this.isLCRunning = true;
-		
-		Log.d("burstly_unityads", "---------------------------------------------------------");
-		Log.d("burstly_unityads", "Starting transaction with Unity Ads adaptor version " + UnityAdsAdaptor.UNITY_ADS_ADAPTOR_VERSION);
-		Log.d("burstly_unityads", "---------------------------------------------------------");		
+		UnityAdsDeviceLog.debug("Starting transaction with Unity Ads adaptor version " + UnityAdsAdaptor.UNITY_ADS_ADAPTOR_VERSION);
 		
 		for(Object k : unityAdsParams.keySet()) {
-			Log.d("burstly_unityads", "startTransaction: " + k.toString() + " -> " + unityAdsParams.get(k));
+			UnityAdsDeviceLog.debug("startTransaction: " + k.toString() + " -> " + unityAdsParams.get(k));
 		}
 		 
 		this.gameId = (String)unityAdsParams.get(UnityAdsAdaptor.KEY_UNITY_ADS_GAME_ID);
 
-		Log.d("burstly_unityads", "UnityAdsAdaptor.startTransaction(" + this.gameId + ")"); 
+		UnityAdsDeviceLog.debug("UnityAdsAdaptor.startTransaction(" + this.gameId + ")"); 
 		
 		if(gameId == null) {
 			throw new IllegalArgumentException("Server must return unityads_game_id");
@@ -190,7 +185,7 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 			}
 		}
 		
-		Log.d("burstly_unityads", "Unity Ads initialized");
+		UnityAdsDeviceLog.debug("Unity Ads initialized");
 	}
 	 
 
@@ -226,8 +221,7 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 
 	@Override
 	public boolean supports(String feature) {
-		
-		Log.d("burstly_unityads", "UnityAdsAdaptor.supports(" + feature + ")");
+		UnityAdsDeviceLog.entered();
 
 		if(FEATURE_PRECACHE.equals(feature)) {
 			return true;
@@ -266,15 +260,15 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 
 	@Override
 	public void onFetchCompleted() {
+		UnityAdsDeviceLog.entered();
 		this.campaignLoadingComplete = true;
-		Log.d("burstly_unityads","UnityAdsAdaptor.onFetchCompleted");
 		this.notifyBurstlyOfAdLoading();
 	}
 
 	@Override
 	public void onFetchFailed() {
+		UnityAdsDeviceLog.entered();
 		this.campaignLoadingComplete = true;
-		Log.d("burstly_unityads","UnityAdsAdaptor.onFetchFailed");		
 		this.notifyBurstlyOfAdLoading();
 	}	
 
@@ -300,6 +294,4 @@ public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 		// No banners here
 		return null;
 	}
-
-	
 }

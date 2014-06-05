@@ -5,6 +5,7 @@ import java.util.Map;
 import android.content.Context;
 import android.util.Log;
 
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.burstly.UnityAdsAdaptor;
 
@@ -20,7 +21,7 @@ import com.burstly.lib.feature.networks.IAdaptorFactory;
 public class UnityAdsAdaptorFactory implements IAdaptorFactory {
 	
 	static {
-		Log.d("burstly_unityads", "Initializing class UnityAdsAdaptorFactory");
+		UnityAdsDeviceLog.entered();
 	}
 
     /**
