@@ -6,7 +6,7 @@ import java.util.HashMap;
 import android.app.Activity;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.IUnityAdsListener;
 
 public class UnityAdsUnityWrapper implements IUnityAdsListener {
@@ -16,14 +16,12 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	private Method _sendMessageMethod = null;
 	private boolean _testMode = false;
 	private boolean _debugMode = false;
-	private static UnityAds _unityAds = null;
 	private static Boolean _constructed = false;
 	private static Boolean _initialized = false;
 	
 	public UnityAdsUnityWrapper () {
 		if (!_constructed) {
 			_constructed = true;
-	    	UnityAdsUtils.Log("UnityAdsUnityWrapper Constructor", this);
 	        try {
 	                Class<?> unityClass = Class.forName("com.unity3d.player.UnityPlayer");
 	                Class<?> paramTypes[] = new Class[3];
@@ -33,7 +31,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	                _sendMessageMethod = unityClass.getDeclaredMethod("UnitySendMessage", paramTypes);
 	        } 
 	        catch (Exception e) {
-	        	UnityAdsUtils.Log("Error getting class or method of com.unity3d.player.UnityPlayer, method UnitySendMessage(string, string, string). " + e.getLocalizedMessage(), this);
+	        	UnityAdsDeviceLog.error("Error getting class or method of com.unity3d.player.UnityPlayer, method UnitySendMessage(string, string, string). " + e.getLocalizedMessage());
 	        }
 		}
 	}
@@ -73,13 +71,13 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 				});
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Error occured while initializing Unity Ads", this);
+				UnityAdsDeviceLog.error("Error occured while initializing Unity Ads");
 			}
 		}
 	}
 	
 	public boolean show (final String zoneId, final String rewardItemKey, final String optionsString) {
-		if (_unityAds != null && _unityAds.canShowAds() && _unityAds.canShow()) {
+		if (UnityAds.canShowAds() && UnityAds.canShow()) {
 			HashMap<String, Object> options = null;
 			
 			if(optionsString.length() > 0) {
@@ -91,50 +89,39 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 			}
 			
 			if(rewardItemKey.length() > 0) {
-				_unityAds.setZone(zoneId, rewardItemKey);
+				UnityAds.setZone(zoneId, rewardItemKey);
 			} else {
-				_unityAds.setZone(zoneId);
+				UnityAds.setZone(zoneId);
 			}
 			
-			//UnityAdsUtils.Log("Opening with: openAnimated=" + openAnimated + ", noOfferscreen=" + noOfferscreen + ", gamerSID=" + gamerSID + ", muteVideoSounds=" + muteVideoSounds + ", useDeviceOrientationForVideo=" + useDeviceOrientationForVideo, this);
-			return _unityAds.show(options);
+			return UnityAds.show(options);
 		}
 		
 		return false;
 	}
 	
 	public void hide () {
-		if (_unityAds == null) return;
-		_unityAds.hide();
+		UnityAds.hide();
 	}
 	
 	public boolean canShowAds () {
-		if (_unityAds == null) return false;
-		return _unityAds.canShowAds();
+		return UnityAds.canShowAds();
 	}
 	
 	public boolean canShow () {
-		if (_unityAds == null) return false;
-		return _unityAds.canShow();
+		return UnityAds.canShow();
 	}
-	
-	/*
-	public void stopAll () {
-		if (_unityAds == null) return;
-		_unityAds.stopAll();
-	}*/
-	
+
 	public boolean hasMultipleRewardItems () {
-		if (_unityAds == null) return false;
-		return _unityAds.hasMultipleRewardItems();
+		return UnityAds.hasMultipleRewardItems();
 	}
 	
 	public String getRewardItemKeys () {
-		if (_unityAds == null || _unityAds.getRewardItemKeys() == null) return null;
-		if (_unityAds.getRewardItemKeys().size() > 0) {
+		if (UnityAds.getRewardItemKeys() == null) return null;
+		if (UnityAds.getRewardItemKeys().size() > 0) {
 			String keys = "";
-			for (String key : _unityAds.getRewardItemKeys()) {
-				if (_unityAds.getRewardItemKeys().indexOf(key) > 0) {
+			for (String key : UnityAds.getRewardItemKeys()) {
+				if (UnityAds.getRewardItemKeys().indexOf(key) > 0) {
 					keys += ";";
 				}
 				keys += key;
@@ -147,34 +134,29 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	}
 	
 	public String getDefaultRewardItemKey () {
-		if (_unityAds == null) return "";
-		return _unityAds.getDefaultRewardItemKey();
+		return UnityAds.getDefaultRewardItemKey();
 	}
 	
 	public String getCurrentRewardItemKey () {
-		if (_unityAds == null) return "";
-		return _unityAds.getCurrentRewardItemKey();
+		return UnityAds.getCurrentRewardItemKey();
 	}
 	
 	public boolean setRewardItemKey (String rewardItemKey) {
-		if (_unityAds == null || rewardItemKey == null) return false;
-		return _unityAds.setRewardItemKey(rewardItemKey);
+		return UnityAds.setRewardItemKey(rewardItemKey);
 	}
 	
 	public void setDefaultRewardItemAsRewardItem () {
-		if (_unityAds == null) return;
-		_unityAds.setDefaultRewardItemAsRewardItem();
+		UnityAds.setDefaultRewardItemAsRewardItem();
 	}
 	
 	public String getRewardItemDetailsWithKey (String rewardItemKey) {
 		String retString = "";
 		
-		if (_unityAds == null) return "";
-		if (_unityAds.getRewardItemDetailsWithKey(rewardItemKey) != null) {
-			UnityAdsUtils.Log("Fetching reward data", this);
+		if (UnityAds.getRewardItemDetailsWithKey(rewardItemKey) != null) {
+			UnityAdsDeviceLog.debug("Fetching reward data");
 			
 			@SuppressWarnings({ "unchecked", "rawtypes" })
-			HashMap<String, String> rewardMap = (HashMap)_unityAds.getRewardItemDetailsWithKey(rewardItemKey);
+			HashMap<String, String> rewardMap = (HashMap)UnityAds.getRewardItemDetailsWithKey(rewardItemKey);
 			
 			if (rewardMap != null) {
 				retString = rewardMap.get(UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY);
@@ -182,11 +164,11 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 				return retString;
 			}
 			else {
-				UnityAdsUtils.Log("Problems getting reward item details", this);
+				UnityAdsDeviceLog.debug("Problems getting reward item details");
 			}
 		}
 		else {
-			UnityAdsUtils.Log("Could not find reward item details", this);
+			UnityAdsDeviceLog.debug("Could not find reward item details");
 		}
 		return "";
 	}
@@ -235,15 +217,15 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
                 parameter = "";
 
         if (_sendMessageMethod == null) {
-        	UnityAdsUtils.Log("Cannot send message to Unity3D. Method is null", this);
+        	UnityAdsDeviceLog.error("Cannot send message to Unity3D. Method is null");
         	return;
         }
         try {
-        	UnityAdsUtils.Log("Sending message (" + methodName + ", " + parameter + ") to Unity3D", this);
+        	UnityAdsDeviceLog.debug("Sending message (" + methodName + ", " + parameter + ") to Unity3D");
         	_sendMessageMethod.invoke(null, _gameObject, methodName, parameter);
         } 
         catch (Exception e) {
-        	UnityAdsUtils.Log("Can't invoke UnitySendMessage method. Error = "  + e.getLocalizedMessage(), this);
+        	UnityAdsDeviceLog.error("Can't invoke UnitySendMessage method. Error = "  + e.getLocalizedMessage());
         }
     }
     

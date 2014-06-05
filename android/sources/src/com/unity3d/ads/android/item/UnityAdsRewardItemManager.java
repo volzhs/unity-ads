@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 
 public class UnityAdsRewardItemManager {
 
@@ -33,7 +33,7 @@ public class UnityAdsRewardItemManager {
 					_rewardItems.put(rewardItem.getKey(), rewardItem);
 				}
 			} catch(JSONException e) {
-				UnityAdsUtils.Log("Failed to parse reward item", this);
+				UnityAdsDeviceLog.error("Failed to parse reward item");
 			}
 		}
 	}

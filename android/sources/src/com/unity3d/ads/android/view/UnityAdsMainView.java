@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -89,7 +89,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			setViewState(UnityAdsMainViewState.WebView);
 		}
 		else {
-			UnityAdsUtils.Log("Cannot open, wrong activity", this);
+			UnityAdsDeviceLog.error("Cannot open, wrong activity");
 		}
 	}
 	
@@ -158,13 +158,13 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	/* PRIVATE METHODS */
 	
 	private void init () {
-		UnityAdsUtils.Log("Init", this);
+		UnityAdsDeviceLog.entered();   	
 		this.setId(1001);
 		createWebView();
 	}
 	
 	private void destroyVideoPlayerView () {
-		UnityAdsUtils.Log("Destroying player", this);
+		UnityAdsDeviceLog.entered();   	
 		
 		if (videoplayerview != null)
 			videoplayerview.clearVideoPlayer();
@@ -215,10 +215,10 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	// IUnityAdsViewListener
 	@Override
 	public void onBackButtonClicked (View view) {
-		UnityAdsUtils.Log("Current state: " + _currentState.toString(), this);
+		UnityAdsDeviceLog.debug("Current state: " + _currentState.toString());
 		
 		if (videoplayerview != null) {
-			UnityAdsUtils.Log("Seconds: " + videoplayerview.getSecondsUntilBackButtonAllowed(), this);
+			UnityAdsDeviceLog.debug("Seconds: " + videoplayerview.getSecondsUntilBackButtonAllowed());
 		}
 		
 		if ((UnityAdsProperties.SELECTED_CAMPAIGN != null &&
@@ -229,14 +229,14 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			sendActionToListener(UnityAdsMainViewAction.BackButtonPressed);
 		}
 		else {
-			UnityAdsUtils.Log("Prevented back-button", this);
+			UnityAdsDeviceLog.debug("Prevented back-button");
 		}
 	}
 	
 	// IUnityAdsVideoPlayerListener
 	@Override
 	public void onVideoPlaybackStarted () {
-		UnityAdsUtils.Log("onVideoPlaybackStarted", this);
+		UnityAdsDeviceLog.entered();
 		
 		JSONObject params = new JSONObject();
 		JSONObject spinnerParams = new JSONObject();
@@ -246,7 +246,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Could not create JSON", this);
+			UnityAdsDeviceLog.error("Could not create JSON");
 		}
 		
 		sendActionToListener(UnityAdsMainViewAction.VideoStart);
@@ -281,7 +281,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	
 	@Override
 	public void onCompletion(MediaPlayer mp) {
-		UnityAdsUtils.Log("onCompletion", this);
+		UnityAdsDeviceLog.entered();
 		afterVideoPlaybackOperations();
 		onEventPositionReached(UnityAdsVideoPosition.End);
 		
@@ -291,7 +291,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Could not create JSON", this);
+			UnityAdsDeviceLog.error("Could not create JSON");
 		}
 		
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
@@ -301,7 +301,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 	public void onVideoPlaybackError () {
 		afterVideoPlaybackOperations();
 		
-		UnityAdsUtils.Log("onVideoPlaybackError", this);		
+		UnityAdsDeviceLog.entered();
 		UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
 		
 		JSONObject errorParams = new JSONObject();
@@ -314,7 +314,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Could not create JSON", this);
+			UnityAdsDeviceLog.error("Could not create JSON");
 		}
 		
 		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
@@ -343,7 +343,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Could not create JSON", this);
+			UnityAdsDeviceLog.error("Could not create JSON");
 		}
 		
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
@@ -374,7 +374,7 @@ public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebVie
 			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Could not create JSON", this);
+			UnityAdsDeviceLog.error("Could not create JSON");
 		}
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 

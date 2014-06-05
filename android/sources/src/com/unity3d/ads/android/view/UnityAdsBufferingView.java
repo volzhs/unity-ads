@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 
 public class UnityAdsBufferingView extends LinearLayout {
 
@@ -108,8 +108,8 @@ public class UnityAdsBufferingView extends LinearLayout {
 
 	@Override
 	protected void onAttachedToWindow() {
+		UnityAdsDeviceLog.entered();
 		super.onAttachedToWindow();
-		UnityAdsUtils.Log("Attached to window", this);
 		
 		if (_ball1 != null)
 			_ball1.setAnimation(createBlinkAnimation(0));

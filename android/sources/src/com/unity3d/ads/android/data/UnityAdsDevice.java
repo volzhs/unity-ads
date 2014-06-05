@@ -14,6 +14,7 @@ import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -47,7 +48,7 @@ public class UnityAdsDevice {
 			}
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Problems fetching androidId: " + e.getMessage(), UnityAdsDevice.class);
+			UnityAdsDeviceLog.error("Problems fetching androidId: " + e.getMessage());
 			return UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		}
 		
@@ -89,10 +90,10 @@ public class UnityAdsDevice {
         		Method getAdvertisingIdInfo = AdvertisingClientId.getMethod("getAdvertisingIdInfo", Context.class);
         		UnityAdsDevice.ADVERTISING_TRACKING_INFO = getAdvertisingIdInfo.invoke(null, context);
     		} else {
-    			UnityAdsUtils.Log("Unable to fetch advertising tracking info", UnityAdsDevice.class);
+    			UnityAdsDeviceLog.debug("Unable to fetch advertising tracking info");
     		}  		
     	} catch(Exception e) {
-    		UnityAdsUtils.Log("Warning! Google Play Services is needed to access Android advertising identifier. Please add Google Play Services to your game.", UnityAdsDevice.class);
+    		UnityAdsDeviceLog.info("Warning! Google Play Services is needed to access Android advertising identifier. Please add Google Play Services to your game.");
     	}
     }
     
@@ -136,7 +137,7 @@ public class UnityAdsDevice {
 			mac = (byte[])layertype.invoke(intf);
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Could not getHardwareAddress", UnityAdsDevice.class);
+			UnityAdsDeviceLog.error("Could not getHardwareAddress");
 		}
 		
 		if (mac == null) {
@@ -165,7 +166,7 @@ public class UnityAdsDevice {
     	for (NetworkInterface intf : interfaces) {
     		if (interfaceName != null) {
     			if (intf.getName().equalsIgnoreCase(interfaceName)) {
-    				UnityAdsUtils.Log("Returning interface: " + intf.getName(), UnityAdsDevice.class);
+    				UnityAdsDeviceLog.debug("Returning interface: " + intf.getName());
     				return intf;
     			}
     				

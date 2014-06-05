@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.unity3d.ads.android.UnityAds;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
@@ -33,7 +34,7 @@ public class UnityAdsInstrumentation {
 						retJsonObject.put(key, mapWithValues.get(key));
 					}
 					catch (Exception e) {
-						UnityAdsUtils.Log("Could not add value: " + key, UnityAdsInstrumentation.class);
+						UnityAdsDeviceLog.error("Could not add value: " + key);
 					}
 				}
 			}
@@ -55,7 +56,7 @@ public class UnityAdsInstrumentation {
 					json1.put(key, value);
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Problems creating JSON", UnityAdsInstrumentation.class);
+					UnityAdsDeviceLog.error("Problems creating JSON");
 				}
 			}
 			
@@ -88,7 +89,7 @@ public class UnityAdsInstrumentation {
 				retJsonObject.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CAMPAIGNID_KEY, campaignPlaying.getCampaignId());
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Could not create instrumentation JSON", UnityAdsInstrumentation.class);
+				UnityAdsDeviceLog.error("Could not create instrumentation JSON");
 				return null;
 			}
 			
@@ -131,7 +132,7 @@ public class UnityAdsInstrumentation {
 			}
 			
 			if (UnityAds.mainview != null && UnityAds.mainview.webview != null && UnityAds.mainview.webview.isWebAppLoaded()) {
-				UnityAdsUtils.Log("Sending to webapp!", UnityAdsInstrumentation.class);
+				UnityAdsDeviceLog.debug("Sending to webapp");
 				UnityAds.mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_KEY, finalEvents);
 				_unsentEvents.clear();
 				_unsentEvents = null;
@@ -152,15 +153,15 @@ public class UnityAdsInstrumentation {
 			events.put("events", wrapArray);
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Couldn't create final data", UnityAdsInstrumentation.class);
+			UnityAdsDeviceLog.error("Couldn't create final data");
 		}
 		
 		if (UnityAds.mainview != null && UnityAds.mainview.webview != null && UnityAds.mainview.webview.isWebAppLoaded()) {
-			UnityAdsUtils.Log("Sending to webapp!", UnityAdsInstrumentation.class);
+			UnityAdsDeviceLog.debug("Sending to webapp");
 			UnityAds.mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_KEY, events);
 		}
 		else {
-			UnityAdsUtils.Log("WebApp not initialized, could not send event!", UnityAdsInstrumentation.class);
+			UnityAdsDeviceLog.error("WebApp not initialized, could not send event!");
 			
 			if (_unsentEvents == null) {
 				_unsentEvents = new ArrayList<Map<String,JSONObject>>();

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.webkit.JavascriptInterface;
 
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
@@ -56,7 +56,7 @@ public class UnityAdsWebBridge {
 	
 	@JavascriptInterface
 	public boolean handleWebEvent (String type, String data) {
-		UnityAdsUtils.Log("handleWebEvent: "+ type + ", " + data, this);
+		UnityAdsDeviceLog.debug(type + ", " + data);
 
 		if (_listener == null || data == null) return false;
 		
@@ -69,7 +69,7 @@ public class UnityAdsWebBridge {
 			parameters = jsonData.getJSONObject("data");
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Error while parsing parameters: " + e.getMessage(), this);
+			UnityAdsDeviceLog.error("Error while parsing parameters: " + e.getMessage());
 		}
 		
 		if (jsonData == null || event == null) return false;
@@ -102,7 +102,7 @@ public class UnityAdsWebBridge {
 						clickUrl = parameters.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY);
 					}
 					catch (Exception e) {
-						UnityAdsUtils.Log("Error fetching clickUrl", this);
+						UnityAdsDeviceLog.error("Error fetching clickUrl");
 						return false;
 					}
 					
@@ -113,7 +113,7 @@ public class UnityAdsWebBridge {
 							UnityAdsProperties.getCurrentActivity().startActivity(i);
 						}
 						catch (Exception e) {
-							UnityAdsUtils.Log("Could not start activity for opening URL: " + clickUrl + ", maybe malformed URL?", this);
+							UnityAdsDeviceLog.error("Could not start activity for opening URL: " + clickUrl + ", maybe malformed URL?");
 						}
 					}
 				}

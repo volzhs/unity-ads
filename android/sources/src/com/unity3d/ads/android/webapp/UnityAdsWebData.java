@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
@@ -165,7 +166,7 @@ public class UnityAdsWebData {
 		boolean progressSent = false;
 		if (campaign == null) return progressSent;
 
-		UnityAdsUtils.Log("VP: " + position.toString() + ", " + UnityAdsProperties.UNITY_ADS_GAMER_ID, this);
+		UnityAdsDeviceLog.debug("VP: " + position.toString() + ", " + UnityAdsProperties.UNITY_ADS_GAMER_ID);
 		
 		if (position != null && UnityAdsProperties.UNITY_ADS_GAMER_ID != null) {			
 			String viewUrl = String.format("%s%s", UnityAdsProperties.UNITY_ADS_BASE_URL, UnityAdsConstants.UNITY_ADS_ANALYTICS_TRACKING_PATH);
@@ -207,7 +208,7 @@ public class UnityAdsWebData {
 				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString(), UnityAdsProperties.class);
+				UnityAdsDeviceLog.error("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString());
 			}
 			
 			if(currentZone.isIncentivized()) {
@@ -316,7 +317,7 @@ public class UnityAdsWebData {
 	private void startNextLoader () {
 		synchronized(_urlLoaderLock) {
 			if (_urlLoaders != null && _urlLoaders.size() > 0 && !_isLoading) {
-				UnityAdsUtils.Log("Starting next URL loader", this);
+				UnityAdsDeviceLog.debug("Starting next URL loader");
 				_isLoading = true;
 				_currentLoader = (UnityAdsUrlLoader)_urlLoaders.remove(0).execute();
 			}
@@ -340,12 +341,12 @@ public class UnityAdsWebData {
 			loader.clear();
 		}
 		else {
-			UnityAdsUtils.Log("Got broken urlLoader!", this);
+			UnityAdsDeviceLog.error("Got broken urlLoader!");
 		}
 		
 		_totalUrlsSent++;
 		
-		UnityAdsUtils.Log("Total urls sent: " + _totalUrlsSent, this);
+		UnityAdsDeviceLog.debug("Total urls sent: " + _totalUrlsSent);
 		
 		_isLoading = false;
 		startNextLoader();
@@ -367,7 +368,7 @@ public class UnityAdsWebData {
 			loader.clear();
 		}
 		else {
-			UnityAdsUtils.Log("Got broken urlLoader!", this);
+			UnityAdsDeviceLog.error("Got broken urlLoader!");
 		}
 		
 		_isLoading = false;
@@ -404,7 +405,7 @@ public class UnityAdsWebData {
 				}
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Problems while sending some of the failed urls.", this);
+				UnityAdsDeviceLog.error("Problems while sending some of the failed urls.");
 			}
 
 			UnityAdsUtils.removeFile(pendingRequestFile.toString());
@@ -442,7 +443,7 @@ public class UnityAdsWebData {
 				failedUrlsJson.put("data", failedUrlsArray);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Error collecting failed urls", this);
+				UnityAdsDeviceLog.error("Error collecting failed urls");
 			}
 			
 			if (_failedUrlLoaders != null && _failedUrlLoaders.size() > 0 && UnityAdsUtils.canUseExternalStorage()) {
@@ -466,7 +467,7 @@ public class UnityAdsWebData {
 					data = _campaignJson.getJSONObject(UnityAdsConstants.UNITY_ADS_JSON_DATA_ROOTKEY);
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Malformed data JSON", this);
+					UnityAdsDeviceLog.error("Malformed data JSON");
 				}
 				
 				if (!data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_URL_KEY)) validData = false;
@@ -504,7 +505,7 @@ public class UnityAdsWebData {
 				if (_campaigns == null)
 					_campaigns = new ArrayList<UnityAdsCampaign>();
 				
-				UnityAdsUtils.Log("Parsed total of " + _campaigns.size() + " campaigns", this);
+				UnityAdsDeviceLog.debug("Parsed total of " + _campaigns.size() + " campaigns");
 				
 				// Zone parsing
 				if (validData) {
@@ -521,11 +522,11 @@ public class UnityAdsWebData {
 			}
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Malformed JSON: " + e.getMessage(), this);
+			UnityAdsDeviceLog.error("Malformed JSON: " + e.getMessage());
 			
 			if (e.getStackTrace() != null) {
 				for (StackTraceElement element : e.getStackTrace()) {
-					UnityAdsUtils.Log("Malformed JSON: " + element.toString(), this);
+					UnityAdsDeviceLog.error("Malformed JSON: " + element.toString());
 				}
 			}
 			
@@ -534,7 +535,7 @@ public class UnityAdsWebData {
 		}
 		
 		if (_listener != null && validData && _campaigns != null && _campaigns.size() > 0) {
-			UnityAdsUtils.Log("WebDataCompleted: " + json, this);
+			UnityAdsDeviceLog.debug("WebDataCompleted: " + json);
 			_listener.onWebDataCompleted();
 			return;
 		}
@@ -560,12 +561,12 @@ public class UnityAdsWebData {
 					campaign = new UnityAdsCampaign(jsonCampaign);
 					
 					if (campaign.hasValidData()) {
-						UnityAdsUtils.Log("Adding campaign to cache", this);
+						UnityAdsDeviceLog.debug("Adding campaign to cache");
 						retList.add(campaign);
 					}
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Problem with the campaign, skipping.", this);
+					UnityAdsDeviceLog.error("Problem with the campaign, skipping.");
 				}
 			}
 			
@@ -594,7 +595,7 @@ public class UnityAdsWebData {
 		}
 		public void run () {
 			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(_url, _queryParams, _requestMethod, _requestType, _retries);
-			UnityAdsUtils.Log("URL: " + loader.getUrl(), this);
+			UnityAdsDeviceLog.debug("URL: " + loader.getUrl());
 			
 			if (_retries <= UnityAdsProperties.MAX_NUMBER_OF_ANALYTICS_RETRIES)
 				addLoader(loader);
@@ -614,7 +615,7 @@ public class UnityAdsWebData {
 				//_loader.clear();
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Cancelling urlLoader got exception: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Cancelling urlLoader got exception: " + e.getMessage());
 			}
 		}
 	}
@@ -647,13 +648,13 @@ public class UnityAdsWebData {
 				_url = new URL(_finalUrl);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Problems with url! Error-message: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Problems with url! Error-message: " + e.getMessage());
 			}
 			
 			_queryParams = queryParams;
 			_httpMethod = httpMethod;
 			_totalLoadersCreated++;
-			UnityAdsUtils.Log("Total urlLoaders created: " + _totalLoadersCreated, this);
+			UnityAdsDeviceLog.debug("Total urlLoaders created: " + _totalLoadersCreated);
 			_requestType = requestType;
 			_retries = existingRetries;
 		}
@@ -723,7 +724,7 @@ public class UnityAdsWebData {
 					_connection.setDoOutput(true);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Problems opening connection: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Problems opening connection: " + e.getMessage());
 				cancelInMainThread();
 				return null;
 			}
@@ -736,19 +737,19 @@ public class UnityAdsWebData {
 						pout.flush();
 					}
 					catch (Exception e) {
-						UnityAdsUtils.Log("Problems writing post-data: " + e.getMessage() + ", " + e.getStackTrace(), this);
+						UnityAdsDeviceLog.error("Problems writing post-data: " + e.getMessage() + ", " + e.getStackTrace());
 						cancelInMainThread();
 						return null;
 					}
 				}
 				
 				try {
-					UnityAdsUtils.Log("Connection response: " + _connection.getResponseCode() + ", " + _connection.getResponseMessage() + ", " + _connection.getURL().toString() + " : " + _queryParams, this);
+					UnityAdsDeviceLog.debug("Connection response: " + _connection.getResponseCode() + ", " + _connection.getResponseMessage() + ", " + _connection.getURL().toString() + " : " + _queryParams);
 					_input = _connection.getInputStream();
 					_binput = new BufferedInputStream(_input);
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Problems opening stream: " + e.getMessage(), this);
+					UnityAdsDeviceLog.error("Problems opening stream: " + e.getMessage());
 					cancelInMainThread();
 					return null;
 				}
@@ -758,8 +759,8 @@ public class UnityAdsWebData {
 				
 				try {
 					_totalLoadersHaveRun++;
-					UnityAdsUtils.Log("Total urlLoaders that have started running: " + _totalLoadersHaveRun, this);
-					UnityAdsUtils.Log("Reading data from: " + _url.toString() + " Content-length: " + _downloadLength, this);
+					UnityAdsDeviceLog.debug("Total urlLoaders that have started running: " + _totalLoadersHaveRun);
+					UnityAdsDeviceLog.debug("Reading data from: " + _url.toString() + " Content-length: " + _downloadLength);
 					
 					ByteArrayBuffer baf = new ByteArrayBuffer(1024 * 20);
 					int current = 0;
@@ -773,10 +774,10 @@ public class UnityAdsWebData {
 					}
 					
 					_urlData = new String(baf.toByteArray());
-					UnityAdsUtils.Log("Read total of: " + total, this);
+					UnityAdsDeviceLog.debug("Read total of: " + total);
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Problems loading url! Error-message: " + e.getMessage(), this);
+					UnityAdsDeviceLog.error("Problems loading url! Error-message: " + e.getMessage());
 					cancelInMainThread();
 					return null;
 				}
@@ -816,7 +817,7 @@ public class UnityAdsWebData {
 				_binput = null;
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Problems closing streams: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Problems closing streams: " + e.getMessage());
 			}	
 		}
 	}

@@ -21,6 +21,7 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
@@ -49,7 +50,7 @@ public class UnityAdsWebView extends WebView {
 
 	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		super(activity);
-		UnityAdsUtils.Log("Loading WebView from URL: " + UnityAdsProperties.WEBVIEW_BASE_URL, this);
+		UnityAdsDeviceLog.debug("Loading WebView from URL: " + UnityAdsProperties.WEBVIEW_BASE_URL);
 		init(activity, UnityAdsProperties.WEBVIEW_BASE_URL, listener, webBridge);
 	}
 
@@ -87,7 +88,7 @@ public class UnityAdsWebView extends WebView {
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
 			_currentWebView = view;
 			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
-			UnityAdsUtils.Log("Send change view to WebApp: " + javascriptString, this);
+			UnityAdsDeviceLog.debug("Send change view to WebApp: " + javascriptString);
 			
 			if (data != null) {
 				String action = "test";
@@ -97,11 +98,11 @@ public class UnityAdsWebView extends WebView {
 				catch (Exception e) {
 				}
 				
-				UnityAdsUtils.Log("dataHasApiActionKey=" + data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) , this);
-				UnityAdsUtils.Log("actionEqualsWebViewApiOpen=" + action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) , this);
-				UnityAdsUtils.Log("isDebuggable=" + UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) , this);
-				UnityAdsUtils.Log("runWebViewTests=" + UnityAdsProperties.RUN_WEBVIEW_TESTS , this);
-				UnityAdsUtils.Log("testJavaScriptContents=" + UnityAdsProperties.TEST_JAVASCRIPT , this);
+				UnityAdsDeviceLog.debug("dataHasApiActionKey=" + data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY));
+				UnityAdsDeviceLog.debug("actionEqualsWebViewApiOpen=" + action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN));
+				UnityAdsDeviceLog.debug("isDebuggable=" + UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()));
+				UnityAdsDeviceLog.debug("runWebViewTests=" + UnityAdsProperties.RUN_WEBVIEW_TESTS);
+				UnityAdsDeviceLog.debug("testJavaScriptContents=" + UnityAdsProperties.TEST_JAVASCRIPT);
 				
 				if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) &&
 					action != null &&
@@ -109,7 +110,7 @@ public class UnityAdsWebView extends WebView {
 					UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) &&
 					UnityAdsProperties.RUN_WEBVIEW_TESTS &&
 					UnityAdsProperties.TEST_JAVASCRIPT != null) {
-					UnityAdsUtils.Log("Running test-javascript: " + UnityAdsProperties.TEST_JAVASCRIPT , this);
+					UnityAdsDeviceLog.debug("Running test-javascript: " + UnityAdsProperties.TEST_JAVASCRIPT);
 					UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT, this));
 					UnityAdsProperties.RUN_WEBVIEW_TESTS = false;
 				}
@@ -125,7 +126,7 @@ public class UnityAdsWebView extends WebView {
 				dataString = data.toString();
 
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
-			UnityAdsUtils.Log("Send native event to WebApp: " + javascriptString, this);
+			UnityAdsDeviceLog.debug("Send native event to WebApp: " + javascriptString);
 			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 		}
 	}
@@ -160,12 +161,12 @@ public class UnityAdsWebView extends WebView {
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Error creating webview init params", this);
+				UnityAdsDeviceLog.debug("Error creating webview init params");
 				return;
 			}
 			
 			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
-			UnityAdsUtils.Log("Initializing WebView with JS call: " + initString, this);
+			UnityAdsDeviceLog.debug("Initializing WebView with JS call: " + initString);
 			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(initString, this));
 		}
 	}
@@ -198,7 +199,7 @@ public class UnityAdsWebView extends WebView {
 		
 		if (_url != null && _url.indexOf("_raw.html") != -1) {
 			getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-			UnityAdsUtils.Log("startup() -> LOAD_NO_CACHE", this);
+			UnityAdsDeviceLog.debug("LOAD_NO_CACHE");
 		}
 		else {
 			if (Build.VERSION.SDK_INT < 17 ) {				
@@ -248,7 +249,7 @@ public class UnityAdsWebView extends WebView {
 			getSettings().setAppCachePath(appCachePath);
 		}
 		
-		UnityAdsUtils.Log("Adding javascript interface", this);
+		UnityAdsDeviceLog.debug("Adding javascript interface");
 		addJavascriptInterface(_webBridge, "applifierimpactnative");
 	}
 	
@@ -261,7 +262,7 @@ public class UnityAdsWebView extends WebView {
 			layertype.invoke(this, mode, null);
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Could not invoke setLayerType", this);
+			UnityAdsDeviceLog.error("Could not invoke setLayerType");
 		}		
 	}
 	
@@ -271,7 +272,7 @@ public class UnityAdsWebView extends WebView {
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
-				UnityAdsUtils.Log("onKeyDown", this);
+				UnityAdsDeviceLog.entered();
 		    	if (_listener != null)
 		    		_listener.onBackButtonClicked(this);
 		    	return true;
@@ -292,13 +293,13 @@ public class UnityAdsWebView extends WebView {
 				tmp = new File(sourceID);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Could not handle sourceId: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Could not handle sourceId: " + e.getMessage(), this);
 			}
 			
 			if (tmp != null && tmp.getName() != null)
 				sourceFile = tmp.getName();
 			
-			UnityAdsUtils.Log("JavaScript (sourceId=" + sourceFile + ", line=" + lineNumber + "): " + message, this);
+			UnityAdsDeviceLog.debug("JavaScript (sourceId=" + sourceFile + ", line=" + lineNumber + "): " + message);
 		}
 		
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
@@ -310,7 +311,7 @@ public class UnityAdsWebView extends WebView {
 		@Override
 		public void onPageFinished (WebView webview, String url) {
 			super.onPageFinished(webview, url);
-			UnityAdsUtils.Log("Finished url: "  + url, this);
+			UnityAdsDeviceLog.debug("Finished url: "  + url);
 			if (_listener != null && !_webAppLoaded) {
 				_webAppLoaded = true;
 				_listener.onWebAppLoaded();
@@ -319,13 +320,13 @@ public class UnityAdsWebView extends WebView {
 		
 		@Override
 		public boolean shouldOverrideUrlLoading (WebView view, String url) {
-			UnityAdsUtils.Log("Trying to load url: " + url, this);
+			UnityAdsDeviceLog.debug("Trying to load url: " + url);
 			return false;
 		}
 		
 		@Override
 		public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {		
-			UnityAdsUtils.Log("UnityAdsViewClient.onReceivedError() -> " + errorCode + " (" + failingUrl + ") " + description, this);
+			UnityAdsDeviceLog.error(errorCode + " (" + failingUrl + ") " + description);
 			super.onReceivedError(view, errorCode, description, failingUrl);
 		}
 
@@ -359,18 +360,18 @@ public class UnityAdsWebView extends WebView {
 							evaluateJavascript.invoke(_webView, _jsString, null);
 						}
 						catch (Exception e) {
-							UnityAdsUtils.Log("Could not invoke evaluateJavascript", this);
+							UnityAdsDeviceLog.error("Could not invoke evaluateJavascript");
 						}
 					} else {
 						loadUrl(_jsString);
 					}
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Error while processing JavaScriptString!", this);
+					UnityAdsDeviceLog.error("Error while processing JavaScriptString!");
 				}
 			}
 			else {
-				UnityAdsUtils.Log("Could not process JavaScript, the string is NULL", this);
+				UnityAdsDeviceLog.error("Could not process JavaScript, the string is NULL");
 			}
 		}		
 	}

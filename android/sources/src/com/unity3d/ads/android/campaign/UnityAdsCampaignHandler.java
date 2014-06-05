@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsDownloadListener;
@@ -47,7 +48,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	@Override
 	public void onFileDownloadCompleted (String downloadUrl) {
 		if (finishDownload(downloadUrl)) {
-			UnityAdsUtils.Log("Reporting campaign download completion: " + _campaign.getCampaignId(), this);
+			UnityAdsDeviceLog.debug("Reporting campaign download completion: " + _campaign.getCampaignId());
 			
 			// Analytics / Instrumentation
 			Map<String, Object> values = new HashMap<String, Object>();
@@ -60,7 +61,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	@Override
 	public void onFileDownloadCancelled (String downloadUrl) {	
 		if (finishDownload(downloadUrl)) {
-			UnityAdsUtils.Log("Download cancelled: " + _campaign.getCampaignId(), this);
+			UnityAdsDeviceLog.debug("Download cancelled: " + _campaign.getCampaignId());
 			
 			// Analytics / Instrumentation
 			Map<String, Object> values = new HashMap<String, Object>();
@@ -76,12 +77,6 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		if (_handlerListener != null) {
 			_handlerListener.onCampaignHandled(this);
 		}
-		
-		/*
-		if (!hasDownloads() && _handlerListener != null && !_cancelledDownloads) {
-			_handlerListener.onCampaignHandled(this);
-		}
-		*/
 	}
 
 	public void downloadCampaign() {
@@ -124,7 +119,6 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		
 		if (_downloadList != null && _downloadList.size() == 0 && _handlerListener != null) {
 			UnityAdsDownloader.removeListener(this);
-			//_handlerListener.onCampaignHandled(this);
 			return true;
 		}
 		
@@ -139,7 +133,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 			addCampaignToDownloads();			
 		}
 		else if (_campaign.shouldCacheVideo() && !isFileOk(fileUrl) && UnityAdsUtils.canUseExternalStorage()) {
-			UnityAdsUtils.Log("The file was not okay, redownloading", this);
+			UnityAdsDeviceLog.debug("The file was not okay, redownloading");
 			UnityAdsUtils.removeFile(_campaign.getVideoFilename());
 			UnityAdsDownloader.addListener(this);
 			addCampaignToDownloads();
@@ -150,7 +144,7 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		long localSize = UnityAdsUtils.getSizeForLocalFile(_campaign.getVideoFilename());
 		long expectedSize = _campaign.getVideoFileExpectedSize();
 		
-		UnityAdsUtils.Log("isFileOk: localSize=" + localSize + ", expectedSize=" + expectedSize, this);
+		UnityAdsDeviceLog.debug("localSize=" + localSize + ", expectedSize=" + expectedSize);
 				
 		if (localSize == -1)
 			return false;

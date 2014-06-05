@@ -84,17 +84,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// Listeners
 	private static IUnityAdsListener _adsListener = null;
 	
-	
-	/*
-	public UnityAds (Activity activity, String gameId) {
-		init(activity, gameId, null);
-	}
-	
-	public UnityAds (Activity activity, String gameId, IUnityAdsListener listener) {
-		init(activity, gameId, listener);
-	}*/
-
-	
 	private UnityAds () {
 	}
 	
@@ -261,26 +250,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 			webdata.getVideoPlanCampaigns() != null && 
 			webdata.getVideoPlanCampaigns().size() > 0;
 	}
-
-	/*
-	public static void stopAll () {
-		UnityAdsDeviceLog.debug("This open request is from the developer, setting start view");
-		if (mainview != null && mainview.videoplayerview != null)
-			mainview.videoplayerview.clearVideoPlayer();
-		if (mainview != null && mainview.webview != null)
-			mainview.webview.clearWebView();
-		
-		UnityAdsDownloader.stopAllDownloads();
-		UnityAdsDownloader.clearData();
-		cachemanager.setDownloadListener(null);
-		cachemanager.clearData();
-		webdata.stopAllRequests();
-		webdata.setWebDataListener(null);
-		webdata.clearData();
-		UnityAdsProperties.BASE_ACTIVITY = null;
-		UnityAdsProperties.CURRENT_ACTIVITY = null;
-		UnityAdsProperties.SELECTED_CAMPAIGN = null;
-	}*/	
 	
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
 	
@@ -393,7 +362,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				}
 				break;
 			case RequestRetryVideoPlay:
-				UnityAdsUtils.Log("Retrying video play, because something went wrong.", this);
+				UnityAdsDeviceLog.debug("Retrying video play, because something went wrong.");
 				playVideo(300);
 				break;
 		}
@@ -402,14 +371,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsCacheListener
 	@Override
 	public void onCampaignUpdateStarted () {	
-		UnityAdsUtils.Log("Campaign updates started.", this);
+		UnityAdsDeviceLog.debug("Campaign updates started.");
 	}
 	
 	@Override
 	public void onCampaignReady (UnityAdsCampaignHandler campaignHandler) {
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 				
-		UnityAdsUtils.Log("Got onCampaignReady: " + campaignHandler.getCampaign().toString(), this);
+		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
 		
 		if (canShowAds())
 			sendAdsReadyEvent();
@@ -417,7 +386,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	@Override
 	public void onAllCampaignsReady () {
-		UnityAdsUtils.Log("Listener got \"All campaigns ready.\"", this);
+		UnityAdsDeviceLog.entered();
 	}
 	
 	// IUnityAdsWebDataListener
@@ -477,7 +446,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// IUnityAdsWebBrigeListener
 	@Override
 	public void onPlayVideo(JSONObject data) {
-		UnityAdsUtils.Log("onPlayVideo", this);
+		UnityAdsDeviceLog.entered();
 		if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY)) {
 			String campaignId = null;
 			
@@ -485,7 +454,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				campaignId = data.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Could not get campaignId", this);
+				UnityAdsDeviceLog.error("Could not get campaignId");
 			}
 			
 			if (campaignId != null) {
@@ -505,7 +474,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 					catch (Exception e) {
 					}
 					
-					UnityAdsUtils.Log("onPlayVideo: Selected campaign=" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + " isViewed: " + UnityAdsProperties.SELECTED_CAMPAIGN.isViewed(), this);
+					UnityAdsDeviceLog.debug("Selected campaign=" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + " isViewed: " + UnityAdsProperties.SELECTED_CAMPAIGN.isViewed());
 					if (UnityAdsProperties.SELECTED_CAMPAIGN != null && (rewatch || !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed())) {
 						playVideo();
 					}
@@ -525,7 +494,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	@Override
 	public void onWebAppInitComplete (JSONObject data) {
-		UnityAdsUtils.Log("WebApp init complete", this);
+		UnityAdsDeviceLog.entered();
 		_webAppLoaded = true;
 		Boolean dataOk = true;
 		
@@ -547,11 +516,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public void onOpenPlayStore (JSONObject data) {
-	    UnityAdsUtils.Log("onOpenPlayStore", this);
+		UnityAdsDeviceLog.entered();
 
 	    if (data != null) {
 	    	
-	    	UnityAdsUtils.Log(data.toString(), this);
+	    	UnityAdsDeviceLog.debug(data.toString());
 	    	
 	    	String playStoreId = null;
 	    	String clickUrl = null;
@@ -562,7 +531,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		    		playStoreId = data.getString(UnityAdsConstants.UNITY_ADS_PLAYSTORE_ITUNESID_KEY);
 	    		}
 	    		catch (Exception e) {
-	    			UnityAdsUtils.Log("Could not fetch playStoreId", this);
+	    			UnityAdsDeviceLog.error("Could not fetch playStoreId");
 	    		}
 	    	}
 	    	
@@ -571,7 +540,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	    			clickUrl = data.getString(UnityAdsConstants.UNITY_ADS_PLAYSTORE_CLICKURL_KEY);
 	    		}
 	    		catch (Exception e) {
-	    			UnityAdsUtils.Log("Could not fetch clickUrl", this);
+	    			UnityAdsDeviceLog.error("Could not fetch clickUrl");
 	    		}
 	    	}
 	    	
@@ -580,7 +549,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	    			bypassAppSheet = data.getBoolean(UnityAdsConstants.UNITY_ADS_PLAYSTORE_BYPASSAPPSHEET_KEY);
 	    		}
 	    		catch (Exception e) {
-	    			UnityAdsUtils.Log("Could not fetch bypassAppSheet", this);
+	    			UnityAdsDeviceLog.error("Could not fetch bypassAppSheet");
 	    		}
 	    	}
 	    	
@@ -722,8 +691,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private static void initCache () {
+		UnityAdsDeviceLog.entered();
 		if (_initialized) {
-			UnityAdsDeviceLog.debug("Init cache");
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
 			cachemanager.updateCache(webdata.getVideoPlanCampaigns());				
 		}
@@ -734,7 +703,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
-					UnityAdsUtils.Log("Unity Ads ready!", this);
+					UnityAdsDeviceLog.debug("Unity Ads ready.");
 					_adsReadySent = true;
 					_adsListener.onFetchCompleted();
 				}
@@ -871,10 +840,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 				@Override
 				public void run() {
 					if(!_showingAds) {
-						UnityAdsUtils.Log("Refreshing ad plan to get new data", this);
+						UnityAdsDeviceLog.debug("Refreshing ad plan to get new data");
 						webdata.initCampaigns();
 					} else {
-						UnityAdsUtils.Log("Refreshing ad plan after current ad", this);
+						UnityAdsDeviceLog.debug("Refreshing ad plan after current ad");
 						_refreshAfterShowAds = true;
 					}
 				}
@@ -914,7 +883,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 					dataOk = false;
 				}
 
-				UnityAdsUtils.Log("dataOk: " + dataOk, this);
+				UnityAdsDeviceLog.debug("DataOk: " + dataOk);
 				
 				if (dataOk) {
 					_data = data;
@@ -965,17 +934,17 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private static class UnityAdsPlayVideoRunner implements Runnable {
 		
 		@Override
-		public void run() {			
-			UnityAdsUtils.Log("Running videoplayrunner", this);
+		public void run() {
+			UnityAdsDeviceLog.entered();
 			if (UnityAdsProperties.SELECTED_CAMPAIGN != null) {
-				UnityAdsUtils.Log("Selected campaign found", this);
+				UnityAdsDeviceLog.debug("Selected campaign found");
 				JSONObject data = new JSONObject();
 				
 				try {
 					data.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Couldn't create data JSON", this);
+					UnityAdsDeviceLog.error("Couldn't create data JSON");
 					return;
 				}
 				
@@ -988,11 +957,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl(); 
 
 				mainview.setViewState(UnityAdsMainViewState.VideoPlayer);
-				UnityAdsUtils.Log("Start videoplayback with: " + playUrl, this);
+				UnityAdsDeviceLog.debug("Start videoplayback with: " + playUrl);
 				mainview.videoplayerview.playVideo(playUrl);
 			}			
 			else
-				UnityAdsUtils.Log("Campaign is null", this);
+				UnityAdsDeviceLog.error("Campaign is null");
 		}		
 	}
 }

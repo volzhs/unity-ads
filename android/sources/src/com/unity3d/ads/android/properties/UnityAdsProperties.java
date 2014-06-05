@@ -7,6 +7,7 @@ import java.util.Map;
 
 import android.app.Activity;
 
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
@@ -80,7 +81,7 @@ public class UnityAdsProperties {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString(), UnityAdsProperties.class);
+			UnityAdsDeviceLog.error("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString());
 		}
 		
 		if (TESTMODE_ENABLED) {
@@ -157,7 +158,7 @@ public class UnityAdsProperties {
 		catch (Exception e) {
 			if (_seenIsDestroyed == false) {
 				_seenIsDestroyed = true;
-				UnityAdsUtils.Log("Couldn't get isDestroyed -method", UnityAdsProperties.class);
+				UnityAdsDeviceLog.error("Couldn't get isDestroyed -method");
 			}
 		}
 
@@ -167,7 +168,7 @@ public class UnityAdsProperties {
 					isDestroyed = (Boolean) isDestroyedMethod.invoke(activity);
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Error running isDestroyed -method", UnityAdsProperties.class);
+					UnityAdsDeviceLog.error("Error running isDestroyed -method");
 				}
 			}
 		}

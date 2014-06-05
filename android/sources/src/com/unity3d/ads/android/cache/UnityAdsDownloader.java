@@ -14,6 +14,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -53,8 +54,8 @@ public class UnityAdsDownloader {
 	}
 	
 	public static void stopAllDownloads () {
+		UnityAdsDeviceLog.entered();
 		if (_cacheDownloads != null) {
-			UnityAdsUtils.Log("UnityAdsDownloader->stopAllDownloads()", UnityAdsDownloader.class);
 			for (CacheDownload cd : _cacheDownloads) {
 				cd.cancel(true);
 			}
@@ -131,7 +132,7 @@ public class UnityAdsDownloader {
 		ConnectivityManager cm = (ConnectivityManager)UnityAdsProperties.getCurrentActivity().getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 	    
 		if (cm != null && cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
-			UnityAdsUtils.Log("Starting download for: " + campaign.getVideoFilename(), UnityAdsDownloader.class);
+			UnityAdsDeviceLog.debug("Starting download for: " + campaign.getVideoFilename());
 			
 			if (campaign != null && campaign.getVideoUrl() != null && campaign.getVideoUrl().length() > 0) {
 				CacheDownload cd = new CacheDownload(campaign);
@@ -143,7 +144,7 @@ public class UnityAdsDownloader {
 			}
 	    }
 		else {
-			UnityAdsUtils.Log("No WIFI detected, not downloading: " + campaign.getVideoUrl(), UnityAdsDownloader.class);
+			UnityAdsDeviceLog.debug("No WIFI detected, not downloading: " + campaign.getVideoUrl());
 			removeDownload(campaign);
 			sendToListeners(UnityAdsDownloadEventType.DownloadCancelled, campaign.getVideoUrl());
 			cacheNextFile(); 
@@ -156,7 +157,7 @@ public class UnityAdsDownloader {
 		}
 		else if (_downloadList != null) {
 			_isDownloading = false;
-			UnityAdsUtils.Log("All downloads completed.", UnityAdsDownloader.class);
+			UnityAdsDeviceLog.debug("All downloads completed.");
 		}
 	}
 	
@@ -169,7 +170,7 @@ public class UnityAdsDownloader {
 			fos = new FileOutputStream(outf);
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Problems creating FOS: " + fileName, UnityAdsDownloader.class);
+			UnityAdsDeviceLog.error("Problems creating FOS: " + fileName);
 			return null;
 		}
 		
@@ -213,7 +214,7 @@ public class UnityAdsDownloader {
 				_downloadUrl = new URL(sUrl[0]);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Problems with url: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Problems with url: " + e.getMessage());
 				onCancelled();
 				return null;
 			}
@@ -225,7 +226,7 @@ public class UnityAdsDownloader {
 				_urlConnection.connect();
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Problems opening connection: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Problems opening connection: " + e.getMessage());
 			}
 			
 			if (_urlConnection != null) {
@@ -235,7 +236,7 @@ public class UnityAdsDownloader {
 					_input = new BufferedInputStream(_downloadUrl.openStream());
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Problems opening stream: " + e.getMessage(), this);
+					UnityAdsDeviceLog.error("Problems opening stream: " + e.getMessage());
 				}
 				
 				_output = getOutputStreamFor(_campaign.getVideoFilename());
@@ -258,7 +259,7 @@ public class UnityAdsDownloader {
 					}
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("Problems downloading file: " + e.getMessage(), this);
+					UnityAdsDeviceLog.error("Problems downloading file: " + e.getMessage());
 					cancelDownload();
 					cacheNextFile();
 					return null;
@@ -266,7 +267,7 @@ public class UnityAdsDownloader {
 				
 				closeAndFlushConnection();
 				duration = System.currentTimeMillis() - startTime;
-				UnityAdsUtils.Log("File: " + _campaign.getVideoFilename() + " of size: " + total + " downloaded in: " + duration + "ms", this);
+				UnityAdsDeviceLog.debug("File: " + _campaign.getVideoFilename() + " of size: " + total + " downloaded in: " + duration + "ms");
 			}
 						
 			return null;
@@ -274,7 +275,7 @@ public class UnityAdsDownloader {
 		
 		@Override
 		protected void onCancelled () {
-			UnityAdsUtils.Log("Force stopping download!", this);
+			UnityAdsDeviceLog.entered();
 			_cancelled = true;
 			cancelDownload();
 		}
@@ -315,7 +316,7 @@ public class UnityAdsDownloader {
 				_input.close();
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Problems closing connection: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Problems closing connection: " + e.getMessage());
 			}	    	
 	    }
 	    
@@ -324,7 +325,7 @@ public class UnityAdsDownloader {
         	if (_downloadUrl != null)
         		url = _downloadUrl.toString();
         	
-	    	UnityAdsUtils.Log("Download cancelled for: " + url, this);
+        	UnityAdsDeviceLog.debug("Download cancelled for: " + url);
 			closeAndFlushConnection();
 			UnityAdsUtils.removeFile(_campaign.getVideoFilename());
         	removeDownload(_campaign);

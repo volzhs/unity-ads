@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsBufferingView;
@@ -84,12 +84,12 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		
 		_videoPlayheadPrepared = false;
 		_videoFileName = fileName;
-		UnityAdsUtils.Log("Playing video from: " + _videoFileName, this);
+		UnityAdsDeviceLog.debug("Playing video from: " + _videoFileName);
 		
 		_videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
 			@Override
 			public boolean onError(MediaPlayer mp, int what, int extra) {
-				UnityAdsUtils.Log("For some reason the device failed to play the video (error: " + what + ", " + extra + "), a crash was prevented.", this);
+				UnityAdsDeviceLog.error("For some reason the device failed to play the video (error: " + what + ", " + extra + "), a crash was prevented.");
 				videoErrorOperations();
 				return true;
 			}
@@ -99,7 +99,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_videoView.setVideoPath(_videoFileName);
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("For some reason the device failed to play the video, a crash was prevented.", this);
+			UnityAdsDeviceLog.error("For some reason the device failed to play the video, a crash was prevented.");
 			videoErrorOperations();
 			return;
 		}
@@ -127,7 +127,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 	
 	public void clearVideoPlayer  () {
-		UnityAdsUtils.Log("clearVideoPlayer", this);
+		UnityAdsDeviceLog.entered();
 		setKeepScreenOn(false);
 		setOnClickListener(null);
 		setOnFocusChangeListener(null);
@@ -191,7 +191,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			maxVol = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 			float parts = 1f / (float)maxVol;
 			_volumeBeforeMute = parts * (float)curVol;
-			UnityAdsUtils.Log("Storing volume: " + curVol + ", " + maxVol + ", " + parts + ", " + _volumeBeforeMute, this);
+			UnityAdsDeviceLog.debug("Storing volume: " + curVol + ", " + maxVol + ", " + parts + ", " + _volumeBeforeMute);
 		}
 	}
 	
@@ -236,7 +236,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_muted = true;
 		}
 		
-		UnityAdsUtils.Log("Creating custom view", this);
+		UnityAdsDeviceLog.debug("Creating custom view");
 				
 		setBackgroundColor(0xFF000000);
 		
@@ -267,7 +267,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {			
 			@Override
 			public void onPrepared(MediaPlayer mp) {
-				UnityAdsUtils.Log("onPrepared", this);
+				UnityAdsDeviceLog.entered();
 				_mediaPlayer = mp;
 				
 				if (_muted) {
@@ -444,7 +444,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_skipText.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				UnityAdsUtils.Log("Touching the skiptext", this);
 				_listener.onVideoSkip();
 			}
 		});
@@ -543,7 +542,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
     	
     	switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
-				UnityAdsUtils.Log("onKeyDown", this);
+				UnityAdsDeviceLog.entered();
 				
 				UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 				long allowBackButtonSkip = currentZone.disableBackButtonForSeconds();
@@ -598,7 +597,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				_curPos = Float.valueOf(_videoView.getCurrentPosition());
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Could not get videoView currentPosition", this);
+				UnityAdsDeviceLog.error("Could not get videoView currentPosition");
 				if (_oldPos > 0)
 					_curPos = _oldPos;
 				else
@@ -613,7 +612,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				duration = _videoView.getDuration();
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Could not get videoView duration", this);
+				UnityAdsDeviceLog.error("Could not get videoView duration");
 				durationSuccess = false;
 			}
 			
@@ -693,7 +692,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				bufferPercentage = _videoView.getBufferPercentage();
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("Could not get videoView buffering percentage", this);
+				UnityAdsDeviceLog.error("Could not get videoView buffering percentage");
 			}
 			
 			if (UnityAdsProperties.getCurrentActivity() != null && !_playHeadHasMoved && _bufferingStartedMillis > 0 && 
@@ -702,7 +701,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						UnityAdsUtils.Log("Buffering taking too long.. cancelling video play", this);
+						UnityAdsDeviceLog.error("Buffering taking too long.. cancelling video play");
 						videoErrorOperations();
 					}
 				});
@@ -725,7 +724,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 						if (!_videoPlaybackStartedSent) {
 							if (_listener != null) {
 								_videoPlaybackStartedSent = true;
-								UnityAdsUtils.Log("onVideoPlaybackStarted sent to listener", this);
 								_listener.onVideoPlaybackStarted();
 								_bufferingCompledtedMillis = System.currentTimeMillis();
 								_videoStartedPlayingMillis = System.currentTimeMillis();

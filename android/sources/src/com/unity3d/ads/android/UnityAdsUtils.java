@@ -23,41 +23,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.os.Environment;
-import android.util.Log;
 
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsUtils {
 
 	private static final X500Principal DEBUG_DN = new X500Principal("CN=Android Debug,O=Android,C=US");
-	
-	@SuppressWarnings("rawtypes")
-	public static void Log (String message, Class cls) {
-		if (UnityAdsProperties.UNITY_ADS_DEBUG_MODE) {
-			logWithPrefix(cls.getName() + " :: ", message);
-		}
-	}
-	
-	public static void Log (String message, Object obj) {
-		if (UnityAdsProperties.UNITY_ADS_DEBUG_MODE) {
-			logWithPrefix(obj.getClass().getName() + " :: ", message);
-		}
-	}
-
-	// Android will truncate log messages over four kilobytes so write to log in sub 4k chunks
-	private static void logWithPrefix(String prefix, String message) {
-		int maxLogMsg = 3500;
-
-		for(int i = 0; i * maxLogMsg < message.length() && i < 10; i++) {
-			if(message.length() - i * maxLogMsg > maxLogMsg) {
-				Log.d(UnityAdsConstants.LOG_NAME, prefix + message.substring(i * maxLogMsg, (i + 1) * maxLogMsg));
-			} else {
-				Log.d(UnityAdsConstants.LOG_NAME, prefix + message.substring(i * maxLogMsg));
-			}
-		}
-	}
 	
 	public static boolean isDebuggable(Context ctx) {
 	    boolean debuggable = false;
@@ -157,7 +129,7 @@ public class UnityAdsUtils {
 				}
 			}
 			catch (Exception e) {
-				Log("Problem reading file: " + e.getMessage(), UnityAdsUtils.class);
+				UnityAdsDeviceLog.error("Problem reading file: " + e.getMessage());
 				return null;
 			}
 			
@@ -165,13 +137,13 @@ public class UnityAdsUtils {
 				br.close();
 			}
 			catch (Exception e) {
-				Log("Problem closing reader: " + e.getMessage(), UnityAdsUtils.class);
+				UnityAdsDeviceLog.error("Problem closing reader: " + e.getMessage());
 			}
 						
 			return fileContent;
 		}
 		else {
-			Log("File did not exist or couldn't be read", UnityAdsUtils.class);
+			UnityAdsDeviceLog.error("File did not exist or couldn't be read");
 		}
 		
 		return null;
@@ -187,11 +159,11 @@ public class UnityAdsUtils {
 			fos.close();
 		}
 		catch (Exception e) {
-			Log("Could not write file: " + e.getMessage(), UnityAdsUtils.class);
+			UnityAdsDeviceLog.error("Could not write file: " + e.getMessage());
 			return false;
 		}
 		
-		Log("Wrote file: " + fileToWrite.getAbsolutePath(), UnityAdsUtils.class);
+		UnityAdsDeviceLog.debug("Wrote file: " + fileToWrite.getAbsolutePath());
 		
 		return true;
 	}
@@ -203,12 +175,12 @@ public class UnityAdsUtils {
 			
 			if (cachedVideoFile.exists()) {
 				if (!cachedVideoFile.delete())
-					Log("Could not delete: " + cachedVideoFile.getAbsolutePath(), UnityAdsUtils.class);
+					UnityAdsDeviceLog.error("Could not delete: " + cachedVideoFile.getAbsolutePath());
 				else
-					Log("Deleted: " + cachedVideoFile.getAbsolutePath(), UnityAdsUtils.class);
+					UnityAdsDeviceLog.debug("Deleted: " + cachedVideoFile.getAbsolutePath());
 			}
 			else {
-				Log("File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.", UnityAdsUtils.class);
+				UnityAdsDeviceLog.debug("File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.");
 			}
 		}
 	}

@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsCampaign {
@@ -61,7 +61,7 @@ public class UnityAdsCampaign {
 			retObject.put("status", getCampaignStatus().toString());
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Error creating campaign JSON", this);
+			UnityAdsDeviceLog.error("Error creating campaign JSON");
 			return null;
 		}
 		
@@ -74,7 +74,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("shouldCacheVideo: key not found for campaign: " + getCampaignId() + ", returning false", this);
+				UnityAdsDeviceLog.error("Key not found for campaign: " + getCampaignId());
 			}			
 		}
 		return false;
@@ -86,7 +86,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOW_CACHE_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("allowCacheVideo: key not found for campaign: " + getCampaignId() + ", returning false", this);
+				UnityAdsDeviceLog.error("Key not found for campaign: " + getCampaignId());
 			}			
 		}
 		return false;
@@ -98,7 +98,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("shouldBypassAppSheet: key not found for campaign: " + getCampaignId() + ", returning false", this);
+				UnityAdsDeviceLog.error("Key not found for campaign: " + getCampaignId());
 			}			
 		}
 		
@@ -113,7 +113,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ENDSCREEN_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getEndScreenUrl: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -126,7 +126,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_PICTURE_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getPicture: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -139,7 +139,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ID_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getCampaignId: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -152,7 +152,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_ID_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getGameId: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -165,7 +165,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_NAME_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getGameName: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -178,7 +178,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_DOWNLOADABLE_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getVideoUrl: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -191,7 +191,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_STREAMING_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getVideoStreamUrl: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -204,7 +204,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CLICKURL_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getClickUrl: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -218,7 +218,7 @@ public class UnityAdsCampaign {
 				return getCampaignId() + "-" + videoFile.getName();
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getVideoFilename: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -235,14 +235,14 @@ public class UnityAdsCampaign {
 					size = Long.parseLong(fileSize);
 				}
 				catch (Exception e) {
-					UnityAdsUtils.Log("getVideoFileExpectedSize: could not parse size: " + e.getMessage(), this);
+					UnityAdsDeviceLog.error("Could not parse size: " + e.getMessage());
 					return size;
 				}
 				
 				return size;
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getVideoFileExpectedSize: not found, returning -1", this);
+				UnityAdsDeviceLog.error("Not found, returning -1");
 				return size;
 			}
 		}
@@ -256,7 +256,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TAGLINE_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getTagLine: This should not happen!", this);
+				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
 		
@@ -269,7 +269,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_STOREID_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getStoreId: Was supposed to use UnityAdsConstants.UNITY_ADS_CAMPAIGN_STOREID_KEY but " + e.getMessage() + " occured", this);
+				UnityAdsDeviceLog.error("Was supposed to use UnityAdsConstants.UNITY_ADS_CAMPAIGN_STOREID_KEY but " + e.getMessage() + " occured");
 			}
 		}
 		if (_campaignJson.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ITUNESID_KEY)) {
@@ -277,7 +277,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ITUNESID_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsUtils.Log("getStoreId: Was supposed to use UnityAdsConstants.UNITY_ADS_CAMPAIGN_ITUNESID_KEY but " + e.getMessage() + " occured", this);
+				UnityAdsDeviceLog.error("Was supposed to use UnityAdsConstants.UNITY_ADS_CAMPAIGN_ITUNESID_KEY but " + e.getMessage() + " occured");
 			}
 		}
 		

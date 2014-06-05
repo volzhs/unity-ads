@@ -5,27 +5,27 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 
 public class UnityAdsFullscreenActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
+		UnityAdsDeviceLog.entered();   	
         super.onCreate(savedInstanceState);
-    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onCreate()", this);    	
    		UnityAds.changeActivity(this);
     }
     
     @Override
     public void onResume () {
+		UnityAdsDeviceLog.entered();   	
     	super.onResume();
-    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onResume()", this);
    		UnityAds.changeActivity(this);
     }
     
     @Override
 	protected void onDestroy() {
+		UnityAdsDeviceLog.entered();   	
     	super.onDestroy();		
-    	UnityAdsUtils.Log("UnityAdsFullscreenActivity->onDestroy()", this);
 	}
     
 	@Override

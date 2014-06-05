@@ -6,7 +6,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsRewardItem {
@@ -65,7 +65,7 @@ public class UnityAdsRewardItem {
 			_pictureURL = _rewardItemJSON.getString(UnityAdsConstants.UNITY_ADS_REWARD_PICTURE_KEY);
 		}
 		catch (Exception e) {
-			UnityAdsUtils.Log("Problem parsing campaign values", this);
+			UnityAdsDeviceLog.error("Problem parsing campaign values");
 		}
 	}
 	

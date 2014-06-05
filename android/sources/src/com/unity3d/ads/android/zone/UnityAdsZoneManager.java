@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsZoneManager {
@@ -39,7 +39,7 @@ public class UnityAdsZoneManager {
 				
 				_zones.put(zone.getZoneId(), zone);
 			} catch(JSONException e) {
-				UnityAdsUtils.Log("Failed to parse zone", this);
+				UnityAdsDeviceLog.error("Failed to parse zone");
 			}
 		} 
 	}

@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsZone {
@@ -101,7 +101,7 @@ public class UnityAdsZone {
 					try {
 						_options.put(option.getKey(), option.getValue());
 					} catch(JSONException e) {
-						UnityAdsUtils.Log("Unable to set JSON value", this);
+						UnityAdsDeviceLog.error("Unable to set JSON value");
 					}
 				}
 			}
