@@ -37,20 +37,20 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 		options.putAll(localExtras);
 		options.putAll(serverExtras);
 		
-		if(UnityAds.instance == null) {
-			new UnityAds((Activity)context, gameId, this);
-		} else {
-			UnityAds.instance.changeActivity((Activity)context);
-			UnityAds.instance.setListener(this);
+		UnityAds.init((Activity)context, gameId, this);
+		UnityAds.changeActivity((Activity)context);
+		UnityAds.setListener(this);
+		
+		if (UnityAds.canShowAds()) {
 			listener.onInterstitialLoaded();
-		}		
+		}
 	}
 
 	@Override
 	protected void showInterstitial() {
-		if(UnityAds.instance.canShow() && UnityAds.instance.canShowAds()) {
-			UnityAds.instance.setZone(zoneId);			
-			UnityAds.instance.show(options);
+		if(UnityAds.canShow() && UnityAds.canShowAds()) {
+			UnityAds.setZone(zoneId);			
+			UnityAds.show(options);
 		} else {
 			listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);
 		}
@@ -58,40 +58,40 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 
 	@Override 
 	protected void onInvalidate() {
-		Log.d("UnityAds", "onInvalidate");
+		UnityAdsDeviceLog.entered();
 	}
 
 	@Override
 	public void onHide() {
-		Log.d("UnityAds", "onHide");
+		UnityAdsDeviceLog.entered();
 		listener.onInterstitialDismissed();
 	}
 
 	@Override
 	public void onShow() {
-		Log.d("UnityAds", "onShow");
+		UnityAdsDeviceLog.entered();
 		listener.onInterstitialShown();
 	}
 	
 	@Override
 	public void onVideoStarted() {
-		Log.d("UnityAds", "onVideoStarted");
+		UnityAdsDeviceLog.entered();
 	}
 	
 	@Override
 	public void onVideoCompleted(String rewardItemKey, boolean skipped) {
-		Log.d("UnityAds", "onVideoCompleted - " + rewardItemKey + " - " + skipped);
+		UnityAdsDeviceLog.debug(rewardItemKey + ", " + skipped);
 	}
 
 	@Override
 	public void onFetchCompleted() {
-		Log.d("UnityAds", "onFetchCompleted");
+		UnityAdsDeviceLog.entered();
 		listener.onInterstitialLoaded();
 	}
 
 	@Override
 	public void onFetchFailed() {
-		Log.d("UnityAds", "onFetchFailed");
+		UnityAdsDeviceLog.entered();
 		listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);	
 	}
 }
