@@ -50,10 +50,6 @@ public static class UnityAdsExternal {
 		return false;
 	}
 	
-	public static void stopAll () {
-		Log ("UnityEditor: stopAll()");
-	}
-	
 	public static bool hasMultipleRewardItems () {
 		Log ("UnityEditor: hasMultipleRewardItems()");
 		return false;
@@ -114,9 +110,6 @@ public static class UnityAdsExternal {
 	[DllImport ("__Internal")]
 	public static extern bool canShow ();
 	
-	[DllImport ("__Internal")]
-	public static extern void stopAll ();
-
 	[DllImport ("__Internal")]
 	public static extern bool hasMultipleRewardItems ();
 	
@@ -181,11 +174,6 @@ public static class UnityAdsExternal {
 	public static bool canShow () {
 		Log ("UnityAndroid: canShow()");
 		return unityAdsUnity.Call<bool>("canShow");
-	}
-	
-	public static void stopAll () {
-		Log ("UnityAndroid: stopAll()");
-		unityAdsUnity.Call("stopAll");
 	}
 	
 	public static bool hasMultipleRewardItems () {

@@ -109,10 +109,6 @@ public class UnityAds : MonoBehaviour {
 		return false;
 	}
 	
-	public static void stopAll () {
-		UnityAdsExternal.stopAll();
-	}
-	
 	public static bool hasMultipleRewardItems () {
 		if (_campaignsAvailable)
 			return UnityAdsExternal.hasMultipleRewardItems();

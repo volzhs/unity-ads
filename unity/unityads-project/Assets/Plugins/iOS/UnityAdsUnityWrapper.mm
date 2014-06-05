@@ -147,10 +147,6 @@ extern "C" {
         return [[UnityAds sharedInstance] canShow];
     }
 	
-	void stopAll () {
-        [[UnityAds sharedInstance] stopAll];
-    }
-    
 	bool hasMultipleRewardItems () {
         return [[UnityAds sharedInstance] hasMultipleRewardItems];
     }
