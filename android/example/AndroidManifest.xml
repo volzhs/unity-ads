@@ -25,12 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-  		 <activity 
-  		    android:name="com.unity3d.ads.android.view.UnityAdsFullscreenActivity" 
-          	android:configChanges="locale|mcc|mnc|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale"
-          	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-          	android:hardwareAccelerated="true" />
     </application>
     <!--  screenSize -->
     <!--  smallestScreenSize -->
