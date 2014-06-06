@@ -80,47 +80,13 @@ public class UnityAdsDevice {
 		
 		return buildMacAddressFromInterface(intf);
     }
-    
-    public static void fetchAdvertisingTrackingInfo(final Activity context) {
-    	try {
-    		Class<?> GooglePlayServicesUtil = Class.forName("com.google.android.gms.common.GooglePlayServicesUtil");
-    		Method isGooglePlayServicesAvailable = GooglePlayServicesUtil.getMethod("isGooglePlayServicesAvailable", Context.class);
-    		if(isGooglePlayServicesAvailable.invoke(null, context).equals(0)) { // ConnectionResult.SUCCESS
-    			Class<?> AdvertisingClientId = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient");
-        		Method getAdvertisingIdInfo = AdvertisingClientId.getMethod("getAdvertisingIdInfo", Context.class);
-        		UnityAdsDevice.ADVERTISING_TRACKING_INFO = getAdvertisingIdInfo.invoke(null, context);
-    		} else {
-    			UnityAdsDeviceLog.debug("Unable to fetch advertising tracking info");
-    		}  		
-    	} catch(Exception e) {
-    		UnityAdsDeviceLog.info("Warning! Google Play Services is needed to access Android advertising identifier. Please add Google Play Services to your game.");
-    	}
-    }
-    
+        
     public static String getAdvertisingTrackingId() {
-    	try {
-    		if(UnityAdsDevice.ADVERTISING_TRACKING_INFO != null) {
-        		Class<?> Info = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient$Info");
-        		Method getId = Info.getMethod("getId");
-        		return (String)getId.invoke(UnityAdsDevice.ADVERTISING_TRACKING_INFO);
-        	}
-    		return null;
-    	} catch(Exception e) {
-    		return null;
-    	}
+    	return UnityAdsAdvertisingId.getAdvertisingTrackingId();
     }
     
     public static boolean isLimitAdTrackingEnabled() {
-    	try {
-    		if(UnityAdsDevice.ADVERTISING_TRACKING_INFO != null) {
-        		Class<?> Info = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient$Info");
-        		Method isLimitAdTrackingEnabled = Info.getMethod("isLimitAdTrackingEnabled");
-        		return (Boolean)isLimitAdTrackingEnabled.invoke(UnityAdsDevice.ADVERTISING_TRACKING_INFO);
-        	}
-    		return false;
-    	} catch(Exception e) {
-    		return false;
-    	}
+    	return UnityAdsAdvertisingId.getLimitedAdTracking();
     }
 	
     @SuppressLint("DefaultLocale")
