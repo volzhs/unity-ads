@@ -115,23 +115,24 @@ public class UnityAdsProperties {
 	}
 	
 	public static Activity getBaseActivity() {
-		if(BASE_ACTIVITY != null) {
+		if (BASE_ACTIVITY != null &&
+			BASE_ACTIVITY.get() != null &&
+			!BASE_ACTIVITY.get().isFinishing() &&
+			!isActivityDestroyed(BASE_ACTIVITY.get())) {
 			return BASE_ACTIVITY.get();
 		}
 		return null;
 	}
 	
 	public static Activity getCurrentActivity() {
-		if (CURRENT_ACTIVITY != null) {
-			if (CURRENT_ACTIVITY.get() != null &&
-			    !CURRENT_ACTIVITY.get().isFinishing() &&
-			    !isActivityDestroyed(CURRENT_ACTIVITY.get())) {
-				return CURRENT_ACTIVITY.get();
-			} else {
-				return getBaseActivity();
-			}
+		if (CURRENT_ACTIVITY != null &&
+			CURRENT_ACTIVITY.get() != null &&
+			!CURRENT_ACTIVITY.get().isFinishing() &&
+			!isActivityDestroyed(CURRENT_ACTIVITY.get())) {
+			return CURRENT_ACTIVITY.get();
+		} else {
+			return getBaseActivity();
 		}
-		return null;
 	}
 	
 	public static void setExtraParams (Map<String, String> params) {
