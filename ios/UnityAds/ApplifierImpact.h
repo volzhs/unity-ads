@@ -1,6 +1,6 @@
 //
 //  ApplifierImpact.h
-//  Copyright (c) 2012 Applifier. All rights reserved.
+//  Copyright (c) 2012 Unity Technologies. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
