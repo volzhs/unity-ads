@@ -41,7 +41,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		Log.d(_exampleAppLogTag, "Init Unity Ads");
 		
 		UnityAds.setDebugMode(true);
-		UnityAds.setTestMode(true);
+		//UnityAds.setTestMode(true);
 
 		_optionsView = ((RelativeLayout)findViewById(R.id.optionsView));
 		
