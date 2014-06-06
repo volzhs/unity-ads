@@ -32,8 +32,8 @@ import com.unity3d.ads.android.webapp.UnityAdsWebView;
 import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 
-public class UnityAdsMainView extends RelativeLayout implements 	IUnityAdsWebViewListener, 
-																		IUnityAdsVideoPlayerListener {
+public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebViewListener, 
+																IUnityAdsVideoPlayerListener {
 
 	public static enum UnityAdsMainViewState { WebView, VideoPlayer };
 	public static enum UnityAdsMainViewAction { VideoStart, VideoEnd, VideoSkipped, BackButtonPressed, RequestRetryVideoPlay };
