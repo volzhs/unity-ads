@@ -12,7 +12,7 @@
 
     <application
         android:icon="@drawable/icon_48"
-        android:label="@string/app_name" 
+        android:label="@string/unityads_example_app_name" 
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:allowBackup="false">
         

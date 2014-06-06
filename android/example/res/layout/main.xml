@@ -8,72 +8,56 @@
     <ImageView android:layout_width="fill_parent" 
         	   android:layout_height="fill_parent" 
         	   android:src="@drawable/unityads_main" 
-        	   android:scaleType="centerCrop" android:id="@+id/bg" 
-        	   android:contentDescription="@+string/backgroundImage"/>    
-    
-    <Button android:background="@android:color/transparent"
-        	android:layout_alignParentRight="true"
-        	android:layout_marginRight="89dp"
-        	android:layout_alignParentTop="true"
-        	android:layout_marginTop="116dp"
-        	android:id="@+id/sandrabullock"
-            android:text="@string/pi"
-            android:textSize="40sp" 
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:textColor="#FF002060"/>
-    
-    <!--  
-    <ImageView 
-        android:layout_width="wrap_content" 
-        android:layout_height="wrap_content" 
-        android:src="@drawable/playbtn"
-        android:scaleType="centerCrop" 
-        android:id="@+id/playbtn"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dip" />
-    -->
+        	   android:scaleType="centerCrop" 
+        	   android:id="@+id/unityads_example_bg" 
+        	   android:contentDescription="@string/unityads_example_bacgkroundimage"/>
     
     <Button android:background="@drawable/shipselection"
-    		 android:id="@+id/startAdsButton" 
-    		 android:contentDescription="@+string/startButton" 
+    		 android:id="@+id/unityads_example_startbutton" 
     		 android:layout_alignParentBottom="true" 
     		 android:layout_centerHorizontal="true"
     		 android:layout_marginBottom="30dp"
-    		 android:layout_width="wrap_content" 
-        	 android:layout_height="wrap_content"
-        	 android:text="@string/startText"
+    		 android:layout_width="130dp" 
+        	 android:layout_height="45dp"
+        	 android:text="@string/unityads_example_starttext"
         	 android:textColor="@android:color/white"
-        	 android:width="120dp"
-        	 android:height="36dp"
         	 android:visibility="visible"/>
     
-    <Button android:background="@drawable/shipselection"
-        		 android:id="@+id/openAdsButton" 
-        		 android:contentDescription="@+string/openButton" 
-        		 android:layout_alignParentBottom="true" 
-        		 android:layout_centerHorizontal="true"
-        		 android:layout_marginBottom="30dp"
-        		 android:layout_width="wrap_content" 
-            	 android:layout_height="wrap_content"
-            	 android:text="@string/openText"
-            	 android:textColor="@android:color/white"
-            	 android:width="120dp"
-            	 android:height="36dp"
-            	 android:visibility="invisible"/>
+    <Button
+        android:id="@+id/unityads_example_openbutton"
+        android:layout_width="130dp"
+        android:layout_height="45dp"
+        android:layout_alignBottom="@+id/unityads_example_startbutton"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shipselection"
+        android:text="@string/unityads_example_opentext"
+        android:textColor="@android:color/white"
+        android:visibility="invisible" />
     
     <TextView android:width="240dp"
-              android:height="240dp"
+              android:height="100dp"
               android:gravity="center"
-              android:textColor="#80001030"
+              android:textColor="#50FFFFFF"
               android:layout_centerInParent="true"
               android:textSize="16sp"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="@string/helpTextStart"
-              android:id="@+id/instructionsText"/>
+              android:text="@string/unityads_example_helptextstart"
+              android:id="@+id/unityads_example_instructions"/>
+    
+	<ImageButton 
+	    android:id="@+id/unityads_settings"
+	    android:layout_centerHorizontal="true"
+	    android:src="@drawable/unityads_settings"
+	    android:background="@color/unityads_example_settingsbutton_transparent"
+	    android:layout_width="45dp"
+	    android:layout_height="45dp"
+	    android:layout_toRightOf="@id/unityads_example_startbutton"
+	    android:layout_alignTop="@id/unityads_example_startbutton"
+	    android:scaleType="fitCenter"
+	    android:padding="0dp"
+	    android:layout_marginLeft="10dp"
+	    android:contentDescription="@string/unityads_example_settings_image_description"/>
     
     <RelativeLayout android:layout_width="wrap_content" 
         			android:layout_height="wrap_content"
@@ -81,10 +65,10 @@
         			android:background="#90002040"
         			android:layout_centerInParent="true"
         			android:visibility="invisible"
-        			android:id="@+id/optionsView">
+        			android:id="@+id/unityads_example_optionsview">
         
-        <TextView android:text="@string/developer_id"
-            	  android:id="@+id/developerIdHeading"
+        <TextView android:text="@string/unityads_example_developer_id"
+            	  android:id="@+id/unityads_example_developeridheading"
             	  android:width="200dp"
             	  android:height="30dp"
             	  android:gravity="center"
@@ -99,19 +83,19 @@
             	  android:layout_height="wrap_content"
             	  android:layout_centerHorizontal="true"
             	  android:inputType="textNoSuggestions"
-            	  android:layout_below="@id/developerIdHeading"
+            	  android:layout_below="@id/unityads_example_developeridheading"
             	  android:layout_marginTop="5dp"
-            	  android:id="@+id/developer_id_data"/>
+            	  android:id="@+id/unityads_example_developer_id_data"/>
 
-		<TextView android:text="@string/options_id"
-            	  android:id="@+id/optionsIdHeading"
+		<TextView android:text="@string/unityads_example_options_id"
+            	  android:id="@+id/unityads_example_optionsidheading"
             	  android:width="200dp"
             	  android:height="30dp"
             	  android:gravity="center"
             	  android:textColor="#FFFFFFFF"
             	  android:layout_width="wrap_content"
             	  android:layout_height="wrap_content"
-            	  android:layout_below="@id/developer_id_data"
+            	  android:layout_below="@id/unityads_example_developer_id_data"
             	  android:layout_marginTop="15dp"/>
 
         <EditText android:text=""
@@ -121,7 +105,7 @@
             	  android:layout_height="wrap_content"
             	  android:layout_centerHorizontal="true"
             	  android:inputType="textNoSuggestions"
-            	  android:layout_below="@id/optionsIdHeading"
+            	  android:layout_below="@id/unityads_example_optionsidheading"
             	  android:layout_marginTop="5dp"
             	  android:id="@+id/options_id_data"/>
         
@@ -132,7 +116,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:layout_above="@+id/startAdsButton"
+        android:layout_above="@+id/unityads_example_startbutton"
         android:layout_centerHorizontal="true"
         android:contentDescription="@+string/loadingstatus"
         android:src="@drawable/unityads_loading"

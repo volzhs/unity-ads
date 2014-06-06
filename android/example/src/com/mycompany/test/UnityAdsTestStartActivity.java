@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,7 +23,7 @@ import com.unity3d.ads.android.IUnityAdsListener;
 
 public class UnityAdsTestStartActivity extends Activity implements IUnityAdsListener {
 	private UnityAdsTestStartActivity _self = null;
-	private Button _settingsButton = null;
+	private ImageButton _settingsButton = null;
 	private Button _startButton = null;
 	private Button _openButton = null;
 	private RelativeLayout _optionsView = null;
@@ -43,9 +44,9 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		UnityAds.setDebugMode(true);
 		//UnityAds.setTestMode(true);
 
-		_optionsView = ((RelativeLayout)findViewById(R.id.optionsView));
+		_optionsView = ((RelativeLayout)findViewById(R.id.unityads_example_optionsview));
 		
-		_settingsButton = ((Button)findViewById(R.id.sandrabullock));
+		_settingsButton = ((ImageButton)findViewById(R.id.unityads_settings));
 		_settingsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -60,13 +61,13 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 			}
 		});
 		
-		_startButton = ((Button)findViewById(R.id.startAdsButton));
+		_startButton = ((Button)findViewById(R.id.unityads_example_startbutton));
 		_startButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 		    	_statusImage = ((ImageView)findViewById(R.id.unityads_status));
 		    	_statusImage.setVisibility(View.VISIBLE);
-		    	UnityAds.setTestDeveloperId(((EditText)findViewById(R.id.developer_id_data)).getText().toString());
+		    	UnityAds.setTestDeveloperId(((EditText)findViewById(R.id.unityads_example_developer_id_data)).getText().toString());
 		    	UnityAds.setTestOptionsId(((EditText)findViewById(R.id.options_id_data)).getText().toString());
 				UnityAds.init(_self, "16", _self);
 				UnityAds.setListener(_self);
@@ -93,7 +94,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	@Override
 	public boolean onOptionsItemSelected (MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.kill:
+			case R.id.unityads_example_kill:
 		    	System.runFinalizersOnExit(true);		
 				finish();
 		    	Log.d(_exampleAppLogTag, "Quitting");
@@ -137,8 +138,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     	
     	_statusImage.setImageResource(R.drawable.unityads_loaded);
     	
-    	_instructions = ((TextView)findViewById(R.id.instructionsText));
-    	_instructions.setText(R.string.helpTextLoaded);
+    	_instructions = ((TextView)findViewById(R.id.unityads_example_instructions));
+    	_instructions.setText(R.string.unityads_example_helptextloaded);
     	
     	_settingsButton.setEnabled(false);
     	_settingsButton.setVisibility(View.INVISIBLE);
@@ -146,7 +147,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     	_startButton.setVisibility(View.INVISIBLE);
     	_optionsView.setVisibility(View.INVISIBLE);
     	
-    	_openButton = ((Button)findViewById(R.id.openAdsButton));
+    	_openButton = ((Button)findViewById(R.id.unityads_example_openbutton));
     	_openButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
