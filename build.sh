@@ -8,7 +8,7 @@ base_sdk_dir=`eval "echo $base_sdk_dir"`
 prefix=$(cd "$(dirname "$0")"; pwd)
 cd $prefix
 
-unity_app="/Applications/Unity/Unity.app/Contents/MacOS/Unity"
+unity_app="/Applications/Unity-3.5.7/Unity.app/Contents/MacOS/Unity"
 
 ios_repo="ios"
 ios_build="unknown"
