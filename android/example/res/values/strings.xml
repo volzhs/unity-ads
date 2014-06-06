@@ -10,4 +10,5 @@
 	<string name="unityads_example_helptextstart">Press \"Start\" or select additional options by pressing the Settings -icon.</string>
 	<string name="unityads_example_helptextloaded">Press \"Open\" to show Unity Ads.</string>
 	<string name="unityads_example_killapplication">Kill Application</string>
+	<string name="unityads_example_loadingstatus">Loading status</string>
 </resources>

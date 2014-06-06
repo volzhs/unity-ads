@@ -118,7 +118,7 @@
         android:layout_marginBottom="15dp"
         android:layout_above="@+id/unityads_example_startbutton"
         android:layout_centerHorizontal="true"
-        android:contentDescription="@+string/loadingstatus"
+        android:contentDescription="@string/unityads_example_loadingstatus"
         android:src="@drawable/unityads_loading"
         android:visibility="invisible" />
 
