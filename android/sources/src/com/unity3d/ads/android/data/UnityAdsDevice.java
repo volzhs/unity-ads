@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -19,6 +20,7 @@ import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsDevice {
 
 	public static Object ADVERTISING_TRACKING_INFO = null;
