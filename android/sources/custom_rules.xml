@@ -2,23 +2,19 @@
 <project>
     <target name="strip" >
         <jar destfile="build/libs/unity-ads.jar" >
-           <zipfileset src="bin/proguard/obfuscated.jar" excludes="com/unity3d/ads/R*.class"/>
+           <zipfileset src="bin/proguard/obfuscated.jar" excludes="com/unity3d/ads/android/R*.class"/>
         </jar>
     </target>
- <target name="zip" >
-
+     <target name="zip" >
         <jar destfile="build/libs/unity-ads.jar" >
-
             <zipgroupfileset
                 dir="libs/"
                 includes="*.jar" />
-
             <zipgroupfileset
                 dir="bin/"
                 includes="classes.jar" />
         </jar>
     </target>
-
     <target
         name="clean"
         depends="android_rules.clean" >
