@@ -9,6 +9,7 @@ public class UnityAdsPackageGenerator : MonoBehaviour {
 		"Assets/Editor/PostprocessBuildPlayer_UnityAdsSDK",
 		"Assets/Editor/UpdateXcodeUnityAds.pyc",
 
+		"Assets/Editor/UnityAds",
 		"Assets/Plugins/UnityAds",
 
 		"Assets/Plugins/iOS/UnityAdsUnityWrapper.mm",
