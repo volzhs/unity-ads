@@ -21,9 +21,65 @@
   public *;
 }
 
+-keep public class com.unity3d.ads.android.UnityAds
+-keepclassmembers class com.unity3d.ads.android.UnityAds {
+   public *;
+}
+
+-keep public interface com.unity3d.ads.android.IUnityAdsListener
+-keepclassmembers interface com.unity3d.ads.android.IUnityAdsListener {
+   public *;
+}
+
 -keep public class com.unity3d.ads.android.webapp.UnityAdsWebBridge
--keepclassmembers class com.unity3d.ads.android.webapp.UnityAdsWebBridge { 
+-keepclassmembers class com.unity3d.ads.android.webapp.UnityAdsWebBridge {
     public boolean handleWebEvent (java.lang.String, java.lang.String); 
+}
+
+-keep public class com.unity3d.ads.android.unity3d.UnityAdsUnityWrapper
+-keepclassmembers class com.unity3d.ads.android.unity3d.UnityAdsUnityWrapper {
+   public *;
+}
+
+-keep public class com.applifier.impact.android.ApplifierImpact
+-keepclassmembers class com.applifier.impact.android.ApplifierImpact {
+   public *;
+}
+
+-keep public interface com.applifier.impact.android.IApplifierImpactListener
+-keepclassmembers interface com.applifier.impact.android.IApplifierImpactListener {
+   public *;
+}
+
+-keep public enum com.unity3d.ads.android.view.UnityAdsMainView$UnityAdsMainViewAction {
+   **[] $VALUES;
+   public *;
+}
+
+-keep public class com.unity3d.ads.android.campaign.UnityAdsCampaignHandler
+-keepclassmembers class com.unity3d.ads.android.campaign.UnityAdsCampaignHandler {
+   public *;
+}
+
+-keep public class com.unity3d.ads.android.campaign.UnityAdsCampaign
+-keepclassmembers class com.unity3d.ads.android.campaign.UnityAdsCampaign {
+   public *;
+}
+
+-keep public interface com.unity3d.ads.android.campaign.IUnityAdsCampaignHandlerListener
+-keepclassmembers interface com.unity3d.ads.android.campaign.IUnityAdsCampaignHandlerListener {
+   public *;
+}
+
+-keep public enum com.unity3d.ads.android.campaign.UnityAdsCampaign$UnityAdsCampaignStatus {
+   **[] $VALUES;
+   public *;
+}
+
+-assumenosideeffects class com.unity3d.ads.android.UnityAdsDeviceLog {
+  public static void entered();
+  public static void debug(java.lang.String, java.lang.Object[]);
+  public static void debug(java.lang.String);
 }
 
 -keepattributes JavascriptInterface
