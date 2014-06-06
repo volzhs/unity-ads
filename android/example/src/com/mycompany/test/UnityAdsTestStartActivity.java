@@ -19,34 +19,34 @@ import android.widget.TextView;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.IUnityAdsListener;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsTestStartActivity extends Activity implements IUnityAdsListener {
 	private UnityAdsTestStartActivity _self = null;
-	private Button _piButton = null;
+	private Button _settingsButton = null;
 	private Button _startButton = null;
 	private Button _openButton = null;
 	private RelativeLayout _optionsView = null;
 	private TextView _instructions = null;
 	private ImageView _statusImage = null;
+	private String _exampleAppLogTag = "UnityAdsExample";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onCreate()");
+    	Log.d(_exampleAppLogTag, "UnityAdsTestStartActivity->onCreate()");
         super.onCreate(savedInstanceState);
         
         _self = this;
         
         setContentView(R.layout.main);
-		Log.d(UnityAdsConstants.LOG_NAME, "Init Unity Ads");
+		Log.d(_exampleAppLogTag, "Init Unity Ads");
 		
 		UnityAds.setDebugMode(true);
 		UnityAds.setTestMode(true);
-		
+
 		_optionsView = ((RelativeLayout)findViewById(R.id.optionsView));
 		
-		_piButton = ((Button)findViewById(R.id.sandrabullock));
-		_piButton.setOnClickListener(new View.OnClickListener() {
+		_settingsButton = ((Button)findViewById(R.id.sandrabullock));
+		_settingsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (_optionsView != null) {
@@ -76,7 +76,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     
     @Override
     public void onResume () {
-    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onResume()");
+    	Log.d(_exampleAppLogTag, "UnityAdsTestStartActivity->onResume()");
     	super.onResume();
     	
    		UnityAds.changeActivity(this);
@@ -96,7 +96,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 			case R.id.kill:
 		    	System.runFinalizersOnExit(true);		
 				finish();
-		    	Log.d(UnityAdsConstants.LOG_NAME, "Quitting");
+		    	Log.d(_exampleAppLogTag, "Quitting");
 
 		    	break;
 		}
@@ -106,7 +106,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	
     @Override
 	protected void onDestroy() {
-    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onDestroy()");
+    	Log.d(_exampleAppLogTag, "UnityAdsTestStartActivity->onDestroy()");
     	super.onDestroy();		
 	}
 	
@@ -126,22 +126,22 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     @Override
 	public void onVideoCompleted (String rewardItemKey, boolean skipped) {
     	if(skipped) {
-    		Log.d(UnityAdsConstants.LOG_NAME, "Video was skipped!");
+    		Log.d(_exampleAppLogTag, "Video was skipped!");
     	}
     }
 	
 	// Unity Ads campaign events
     @Override
 	public void onFetchCompleted () {
-    	Log.d(UnityAdsConstants.LOG_NAME, "UnityAdsTestStartActivity->onFetchCompleted()");
+    	Log.d(_exampleAppLogTag, "UnityAdsTestStartActivity->onFetchCompleted()");
     	
     	_statusImage.setImageResource(R.drawable.unityads_loaded);
     	
     	_instructions = ((TextView)findViewById(R.id.instructionsText));
     	_instructions.setText(R.string.helpTextLoaded);
     	
-    	_piButton.setEnabled(false);
-    	_piButton.setVisibility(View.INVISIBLE);
+    	_settingsButton.setEnabled(false);
+    	_settingsButton.setVisibility(View.INVISIBLE);
     	_startButton.setEnabled(false);
     	_startButton.setVisibility(View.INVISIBLE);
     	_optionsView.setVisibility(View.INVISIBLE);
