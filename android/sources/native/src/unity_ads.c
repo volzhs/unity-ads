@@ -71,19 +71,15 @@ void unity_ads_set_reward_item(const char* key) {
  * Show Unity Ads
  */
 void unity_ads_show(int show_offer_screen, int show_animated) {
-
 	__a_unityads_call_static_method("__show", "(ZZ)V", show_offer_screen, show_animated);
-
 }
 
 /* 
  * Init Unity Ads
  */
 void unity_ads_init(int game_id, void (*iec)(int, const char*)) {
-
 	unityads_event_callback = iec;
 	__a_unityads_call_static_method("__init", "(I)V", game_id);
-
 }
 
 /*
@@ -93,7 +89,6 @@ void unity_ads_init(int game_id, void (*iec)(int, const char*)) {
  */
 JNIEXPORT void JNICALL Java_com_unity3d_ads_android_ndk_AndroidNativeBridge_bridgeReady
   (JNIEnv *env, jobject obj) {
-
   	unity_ads_debug("Bridge ready");
 
     int status = (*env)->GetJavaVM(env, &jvm);
@@ -111,7 +106,6 @@ JNIEXPORT void JNICALL Java_com_unity3d_ads_android_ndk_AndroidNativeBridge_brid
  */
 JNIEXPORT void JNICALL Java_com_unity3d_ads_android_ndk_AndroidNativeBridge_dispatchEvent
   (JNIEnv *env, jobject obj, jint event_id, jstring data) {
-
   	const char* event_data;
 
   	if(data != NULL) {
@@ -119,7 +113,6 @@ JNIEXPORT void JNICALL Java_com_unity3d_ads_android_ndk_AndroidNativeBridge_disp
   	}
 
   	(*unityads_event_callback)(event_id, event_data);
-
 }
 
 /*
@@ -131,7 +124,6 @@ JNIEXPORT void JNICALL Java_com_unity3d_ads_android_ndk_AndroidNativeBridge_disp
  */
 JNIEXPORT void JNICALL Java_com_unity3d_ads_android_ndk_AndroidNativeBridge_setRewardItems
   (JNIEnv * env, jobject obj, jobjectArray items) {
-
 	JNIEnv *localEnv;
 	jclass unityAdsNativeBridge;
 	jmethodID methodID;
@@ -149,11 +141,9 @@ JNIEXPORT void JNICALL Java_com_unity3d_ads_android_ndk_AndroidNativeBridge_setR
 		r.reward_image_url = __a_unityads_get_reward_image_url(r.reward_name);
 		reward_items[i] = r;
 	}
-
 }
 
-
-void unity_ads_debug(const char* msg) {
+static void unity_ads_debug(const char* msg) {
 	__android_log_print(ANDROID_LOG_INFO, APPNAME, msg);
 }
 
