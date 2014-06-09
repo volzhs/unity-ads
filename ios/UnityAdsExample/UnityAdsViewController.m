@@ -69,10 +69,10 @@
   // TEST MODE: Do not use in production apps
 #if !TEST_LEGACY_IMPACT_API
   [[UnityAds sharedInstance] setDebugMode:YES];
-  [[UnityAds sharedInstance] setTestMode:YES];
+  [[UnityAds sharedInstance] setTestMode:NO];
 #else
   [[ApplifierImpact sharedInstance] setDebugMode:YES];
-  [[ApplifierImpact sharedInstance] setTestMode:YES];
+  [[ApplifierImpact sharedInstance] setTestMode:NO];
 #endif
 
   if (self.developerId.text != nil) {
