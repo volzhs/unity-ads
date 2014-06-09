@@ -55,11 +55,6 @@
     public *;
 }
 
--keep public class 
--keepclassmembers class com.unity3d.ads.android.ndk.AndroidNativeBridge {
-   public *;
-}
-
 -keep public class com.applifier.impact.android.ApplifierImpact
 -keepclassmembers class com.applifier.impact.android.ApplifierImpact {
    public *;
