@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class UnityAds : MonoBehaviour {
 
-	public string gameId = "";
+	public string gameIdForAndroid = "";
+	public string gameIdForIOS = "";
 	public bool debugModeEnabled = false;
 	public bool testModeEnabled = false;
 	
@@ -58,8 +59,10 @@ public class UnityAds : MonoBehaviour {
 			if(!sharedInstance) {
 				sharedInstance = (UnityAds) FindObjectOfType(typeof(UnityAds));
 
-				#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
-				UnityAdsExternal.init(sharedInstance.gameId, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name);
+				#if UNITY_IPHONE && !UNITY_EDITOR
+				UnityAdsExternal.init(sharedInstance.gameIdForIOS, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name);
+				#elif UNITY_ANDROID && !UNITY_EDITOR
+				UnityAdsExternal.init(sharedInstance.gameIdForAndroid, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name);
 				#endif
 			}
 
