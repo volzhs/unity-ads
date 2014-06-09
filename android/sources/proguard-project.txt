@@ -52,6 +52,11 @@
 
 -keep public class com.unity3d.ads.android.unity3d.UnityAdsUnityWrapper
 -keepclassmembers class com.unity3d.ads.android.unity3d.UnityAdsUnityWrapper {
+    public *;
+}
+
+-keep public class 
+-keepclassmembers class com.unity3d.ads.android.ndk.AndroidNativeBridge {
    public *;
 }
 

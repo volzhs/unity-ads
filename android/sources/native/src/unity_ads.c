@@ -5,7 +5,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-#define APPNAME "cocos"
+#define APPNAME "UnityAdsJNI"
 
 /*
  * Unity Ads Native SDK bridge
@@ -22,7 +22,6 @@ static JavaVM *jvm;
 unityads_reward_item *reward_items;
 
 const char* __a_unityads_get_reward_image_url(const char* name) {
-
 	JNIEnv *localEnv;
 	jclass unityAdsNativeBridge;
 	jmethodID methodID;
@@ -34,11 +33,9 @@ const char* __a_unityads_get_reward_image_url(const char* name) {
 	strReturn = (*localEnv)->CallStaticObjectMethod(localEnv, unityAdsNativeBridge, methodID, (*localEnv)->NewStringUTF(localEnv,name));
 
 	return (*localEnv)->GetStringUTFChars(localEnv, strReturn, 0);
-
 }
 
 void __a_unityads_call_static_method(const char* name, const char* sig, ...) {
-
 	JNIEnv *localEnv;
 	jclass unityAdsNativeBridge;
 	jmethodID methodID;
@@ -51,7 +48,6 @@ void __a_unityads_call_static_method(const char* name, const char* sig, ...) {
 	va_start(args, sig);
 	(*localEnv)->CallStaticVoidMethodV(localEnv, unityAdsNativeBridge, methodID, args);
 	va_end(args);
-
 }
 
 /**

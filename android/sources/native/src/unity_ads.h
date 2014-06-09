@@ -13,8 +13,8 @@ extern "C" {
 #endif
 
 // Event ID's
-const int EVENT_UNITY_ADS_CLOSE = 1;
-const int EVENT_UNITY_ADS_OPEN = 2;
+const int EVENT_UNITY_ADS_HIDE = 1;
+const int EVENT_UNITY_ADS_SHOW = 2;
 const int EVENT_UNITY_ADS_VIDEO_START = 3;
 const int EVENT_UNITY_ADS_VIDEO_COMPLETE = 4;
 const int EVENT_UNITY_ADS_CAMPAIGNS_AVAILABLE = 5;
