@@ -22,9 +22,6 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsDevice {
-
-	public static Object ADVERTISING_TRACKING_INFO = null;
-	
 	public static String getSoftwareVersion () {
 		return "" + Build.VERSION.SDK_INT;
 	}

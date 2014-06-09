@@ -54,19 +54,19 @@ public class UnityAdsAdvertisingId {
     			Class<?> AdvertisingClientId = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient");
         		Method getAdvertisingIdInfo = AdvertisingClientId.getMethod("getAdvertisingIdInfo", Context.class);
         		Object advertisingTrackingInfo = getAdvertisingIdInfo.invoke(null, context);
-        		
+
         		Class<?> Info = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient$Info");
         		Method getId = Info.getMethod("getId");
         		advertisingIdentifier = (String)getId.invoke(advertisingTrackingInfo);
 
         		Method isLimitAdTrackingEnabled = Info.getMethod("isLimitAdTrackingEnabled");
-        		limitedAdvertisingTracking = (Boolean)isLimitAdTrackingEnabled.invoke(UnityAdsDevice.ADVERTISING_TRACKING_INFO);
+        		limitedAdvertisingTracking = (Boolean)isLimitAdTrackingEnabled.invoke(Info);
 
         		return true;
     		} else {
     			UnityAdsDeviceLog.debug("Google Play Services not integrated, using fallback");
     			return false;
-    		}  		
+    		}
     	} catch(Exception e) {
     		UnityAdsDeviceLog.debug("Exception while trying to access Google Play Services " + e);
     		return false;

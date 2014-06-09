@@ -16,16 +16,16 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_VERSION = "1205";
 	public static final String UNITY_ADS_REQUEST_METHOD_POST = "POST";
 	public static final String UNITY_ADS_REQUEST_METHOD_GET = "GET";
-	
+
 	/* JSON Data Root */	
 	public static final String UNITY_ADS_JSON_DATA_ROOTKEY = "data";
-		
+
 	/* WebView */
 	public static final String UNITY_ADS_WEBVIEW_JS_PREFIX = "javascript:applifierimpact.";
 	public static final String UNITY_ADS_WEBVIEW_JS_INIT = "init";
 	public static final String UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW = "setView";
 	public static final String UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT = "handleNativeEvent";
-	
+
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_CAMPAIGNDATA_KEY = "campaignData";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_PLATFORM_KEY = "platform";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_DEVICEID_KEY = "deviceId";
@@ -43,11 +43,14 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SCREENDENSITY_KEY = "screenDensity";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SCREENSIZE_KEY = "screenSize";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_ZONES_KEY = "zones";
+	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_ADVERTISINGTRACKINGID_KEY = "advertisingTrackingId";
+	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_RAWADVERTISINGTRACKINGID_KEY = "rawAdvertisingTrackingId";
+	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_TRACKINGENABLED_KEY = "trackingEnabled";
 
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED = "completed";
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_START = "start";
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_NONE = "none";
-	
+
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_KEY = "action";
 	public static final String UNITY_ADS_WEBVIEW_API_PLAYVIDEO = "playVideo";
 	public static final String UNITY_ADS_WEBVIEW_API_NAVIGATETO = "navigateTo";
@@ -58,7 +61,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_VIDEOSTARTEDPLAYING = "video_started_playing";	
 	public static final String UNITY_ADS_WEBVIEW_API_ZONE_KEY = "zone";
 	public static final String UNITY_ADS_WEBVIEW_API_REWARD_ITEM_KEY = "itemKey";
-		
+
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY = "campaignId";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY = "rewatch";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY = "clickUrl";	
@@ -90,7 +93,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY = "disableBackButtonForSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY = "refreshCampaignsAfterViewed";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY = "refreshCampaignsAfterSeconds";
-	
+
 	/* Zone JSON Properties */
 	public static final String UNITY_ADS_ZONES_KEY = "zones";
 	public static final String UNITY_ADS_ZONE_ID_KEY = "id";
