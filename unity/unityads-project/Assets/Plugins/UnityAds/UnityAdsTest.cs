@@ -8,8 +8,8 @@ public class UnityAdsTest : MonoBehaviour {
 
 	void Awake() {
 		UnityAds.setCampaignsAvailableDelegate(UnityAdsCampaignsAvailable);
-		UnityAds.setCloseDelegate(UnityAdsClose);
-		UnityAds.setOpenDelegate(UnityAdsOpen);
+		UnityAds.setHideDelegate(UnityAdsHide);
+		UnityAds.setShowDelegate(UnityAdsShow);
 		UnityAds.setCampaignsFetchFailedDelegate(UnityAdsCampaignsFetchFailed);
 		UnityAds.setVideoCompletedDelegate(UnityAdsVideoCompleted);
 		UnityAds.setVideoStartedDelegate(UnityAdsVideoStarted);
@@ -24,12 +24,12 @@ public class UnityAdsTest : MonoBehaviour {
 		Debug.Log ("ADS: CAMPAIGNS FETCH FAILED!");
 	}
 
-	public void UnityAdsOpen() {
-		Debug.Log ("ADS: OPEN!");
+	public void UnityAdsShow() {
+		Debug.Log ("ADS: SHOW");
 	}
 	
-	public void UnityAdsClose() {
-		Debug.Log ("ADS: CLOSE!");
+	public void UnityAdsHide() {
+		Debug.Log ("ADS: HIDE");
 	}
 
 	public void UnityAdsVideoCompleted(string rewardItemKey, bool skipped) {

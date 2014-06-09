@@ -11,7 +11,7 @@ public class UnityAds : MonoBehaviour {
 	
 	private static UnityAds sharedInstance;
 	private static bool _campaignsAvailable = false;
-	private static bool _adsOpen = false;
+	private static bool _adsShow = false;
 	private static float _savedTimeScale = 1f;
 	private static float _savedAudioVolume = 1f;
 	
@@ -30,16 +30,16 @@ public class UnityAds : MonoBehaviour {
 		_campaignsFetchFailedDelegate = action;
 	}
 
-	public delegate void UnityAdsOpen();
-	private static UnityAdsOpen _adsOpenDelegate;
-	public static void setOpenDelegate (UnityAdsOpen action) {
-		_adsOpenDelegate = action;
+	public delegate void UnityAdsShow();
+	private static UnityAdsShow _adsShowDelegate;
+	public static void setShowDelegate (UnityAdsShow action) {
+		_adsShowDelegate = action;
 	}
 	
-	public delegate void UnityAdsClose();
-	private static UnityAdsClose _adsCloseDelegate;
-	public static void setCloseDelegate (UnityAdsClose action) {
-		_adsCloseDelegate = action;
+	public delegate void UnityAdsHide();
+	private static UnityAdsHide _adsHideDelegate;
+	public static void setHideDelegate (UnityAdsHide action) {
+		_adsHideDelegate = action;
 	}
 
 	public delegate void UnityAdsVideoCompleted(string rewardItemKey, bool skipped);
@@ -82,8 +82,8 @@ public class UnityAds : MonoBehaviour {
 	public void OnDestroy () {
 		_campaignsAvailableDelegate = null;
 		_campaignsFetchFailedDelegate = null;
-		_adsOpenDelegate = null;
-		_adsCloseDelegate = null;
+		_adsShowDelegate = null;
+		_adsHideDelegate = null;
 		_videoCompletedDelegate = null;
 		_videoStartedDelegate = null;
 	}
@@ -206,15 +206,15 @@ public class UnityAds : MonoBehaviour {
 	}
 	
 	public static bool show (string zoneId, string rewardItemKey, Dictionary<string, string> options) {
-		if (!_adsOpen && _campaignsAvailable) {			
+		if (!_adsShow && _campaignsAvailable) {			
 			if(SharedInstance) {							
 				string optionsString = parseOptionsDictionary(options);
 				
 				if (UnityAdsExternal.show(zoneId, rewardItemKey, optionsString)) {				
-					if (_adsOpenDelegate != null)
-						_adsOpenDelegate();
+					if (_adsShowDelegate != null)
+						_adsShowDelegate();
 					
-					_adsOpen = true;
+					_adsShow = true;
 					_savedTimeScale = Time.timeScale;
 					_savedAudioVolume = AudioListener.volume;
 					AudioListener.pause = true;
@@ -230,7 +230,7 @@ public class UnityAds : MonoBehaviour {
 	}
 	
 	public static void hide () {
-		if (_adsOpen) {
+		if (_adsShow) {
 			UnityAdsExternal.hide();
 		}
 	}
@@ -276,13 +276,13 @@ public class UnityAds : MonoBehaviour {
 	/* Events */
 	
 	public void onHide () {
-		_adsOpen = false;
+		_adsShow = false;
 		AudioListener.pause = false;
 		AudioListener.volume = _savedAudioVolume;
 		Time.timeScale = _savedTimeScale;
 		
-		if (_adsCloseDelegate != null)
-			_adsCloseDelegate();
+		if (_adsHideDelegate != null)
+			_adsHideDelegate();
 		
 		UnityAdsExternal.Log("onHide");
 	}
