@@ -10,7 +10,7 @@
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
 #import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 
-static const NSString *kUnityAdsURLProtocolHostname = @"client.impact.applifier.com";
+static const NSString *kUnityAdsURLProtocolHostname = @"nativebridge.unityads.unity3d.com";
 
 @implementation UnityAdsURLProtocol
 

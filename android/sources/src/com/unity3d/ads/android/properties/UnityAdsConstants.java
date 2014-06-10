@@ -21,7 +21,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_JSON_DATA_ROOTKEY = "data";
 
 	/* WebView */
-	public static final String UNITY_ADS_WEBVIEW_JS_PREFIX = "javascript:applifierimpact.";
+	public static final String UNITY_ADS_WEBVIEW_JS_PREFIX = "javascript:unityads.";
 	public static final String UNITY_ADS_WEBVIEW_JS_INIT = "init";
 	public static final String UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW = "setView";
 	public static final String UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT = "handleNativeEvent";
