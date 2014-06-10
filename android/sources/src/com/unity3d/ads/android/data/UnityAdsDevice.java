@@ -152,12 +152,20 @@ public class UnityAdsDevice {
 	@SuppressWarnings("deprecation")
 	public static boolean isUsingWifi () {
 		ConnectivityManager mConnectivity = null;
-		mConnectivity = (ConnectivityManager)UnityAdsProperties.getCurrentActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
+		Activity act = UnityAdsProperties.getCurrentActivity();
+		
+		if (act == null) return false;
+		
+		mConnectivity = (ConnectivityManager)act.getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (mConnectivity == null)
 			return false;
 
-		TelephonyManager mTelephony = (TelephonyManager)UnityAdsProperties.getCurrentActivity().getSystemService(Context.TELEPHONY_SERVICE);
+		TelephonyManager mTelephony = null;
+		
+		if (act != null) {
+			mTelephony = (TelephonyManager)act.getSystemService(Context.TELEPHONY_SERVICE);
+		}
+			 
 		// Skip if no connection, or background data disabled
 		NetworkInfo info = mConnectivity.getActiveNetworkInfo();
 		if (info == null || !mConnectivity.getBackgroundDataSetting() || !mConnectivity.getActiveNetworkInfo().isConnected() || mTelephony == null) {
