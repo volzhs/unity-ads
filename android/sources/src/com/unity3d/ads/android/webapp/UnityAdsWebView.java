@@ -259,7 +259,7 @@ public class UnityAdsWebView extends WebView {
 		}
 		
 		UnityAdsDeviceLog.debug("Adding javascript interface");
-		addJavascriptInterface(_webBridge, "applifierimpactnative");
+		addJavascriptInterface(_webBridge, "unityadsnativebridge");
 	}
 	
 	public void setRenderMode (int mode) {
