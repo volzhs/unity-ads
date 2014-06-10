@@ -133,7 +133,7 @@ static ApplifierImpact *sharedImpact = nil;
 }
 
 - (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyImpact {
-  [[UnityAds sharedInstance] setViewController:viewController showImmediatelyInNewController:applyImpact];
+  [[UnityAds sharedInstance] setViewController:viewController];
 }
 
 - (void)stopAll{
@@ -141,43 +141,43 @@ static ApplifierImpact *sharedImpact = nil;
 
 #pragma mark - UnityAdsDelegate
 
-- (void)unityAdsCampaignsAreAvailable:(UnityAds *)unityAds {
+- (void)unityAdsCampaignsAreAvailable {
   if (self.delegate != nil) {
     [self.delegate applifierImpactCampaignsAreAvailable:self];
   }
 }
 
-- (void)unityAdsWillOpen:(UnityAds *)unityAds {
+- (void)unityAdsWillOpen {
   if (self.delegate != nil) {
     [self.delegate applifierImpactWillOpen:self];
   }
 }
 
-- (void)unityAdsDidOpen:(UnityAds *)unityAds {
+- (void)unityAdsDidOpen {
   if (self.delegate != nil) {
     [self.delegate applifierImpactDidOpen:self];
   }
 }
 
-- (void)unityAdsWillClose:(UnityAds *)unityAds {
+- (void)unityAdsWillClose {
   if (self.delegate != nil) {
     [self.delegate applifierImpactWillClose:self];
   }
 }
 
-- (void)unityAdsDidClose:(UnityAds *)unityAds {
+- (void)unityAdsDidClose {
   if (self.delegate != nil) {
     [self.delegate applifierImpactDidClose:self];
   }
 }
 
-- (void)unityAdsVideoStarted:(UnityAds *)unityAds {
+- (void)unityAdsVideoStarted {
   if (self.delegate != nil) {
     [self.delegate applifierImpactVideoStarted:self];
   }
 }
 
-- (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped {
+- (void)unityAdsVideoCompleted:(NSString *)rewardItemKey skipped:(BOOL)skipped {
   if (self.delegate != nil) {
     [self.delegate applifierImpact:self completedVideoWithRewardItemKey:rewardItemKey videoWasSkipped:skipped];
   }

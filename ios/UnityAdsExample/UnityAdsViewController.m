@@ -203,34 +203,34 @@
 
 #pragma mark - UnityAdsDelegate
 
-- (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
+- (void)unityAdsFetchCompleted {
 	NSLog(@"unityAdsFetchCompleted");
   [self.loadingImage setImage:[UIImage imageNamed:@"unityads_loaded"]];
 	[self.openButton setEnabled:YES];
   [self.instructionsText setText:@"Press \"Open\" to show Unity Ads"];
 }
 
-- (void)unityAdsWillShow:(UnityAds *)unityAds {
+- (void)unityAdsWillShow {
 	NSLog(@"unityAdsWillShow");
 }
 
-- (void)unityAdsDidShow:(UnityAds *)unityAds {
+- (void)unityAdsDidShow {
 	NSLog(@"unityAdsDidShow");
 }
 
-- (void)unityAdsWillHide:(UnityAds *)unityAds {
+- (void)unityAdsWillHide {
 	NSLog(@"unityAdsWillHide");
 }
 
-- (void)unityAdsDidHide:(UnityAds *)unityAds {
+- (void)unityAdsDidHide {
 	NSLog(@"unityAdsDidHide");
 }
 
-- (void)unityAdsVideoStarted:(UnityAds *)unityAds {
+- (void)unityAdsVideoStarted {
 	NSLog(@"unityAdsVideoStarted");
 }
 
-- (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped {
+- (void)unityAdsVideoCompleted:(NSString *)rewardItemKey skipped:(BOOL)skipped {
 	NSLog(@"unityAdsVideoCompleted:rewardItemKey:skipped -- key: %@ -- skipped: %@", rewardItemKey, skipped ? @"true" : @"false");
 }
 

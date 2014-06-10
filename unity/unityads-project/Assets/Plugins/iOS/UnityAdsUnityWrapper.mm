@@ -52,39 +52,39 @@ extern "C" {
     return self;
 }
 
-- (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped {
+- (void)unityAdsVideoCompleted:(NSString *)rewardItemKey skipped:(BOOL)skipped {
     NSString *parameters = [NSString stringWithFormat:@"%@;%@", rewardItemKey, skipped ? @"true" : @"false"];
     UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onVideoCompleted", [parameters UTF8String]);
 }
 
-- (void)unityAdsWillShow:(UnityAds *)unityAds {
+- (void)unityAdsWillShow {
 }
 
-- (void)unityAdsDidShow:(UnityAds *)unityAds {
+- (void)unityAdsDidShow {
     UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onShow", "");
     UnityPause(true);
 }
 
-- (void)unityAdsWillHide:(UnityAds *)unityAds {
+- (void)unityAdsWillHide {
 }
 
-- (void)unityAdsDidHide:(UnityAds *)unityAds {
+- (void)unityAdsDidHide {
     UnityPause(false);
     UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onHide", "");
 }
 
-- (void)unityAdsWillLeaveApplication:(UnityAds *)unityAds {
+- (void)unityAdsWillLeaveApplication {
 }
 
-- (void)unityAdsVideoStarted:(UnityAds *)unityAds {
+- (void)unityAdsVideoStarted {
     UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onVideoStarted", "");
 }
 
-- (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
+- (void)unityAdsFetchCompleted {
     UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onFetchCompleted", "");
 }
 
-- (void)unityAdsFetchFailed:(UnityAds *)unityAds {
+- (void)unityAdsFetchFailed {
     UnitySendMessage(UnityAdsMakeStringCopy([self.gameObjectName UTF8String]), "onFetchFailed", "");
 }
 

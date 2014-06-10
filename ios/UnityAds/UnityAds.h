@@ -30,17 +30,17 @@ extern NSString * const kUnityAdsOptionVideoUsesDeviceOrientation;
 @protocol UnityAdsDelegate <NSObject>
 
 @required
-- (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped;
+- (void)unityAdsVideoCompleted:(NSString *)rewardItemKey skipped:(BOOL)skipped;
 
 @optional
-- (void)unityAdsWillShow:(UnityAds *)unityAds;
-- (void)unityAdsDidShow:(UnityAds *)unityAds;
-- (void)unityAdsWillHide:(UnityAds *)unityAds;
-- (void)unityAdsDidHide:(UnityAds *)unityAds;
-- (void)unityAdsWillLeaveApplication:(UnityAds *)unityAds;
-- (void)unityAdsVideoStarted:(UnityAds *)unityAds;
-- (void)unityAdsFetchCompleted:(UnityAds *)unityAds;
-- (void)unityAdsFetchFailed:(UnityAds *)unityAds;
+- (void)unityAdsWillShow;
+- (void)unityAdsDidShow;
+- (void)unityAdsWillHide;
+- (void)unityAdsDidHide;
+- (void)unityAdsWillLeaveApplication;
+- (void)unityAdsVideoStarted;
+- (void)unityAdsFetchCompleted;
+- (void)unityAdsFetchFailed;
 @end
 
 @interface UnityAds : NSObject
@@ -59,7 +59,7 @@ extern NSString * const kUnityAdsOptionVideoUsesDeviceOrientation;
 - (BOOL)isDebugMode;
 - (BOOL)startWithGameId:(NSString *)gameId andViewController:(UIViewController *)viewController;
 - (BOOL)startWithGameId:(NSString *)gameId;
-- (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds;
+- (BOOL)setViewController:(UIViewController *)viewController;
 - (BOOL)canShowAds;
 - (BOOL)canShow;
 - (BOOL)setZone:(NSString *)zoneId;

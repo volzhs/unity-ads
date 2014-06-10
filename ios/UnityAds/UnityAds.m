@@ -89,8 +89,8 @@ static UnityAds *sharedUnityAdsInstance = nil;
 - (void)initFailed {
 	UAAssert([NSThread isMainThread]);
   UALOG_DEBUG(@"");
-  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsFetchFailed:)])
-    [self.delegate unityAdsFetchFailed:self];
+  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsFetchFailed)])
+    [self.delegate unityAdsFetchFailed];
 }
 
 
@@ -264,24 +264,13 @@ static UnityAds *sharedUnityAdsInstance = nil;
   return [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES withOptions:nil];
 }
 
-- (void)setViewController:(UIViewController *)viewController showImmediatelyInNewController:(BOOL)applyAds {
+- (BOOL)setViewController:(UIViewController *)viewController {
 	UAAssert([NSThread isMainThread]);
-  if (![UnityAds isSupported]) return;
-  
-  BOOL openAnimated = false;
-  if ([[UnityAdsProperties sharedInstance] currentViewController] == nil) {
-    openAnimated = YES;
-  } else {
-    if([[UnityAdsMainViewController sharedInstance] isOpen]) {
-      [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:NO withOptions:nil];
-    }
-  }
+  if (![UnityAds isSupported] || ![self canShow]) return false;
   
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
   
-  if (applyAds && [self canShow]) {
-    [[UnityAdsMainViewController sharedInstance] openAds:openAnimated inState:kUnityAdsViewStateTypeOfferScreen withOptions:nil];
-  }
+  return true;
 }
 
 - (void)stopAll{
@@ -349,40 +338,40 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
-	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsWillHide:)])
-		[self.delegate unityAdsWillHide:self];
+	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsWillHide)])
+		[self.delegate unityAdsWillHide];
 }
 
 - (void)mainControllerDidClose {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
   
-  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsDidHide:)])
-		[self.delegate unityAdsDidHide:self];
+  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsDidHide)])
+		[self.delegate unityAdsDidHide];
 }
 
 - (void)mainControllerWillOpen {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
   
-  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsWillShow:)])
-		[self.delegate unityAdsWillShow:self];
+  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsWillShow)])
+		[self.delegate unityAdsWillShow];
 }
 
 - (void)mainControllerDidOpen {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
   
-  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsDidShow:)])
-		[self.delegate unityAdsDidShow:self];
+  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsDidShow)])
+		[self.delegate unityAdsDidShow];
 }
 
 - (void)mainControllerStartedPlayingVideo {
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
 	
-	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsVideoStarted:)])
-		[self.delegate unityAdsVideoStarted:self];
+	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsVideoStarted)])
+		[self.delegate unityAdsVideoStarted];
 }
 
 - (void)mainControllerVideoEnded {
@@ -399,7 +388,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
         id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
         key = [itemManager getCurrentItem].key;
       }
-      [self.delegate unityAdsVideoCompleted:self rewardItemKey:key skipped:FALSE];
+      [self.delegate unityAdsVideoCompleted:key skipped:FALSE];
     }
   }
 }
@@ -418,7 +407,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
         id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];
         key = [itemManager getCurrentItem].key;
       }
-      [self.delegate unityAdsVideoCompleted:self rewardItemKey:key skipped:TRUE];
+      [self.delegate unityAdsVideoCompleted:key skipped:TRUE];
     }
   }
 }
@@ -427,8 +416,8 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
   
-  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsWillLeaveApplication:)])
-		[self.delegate unityAdsWillLeaveApplication:self];
+  if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsWillLeaveApplication)])
+		[self.delegate unityAdsWillLeaveApplication];
 }
 
 
@@ -436,8 +425,8 @@ static UnityAds *sharedUnityAdsInstance = nil;
 
 - (void)notifyDelegateOfCampaignAvailability {
 	if ([self adsCanBeShown]) {
-		if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsFetchCompleted:)])
-			[self.delegate unityAdsFetchCompleted:self];
+		if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsFetchCompleted)])
+			[self.delegate unityAdsFetchCompleted];
 	}
 }
 
