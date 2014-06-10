@@ -17,6 +17,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
@@ -638,7 +640,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		cancelPauseScreenTimer();
 		if(UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
 			UnityAdsCloseRunner closeRunner = new UnityAdsCloseRunner();
-			UnityAdsProperties.getCurrentActivity().runOnUiThread(closeRunner);
+			Handler handler = new Handler(Looper.getMainLooper());
+			handler.postDelayed(closeRunner, 1);
 		}
 		else {
 			UnityAdsDeviceLog.debug("Did not close");
@@ -872,7 +875,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		public void run() {			
 			if (UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
 				Boolean dataOk = true;			
-				JSONObject data = new JSONObject();
+				final JSONObject data = new JSONObject();
 				
 				try  {
 					data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_CLOSE);
@@ -882,48 +885,36 @@ public class UnityAds implements IUnityAdsCacheListener,
 				}
 
 				UnityAdsDeviceLog.debug("DataOk: " + dataOk);
-				
+
 				if (dataOk) {
-					_data = data;
-					if(mainview != null && mainview.webview != null) {
-						mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
-					}
-					Timer testTimer = new Timer();
-					testTimer.schedule(new TimerTask() {
-						@Override
-						public void run() {
- 							final Activity currentActivity = UnityAdsProperties.getCurrentActivity();
- 							if(currentActivity != null) {
- 								currentActivity.runOnUiThread(new Runnable() {
-									@Override
-									public void run() {
-										if(mainview != null) {
-											mainview.closeAds(_data);
-										}
- 										if(currentActivity != null &&
- 										   currentActivity instanceof UnityAdsFullscreenActivity &&
- 										   !currentActivity.isFinishing() && !UnityAdsProperties.isActivityDestroyed(currentActivity)) {
- 											currentActivity.finish();
-										}
-										
-										if(UnityAdsWebData.getZoneManager() != null) {
-											UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-											if (!currentZone.openAnimated()) {
- 												currentActivity.overridePendingTransition(0, 0);
-											}	
-										}
-										
-										_showingAds = false;
-
-										if (_adsListener != null)
-											_adsListener.onHide();
-
-										refreshCampaigns();
-									}
-								});
+					final Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+					if (currentActivity != null && currentActivity instanceof UnityAdsFullscreenActivity && !currentActivity.isFinishing() && !UnityAdsProperties.isActivityDestroyed(currentActivity)) {
+						currentActivity.finish();
+						if (UnityAdsWebData.getZoneManager() != null) {
+							UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+							if (!currentZone.openAnimated()) {
+								currentActivity.overridePendingTransition(0, 0);
 							}
 						}
-					}, 250);
+					}
+
+					Handler handler = new Handler(Looper.getMainLooper());
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							_data = data;
+							if(mainview != null && mainview.webview != null) {
+								mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+							}
+							mainview.closeAds(_data);
+							_showingAds = false;
+
+							if (_adsListener != null)
+								_adsListener.onHide();
+
+							refreshCampaigns();
+						}
+					}, 30);
 				}
 			}
 		}
