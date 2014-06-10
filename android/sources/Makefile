@@ -13,6 +13,7 @@ finalize: # build finalization
 	cp .classpath build/ # copy classpath settings (probably not needed)
 	cp build.xml build/ # copy build.xml (this is needed for ant to work on the result library)
 	cp proguard-project.txt build/ # proguard settings
+	cp .project build/
 
 debug: prepare # create debug lib
 	echo "Creating debug build"
