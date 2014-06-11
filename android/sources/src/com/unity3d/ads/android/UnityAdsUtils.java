@@ -35,6 +35,8 @@ public class UnityAdsUtils {
 	    boolean debuggable = false;
 	    boolean problemsWithData = false;
 	    
+	    if (ctx == null) return debuggable;
+	    
 	    PackageManager pm = ctx.getPackageManager();
 	    try {
 	        ApplicationInfo appinfo = pm.getApplicationInfo(ctx.getPackageName(), 0);
