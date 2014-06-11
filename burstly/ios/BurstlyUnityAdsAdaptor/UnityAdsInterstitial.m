@@ -86,23 +86,23 @@ static NSString const * const kUnityAdsOptionZoneIdKey = @"zoneId";
  * UnityAds method
  *=*/
 
--(void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped {
+-(void)unityAdsVideoCompleted:(NSString *)rewardItemKey skipped:(BOOL)skipped {
 }
 
--(void)unityAdsFetchCompleted:(UnityAds *)unityAds {
+-(void)unityAdsFetchCompleted {
   [[self delegate] interstitialDidLoadAd:self];
 }
 
--(void)unityAdsDidShow:(UnityAds *)unityAds {
+-(void)unityAdsDidShow {
   [[self delegate] interstitialWillPresentFullScreen:self];
   [[self delegate] interstitialDidPresentFullScreen:self];
 }
 
--(void)unityAdsDidHide:(UnityAds *)unityAds {
+-(void)unityAdsDidHide {
   [[self delegate] interstitialDidDismissFullScreen:self];
 }
 
--(void)unityAdsWillLeaveApplication:(UnityAds *)unityAds {
+-(void)unityAdsWillLeaveApplication {
   [[self delegate] interstitialWillLeaveApplication:self];
 }
 
