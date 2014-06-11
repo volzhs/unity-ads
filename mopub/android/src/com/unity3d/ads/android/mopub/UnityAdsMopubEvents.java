@@ -5,12 +5,11 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
-import com.unity3d.ads.android.UnityAds;
-import com.unity3d.ads.android.IUnityAdsListener;
 import com.mopub.mobileads.CustomEventInterstitial;
 import com.mopub.mobileads.MoPubErrorCode;
+import com.unity3d.ads.android.IUnityAdsListener;
+import com.unity3d.ads.android.UnityAds;
 
 public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUnityAdsListener {
 	
@@ -37,6 +36,8 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 		options.putAll(localExtras);
 		options.putAll(serverExtras);
 		
+		UnityAds.setDebugMode(true);
+		
 		UnityAds.init((Activity)context, gameId, this);
 		UnityAds.changeActivity((Activity)context);
 		UnityAds.setListener(this);
@@ -58,40 +59,33 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 
 	@Override 
 	protected void onInvalidate() {
-		UnityAdsDeviceLog.entered();
 	}
 
 	@Override
 	public void onHide() {
-		UnityAdsDeviceLog.entered();
 		listener.onInterstitialDismissed();
 	}
 
 	@Override
 	public void onShow() {
-		UnityAdsDeviceLog.entered();
 		listener.onInterstitialShown();
 	}
 	
 	@Override
 	public void onVideoStarted() {
-		UnityAdsDeviceLog.entered();
 	}
 	
 	@Override
 	public void onVideoCompleted(String rewardItemKey, boolean skipped) {
-		UnityAdsDeviceLog.debug(rewardItemKey + ", " + skipped);
 	}
 
 	@Override
 	public void onFetchCompleted() {
-		UnityAdsDeviceLog.entered();
 		listener.onInterstitialLoaded();
 	}
 
 	@Override
 	public void onFetchFailed() {
-		UnityAdsDeviceLog.entered();
 		listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);	
 	}
 }

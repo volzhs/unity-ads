@@ -60,47 +60,47 @@ static NSString const * const kUnityAdsOptionZoneIdKey = @"zoneId";
 
 - (void)showInterstitialFromRootViewController:(UIViewController *)rootViewController {
   if([[UnityAds sharedInstance] canShow] && [[UnityAds sharedInstance] canShowAds]) {
-    [[UnityAds sharedInstance] setViewController:rootViewController showImmediatelyInNewController:NO];
+    [[UnityAds sharedInstance] setViewController:rootViewController];
     [[UnityAds sharedInstance] setZone:_zoneId];
     [[UnityAds sharedInstance] show:_params];
   }
 }
 
-- (void)unityAdsVideoCompleted:(UnityAds *)unityAds rewardItemKey:(NSString *)rewardItemKey skipped:(BOOL)skipped {
+- (void)unityAdsVideoCompleted:(NSString *)rewardItemKey skipped:(BOOL)skipped {
   // Ignored, as no support for incentivised ads via Mopub
 }
 
-- (void)unityAdsFetchCompleted:(UnityAds *)unityAds {
+- (void)unityAdsFetchCompleted {
   [self.delegate interstitialCustomEvent:self didLoadAd:nil];
 }
 
-- (void)unityAdsFetchFailed:(UnityAds *)unityAds {
+- (void)unityAdsFetchFailed {
   NSMutableDictionary* details = [NSMutableDictionary dictionary];
   [details setValue:@"No ads available" forKey:NSLocalizedDescriptionKey];
   [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError:[NSError errorWithDomain:@"unityads_sdk" code:404 userInfo:details]];
 }
 
-- (void)unityAdsDidHide:(UnityAds *)unityAds {
+- (void)unityAdsDidHide {
   [self.delegate interstitialCustomEventDidDisappear:self];
 }
 
-- (void)unityAdsDidShow:(UnityAds *)unityAds {
+- (void)unityAdsDidShow {
   [self.delegate interstitialCustomEventDidAppear:self];
 }
 
-- (void)unityAdsVideoStarted:(UnityAds *)unityAds {
+- (void)unityAdsVideoStarted {
   // Ignored
 }
 
-- (void)unityAdsWillHide:(UnityAds *)unityAds {
+- (void)unityAdsWillHide {
   [self.delegate interstitialCustomEventWillDisappear:self];
 }
 
-- (void)unityAdsWillShow:(UnityAds *)unityAds {
+- (void)unityAdsWillShow {
   [self.delegate interstitialCustomEventWillAppear:self];
 }
 
-- (void)unityAdsWillLeaveApplication:(UnityAds *)unityAds {
+- (void)unityAdsWillLeaveApplication {
   [self.delegate interstitialCustomEventWillLeaveApplication:self];
 }
 
