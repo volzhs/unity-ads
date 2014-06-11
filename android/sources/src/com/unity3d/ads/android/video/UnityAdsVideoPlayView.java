@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -30,6 +32,7 @@ import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsVideoPlayView extends RelativeLayout {
 	private static final int FILL_PARENT = -1;
 
@@ -167,8 +170,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		int timeUntilBackButton = 0;
 		
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-		if (currentZone.allowVideoSkipInSeconds() > 0 && _videoStartedPlayingMillis > 0) {
-			timeUntilBackButton = Math.round((currentZone.allowVideoSkipInSeconds() * 1000) - (System.currentTimeMillis() - _videoStartedPlayingMillis));
+		if (currentZone.disableBackButtonForSeconds() > 0 && _videoStartedPlayingMillis > 0) {
+			timeUntilBackButton = Math.round((currentZone.disableBackButtonForSeconds() * 1000) - (System.currentTimeMillis() - _videoStartedPlayingMillis));
 			if (timeUntilBackButton < 0)
 				timeUntilBackButton = 0;
 		}
