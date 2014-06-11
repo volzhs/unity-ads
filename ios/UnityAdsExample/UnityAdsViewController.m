@@ -125,9 +125,7 @@
     NSLog(@"CURRENT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getCurrentRewardItemKey]);
     NSLog(@"DEFAULT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getDefaultRewardItemKey]);
 #endif
-
-    //[[UnityAds sharedInstance] setViewController:self showImmediatelyInNewController:YES];
-
+    
     NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{
                                                          kUnityAdsOptionNoOfferscreenKey:@true,
                                                          kUnityAdsOptionOpenAnimatedKey:@true,
@@ -156,8 +154,6 @@
     NSLog(@"CURRENT_REWARD_ITEM: %@", [[ApplifierImpact sharedInstance] getCurrentRewardItemKey]);
     NSLog(@"DEFAULT_REWARD_ITEM: %@", [[ApplifierImpact sharedInstance] getDefaultRewardItemKey]);
 #endif
-
-    // [[ApplifierImpact sharedInstance] setViewController:self showImmediatelyInNewController:YES];
 
     NSLog(@"showAds: %i", [[ApplifierImpact sharedInstance] showImpact:@{
                                                                          kApplifierImpactOptionNoOfferscreenKey:@true,
