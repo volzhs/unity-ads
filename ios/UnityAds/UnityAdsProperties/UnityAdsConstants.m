@@ -11,7 +11,7 @@
 
 /* WebView */
 
-NSString * const kUnityAdsWebViewJSPrefix = @"applifierimpact.";
+NSString * const kUnityAdsWebViewJSPrefix = @"unityads.";
 NSString * const kUnityAdsWebViewJSInit = @"init";
 NSString * const kUnityAdsWebViewJSChangeView = @"setView";
 NSString * const kUnityAdsWebViewJSHandleNativeEvent = @"handleNativeEvent";
