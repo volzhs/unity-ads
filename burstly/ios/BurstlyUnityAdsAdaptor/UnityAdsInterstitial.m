@@ -77,7 +77,7 @@ static NSString const * const kUnityAdsOptionZoneIdKey = @"zoneId";
  */
 - (void)presentInterstitial {
   UALOG_DEBUG(@"");
-  [[UnityAds sharedInstance] setViewController:[[self delegate] viewControllerForModalPresentation] showImmediatelyInNewController:NO];
+  [[UnityAds sharedInstance] setViewController:[[self delegate] viewControllerForModalPresentation]];
   [[UnityAds sharedInstance] setZone:_zoneId];
   [[UnityAds sharedInstance] show:_params];
 }
