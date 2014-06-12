@@ -35,7 +35,7 @@
  * @returns Adaptor version. It can be used to target parameters in case of incompatibility between different versions of the same adaptor.
  */
 - (NSString *)adaptorVersion {
-  return @"1.0.2";
+  return @"1.1";
 }
 
 /**

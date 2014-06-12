@@ -21,7 +21,7 @@ import com.burstly.lib.component.IBurstlyAdaptorListener;
  */
 public class UnityAdsAdaptor implements IBurstlyAdaptor, IUnityAdsListener {
 	
-	public static final String UNITY_ADS_ADAPTOR_VERSION = "1.0.6";
+	public static final String UNITY_ADS_ADAPTOR_VERSION = "1.1";
 	
 	public static String FEATURE_PRECACHE = "precacheInterstitial";
 	
