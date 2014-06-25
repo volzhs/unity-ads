@@ -79,10 +79,15 @@
     NSLog(@"Setting developerId");
     // TEST STUFF, DO NOT USE IN PRODUCTION APPS
 #if !TEST_LEGACY_IMPACT_API
-    [[UnityAds sharedInstance] setTestMode:YES];
+    if( [self.developerId.text length] > 0){
+        [[UnityAds sharedInstance] setTestMode:YES];
+    }
     [[UnityAds sharedInstance] setTestDeveloperId:self.developerId.text];
 #else
-    [[ApplifierImpact sharedInstance] setTestMode:YES];
+    if( [self.developerId.text length] > 0){
+        [[ApplifierImpact sharedInstance] setTestMode:YES];
+        self.noOfferScreen = false;
+    }
     [[ApplifierImpact sharedInstance] setTestDeveloperId:self.developerId.text];
 #endif
   }
@@ -128,6 +133,7 @@
     NSLog(@"DEFAULT_REWARD_ITEM: %@", [[UnityAds sharedInstance] getDefaultRewardItemKey]);
 #endif
     
+     
     NSLog(@"show: %i", [[UnityAds sharedInstance] show:@{
                                                          kUnityAdsOptionNoOfferscreenKey:@true,
                                                          kUnityAdsOptionOpenAnimatedKey:@true,
