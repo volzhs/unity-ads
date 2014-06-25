@@ -87,7 +87,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
 			_currentWebView = view;
-			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
+			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 			UnityAdsDeviceLog.debug("Send change view to WebApp: " + javascriptString);
 			
 			if (data != null) {
@@ -111,7 +111,7 @@ public class UnityAdsWebView extends WebView {
 					UnityAdsProperties.RUN_WEBVIEW_TESTS &&
 					UnityAdsProperties.TEST_JAVASCRIPT != null) {
 					UnityAdsDeviceLog.debug("Running test-javascript: " + UnityAdsProperties.TEST_JAVASCRIPT);
-					UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT, this));
+					UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(UnityAdsProperties.TEST_JAVASCRIPT, this));
 					UnityAdsProperties.RUN_WEBVIEW_TESTS = false;
 				}
 			}
@@ -127,7 +127,7 @@ public class UnityAdsWebView extends WebView {
 
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
 			UnityAdsDeviceLog.debug("Send native event to WebApp: " + javascriptString);
-			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
+			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 		}
 	}
 	
@@ -176,7 +176,7 @@ public class UnityAdsWebView extends WebView {
 			
 			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
 			UnityAdsDeviceLog.debug("Initializing WebView with JS call: " + initString);
-			UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsJavascriptRunner(initString, this));
+			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(initString, this));
 		}
 	}
 

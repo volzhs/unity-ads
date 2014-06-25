@@ -72,7 +72,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private static boolean _initialized = false;
 	private static boolean _showingAds = false;
 	private static boolean _adsReadySent = false;
-	private static boolean _webAppLoaded = false;
 	private static boolean _openRequestFromDeveloper = false;
 	private static boolean _refreshAfterShowAds = false;
 	private static AlertDialog _alertDialog = null;
@@ -138,18 +137,16 @@ public class UnityAds implements IUnityAdsCacheListener,
 			if (activity != null && activity instanceof UnityAdsFullscreenActivity) {
 				String view = null;
 				
-				if (mainview != null && mainview.webview != null) {
-					view = mainview.webview.getWebViewCurrentView();
-					
-					if (_openRequestFromDeveloper) {
-						view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
-						UnityAdsDeviceLog.debug("This open request is from the developer, setting start view");
-					}
-					
-					if (view != null)
-						open(view);
+				if (_openRequestFromDeveloper) {
+					view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
+					UnityAdsDeviceLog.debug("This open request is from the developer, setting start view");
 				}
-				
+
+				if (view != null) {
+					setupViews();
+					open(view);
+				}
+
 				_openRequestFromDeveloper = false;
 			}
 			else {
@@ -231,21 +228,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public static boolean canShowAds () {
-		return mainview != null && 
-			mainview.webview != null && 
-			mainview.webview.isWebAppLoaded() && 
-			_webAppLoaded && 
-			webdata != null && 
+			return webdata != null && 
 			webdata.getViewableVideoPlanCampaigns() != null && 
 			webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
 	
 	public static boolean canShow () {
 		return !_showingAds && 
-			mainview != null && 
-			mainview.webview != null && 
-			mainview.webview.isWebAppLoaded() && 
-			_webAppLoaded && 
 			webdata != null && 
 			webdata.getVideoPlanCampaigns() != null && 
 			webdata.getVideoPlanCampaigns().size() > 0;
@@ -379,7 +368,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 				
 		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
-		
+
 		if (canShowAds())
 			sendReadyEvent();
 	}
@@ -393,6 +382,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onWebDataCompleted () {
+		UnityAdsDeviceLog.entered();
 		JSONObject jsonData = null;
 		boolean dataFetchFailed = false;
 		boolean sdkIsCurrent = true;
@@ -495,7 +485,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	@Override
 	public void onWebAppInitComplete (JSONObject data) {
 		UnityAdsDeviceLog.entered();
-		_webAppLoaded = true;
 		Boolean dataOk = true;
 		
 		if (canShowAds()) {
@@ -688,7 +677,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	private static void setup () {
 		initCache();
-		setupViews();
+		//setupViews();
 	}
 	
 	private static void initCache () {
@@ -701,7 +690,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private static void sendReadyEvent () {
 		if (!_adsReadySent && _adsListener != null) {
-			UnityAdsProperties.getCurrentActivity().runOnUiThread(new Runnable() {				
+			UnityAdsUtils.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					UnityAdsDeviceLog.debug("Unity Ads ready.");
@@ -713,7 +702,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	private static void setupViews () {
-		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
+		if (mainview != null) {
+			UnityAdsDeviceLog.debug("View was not destroyed, trying to destroy it");
+			mainview.webview.destroy();
+			mainview = null;
+		}
+
+		if (mainview == null) {
+			mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);	
+		}
 	}
 
 	private static void playVideo () {
@@ -722,24 +719,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	private static void playVideo (long delay) {
 		UnityAdsDeviceLog.debug("Running threaded");
-		
-		if (delay > 0) {
-			Timer delayTimer = new Timer();
-			delayTimer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					UnityAdsDeviceLog.debug("Delayed video start");
-					UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
-					if (UnityAdsProperties.getCurrentActivity() != null)
-						UnityAdsProperties.getCurrentActivity().runOnUiThread(playVideoRunner);
-				}
-			}, delay);
-		}
-		else {
-			UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
-			if (UnityAdsProperties.getCurrentActivity() != null)
-				UnityAdsProperties.getCurrentActivity().runOnUiThread(playVideoRunner);
-		}
+		UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
+		UnityAdsUtils.runOnUiThread(playVideoRunner, delay);
 	}
 	
 	private static void startFullscreenActivity () {
@@ -851,7 +832,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 			};
 
 			_campaignRefreshTimerDeadline = SystemClock.elapsedRealtime() + UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS * 1000;
-
 			_campaignRefreshTimer = new Timer();
 			_campaignRefreshTimer.schedule(_campaignRefreshTimerTask, UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS * 1000);
 		}
@@ -903,10 +883,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 						@Override
 						public void run() {
 							_data = data;
+
 							if(mainview != null && mainview.webview != null) {
 								mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
 							}
+
 							mainview.closeAds(_data);
+							mainview = null;
 							_showingAds = false;
 
 							if (_adsListener != null)

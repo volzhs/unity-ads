@@ -154,8 +154,7 @@ public class UnityAdsWebData {
 		String[] parts = url.split("\\?");
 		
 		UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(parts[0], parts[1], UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.VideoPlan, 0);
-		if (UnityAdsProperties.getCurrentActivity() != null)
-			UnityAdsProperties.getCurrentActivity().runOnUiThread(ulc);
+		UnityAdsUtils.runOnUiThread(ulc);
 		
 		checkFailedUrls();			
 
@@ -220,8 +219,7 @@ public class UnityAdsWebData {
 			}
 			
 			UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(viewUrl, queryParams, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_POST, UnityAdsRequestType.VideoViewed, 0);
-			if (UnityAdsProperties.getCurrentActivity() != null)
-				UnityAdsProperties.getCurrentActivity().runOnUiThread(ulc);
+			UnityAdsUtils.runOnUiThread(ulc);
 			
 			progressSent = true;
 		}
@@ -249,8 +247,7 @@ public class UnityAdsWebData {
 				analyticsUrl = String.format("%s&%s=%s", analyticsUrl, UnityAdsConstants.UNITY_ADS_ANALYTICS_QUERYPARAM_GAMERSID_KEY, currentZone.getGamerSid());
 			
 			UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(viewUrl, analyticsUrl, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.Analytics, 0);
-			if (UnityAdsProperties.getCurrentActivity() != null)
-				UnityAdsProperties.getCurrentActivity().runOnUiThread(ulc);
+			UnityAdsUtils.runOnUiThread(ulc);
 		}
 	}
 	
@@ -398,8 +395,7 @@ public class UnityAdsWebData {
 								UnityAdsRequestType.getValueOf(failedUrl.getString(UnityAdsConstants.UNITY_ADS_FAILED_URL_REQUESTTYPE_KEY)), 
 								failedUrl.getInt(UnityAdsConstants.UNITY_ADS_FAILED_URL_RETRIES_KEY) + 1);
 						
-						if (UnityAdsProperties.getCurrentActivity() != null)
-							UnityAdsProperties.getCurrentActivity().runOnUiThread(ulc);
+						UnityAdsUtils.runOnUiThread(ulc);
 					}
 				}
 			}
@@ -699,8 +695,7 @@ public class UnityAdsWebData {
 		}
 		
 		private void cancelInMainThread () {
-			if (UnityAdsProperties.getCurrentActivity() != null)
-				UnityAdsProperties.getCurrentActivity().runOnUiThread(new UnityAdsCancelUrlLoaderRunner(this));
+			UnityAdsUtils.runOnUiThread(new UnityAdsCancelUrlLoaderRunner(this));
 		}
 		
 		@Override

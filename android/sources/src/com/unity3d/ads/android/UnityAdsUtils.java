@@ -23,6 +23,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
@@ -243,5 +245,20 @@ public class UnityAdsUtils {
 		File targetFile = new File (fileName);
 		File testFile = new File(getCacheDirectory() + "/" + targetFile.getName());
 		return testFile.exists();
+	}
+
+	public static void runOnUiThread (Runnable runnable) {
+		runOnUiThread(runnable, 0);
+	}
+
+	public static void runOnUiThread (Runnable runnable, long delay) {
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		if (delay  > 0) {
+			handler.postDelayed(runnable, delay);
+		}
+		else {
+			handler.post(runnable);
+		}
 	}
 }

@@ -8,6 +8,7 @@ import android.app.Activity;
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.IUnityAdsListener;
+import com.unity3d.ads.android.UnityAdsUtils;
 
 public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	private Activity _startupActivity = null;
@@ -61,7 +62,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 			final UnityAdsUnityWrapper listener = this;
 			
 			try {
-				_startupActivity.runOnUiThread(new Runnable() {
+				UnityAdsUtils.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						UnityAds.setTestMode(_testMode);
