@@ -27,13 +27,6 @@
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 </imageView>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.5" contentMode="left" text="Press &quot;Start&quot; or select additional options by pressing the &quot;pi&quot; -sign" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="49">
-                    <rect key="frame" x="62" y="210" width="197" height="141"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" red="0.99878981726063254" green="0.94044080237651806" blue="1" alpha="0.51000000000000001" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="unityads_loading.png" id="19">
                     <rect key="frame" x="97" y="428" width="127" height="61"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -72,7 +65,7 @@
                     </state>
                 </button>
                 <view hidden="YES" contentMode="scaleToFill" id="30">
-                    <rect key="frame" x="80" y="176" width="160" height="162"/>
+                    <rect key="frame" x="80" y="157" width="160" height="162"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" id="31">
@@ -104,6 +97,13 @@
                     </subviews>
                     <color key="backgroundColor" red="0.044442426290000003" green="0.1692097605" blue="0.25930723849999998" alpha="0.68999999999999995" colorSpace="calibratedRGB"/>
                 </view>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.5" contentMode="left" text="Press &quot;Start&quot; or select additional options by pressing the settings-button" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="49">
+                    <rect key="frame" x="63" y="214" width="199" height="141"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.99878981726063254" green="0.94044080237651806" blue="1" alpha="0.51000000000000001" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="0.75" green="0.70458821289999995" blue="0.18653230909999999" alpha="1" colorSpace="calibratedRGB"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
