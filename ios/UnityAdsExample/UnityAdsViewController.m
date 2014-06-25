@@ -79,8 +79,10 @@
     NSLog(@"Setting developerId");
     // TEST STUFF, DO NOT USE IN PRODUCTION APPS
 #if !TEST_LEGACY_IMPACT_API
+    [[UnityAds sharedInstance] setTestMode:YES];
     [[UnityAds sharedInstance] setTestDeveloperId:self.developerId.text];
 #else
+    [[ApplifierImpact sharedInstance] setTestMode:YES];
     [[ApplifierImpact sharedInstance] setTestDeveloperId:self.developerId.text];
 #endif
   }
