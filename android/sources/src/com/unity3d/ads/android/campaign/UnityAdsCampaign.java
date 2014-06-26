@@ -74,7 +74,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsDeviceLog.error("Key not found for campaign: " + getCampaignId());
+				UnityAdsDeviceLog.warning("Key not found for campaign: " + getCampaignId());
 			}			
 		}
 		return false;
@@ -86,7 +86,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOW_CACHE_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsDeviceLog.error("Key not found for campaign: " + getCampaignId());
+				UnityAdsDeviceLog.warning("Key not found for campaign: " + getCampaignId());
 			}			
 		}
 		return false;
@@ -98,7 +98,7 @@ public class UnityAdsCampaign {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY);
 			}
 			catch (Exception e) {
-				UnityAdsDeviceLog.error("Key not found for campaign: " + getCampaignId());
+				UnityAdsDeviceLog.warning("Key not found for campaign: " + getCampaignId());
 			}			
 		}
 		
