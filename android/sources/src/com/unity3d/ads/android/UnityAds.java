@@ -693,9 +693,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsUtils.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					UnityAdsDeviceLog.debug("Unity Ads ready.");
-					_adsReadySent = true;
-					_adsListener.onFetchCompleted();
+					if(!_adsReadySent) {
+						UnityAdsDeviceLog.debug("Unity Ads ready.");
+						_adsListener.onFetchCompleted();
+						_adsReadySent = true;
+					}
 				}
 			});
 		}
