@@ -141,39 +141,51 @@ static ApplifierImpact *sharedImpact = nil;
 
 #pragma mark - UnityAdsDelegate
 
-- (void)unityAdsCampaignsAreAvailable {
-  if (self.delegate != nil) {
-    [self.delegate applifierImpactCampaignsAreAvailable:self];
-  }
-}
-
-- (void)unityAdsWillOpen {
+- (void)unityAdsWillShow {
   if (self.delegate != nil) {
     [self.delegate applifierImpactWillOpen:self];
   }
 }
 
-- (void)unityAdsDidOpen {
+- (void)unityAdsDidShow {
   if (self.delegate != nil) {
     [self.delegate applifierImpactDidOpen:self];
   }
 }
 
-- (void)unityAdsWillClose {
+- (void)unityAdsWillHide {
   if (self.delegate != nil) {
     [self.delegate applifierImpactWillClose:self];
   }
 }
 
-- (void)unityAdsDidClose {
+- (void)unityAdsDidHide {
   if (self.delegate != nil) {
     [self.delegate applifierImpactDidClose:self];
+  }
+}
+
+- (void)unityAdsWillLeaveApplication {
+  if (self.delegate != nil) {
+    [self.delegate applifierImpactWillLeaveApplication:self];
   }
 }
 
 - (void)unityAdsVideoStarted {
   if (self.delegate != nil) {
     [self.delegate applifierImpactVideoStarted:self];
+  }
+}
+
+- (void)unityAdsFetchCompleted {
+  if (self.delegate != nil) {
+    [self.delegate applifierImpactCampaignsAreAvailable:self];
+  }
+}
+
+- (void)unityAdsFetchFailed {
+  if (self.delegate != nil) {
+    [self.delegate applifierImpactCampaignsFetchFailed:self];
   }
 }
 
