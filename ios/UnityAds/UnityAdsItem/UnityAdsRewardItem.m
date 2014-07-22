@@ -13,43 +13,30 @@
 
 @implementation UnityAdsRewardItem
 
-- (id)initWithData:(NSDictionary *)data {
-  self = [super init];
-  if (self) {
-    @try {
-      [self setupFromData:data];
-    } @catch (NSException *exception) {
-      return nil;
+- (id)initWithData:(NSDictionary *)data
+{
+    self = [super init];
+    if (self)
+    {
+        id keyValue = data[kUnityAdsRewardItemKeyKey];
+        _key = [keyValue isKindOfClass:[NSNumber class]] ? [keyValue stringValue] : keyValue;
+        
+        id nameValue = data[kUnityAdsRewardNameKey];
+        _name = [nameValue isKindOfClass:[NSNumber class]] ? [nameValue stringValue] : nameValue;
+        
+        NSString *pictureURLString = data[kUnityAdsRewardPictureKey];
+        _pictureURL = [NSURL URLWithString:pictureURLString];
+        
+        if([_key length] == 0 || [_name length] == 0 || _pictureURL == nil)
+        {
+            return nil;
+        }
     }
-  }
-  return self;
-}
-
-- (void)setupFromData:(NSDictionary *)data {
-	id keyValue = [data objectForKey:kUnityAdsRewardItemKeyKey];
-	NSString *key = [keyValue isKindOfClass:[NSNumber class]] ? [keyValue stringValue] : keyValue;
-  if (key == nil || [key length] == 0) {
-    [NSException raise:@"itemKeyException" format:@"Item key is invalid"];
-  }
-	self.key = key;
-	
-	id nameValue = [data objectForKey:kUnityAdsRewardNameKey];
-	NSString *name = [nameValue isKindOfClass:[NSNumber class]] ? [nameValue stringValue] : nameValue;
-  if (name == nil || [name length] == 0) {
-    [NSException raise:@"itemNameException" format:@"Item name is invalid"];
-  }
-	self.name = name;
-	
-	NSString *pictureURLString = [data objectForKey:kUnityAdsRewardPictureKey];
-	NSURL *pictureURL = [NSURL URLWithString:pictureURLString];
-  if (pictureURL == nil) {
-    [NSException raise:@"itemPictureException" format:@"Item picture is invalid"];
-  }
-	self.pictureURL = pictureURL;
+    return self;
 }
 
 - (NSDictionary *)getDetails {
-  return @{kUnityAdsRewardItemNameKey:self.name, kUnityAdsRewardItemPictureKey:self.pictureURL};
+    return @{kUnityAdsRewardItemNameKey:self.name, kUnityAdsRewardItemPictureKey:self.pictureURL};
 }
 
 @end

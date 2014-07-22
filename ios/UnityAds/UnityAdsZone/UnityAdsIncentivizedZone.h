@@ -13,10 +13,10 @@
 
 @interface UnityAdsIncentivizedZone : UnityAdsZone
 
+@property (nonatomic, strong, readonly) UnityAdsRewardItemManager *itemManager;
+
 - (id)initWithData:(NSDictionary *)options;
 
 - (BOOL)isIncentivized;
-
-- (UnityAdsRewardItemManager *)itemManager;
 
 @end
