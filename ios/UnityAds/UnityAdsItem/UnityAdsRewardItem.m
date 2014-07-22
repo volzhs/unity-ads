@@ -27,7 +27,7 @@
         NSString *pictureURLString = data[kUnityAdsRewardPictureKey];
         _pictureURL = [NSURL URLWithString:pictureURLString];
         
-        if([_key length] == 0 || [_name length] == 0 || _pictureURL == nil)
+        if(_key == nil || _name == nil || _pictureURL == nil)
         {
             return nil;
         }
