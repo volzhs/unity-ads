@@ -12,7 +12,7 @@
 
 @interface UnityAdsIncentivizedZone ()
 
-@property (nonatomic, strong) UnityAdsRewardItemManager *_itemManager;
+@property (nonatomic, strong) UnityAdsRewardItemManager *itemManager;
 
 @end
 
@@ -21,24 +21,30 @@
 - (id)initWithData:(NSDictionary *)options {
   self = [super initWithData:options];
   if(self) {
-    id items = [options objectForKey:kUnityAdsZoneRewardItemsKey];
+    id items = options[kUnityAdsZoneRewardItemsKey];
     NSMutableDictionary * itemsDictionary = [[NSMutableDictionary alloc] init];
-    [items enumerateObjectsUsingBlock:^(id rawItem, NSUInteger idx, BOOL *stop) {
+    
+    for(id rawItem in items) {
       id item = [[UnityAdsRewardItem alloc] initWithData:rawItem];
+      if(item == nil) {
+        continue;
+      }
       [itemsDictionary setObject:item forKey:[item key]];
-    }];
-    id defaultItem = [[UnityAdsRewardItem alloc] initWithData:[options objectForKey:kUnityAdsZoneDefaultRewardItemKey]];
-    self._itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:itemsDictionary defaultItem:defaultItem];
+    }
+    
+    id defaultItem = [[UnityAdsRewardItem alloc] initWithData:options[kUnityAdsZoneDefaultRewardItemKey]];
+    
+    if([itemsDictionary count] == 0 || defaultItem == nil) {
+      return nil;
+    }
+    
+    _itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:itemsDictionary defaultItem:defaultItem];
   }
   return self;
 }
 
 - (BOOL)isIncentivized {
   return TRUE;
-}
-
-- (UnityAdsRewardItemManager *)itemManager {
-  return self._itemManager;
 }
 
 @end
