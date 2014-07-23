@@ -16,79 +16,7 @@ public static class UnityAdsExternal {
 		}
 	}
 	
-#if UNITY_EDITOR
-	public static void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName) {
-		Log ("UnityEditor: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName + ", debugModeEnabled=" + debugModeEnabled);
-	}
-	
-	public static bool show (string zoneId, string rewardItemKey, string options) {
-		Log ("UnityEditor: show()");
-		return false;
-	}
-	
-	public static void hide () {
-		Log ("UnityEditor: hide()");
-	}
-	
-	public static bool isSupported () {
-		Log ("UnityEditor: isSupported()");
-		return false;
-	}
-	
-	public static string getSDKVersion () {
-		Log ("UnityEditor: getSDKVersion()");
-		return "EDITOR";
-	}
-	
-	public static bool canShowAds () {
-		Log ("UnityEditor: canShowAds()");
-		return false;
-	}
-	
-	public static bool canShow () {
-		Log ("UnityEditor: canShow()");
-		return false;
-	}
-	
-	public static bool hasMultipleRewardItems () {
-		Log ("UnityEditor: hasMultipleRewardItems()");
-		return false;
-	}
-	
-	public static string getRewardItemKeys () {
-		Log ("UnityEditor: getRewardItemKeys()");
-		return "";
-	}
-
-	public static string getDefaultRewardItemKey () {
-		Log ("UnityEditor: getDefaultRewardItemKey()");
-		return "";
-	}
-	
-	public static string getCurrentRewardItemKey () {
-		Log ("UnityEditor: getCurrentRewardItemKey()");
-		return "";
-	}
-
-	public static bool setRewardItemKey (string rewardItemKey) {
-		Log ("UnityEditor: setRewardItemKey() rewardItemKey=" + rewardItemKey);
-		return false;
-	}
-	
-	public static void setDefaultRewardItemAsRewardItem () {
-		Log ("UnityEditor: setDefaultRewardItemAsRewardItem()");
-	}
-	
-	public static string getRewardItemDetailsWithKey (string rewardItemKey) {
-		Log ("UnityEditor: getRewardItemDetailsWithKey() rewardItemKey=" + rewardItemKey);
-		return "";
-	}
-	
-	public static string getRewardItemDetailsKeys () {
-		return "name;picture";
-	}
-	
-#elif UNITY_IPHONE
+#if UNITY_IPHONE
 	[DllImport ("__Internal")]
 	public static extern void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName);
 	
@@ -216,6 +144,95 @@ public static class UnityAdsExternal {
 		return unityAdsUnity.Call<string>("getRewardItemDetailsKeys");
 	}
 	
+#elif UNITY_EDITOR
+	public static void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName) {
+		Log ("UnityEditor: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName + ", debugModeEnabled=" + debugModeEnabled);
+	}
+	
+	public static bool show (string zoneId, string rewardItemKey, string options) {
+		Log ("UnityEditor: show()");
+		return false;
+	}
+	
+	public static void hide () {
+		Log ("UnityEditor: hide()");
+	}
+	
+	public static bool isSupported () {
+		Log ("UnityEditor: isSupported()");
+		return false;
+	}
+	
+	public static string getSDKVersion () {
+		Log ("UnityEditor: getSDKVersion()");
+		return "EDITOR";
+	}
+	
+	public static bool canShowAds () {
+		Log ("UnityEditor: canShowAds()");
+		return false;
+	}
+	
+	public static bool canShow () {
+		Log ("UnityEditor: canShow()");
+		return false;
+	}
+	
+	public static bool hasMultipleRewardItems () {
+		Log ("UnityEditor: hasMultipleRewardItems()");
+		return false;
+	}
+	
+	public static string getRewardItemKeys () {
+		Log ("UnityEditor: getRewardItemKeys()");
+		return "";
+	}
+	
+	public static string getDefaultRewardItemKey () {
+		Log ("UnityEditor: getDefaultRewardItemKey()");
+		return "";
+	}
+	
+	public static string getCurrentRewardItemKey () {
+		Log ("UnityEditor: getCurrentRewardItemKey()");
+		return "";
+	}
+	
+	public static bool setRewardItemKey (string rewardItemKey) {
+		Log ("UnityEditor: setRewardItemKey() rewardItemKey=" + rewardItemKey);
+		return false;
+	}
+	
+	public static void setDefaultRewardItemAsRewardItem () {
+		Log ("UnityEditor: setDefaultRewardItemAsRewardItem()");
+	}
+	
+	public static string getRewardItemDetailsWithKey (string rewardItemKey) {
+		Log ("UnityEditor: getRewardItemDetailsWithKey() rewardItemKey=" + rewardItemKey);
+		return "";
+	}
+	
+	public static string getRewardItemDetailsKeys () {
+		return "name;picture";
+	}
+
+#else
+	public static void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName) {}
+	public static bool show (string zoneId, string rewardItemKey, string options) { return false; }
+	public static void hide () {}	
+	public static bool isSupported () { return false; }
+	public static string getSDKVersion () { return null; }	
+	public static bool canShowAds () { return false; }
+	public static bool canShow () { return false; }
+	public static bool hasMultipleRewardItems () { return false; }
+	public static string getRewardItemKeys () { return null; }	
+	public static string getDefaultRewardItemKey () { return null; }	
+	public static string getCurrentRewardItemKey () { return null; }	
+	public static bool setRewardItemKey (string rewardItemKey) { return false; }
+	public static void setDefaultRewardItemAsRewardItem () {}
+	public static string getRewardItemDetailsWithKey (string rewardItemKey) { return null; }
+	public static string getRewardItemDetailsKeys () { return null; }
+
 #endif
 
 }
