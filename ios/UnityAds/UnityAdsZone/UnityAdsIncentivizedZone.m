@@ -19,28 +19,32 @@
 @implementation UnityAdsIncentivizedZone
 
 - (id)initWithData:(NSDictionary *)options {
-    self = [super initWithData:options];
-    if(self) {
-        id items = options[kUnityAdsZoneRewardItemsKey];
-        NSMutableDictionary * itemsDictionary = [[NSMutableDictionary alloc] init];
-        
-        for(id rawItem in items)
-        {
-            id item = [[UnityAdsRewardItem alloc] initWithData:rawItem];
-            if(item == nil)
-            {
-                continue;
-            }
-            [itemsDictionary setObject:item forKey:[item key]];
-        }
-        id defaultItem = [[UnityAdsRewardItem alloc] initWithData:options[kUnityAdsZoneDefaultRewardItemKey]];
-        _itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:itemsDictionary defaultItem:defaultItem];
+  self = [super initWithData:options];
+  if(self) {
+    id items = options[kUnityAdsZoneRewardItemsKey];
+    NSMutableDictionary * itemsDictionary = [[NSMutableDictionary alloc] init];
+    
+    for(id rawItem in items) {
+      id item = [[UnityAdsRewardItem alloc] initWithData:rawItem];
+      if(item == nil) {
+        continue;
+      }
+      [itemsDictionary setObject:item forKey:[item key]];
     }
-    return self;
+    
+    id defaultItem = [[UnityAdsRewardItem alloc] initWithData:options[kUnityAdsZoneDefaultRewardItemKey]];
+    
+    if([itemsDictionary count] == 0 || defaultItem == nil) {
+      return nil;
+    }
+    
+    _itemManager = [[UnityAdsRewardItemManager alloc] initWithItems:itemsDictionary defaultItem:defaultItem];
+  }
+  return self;
 }
 
 - (BOOL)isIncentivized {
-    return TRUE;
+  return TRUE;
 }
 
 @end
