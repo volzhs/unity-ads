@@ -61,7 +61,11 @@ echo "Building iOS project (build $ios_build)"
 (cd $ios_repo ; ./build.sh ; cp -rp build/Release-iphoneos/UnityAds.bundle $prefix/temp/Assets/Plugins/UnityAds/iOS ; cp -rp build/Release-iphoneos/UnityAds.framework $prefix/temp/Assets/Plugins/UnityAds/iOS )
 
 echo "Building Android project (build $android_build)"
-(cd $android_repo && make clean && make release && cp -rp build/. $prefix/temp/Assets/Plugins/Android/unityads ; cp -rp build/. $android_sdk_dir ; cd build/. ; zip -9 -r -y $android_sdk_zip .)
+if [ $1 == '--debug' ]; then
+  (cd $android_repo && make clean && make debug && cp -rp build/. $prefix/temp/Assets/Plugins/Android/unityads ; cp -rp build/. $android_sdk_dir ; cd build/. ; zip -9 -r -y $android_sdk_zip .)
+else
+  (cd $android_repo && make clean && make release && cp -rp build/. $prefix/temp/Assets/Plugins/Android/unityads ; cp -rp build/. $android_sdk_dir ; cd build/. ; zip -9 -r -y $android_sdk_zip .)
+fi
 
 echo "Building Unity plugin"
 $unity_app -quit -batchmode -projectPath $prefix/temp  -executeMethod UnityAdsPackageGenerator.CreatePackage
