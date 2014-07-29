@@ -85,10 +85,7 @@ public class UnityAdsDeviceLog {
 						canLog = false;
 					break;
 				case WARNING:
-					if (UnityAdsProperties.UNITY_ADS_DEBUG_MODE)
-						canLog = LOG_WARNING;
-					else
-						canLog = false;
+					canLog = LOG_WARNING;
 					break;
 				case ERROR:
 					canLog = LOG_ERROR;
