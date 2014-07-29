@@ -54,6 +54,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_KEY = "action";
 	public static final String UNITY_ADS_WEBVIEW_API_PLAYVIDEO = "playVideo";
 	public static final String UNITY_ADS_WEBVIEW_API_NAVIGATETO = "navigateTo";
+	public static final String UNITY_ADS_WEBVIEW_API_LOADCOMPLETE = "loadComplete";
 	public static final String UNITY_ADS_WEBVIEW_API_INITCOMPLETE = "initComplete";
 	public static final String UNITY_ADS_WEBVIEW_API_CLOSE = "close";
 	public static final String UNITY_ADS_WEBVIEW_API_OPEN = "open";

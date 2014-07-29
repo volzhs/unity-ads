@@ -483,6 +483,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	@Override
+	public void onWebAppLoadComplete (JSONObject data) {
+		UnityAdsDeviceLog.entered();
+		mainview.webview.setWebAppLoadComplete();
+	}
+	
+	@Override
 	public void onWebAppInitComplete (JSONObject data) {
 		UnityAdsDeviceLog.entered();
 		Boolean dataOk = true;
@@ -637,9 +643,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
-	private static void open (String view) {
+	private static void open (final String view) {
 		Boolean dataOk = true;			
-		JSONObject data = new JSONObject();
+		final JSONObject data = new JSONObject();
 		
 		try  {
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
@@ -662,15 +668,28 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsDeviceLog.debug("Opening with view:" + view + " and data:" + data.toString());
 			
 			if (mainview != null) {
-				mainview.openAds(view, data);
-				
-				UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-				if (currentZone.noOfferScreen()) {
-					playVideo();
-				}		
-				
-				if (_adsListener != null)
-					_adsListener.onShow();
+				new Thread(new Runnable() {
+					public void run() {
+						if(!mainview.webview.isWebAppLoadComplete()) {
+							mainview.webview.waitForWebAppLoadComplete();
+						}
+						
+						UnityAdsUtils.runOnUiThread(new Runnable() {
+							public void run() {
+								mainview.openAds(view, data);
+								
+								UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+								if (currentZone.noOfferScreen()) {
+									playVideo();
+								}		
+								
+								if (_adsListener != null)
+									_adsListener.onShow();
+							}
+						});
+						
+					}
+				}).start();
 			}
 		}
 	}

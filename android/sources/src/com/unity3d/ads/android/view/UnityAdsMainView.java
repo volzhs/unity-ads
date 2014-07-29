@@ -1,8 +1,10 @@
 package com.unity3d.ads.android.view;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -18,6 +20,7 @@ import android.widget.RelativeLayout;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
+import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -386,6 +389,22 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 	// IUnityAdsWebViewListener
 	@Override
 	public void onWebAppLoaded () {
-		webview.initWebApp(UnityAds.webdata.getData());
+		try {
+			ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
+			JSONObject initData = UnityAds.webdata.getData();
+			JSONArray campaignArray = initData.getJSONObject("data").getJSONArray("campaigns");
+			JSONArray viewableCampaignArray = new JSONArray();
+			for(int i = 0; i < campaignArray.length(); ++i) {
+				JSONObject campaign = campaignArray.getJSONObject(i);
+				String campaignId = campaign.getString("id");
+				for(UnityAdsCampaign viewableCampaign : viewableCampaigns) {
+					if(viewableCampaign.getCampaignId() == campaignId) {
+						viewableCampaignArray.put(campaign);
+					}
+				}
+			}
+			initData.getJSONObject("data").put("campaigns", viewableCampaignArray);
+			webview.initWebApp(initData);
+		} catch(Exception e) {}
 	}
 }

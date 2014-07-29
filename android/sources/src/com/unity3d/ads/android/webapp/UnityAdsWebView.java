@@ -2,6 +2,9 @@ package com.unity3d.ads.android.webapp;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.json.JSONObject;
 
@@ -34,6 +37,11 @@ public class UnityAdsWebView extends WebView {
 	private String _url = null;
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
+	
+	private Lock _webAppLoadLock = new ReentrantLock();
+	private Condition _webAppLoadCondition = _webAppLoadLock.newCondition();
+	private boolean _webAppLoadComplete = false;
+	
 	private UnityAdsWebBridge _webBridge = null;
 	private String _currentWebView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
 	
@@ -70,6 +78,30 @@ public class UnityAdsWebView extends WebView {
 	
 	public boolean isWebAppLoaded () {
 		return _webAppLoaded;
+	}
+	
+	public boolean isWebAppLoadComplete () {
+		return _webAppLoadComplete;
+	}
+	
+	public void waitForWebAppLoadComplete () {
+		_webAppLoadLock.lock();
+		try {
+			_webAppLoadCondition.await();
+		} catch(InterruptedException e) {
+		} finally {
+			_webAppLoadLock.unlock();
+		}
+	}
+	
+	public void setWebAppLoadComplete() {
+		_webAppLoadLock.lock();
+		try {
+			_webAppLoadComplete = true;
+			_webAppLoadCondition.signalAll();
+		} finally {
+			_webAppLoadLock.unlock();
+		}
 	}
 	
 	public String getWebViewCurrentView () {
