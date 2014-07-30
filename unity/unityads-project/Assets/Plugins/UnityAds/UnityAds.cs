@@ -196,7 +196,11 @@ public class UnityAds : MonoBehaviour {
 		
 		return retDict;
 	}
-	
+
+	public static bool show () {
+		return show (null, "", null);
+	}
+
 	public static bool show (string zoneId) {
 		return show (zoneId, "", null);	
 	}
