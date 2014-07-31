@@ -751,7 +751,7 @@
 			name = UnityAdsTests;
 			productName = UnityAdsTests;
 			productReference = 99FE3C1017E87E1300845E0B /* UnityAdsTests.octest */;
-			productType = "com.apple.product-type.bundle.ocunit-test";
+			productType = "com.apple.product-type.bundle";
 		};
 		CC158909150789ED00B3D188 /* UnityAds */ = {
 			isa = PBXNativeTarget;
