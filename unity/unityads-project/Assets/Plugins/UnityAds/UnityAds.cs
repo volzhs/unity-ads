@@ -80,12 +80,14 @@ public class UnityAds : MonoBehaviour {
 	}
 	
 	public void OnDestroy () {
-		_campaignsAvailableDelegate = null;
-		_campaignsFetchFailedDelegate = null;
-		_adsShowDelegate = null;
-		_adsHideDelegate = null;
-		_videoCompletedDelegate = null;
-		_videoStartedDelegate = null;
+		if(gameObject == SharedInstance.gameObject) {
+			_campaignsAvailableDelegate = null;
+			_campaignsFetchFailedDelegate = null;
+			_adsShowDelegate = null;
+			_adsHideDelegate = null;
+			_videoCompletedDelegate = null;
+			_videoStartedDelegate = null;
+		}
 	}
 
 	/* Static Methods */
