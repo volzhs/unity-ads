@@ -237,10 +237,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	public static boolean canShow () {
 		boolean isConnected = true;
-		Activity context = UnityAdsProperties.getCurrentActivity();
+		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
 
-		if(context != null) {
-			ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if(currentActivity != null) {
+			ConnectivityManager cm = (ConnectivityManager)currentActivity.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
 			if(cm != null) {
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -799,8 +799,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_pauseScreenTimer = new TimerTask() {
 			@Override
 			public void run() {
-				if(UnityAdsProperties.CURRENT_ACTIVITY != null) {
-					PowerManager pm = (PowerManager)UnityAdsProperties.getCurrentActivity().getBaseContext().getSystemService(Context.POWER_SERVICE);			
+				Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+				if(currentActivity != null) {
+					PowerManager pm = (PowerManager)currentActivity.getBaseContext().getSystemService(Context.POWER_SERVICE);			
 					if (!pm.isScreenOn()) {
 						mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
 						close();
