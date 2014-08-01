@@ -15,6 +15,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -232,16 +234,29 @@ public class UnityAds implements IUnityAdsCacheListener,
 			webdata.getViewableVideoPlanCampaigns() != null && 
 			webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
-	
+
 	public static boolean canShow () {
-		return !_showingAds && 
-			webdata != null && 
-			webdata.getVideoPlanCampaigns() != null && 
-			webdata.getVideoPlanCampaigns().size() > 0;
+		boolean isConnected = true;
+		Activity context = UnityAdsProperties.getCurrentActivity();
+
+		if(context != null) {
+			ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+			if(cm != null) {
+				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+				isConnected = activeNetwork != null && activeNetwork.isConnected();
+			}
+		}
+
+		return !_showingAds &&
+				isConnected &&
+				webdata != null &&
+				webdata.getVideoPlanCampaigns() != null &&
+				webdata.getVideoPlanCampaigns().size() > 0;
 	}
-	
+
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
-	
+
 	public static boolean hasMultipleRewardItems () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if(zone.isIncentivized()) {
