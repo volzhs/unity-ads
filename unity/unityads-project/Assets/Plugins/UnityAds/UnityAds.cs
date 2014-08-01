@@ -60,9 +60,9 @@ public class UnityAds : MonoBehaviour {
 				sharedInstance = (UnityAds) FindObjectOfType(typeof(UnityAds));
 
 				#if UNITY_IPHONE && !UNITY_EDITOR
-				UnityAdsExternal.init(sharedInstance.gameIdForIOS, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name);
+				UnityAdsExternal.init(sharedInstance.gameIdForIOS, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name.Replace("(Clone)", ""));
 				#elif UNITY_ANDROID && !UNITY_EDITOR
-				UnityAdsExternal.init(sharedInstance.gameIdForAndroid, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name);
+				UnityAdsExternal.init(sharedInstance.gameIdForAndroid, sharedInstance.testModeEnabled, sharedInstance.debugModeEnabled && Debug.isDebugBuild, sharedInstance.gameObject.name.Replace("(Clone)", ""));
 				#endif
 			}
 
@@ -80,12 +80,14 @@ public class UnityAds : MonoBehaviour {
 	}
 	
 	public void OnDestroy () {
-		_campaignsAvailableDelegate = null;
-		_campaignsFetchFailedDelegate = null;
-		_adsShowDelegate = null;
-		_adsHideDelegate = null;
-		_videoCompletedDelegate = null;
-		_videoStartedDelegate = null;
+		if(gameObject == SharedInstance.gameObject) {
+			_campaignsAvailableDelegate = null;
+			_campaignsFetchFailedDelegate = null;
+			_adsShowDelegate = null;
+			_adsHideDelegate = null;
+			_videoCompletedDelegate = null;
+			_videoStartedDelegate = null;
+		}
 	}
 
 	/* Static Methods */

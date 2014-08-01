@@ -30,7 +30,13 @@ extern void __gcov_flush();
 }
 
 - (void)testZoneParserIncentivizedZone {
-  UnityAdsZone * zone = [UnityAdsZoneParser parseZone:@{@"id": @"testZone1", @"name": @"testZoneName1", @"incentivised": @"true"}];
+  UnityAdsZone * zone = [UnityAdsZoneParser parseZone:@{
+    @"id": @"testZone1",
+    @"name": @"testZoneName1",
+    @"incentivised": @"true",
+    @"defaultRewardItem": @{@"key": @"testItemKey1", @"name": @"testItemName1", @"picture": @"http://invalid.url.com"},
+    @"rewardItems": @[@{@"key": @"testItemKey1", @"name": @"testItemName1", @"picture": @"http://invalid.url.com"}]
+  }];
   STAssertTrue([zone isKindOfClass:[UnityAdsIncentivizedZone class]], @"Failed to return an instance of an incentivised zone");
 }
 
