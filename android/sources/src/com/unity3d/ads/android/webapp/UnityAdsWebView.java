@@ -124,7 +124,7 @@ public class UnityAdsWebView extends WebView {
 			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 			UnityAdsDeviceLog.debug("Send change view to WebApp: " + javascriptString);
 			
-			if (data != null) {
+			if (data != null && UnityAdsProperties.getBaseActivity() != null) {
 				String action = "test";
 				try {
 					action = data.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY);

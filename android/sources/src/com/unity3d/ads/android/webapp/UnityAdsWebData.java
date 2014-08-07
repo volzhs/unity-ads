@@ -146,7 +146,7 @@ public class UnityAdsWebData {
 			return true;
 		}
 
-		if (UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) && UnityAdsProperties.TEST_DATA != null) {
+		if (UnityAdsProperties.getBaseActivity() != null && UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) && UnityAdsProperties.TEST_DATA != null) {
 			campaignDataReceived(UnityAdsProperties.TEST_DATA);
 			return true;
 		}

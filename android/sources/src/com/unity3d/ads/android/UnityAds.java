@@ -424,7 +424,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 		}
 		
-		if (!dataFetchFailed && !sdkIsCurrent && UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity())) {
+		if (!dataFetchFailed && !sdkIsCurrent && UnityAdsProperties.getCurrentActivity() != null && UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity())) {
 			_alertDialog = new AlertDialog.Builder(UnityAdsProperties.getCurrentActivity()).create();
 			_alertDialog.setTitle("Unity Ads");
 			_alertDialog.setMessage("You are not running the latest version of Unity Ads android. Please update your version (this dialog won't appear in release builds).");
