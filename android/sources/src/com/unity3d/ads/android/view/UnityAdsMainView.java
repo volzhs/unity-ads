@@ -7,6 +7,8 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
@@ -35,6 +37,7 @@ import com.unity3d.ads.android.webapp.UnityAdsWebView;
 import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebViewListener, 
 																IUnityAdsVideoPlayerListener {
 
@@ -95,7 +98,7 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 			UnityAdsDeviceLog.error("Cannot open, wrong activity");
 		}
 	}
-	
+
 	public void closeAds (JSONObject data) {		
 		if (this.getParent() != null) {
 			ViewGroup vg = (ViewGroup)this.getParent();
@@ -140,8 +143,12 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		}
 		
 		destroyVideoPlayerView();
-		setViewState(UnityAdsMainViewState.WebView);		
-		UnityAdsProperties.getCurrentActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		setViewState(UnityAdsMainViewState.WebView);
+
+		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+		if(currentActivity != null) {
+			currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		}
 	}
 	
 	@Override
@@ -372,7 +379,11 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		}
 
 		setViewState(UnityAdsMainViewState.WebView);
-		UnityAdsProperties.getCurrentActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		
+		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+		if(currentActivity != null) {
+			currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		}
 
 		JSONObject params = new JSONObject();
 		try {
