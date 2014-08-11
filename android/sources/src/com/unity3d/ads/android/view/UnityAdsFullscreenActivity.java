@@ -20,12 +20,14 @@ public class UnityAdsFullscreenActivity extends Activity {
 		UnityAdsDeviceLog.entered();   	
     	super.onResume();
    		UnityAds.changeActivity(this);
+   		UnityAds.checkMainview();
     }
     
     @Override
 	protected void onDestroy() {
 		UnityAdsDeviceLog.entered();   	
-    	super.onDestroy();		
+    	super.onDestroy();
+    	UnityAds.handleFullscreenDestroy();
 	}
     
 	@Override

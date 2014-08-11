@@ -76,6 +76,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private static boolean _adsReadySent = false;
 	private static boolean _openRequestFromDeveloper = false;
 	private static boolean _refreshAfterShowAds = false;
+	private static boolean _fixMainview = false;
 	private static AlertDialog _alertDialog = null;
 		
 	private static TimerTask _pauseScreenTimer = null;
@@ -780,7 +781,22 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsDeviceLog.error("Weird error: " + e.getStackTrace());
 		}
 	}
-	
+
+	public static void checkMainview() {
+		if(_fixMainview) {
+			_fixMainview = false;
+			if(mainview != null) {
+				mainview.fixActivityAttachment();
+			}
+		}
+	}
+
+	public static void handleFullscreenDestroy() {
+		if(_showingAds) {
+			_fixMainview = true;
+		}
+	}
+
 	private static void cancelPauseScreenTimer () {
 		if (_pauseScreenTimer != null) {
 			_pauseScreenTimer.cancel();

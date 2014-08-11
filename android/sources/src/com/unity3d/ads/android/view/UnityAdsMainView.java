@@ -99,6 +99,13 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		}
 	}
 
+	public void fixActivityAttachment() {
+		if (this.getParent() != null && (ViewGroup)this.getParent() != null)
+			((ViewGroup)this.getParent()).removeView(this);
+
+		UnityAdsProperties.getCurrentActivity().addContentView(this, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
+	}
+
 	public void closeAds (JSONObject data) {		
 		if (this.getParent() != null) {
 			ViewGroup vg = (ViewGroup)this.getParent();
@@ -111,7 +118,7 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		webview.destroy();
 		webview = null;
 	}
-	
+
 	public void setViewState (UnityAdsMainViewState state) {
 		if (!_currentState.equals(state)) {
 			_currentState = state;
