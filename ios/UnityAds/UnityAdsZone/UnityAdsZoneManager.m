@@ -47,7 +47,11 @@ static UnityAdsZoneManager *sharedZoneManager = nil;
       [self._zones setObject:zone forKey:zoneId];
       ++addedZones;
       if([zone isDefault]) {
-        self._defaultZone = [[UnityAdsZone alloc] initWithData:[zone getZoneOptions]];
+        if([zone isIncentivized]) {
+          self._defaultZone = [[UnityAdsIncentivizedZone alloc] initWithData:[zone getZoneOptions]];
+        } else {
+          self._defaultZone = [[UnityAdsZone alloc] initWithData:[zone getZoneOptions]];
+        }
       }
       if([zone isDefault] && self._currentZone == nil) {
         self._currentZone = zone;
