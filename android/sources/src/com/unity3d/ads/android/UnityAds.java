@@ -819,8 +819,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 				if(currentActivity != null) {
 					PowerManager pm = (PowerManager)currentActivity.getBaseContext().getSystemService(Context.POWER_SERVICE);			
 					if (!pm.isScreenOn()) {
-						mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
-						close();
+						if(mainview != null && mainview.webview != null && mainview.webview.isWebAppLoaded()) {
+							mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, new JSONObject());
+							close();
+						}
+
 						cancelPauseScreenTimer();
 					}
 				}
