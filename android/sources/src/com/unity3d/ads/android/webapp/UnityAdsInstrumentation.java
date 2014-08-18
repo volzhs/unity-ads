@@ -161,7 +161,7 @@ public class UnityAdsInstrumentation {
 			UnityAds.mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_KEY, events);
 		}
 		else {
-			UnityAdsDeviceLog.error("WebApp not initialized, could not send event!");
+			UnityAdsDeviceLog.debug("WebApp not initialized, could not send event!");
 			
 			if (_unsentEvents == null) {
 				_unsentEvents = new ArrayList<Map<String,JSONObject>>();
