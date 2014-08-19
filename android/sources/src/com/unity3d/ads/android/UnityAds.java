@@ -77,6 +77,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private static boolean _openRequestFromDeveloper = false;
 	private static boolean _refreshAfterShowAds = false;
 	private static boolean _fixMainview = false;
+	private static boolean _preventVideoDoubleStart = false;
 	private static AlertDialog _alertDialog = null;
 		
 	private static TimerTask _pauseScreenTimer = null;
@@ -217,6 +218,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 				_openRequestFromDeveloper = true;
 				_showingAds = true;
+				_preventVideoDoubleStart = false;
 				startFullscreenActivity();
 				return _showingAds;
 			}
@@ -368,6 +370,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				break;
 			case RequestRetryVideoPlay:
 				UnityAdsDeviceLog.debug("Retrying video play, because something went wrong.");
+				_preventVideoDoubleStart = false;
 				playVideo(300);
 				break;
 		}
@@ -482,6 +485,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 					
 					UnityAdsDeviceLog.debug("Selected campaign=" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + " isViewed: " + UnityAdsProperties.SELECTED_CAMPAIGN.isViewed());
 					if (UnityAdsProperties.SELECTED_CAMPAIGN != null && (rewatch || !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed())) {
+						if(rewatch) {
+							_preventVideoDoubleStart = false;
+						}
+
 						playVideo();
 					}
 				}
@@ -755,6 +762,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	private static void playVideo (long delay) {
+		if(_preventVideoDoubleStart) {
+			UnityAdsDeviceLog.debug("Prevent double start of video playback");
+			return;
+		}
+		_preventVideoDoubleStart = true;
+
 		UnityAdsDeviceLog.debug("Running threaded");
 		UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
 		UnityAdsUtils.runOnUiThread(playVideoRunner, delay);
