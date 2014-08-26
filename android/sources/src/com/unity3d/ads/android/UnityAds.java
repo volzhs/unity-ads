@@ -15,6 +15,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -78,6 +81,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private static boolean _refreshAfterShowAds = false;
 	private static boolean _fixMainview = false;
 	private static boolean _preventVideoDoubleStart = false;
+	private static boolean _singleTaskApplication = false;
 	private static AlertDialog _alertDialog = null;
 		
 	private static TimerTask _pauseScreenTimer = null;
@@ -611,7 +615,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public static void init (final Activity activity, String gameId, IUnityAdsListener listener) {
 		if (_instance != null || _initialized) return;
-		
+
 		if(gameId.length() == 0) {
 			throw new IllegalArgumentException("gameId is empty");
 		} else {
@@ -622,6 +626,24 @@ public class UnityAds implements IUnityAdsCacheListener,
 				}
 			} catch(NumberFormatException e) {
 				throw new IllegalArgumentException("gameId does not parse as an integer");
+			}
+		}
+
+		String pkgName = activity.getPackageName();
+		PackageManager pm = activity.getPackageManager();
+
+		if(pkgName != null && pm != null) {
+			try {
+				PackageInfo pkgInfo = pm.getPackageInfo(pkgName, PackageManager.GET_ACTIVITIES);
+
+				for(int i = 0; i < pkgInfo.activities.length; i++) {
+					if(pkgInfo.activities[i].launchMode == ActivityInfo.LAUNCH_SINGLE_TASK) {
+						_singleTaskApplication = true;
+						UnityAdsDeviceLog.debug("Running in singleTask application mode");
+					}
+				}
+			} catch (Exception e) {
+				UnityAdsDeviceLog.debug("Error while checking singleTask activities");
 			}
 		}
 
@@ -805,6 +827,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	public static void handleFullscreenDestroy() {
+		if(_singleTaskApplication) {
+			hideOperations();
+			return;
+		}
+
 		if(_showingAds) {
 			_fixMainview = true;
 		}
@@ -860,14 +887,18 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
 			removeCampaignRefreshTimer();
 			UnityAdsDeviceLog.debug("Refreshing ad plan from server due to timer deadline");
-			webdata.initCampaigns();
+			if(webdata != null) {
+				webdata.initCampaigns();
+			}
 			return;
 		}
 
 		if (UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0) {
 			if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
 				UnityAdsDeviceLog.debug("Refreshing ad plan from server due to endscreen limit");
-				webdata.initCampaigns();
+				if(webdata != null) {
+					webdata.initCampaigns();
+				}
 				return;
 			}
 		}
@@ -875,7 +906,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (webdata != null && webdata.getVideoPlanCampaigns() != null) {
 			if(webdata.getViewableVideoPlanCampaigns().size() == 0) {
 				UnityAdsDeviceLog.debug("All available videos watched, refreshing ad plan from server");
-				webdata.initCampaigns();
+				if(webdata != null) {
+					webdata.initCampaigns();
+				}
 				return;
 			}
 		} else {
@@ -919,59 +952,58 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// FIX: Could these 2 classes be moved to MainView
 	
 	private static class UnityAdsCloseRunner implements Runnable {
-		JSONObject _data = null;
 		@Override
 		public void run() {			
 			if (UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
-				Boolean dataOk = true;			
+				final Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+				if (currentActivity != null && currentActivity instanceof UnityAdsFullscreenActivity && !currentActivity.isFinishing() && !UnityAdsProperties.isActivityDestroyed(currentActivity)) {
+					currentActivity.finish();
+					if (UnityAdsWebData.getZoneManager() != null) {
+						UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+						if (!currentZone.openAnimated()) {
+							currentActivity.overridePendingTransition(0, 0);
+						}
+					}
+				}
+			}
+
+			hideOperations();
+		}
+	}
+
+	private static void hideOperations() {
+		Handler handler = new Handler(Looper.getMainLooper());
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
 				final JSONObject data = new JSONObject();
 				
 				try  {
 					data.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_CLOSE);
 				}
 				catch (Exception e) {
-					dataOk = false;
+					return;
+				}
+				
+				if(mainview != null && mainview.webview != null) {
+					mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
 				}
 
-				UnityAdsDeviceLog.debug("DataOk: " + dataOk);
-
-				if (dataOk) {
-					final Activity currentActivity = UnityAdsProperties.getCurrentActivity();
-					if (currentActivity != null && currentActivity instanceof UnityAdsFullscreenActivity && !currentActivity.isFinishing() && !UnityAdsProperties.isActivityDestroyed(currentActivity)) {
-						currentActivity.finish();
-						if (UnityAdsWebData.getZoneManager() != null) {
-							UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-							if (!currentZone.openAnimated()) {
-								currentActivity.overridePendingTransition(0, 0);
-							}
-						}
-					}
-
-					Handler handler = new Handler(Looper.getMainLooper());
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							_data = data;
-
-							if(mainview != null && mainview.webview != null) {
-								mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
-							}
-
-							mainview.closeAds(_data);
-							mainview = null;
-							_showingAds = false;
-
-							if (_adsListener != null)
-								_adsListener.onHide();
-
-							refreshCampaigns();
-						}
-					}, 30);
+				if(mainview != null) {
+					mainview.closeAds(data);
+					mainview = null;
 				}
+
+				_showingAds = false;
+
+				if (_adsListener != null)
+					_adsListener.onHide();
+
+				refreshCampaigns();
 			}
-		}
+		}, 30);
 	}
-	
+
 	private static class UnityAdsPlayVideoRunner implements Runnable {
 		
 		@Override
