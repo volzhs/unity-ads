@@ -1,7 +1,0 @@
-//
-// Prefix header for all source files of the 'BurstlyUnityAdsAdaptor' target in the 'BurstlyUnityAdsAdaptor' project
-//
-
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-#endif
