@@ -127,7 +127,7 @@ public class UnityAdsZoneManagerTest extends ActivityInstrumentationTestCase2<Un
 		)));
 		
 		assertFalse(zoneManager.setCurrentZone("invalidZoneId"));
-		assertTrue(zoneManager.getCurrentZone().getZoneId().equals("testZoneId1"));
+		assertTrue(zoneManager.getCurrentZone() == null);
 		
 	}
 }

@@ -268,7 +268,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	public static boolean hasMultipleRewardItems () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
-		if(zone.isIncentivized()) {
+		if(zone != null && zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
 			return itemManager.itemCount() > 1;
 		}		
@@ -277,7 +277,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public static ArrayList<String> getRewardItemKeys () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
-		if(zone.isIncentivized()) {
+		if(zone != null && zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
 			ArrayList<UnityAdsRewardItem> rewardItems = itemManager.allItems();
 			ArrayList<String> rewardItemKeys = new ArrayList<String>();
@@ -292,7 +292,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public static String getDefaultRewardItemKey () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
-		if(zone.isIncentivized()) {
+		if(zone != null && zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
 			return itemManager.getDefaultItem().getKey();
 		}		
@@ -301,7 +301,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public static String getCurrentRewardItemKey () {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
-		if(zone.isIncentivized()) {
+		if(zone != null && zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
 			return itemManager.getCurrentItem().getKey();
 		}			
@@ -311,7 +311,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static boolean setRewardItemKey (String rewardItemKey) {
 		if (canShow()) {
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
-			if(zone.isIncentivized()) {
+			if(zone != null && zone.isIncentivized()) {
 				UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
 				return itemManager.setCurrentItem(rewardItemKey);
 			}
@@ -322,7 +322,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static void setDefaultRewardItemAsRewardItem () {
 		if (canShow()) {
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
-			if(zone.isIncentivized()) {
+			if(zone != null && zone.isIncentivized()) {
 				UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
 				itemManager.setCurrentItem(itemManager.getDefaultItem().getKey());
 			}
@@ -331,7 +331,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	
 	public static Map<String, String> getRewardItemDetailsWithKey (String rewardItemKey) {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
-		if(zone.isIncentivized()) {
+		if(zone != null && zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone)zone).itemManager();
 			UnityAdsRewardItem rewardItem = itemManager.getItem(rewardItemKey);
 			if (rewardItem != null) {

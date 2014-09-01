@@ -93,9 +93,9 @@ static UnityAdsZoneManager *sharedZoneManager = nil;
     self._currentZone = zone;
     return true;
   } else {
-    self._currentZone = self._defaultZone;
+    self._currentZone = nil;
+    return false;
   }
-  return false;
 }
 
 - (UnityAdsZone *)getCurrentZone {

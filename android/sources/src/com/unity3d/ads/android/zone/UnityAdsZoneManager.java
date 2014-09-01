@@ -64,9 +64,9 @@ public class UnityAdsZoneManager {
 			_currentZone = _zones.get(zoneId);
 			return true;
 		} else {
-			_currentZone = _defaultZone;
+			_currentZone = null;
+			return false;
 		}
-		return false;
 	}
 	
 	public int zoneCount() {
