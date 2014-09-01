@@ -84,9 +84,8 @@
     }
     [[UnityAds sharedInstance] setTestDeveloperId:self.developerId.text];
 #else
-    if( [self.developerId.text length] > 0){
-        [[ApplifierImpact sharedInstance] setTestMode:YES];
-        self.noOfferScreen = false;
+    if([self.developerId.text length] > 0){
+      [[ApplifierImpact sharedInstance] setTestMode:YES];
     }
     [[ApplifierImpact sharedInstance] setTestDeveloperId:self.developerId.text];
 #endif
