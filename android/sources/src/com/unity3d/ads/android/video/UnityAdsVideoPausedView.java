@@ -1,5 +1,6 @@
 package com.unity3d.ads.android.video;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -24,6 +25,8 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 	private ImageView _outerStroke = null;
 	private ImageView _triangle = null;
 	private TextView _textView = null;
+
+	private static float screenDensity;
 	
 	public UnityAdsVideoPausedView(Context context) {
 		super(context);
@@ -40,9 +43,12 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 		super(context, attrs, defStyle);
 		createView();
 	}
-	
+
+	public static void initScreenMetrics(Activity activity) {
+		screenDensity = activity.getResources().getDisplayMetrics().density;
+	}
+
 	private void createView () {
-		DisplayMetrics metrics = UnityAdsProperties.getCurrentActivity().getResources().getDisplayMetrics();
 		setBackgroundColor(0xC0000000);
 		
 		RelativeLayout.LayoutParams strokeParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -59,7 +65,7 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 		RelativeLayout.LayoutParams arrowParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		arrowParams.addRule(RelativeLayout.CENTER_VERTICAL);
 		arrowParams.addRule(RelativeLayout.ALIGN_LEFT, 60001);
-		arrowParams.leftMargin = Math.round(31 * metrics.density);
+		arrowParams.leftMargin = Math.round(31 * screenDensity);
 		_triangle = createTriangle(60002);
 		addView(_triangle, arrowParams);
 		
@@ -70,7 +76,7 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 		RelativeLayout.LayoutParams textViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		textViewParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 		textViewParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		textViewParams.bottomMargin = Math.round(20 * metrics.density);
+		textViewParams.bottomMargin = Math.round(20 * screenDensity);
 		addView(_textView, textViewParams);
 	}
 	

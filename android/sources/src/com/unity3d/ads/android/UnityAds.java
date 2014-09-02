@@ -37,6 +37,7 @@ import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
+import com.unity3d.ads.android.video.UnityAdsVideoPausedView;
 import com.unity3d.ads.android.view.UnityAdsFullscreenActivity;
 import com.unity3d.ads.android.view.UnityAdsMainView;
 import com.unity3d.ads.android.view.UnityAdsMainView.UnityAdsMainViewAction;
@@ -658,6 +659,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
 		UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
 		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
+		UnityAdsVideoPausedView.initScreenMetrics(activity);
 		
 		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable(activity));
 		
