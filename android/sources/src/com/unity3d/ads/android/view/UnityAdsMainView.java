@@ -284,12 +284,18 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 			// UNSPECIFIED
 			targetOrientation = -1;
 		}
-		
-		UnityAdsProperties.getCurrentActivity().setRequestedOrientation(targetOrientation);
-		
+
+		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+		if(currentActivity != null) {
+			currentActivity.setRequestedOrientation(targetOrientation);
+		}
+
 		focusToView(videoplayerview);
-		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
-		webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
+
+		if(webview != null) {
+			webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
+			webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
+		}
 	}
 	
 	@Override
@@ -384,6 +390,7 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 
 		if (videoplayerview != null) {
 			videoplayerview.setKeepScreenOn(false);
+			videoplayerview.hideVideo();
 			videoplayerview = null;
 		}
 

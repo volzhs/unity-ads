@@ -129,7 +129,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			});
 		}		
 	}
-	
+
+	public void hideVideo() {
+		purgeVideoPausedTimer();
+	}
+
 	public void clearVideoPlayer  () {
 		UnityAdsDeviceLog.entered();
 		setKeepScreenOn(false);
