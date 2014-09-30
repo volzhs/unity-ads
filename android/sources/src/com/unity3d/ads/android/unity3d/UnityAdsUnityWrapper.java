@@ -8,6 +8,7 @@ import android.app.Activity;
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.IUnityAdsListener;
+import com.unity3d.ads.android.UnityAdsDeviceLog.UnityAdsLogLevel;
 import com.unity3d.ads.android.UnityAdsUtils;
 
 public class UnityAdsUnityWrapper implements IUnityAdsListener {
@@ -47,26 +48,47 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	public String getSDKVersion () {
 		return UnityAds.getSDKVersion();
 	}
-	
+
 	public void init (final String gameId, final Activity activity, boolean testMode, boolean debugMode, String gameObject) {
+		init(gameId, activity, testMode, debugMode ? 4 : 3, gameObject);
+	}
+
+	public void init (final String gameId, final Activity activity, boolean testMode, int logLevel, String gameObject) {
 		if (!_initialized) {
 			_initialized = true;
 			_gameId = gameId;
 			_gameObject = gameObject;
 			_testMode = testMode;
-			_debugMode = debugMode;
-			
+			final UnityAdsLogLevel level;
+
+			switch(logLevel) {
+			case 1:
+				level = UnityAdsLogLevel.ERROR;
+				break;
+
+			case 2:
+				level = UnityAdsLogLevel.WARNING;
+				break;
+
+			case 3:
+				level = UnityAdsLogLevel.INFO;
+				break;
+
+			default:
+				level = UnityAdsLogLevel.DEBUG;
+			}
+
 			if (_startupActivity == null)
 				_startupActivity = activity;
-			
+
 			final UnityAdsUnityWrapper listener = this;
-			
+
 			try {
 				UnityAdsUtils.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						UnityAds.setTestMode(_testMode);
-						UnityAds.setDebugMode(_debugMode);
+						UnityAdsDeviceLog.setLogLevel(level);
 						UnityAds.init(_startupActivity, _gameId, listener);
 					}
 				});
@@ -76,7 +98,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 			}
 		}
 	}
-	
+
 	public boolean show (final String zoneId, final String rewardItemKey, final String optionsString) {
 		if (UnityAds.canShowAds() && UnityAds.canShow()) {
 			HashMap<String, Object> options = null;

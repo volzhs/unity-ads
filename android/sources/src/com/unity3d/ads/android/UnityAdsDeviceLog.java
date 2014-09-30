@@ -9,11 +9,11 @@ import android.util.Log;
 
 public class UnityAdsDeviceLog {
 
-	public static boolean LOGGING = true;
-	public static boolean LOG_ERROR = true;
-	public static boolean LOG_WARNING = true;
-	public static boolean LOG_DEBUG = true;
-	public static boolean LOG_INFO = true;
+	private static boolean LOGGING = true;
+	private static boolean LOG_ERROR = true;
+	private static boolean LOG_WARNING = true;
+	private static boolean LOG_DEBUG = true;
+	private static boolean LOG_INFO = true;
 
 	public enum UnityAdsLogLevel {
 		INFO, DEBUG, WARNING, ERROR
@@ -32,6 +32,38 @@ public class UnityAdsDeviceLog {
 	}
 
 	public UnityAdsDeviceLog() {
+	}
+
+	public static void setLogLevel(UnityAdsLogLevel level) {
+		switch(level) {
+		case ERROR:
+			LOG_ERROR = true;
+			LOG_WARNING = false;
+			LOG_INFO = false;
+			LOG_DEBUG = false;
+			break;
+
+		case WARNING:
+			LOG_ERROR = true;
+			LOG_WARNING = true;
+			LOG_INFO = false;
+			LOG_DEBUG = false;
+			break;
+
+		case INFO:
+			LOG_ERROR = true;
+			LOG_WARNING = true;
+			LOG_INFO = true;
+			LOG_DEBUG = false;
+			break;
+
+		case DEBUG:
+		default:
+			LOG_ERROR = true;
+			LOG_WARNING = true;
+			LOG_INFO = true;
+			LOG_DEBUG = true;
+		}
 	}
 
 	public static void entered() {
@@ -79,10 +111,7 @@ public class UnityAdsDeviceLog {
 					canLog = LOG_INFO;
 					break;
 				case DEBUG:
-					if (UnityAdsProperties.UNITY_ADS_DEBUG_MODE)
-						canLog = LOG_DEBUG;
-					else
-						canLog = false;
+					canLog = LOG_DEBUG;
 					break;
 				case WARNING:
 					canLog = LOG_WARNING;
