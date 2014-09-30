@@ -339,7 +339,7 @@ public class UnityAdsWebView extends WebView {
 				tmp = new File(sourceID);
 			}
 			catch (Exception e) {
-				UnityAdsDeviceLog.error("Could not handle sourceId: " + e.getMessage(), this);
+				UnityAdsDeviceLog.error("Could not handle sourceId: " + e.getMessage());
 			}
 			
 			if (tmp != null && tmp.getName() != null)
