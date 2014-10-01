@@ -153,7 +153,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 			public void onClick(View v) {
 				// Open with options test
 				Map<String, Object> optionsMap = new HashMap<String, Object>();
-				optionsMap.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, false);
+				optionsMap.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, true);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, false);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, "gom");
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS, false);
