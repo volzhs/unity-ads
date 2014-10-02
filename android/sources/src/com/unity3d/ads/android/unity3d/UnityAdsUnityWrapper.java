@@ -47,26 +47,29 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	public String getSDKVersion () {
 		return UnityAds.getSDKVersion();
 	}
-	
+
 	public void init (final String gameId, final Activity activity, boolean testMode, boolean debugMode, String gameObject) {
+		init(gameId, activity, testMode, debugMode ? 4 : 3, gameObject);
+	}
+
+	public void init (final String gameId, final Activity activity, boolean testMode, final int logLevel, String gameObject) {
 		if (!_initialized) {
 			_initialized = true;
 			_gameId = gameId;
 			_gameObject = gameObject;
 			_testMode = testMode;
-			_debugMode = debugMode;
-			
+
 			if (_startupActivity == null)
 				_startupActivity = activity;
-			
+
 			final UnityAdsUnityWrapper listener = this;
-			
+
 			try {
 				UnityAdsUtils.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						UnityAdsDeviceLog.setLogLevel(logLevel);
 						UnityAds.setTestMode(_testMode);
-						UnityAds.setDebugMode(_debugMode);
 						UnityAds.init(_startupActivity, _gameId, listener);
 					}
 				});
@@ -76,7 +79,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 			}
 		}
 	}
-	
+
 	public boolean show (final String zoneId, final String rewardItemKey, final String optionsString) {
 		if (UnityAds.canShowAds() && UnityAds.canShow()) {
 			HashMap<String, Object> options = null;
@@ -173,13 +176,15 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		}
 		return "";
 	}
-	
+
     public String getRewardItemDetailsKeys () {
     	return String.format("%s;%s", UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY, UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY);
     }
 
-	
-	
+	public void setLogLevel(int logLevel) {
+		UnityAdsDeviceLog.setLogLevel(logLevel);
+	}
+
 	// IUnityAdsListener
 	
 	@Override

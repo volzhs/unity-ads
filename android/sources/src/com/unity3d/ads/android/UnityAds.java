@@ -101,7 +101,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	/* PUBLIC STATIC METHODS */
-	
+
 	public static boolean isSupported () {
 		if (Build.VERSION.SDK_INT < 9) {
 			return false;
@@ -109,28 +109,32 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 		return true;
 	}
-	
-	public static void setDebugMode (boolean debugModeEnabled) {
-		UnityAdsProperties.UNITY_ADS_DEBUG_MODE = debugModeEnabled;
+
+	public static void setDebugMode(boolean debugModeEnabled) {
+		if(debugModeEnabled) {
+			UnityAdsDeviceLog.setLogLevel(UnityAdsDeviceLog.LOGLEVEL_DEBUG);
+		} else {
+			UnityAdsDeviceLog.setLogLevel(UnityAdsDeviceLog.LOGLEVEL_INFO);
+		}
 	}
-	
+
 	public static void setTestMode (boolean testModeEnabled) {
 		UnityAdsProperties.TESTMODE_ENABLED = testModeEnabled;
 	}
-	
+
 	public static void setTestDeveloperId (String testDeveloperId) {
 		UnityAdsProperties.TEST_DEVELOPER_ID = testDeveloperId;
 	}
-	
+
 	public static void setTestOptionsId (String testOptionsId) {
 		UnityAdsProperties.TEST_OPTIONS_ID = testOptionsId;
 	}
-	
+
 	public static String getSDKVersion () {
 		return UnityAdsConstants.UNITY_ADS_VERSION;
 	}
-	
-	
+
+
 	/* PUBLIC METHODS */
 	
 	public static void setListener (IUnityAdsListener listener) {
