@@ -15,6 +15,12 @@ public class UnityAdsDeviceLog {
 	private static boolean LOG_DEBUG = true;
 	private static boolean LOG_INFO = true;
 
+	public static int LOGLEVEL_NONE = 0;
+	public static int LOGLEVEL_ERROR = 1;
+	public static int LOGLEVEL_WARNING = 2;
+	public static int LOGLEVEL_INFO = 4;
+	public static int LOGLEVEL_DEBUG = 8;
+
 	public enum UnityAdsLogLevel {
 		INFO, DEBUG, WARNING, ERROR
 	};
@@ -34,35 +40,32 @@ public class UnityAdsDeviceLog {
 	public UnityAdsDeviceLog() {
 	}
 
-	public static void setLogLevel(UnityAdsLogLevel level) {
-		switch(level) {
-		case ERROR:
-			LOG_ERROR = true;
-			LOG_WARNING = false;
-			LOG_INFO = false;
-			LOG_DEBUG = false;
-			break;
-
-		case WARNING:
-			LOG_ERROR = true;
-			LOG_WARNING = true;
-			LOG_INFO = false;
-			LOG_DEBUG = false;
-			break;
-
-		case INFO:
-			LOG_ERROR = true;
-			LOG_WARNING = true;
-			LOG_INFO = true;
-			LOG_DEBUG = false;
-			break;
-
-		case DEBUG:
-		default:
+	public static void setLogLevel(int newLevel) {
+		if(newLevel >= LOGLEVEL_DEBUG) {
 			LOG_ERROR = true;
 			LOG_WARNING = true;
 			LOG_INFO = true;
 			LOG_DEBUG = true;
+		} else if(newLevel >= LOGLEVEL_INFO) {
+			LOG_ERROR = true;
+			LOG_WARNING = true;
+			LOG_INFO = true;
+			LOG_DEBUG = false;
+		} else if(newLevel >= LOGLEVEL_WARNING) {
+			LOG_ERROR = true;
+			LOG_WARNING = true;
+			LOG_INFO = false;
+			LOG_DEBUG = false;
+		} else if(newLevel >= LOGLEVEL_ERROR) {
+			LOG_ERROR = true;
+			LOG_WARNING = false;
+			LOG_INFO = false;
+			LOG_DEBUG = false;
+		} else {
+			LOG_ERROR = false;
+			LOG_WARNING = false;
+			LOG_INFO = false;
+			LOG_DEBUG = false;
 		}
 	}
 

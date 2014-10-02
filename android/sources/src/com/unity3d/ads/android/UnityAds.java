@@ -26,7 +26,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 
-import com.unity3d.ads.android.UnityAdsDeviceLog.UnityAdsLogLevel;
 import com.unity3d.ads.android.cache.UnityAdsCacheManager;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
@@ -102,7 +101,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	/* PUBLIC STATIC METHODS */
-	
+
 	public static boolean isSupported () {
 		if (Build.VERSION.SDK_INT < 9) {
 			return false;
@@ -110,32 +109,32 @@ public class UnityAds implements IUnityAdsCacheListener,
 		
 		return true;
 	}
-	
+
 	public static void setDebugMode(boolean debugModeEnabled) {
 		if(debugModeEnabled) {
-			UnityAdsDeviceLog.setLogLevel(UnityAdsLogLevel.DEBUG);
+			UnityAdsDeviceLog.setLogLevel(UnityAdsDeviceLog.LOGLEVEL_DEBUG);
 		} else {
-			UnityAdsDeviceLog.setLogLevel(UnityAdsLogLevel.INFO);
+			UnityAdsDeviceLog.setLogLevel(UnityAdsDeviceLog.LOGLEVEL_INFO);
 		}
 	}
-	
+
 	public static void setTestMode (boolean testModeEnabled) {
 		UnityAdsProperties.TESTMODE_ENABLED = testModeEnabled;
 	}
-	
+
 	public static void setTestDeveloperId (String testDeveloperId) {
 		UnityAdsProperties.TEST_DEVELOPER_ID = testDeveloperId;
 	}
-	
+
 	public static void setTestOptionsId (String testOptionsId) {
 		UnityAdsProperties.TEST_OPTIONS_ID = testOptionsId;
 	}
-	
+
 	public static String getSDKVersion () {
 		return UnityAdsConstants.UNITY_ADS_VERSION;
 	}
-	
-	
+
+
 	/* PUBLIC METHODS */
 	
 	public static void setListener (IUnityAdsListener listener) {
