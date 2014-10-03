@@ -3,8 +3,6 @@ package com.unity3d.ads.android;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-
 import android.util.Log;
 
 public class UnityAdsDeviceLog {

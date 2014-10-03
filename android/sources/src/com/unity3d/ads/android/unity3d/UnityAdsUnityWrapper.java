@@ -16,7 +16,6 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	private String _gameId = null;
 	private Method _sendMessageMethod = null;
 	private boolean _testMode = false;
-	private boolean _debugMode = false;
 	private static Boolean _constructed = false;
 	private static Boolean _initialized = false;
 	
@@ -46,10 +45,6 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	
 	public String getSDKVersion () {
 		return UnityAds.getSDKVersion();
-	}
-
-	public void init (final String gameId, final Activity activity, boolean testMode, boolean debugMode, String gameObject) {
-		init(gameId, activity, testMode, debugMode ? 4 : 3, gameObject);
 	}
 
 	public void init (final String gameId, final Activity activity, boolean testMode, final int logLevel, String gameObject) {
