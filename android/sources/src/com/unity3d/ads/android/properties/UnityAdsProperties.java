@@ -32,6 +32,7 @@ public class UnityAdsProperties {
 	public static String TEST_URL = null;
 	public static String TEST_JAVASCRIPT = null;
 	public static Boolean RUN_WEBVIEW_TESTS = false;
+	public static Boolean UNITY_DEVELOPER_INTERNAL_TEST = false;
 	
 	public static String TEST_DEVELOPER_ID = null;
 	public static String TEST_OPTIONS_ID = null;

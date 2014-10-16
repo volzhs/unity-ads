@@ -43,6 +43,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private RelativeLayout _skipText = null;
 	private TextView _skipTextView = null;
 	private long _skipTimeInSeconds = 0;
+	private RelativeLayout _stagingLayout = null;
+	private TextView _stagingText = null;
 	
 	private RelativeLayout _bufferingText = null;
 	
@@ -161,6 +163,9 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				
 		_countDownText = null;
 		_timeLeftInSecondsText = null;
+
+		_stagingText = null;
+		_stagingLayout = null;
 	}
 	
 	public long getBufferingDuration () {
@@ -338,7 +343,23 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_countDownText.addView(tv3);
 		
 		addView(_countDownText);
-		
+
+		if(UnityAdsProperties.UNITY_DEVELOPER_INTERNAL_TEST) { 
+			_stagingLayout = new RelativeLayout(getContext());
+			RelativeLayout.LayoutParams stagingParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			stagingParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+			stagingParams.addRule(RelativeLayout.CENTER_VERTICAL);
+			_stagingLayout.setLayoutParams(stagingParams);
+
+			_stagingText = new TextView(getContext());
+			_stagingText.setTextColor(Color.RED);
+			_stagingText.setBackgroundColor(Color.BLACK);
+			_stagingText.setText("INTERNAL UNITY TEST BUILD\nDO NOT USE IN PRODUCTION");
+
+			_stagingLayout.addView(_stagingText);
+			addView(_stagingLayout);
+		}
+
 		if (hasSkipDuration()) {
 			_skipTimeInSeconds = getSkipDuration();
 			createAndAddSkipText();

@@ -134,6 +134,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return UnityAdsConstants.UNITY_ADS_VERSION;
 	}
 
+	public static void enableUnityDeveloperInternalTestMode() {
+		UnityAdsProperties.CAMPAIGN_DATA_URL = "https://impact.applifier.com/mobile/campaigns";
+		UnityAdsProperties.UNITY_DEVELOPER_INTERNAL_TEST = true;
+	}
 
 	/* PUBLIC METHODS */
 	
