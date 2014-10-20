@@ -26,9 +26,11 @@
   @property (nonatomic, strong) NSString *optionsId;
   @property (nonatomic, assign) BOOL sdkIsCurrent;
   @property (nonatomic, assign) BOOL statusBarWasVisible;
+  @property (nonatomic, assign) BOOL unityDeveloperInternalTestMode;
 
 + (UnityAdsProperties *)sharedInstance;
 - (void)refreshCampaignQueryString;
+- (void)enableUnityDeveloperInternalTestMode;
 - (NSString *)adsVersion;
 
 @end

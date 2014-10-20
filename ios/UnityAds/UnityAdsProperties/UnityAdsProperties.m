@@ -89,4 +89,11 @@ static UnityAdsProperties *sharedProperties = nil;
   [self setCampaignQueryString:[self _createCampaignQueryString]];
 }
 
+- (void)enableUnityDeveloperInternalTestMode {
+  [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
+  [self setCampaignQueryString:[self _createCampaignQueryString]];
+  [self setUnityDeveloperInternalTestMode:true];
+}
+
+
 @end

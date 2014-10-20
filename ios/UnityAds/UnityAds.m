@@ -101,6 +101,10 @@ static UnityAds *sharedUnityAdsInstance = nil;
   [[UnityAdsProperties sharedInstance] setTestModeEnabled:testModeEnabled];
 }
 
+- (void)enableUnityDeveloperInternalTestMode {
+  [[UnityAdsProperties sharedInstance] enableUnityDeveloperInternalTestMode];
+}
+
 - (BOOL)startWithGameId:(NSString *)gameId {
   if (![UnityAds isSupported]) return false;
   return [self startWithGameId:gameId andViewController:nil];
