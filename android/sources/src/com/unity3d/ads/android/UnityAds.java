@@ -988,6 +988,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 			return;
 		}
 
+		int delay = 30;
+		if(_singleTaskApplication) {
+			delay = 250;
+		}
+
 		Handler handler = new Handler(Looper.getMainLooper());
 		handler.postDelayed(new Runnable() {
 			@Override
@@ -1023,7 +1028,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 				refreshCampaigns();
 			}
-		}, 30);
+		}, delay);
 	}
 
 	private static class UnityAdsPlayVideoRunner implements Runnable {
