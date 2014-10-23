@@ -261,6 +261,23 @@ int main(int argc, char *argv[]);
 }
 
 + (NSString *)analyticsMachineName {
+  if([UnityAdsDevice isSimulator]) {
+    NSArray *components = [UnityAdsDevice getDeviceModelAsStringComponents];
+    if (components != nil && [components count] > 0) {
+      for (NSString *component in components) {
+        if ([component isEqualToString:kUnityAdsDeviceIpad]) {
+          return kUnityAdsDeviceIpad;
+        }
+        if ([component isEqualToString:kUnityAdsDeviceIphone]) {
+          return kUnityAdsDeviceIphone;
+        }
+        if ([component isEqualToString:kUnityAdsDeviceIpod]) {
+          return kUnityAdsDeviceIpod;
+        }
+      }
+    }
+  }
+  
 	NSString *machine = [self machineName];
   if(machine != nil) {
     return machine;
