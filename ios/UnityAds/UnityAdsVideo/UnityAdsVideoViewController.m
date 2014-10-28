@@ -16,6 +16,7 @@
 #import "../UnityAdsBundle/UnityAdsBundle.h"
 #import "../UnityAdsView/UnityAdsMainViewController.h"
 #import "../UnityAdsZone/UnityAdsZoneManager.h"
+#import "../UnityAdsProperties/UnityAdsProperties.h"
 
 @interface UnityAdsVideoViewController ()
   @property (nonatomic, strong) UnityAdsVideoView *videoView;
@@ -23,6 +24,7 @@
   @property (nonatomic, weak) UnityAdsCampaign *campaignToPlay;
   @property (nonatomic, strong) UILabel *bufferingLabel;
   @property (nonatomic, strong) UILabel *progressLabel;
+  @property (nonatomic, strong) UILabel *stagingLabel;
   @property (nonatomic, strong) UIButton *skipLabel;
   @property (nonatomic, strong) UIView *videoOverlayView;
   @property (nonatomic, strong) NSURL *currentPlayingVideoUrl;
@@ -78,6 +80,9 @@
   [self destroyProgressLabel];
   [self destroyBufferingLabel];
   [self destroyVideoSkipLabel];
+  if([[UnityAdsProperties sharedInstance] unityDeveloperInternalTestMode] == TRUE) {
+    [self destroyStagingLabel];
+  }
   [self destroyVideoOverlayView];
   
   [super viewDidDisappear:animated];
@@ -92,6 +97,9 @@
   [self createBufferingLabel];
   [self createVideoSkipLabel];
   [self createMuteButton];
+  if([[UnityAdsProperties sharedInstance] unityDeveloperInternalTestMode] == TRUE) {
+    [self createStagingLabel];
+  }
   
   [self.view bringSubviewToFront:self.videoOverlayView];
 }
@@ -297,6 +305,7 @@
   if ([currentZone allowVideoSkipInSeconds] == 0) {
     self.skipLabel.hidden = YES;
   }
+  self.stagingLabel.hidden = NO;
   [self hideOverlayAfter:3.0f];
 }
 
@@ -442,6 +451,34 @@
   if(self.bufferingLabel != nil) {
     [self.bufferingLabel removeFromSuperview];
     self.bufferingLabel = nil;
+  }
+}
+
+#pragma mark - Staging label
+
+- (void)createStagingLabel {
+  if(self.stagingLabel == nil && self.videoOverlayView != nil) {
+    self.stagingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    self.stagingLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
+    self.stagingLabel.backgroundColor = [UIColor clearColor];
+    self.stagingLabel.textColor = [UIColor redColor];
+    self.stagingLabel.font = [UIFont systemFontOfSize:12.0];
+    self.stagingLabel.textAlignment = UITextAlignmentCenter;
+    self.stagingLabel.numberOfLines = 2;
+    self.stagingLabel.text = @"INTERNAL UNITY TEST BUILD\nDO NOT USE IN PRODUCTION";
+    self.stagingLabel.hidden = YES;
+    
+    [self.videoOverlayView addSubview:self.stagingLabel];
+    [self.videoOverlayView bringSubviewToFront:self.stagingLabel];
+    
+    self.videoOverlayView.hidden = NO;
+  }
+}
+
+- (void)destroyStagingLabel {
+  if(self.stagingLabel != nil) {
+    [self.stagingLabel removeFromSuperview];
+    self.stagingLabel = nil;
   }
 }
 
