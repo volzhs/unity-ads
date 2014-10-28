@@ -541,6 +541,7 @@
     
     if (self.skipLabel != nil) {
       [self.skipLabel setTitle:skipText forState:UIControlStateNormal];
+      [self.skipLabel setTitle:skipText forState:UIControlStateDisabled];
     }
   } else {
     [self hideOverlayAfter:3.0f];
