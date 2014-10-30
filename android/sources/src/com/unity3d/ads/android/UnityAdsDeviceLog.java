@@ -10,7 +10,7 @@ public class UnityAdsDeviceLog {
 	private static boolean LOGGING = true;
 	private static boolean LOG_ERROR = true;
 	private static boolean LOG_WARNING = true;
-	private static boolean LOG_DEBUG = true;
+	private static boolean LOG_DEBUG = false;
 	private static boolean LOG_INFO = true;
 
 	public static int LOGLEVEL_NONE = 0;
