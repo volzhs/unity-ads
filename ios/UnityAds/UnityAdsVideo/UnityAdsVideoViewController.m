@@ -11,12 +11,11 @@
 #import "UnityAdsVideoViewController.h"
 #import "UnityAdsVideoPlayer.h"
 #import "UnityAdsVideoView.h"
-#import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "UnityAdsProperties.h"
 #import "UnityAdsVideoMuteButton.h"
-#import "../UnityAdsBundle/UnityAdsBundle.h"
-#import "../UnityAdsView/UnityAdsMainViewController.h"
-#import "../UnityAdsZone/UnityAdsZoneManager.h"
-#import "../UnityAdsProperties/UnityAdsProperties.h"
+#import "UnityAdsBundle.h"
+#import "UnityAdsMainViewController.h"
+#import "UnityAdsZoneManager.h"
 
 @interface UnityAdsVideoViewController () {
 @protected
@@ -32,6 +31,8 @@
 @property (nonatomic, strong) NSURL *currentPlayingVideoUrl;
 @property (nonatomic, strong) UnityAdsVideoMuteButton *muteButton;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UILabel *stagingLabel;
+
 
 @end
 
