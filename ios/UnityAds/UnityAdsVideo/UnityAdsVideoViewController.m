@@ -18,18 +18,20 @@
 #import "../UnityAdsZone/UnityAdsZoneManager.h"
 #import "../UnityAdsProperties/UnityAdsProperties.h"
 
-@interface UnityAdsVideoViewController ()
-  @property (nonatomic, strong) UnityAdsVideoView *videoView;
-  @property (nonatomic, strong) UnityAdsVideoPlayer *videoPlayer;
-  @property (nonatomic, weak) UnityAdsCampaign *campaignToPlay;
-  @property (nonatomic, strong) UILabel *bufferingLabel;
-  @property (nonatomic, strong) UILabel *progressLabel;
-  @property (nonatomic, strong) UILabel *stagingLabel;
-  @property (nonatomic, strong) UIButton *skipLabel;
-  @property (nonatomic, strong) UIView *videoOverlayView;
-  @property (nonatomic, strong) NSURL *currentPlayingVideoUrl;
-  @property (nonatomic, strong) UnityAdsVideoMuteButton *muteButton;
-  @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@interface UnityAdsVideoViewController () {
+@protected
+  BOOL _routeChanged;
+}
+@property (nonatomic, strong) UnityAdsVideoView *videoView;
+@property (nonatomic, strong) UnityAdsVideoPlayer *videoPlayer;
+@property (nonatomic, weak) UnityAdsCampaign *campaignToPlay;
+@property (nonatomic, strong) UILabel *bufferingLabel;
+@property (nonatomic, strong) UILabel *progressLabel;
+@property (nonatomic, strong) UIButton *skipLabel;
+@property (nonatomic, strong) UIView *videoOverlayView;
+@property (nonatomic, strong) NSURL *currentPlayingVideoUrl;
+@property (nonatomic, strong) UnityAdsVideoMuteButton *muteButton;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
 @end
 
@@ -39,17 +41,35 @@
 @synthesize isMuted = _isMuted;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-      self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFrom:)];
-      self.isPlaying = NO;
-      self.isMuted = NO;
-    }
-    return self;
+  self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+  if (self) {
+    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFrom:)];
+    self.isPlaying = NO;
+    self.isMuted = NO;
+    _routeChanged = false;
+  }
+  return self;
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+-(void)routeChanged:(id)object {
+  _routeChanged = true;
 }
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  
+  
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver:self
+         selector:@selector(routeChanged:)
+             name:AVAudioSessionRouteChangeNotification
+           object:[AVAudioSession sharedInstance]];
+  
   [self.view setBackgroundColor:[UIColor blackColor]];
   self.view.clipsToBounds = true;
   
@@ -67,7 +87,7 @@
 - (void) handleTapFrom: (UITapGestureRecognizer *)recognizer
 {
   // TODO: Show controlls
-    [self showOverlay];
+  [self showOverlay];
   UALOG_DEBUG(@"SHOW CONTROLLS");
 }
 
@@ -120,15 +140,15 @@
   UALOG_DEBUG("Mutebutton frame: %f x %f - %f x %f",self.muteButton.frame.size.height,self.muteButton.frame.size.width,self.muteButton.frame.origin.x,self.muteButton.frame.origin.y);
   
   // Position in lower left corner.
-
+  
   if (self.videoView != nil) {
     [self.videoView setFrame:self.view.bounds];
   }
-
+  
 }
 
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
+  [super didReceiveMemoryWarning];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -161,10 +181,10 @@
   UALOG_DEBUG(@"");
   NSURL *videoURL = [[UnityAdsCampaignManager sharedInstance] getVideoURLForCampaign:campaignToPlay];
   
-	if (videoURL == nil) {
-		UALOG_DEBUG(@"Video not found!");
-		return;
-	}
+  if (videoURL == nil) {
+    UALOG_DEBUG(@"Video not found!");
+    return;
+  }
   
   self.campaignToPlay = campaignToPlay;
   self.currentPlayingVideoUrl = videoURL;
@@ -198,7 +218,7 @@
   [self _createVideoPlayer];
   [self _attachVideoPlayer];
   [self.videoPlayer preparePlayer];
-
+  
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.videoPlayer replaceCurrentItemWithPlayerItem:item];
     [self.videoPlayer playSelectedVideo];
@@ -311,6 +331,12 @@
 
 - (void)videoPlaybackStalled {
   UALOG_DEBUG(@"");
+  if (_routeChanged) {
+    [self.videoPlayer play];
+    if (!self.isMuted)
+    [self muteVideoButtonPressed:nil];
+    _routeChanged = false;
+  }
   self.bufferingLabel.hidden = NO;
   [self showVideoSkipLabel];
   [self showOverlay];
@@ -486,7 +512,7 @@
 
 - (void)createProgressLabel {
   UALOG_DEBUG(@"");
-
+  
   if (self.progressLabel == nil && self.videoOverlayView != nil) {
     self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 303, self.view.bounds.size.height - 23, 300, 20)];
     self.progressLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
@@ -499,7 +525,7 @@
     
     [self.videoOverlayView addSubview:self.progressLabel];
     [self.videoOverlayView bringSubviewToFront:self.progressLabel];
-
+    
     self.videoOverlayView.hidden = NO;
   }
 }
@@ -512,8 +538,8 @@
 }
 
 - (void)updateLabelsWithCMTime:(CMTime)currentTime {
-	Float64 duration = [self _currentVideoDuration];
-	Float64 current = CMTimeGetSeconds(currentTime);
+  Float64 duration = [self _currentVideoDuration];
+  Float64 current = CMTimeGetSeconds(currentTime);
   Float64 timeLeft = duration - current;
   Float64 timeUntilSkip = -1;
   
@@ -547,20 +573,20 @@
     [self hideOverlayAfter:3.0f];
   }
   
-	NSString *descriptionText = [NSString stringWithFormat:NSLocalizedString(@"This video ends in %.0f seconds.", nil), timeLeft];
-	self.progressLabel.text = descriptionText;
+  NSString *descriptionText = [NSString stringWithFormat:NSLocalizedString(@"This video ends in %.0f seconds.", nil), timeLeft];
+  self.progressLabel.text = descriptionText;
 }
 
 - (Float64)_currentVideoDuration {
   CMTime durationTime = self.videoPlayer.currentItem.asset.duration;
-	Float64 duration = CMTimeGetSeconds(durationTime);
-	
-	return duration;
+  Float64 duration = CMTimeGetSeconds(durationTime);
+  
+  return duration;
 }
 
 - (NSValue *)_valueWithDuration:(Float64)duration {
   CMTime time = CMTimeMakeWithSeconds(duration, NSEC_PER_SEC);
-	return [NSValue valueWithCMTime:time];
+  return [NSValue valueWithCMTime:time];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
