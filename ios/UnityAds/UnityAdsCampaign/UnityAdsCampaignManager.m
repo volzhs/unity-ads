@@ -258,7 +258,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
   
   if (self.campaigns != nil) {
     for (UnityAdsCampaign* campaign in self.campaigns) {
-      if (!campaign.viewed) {
+      if (!campaign.viewed && [[UnityAdsCacheManager sharedInstance] is:ResourceTypeTrailerVideo cachedForCampaign:campaign]) {
         [retAr addObject:campaign];
       }
     }
