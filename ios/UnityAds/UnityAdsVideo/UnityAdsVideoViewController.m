@@ -487,17 +487,17 @@
   if(self.stagingLabel == nil && self.videoOverlayView != nil) {
     self.stagingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     self.stagingLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
-    self.stagingLabel.backgroundColor = [UIColor clearColor];
+    self.stagingLabel.backgroundColor = [UIColor blackColor];
     self.stagingLabel.textColor = [UIColor redColor];
-    self.stagingLabel.font = [UIFont systemFontOfSize:12.0];
+    self.stagingLabel.font = [UIFont systemFontOfSize:16];
     self.stagingLabel.textAlignment = UITextAlignmentCenter;
     self.stagingLabel.numberOfLines = 2;
     self.stagingLabel.text = @"INTERNAL UNITY TEST BUILD\nDO NOT USE IN PRODUCTION";
     self.stagingLabel.hidden = YES;
-    
+    [self.stagingLabel sizeToFit];
     [self.videoOverlayView addSubview:self.stagingLabel];
     [self.videoOverlayView bringSubviewToFront:self.stagingLabel];
-    
+    self.stagingLabel.center = self.view.center;
     self.videoOverlayView.hidden = NO;
   }
 }
