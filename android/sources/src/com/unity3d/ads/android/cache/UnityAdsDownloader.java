@@ -10,17 +10,16 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
+import android.annotation.TargetApi;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsDownloader {
-	
 	private static ArrayList<UnityAdsCampaign> _downloadList = null;
 	private static ArrayList<IUnityAdsDownloadListener> _downloadListeners = null;
 	private static boolean _isDownloading = false;
@@ -125,32 +124,19 @@ public class UnityAdsDownloader {
 			}
 		}
 	}
-	
+
 	private static void cacheCampaign (UnityAdsCampaign campaign) {
-		if (UnityAdsProperties.getCurrentActivity() == null || UnityAdsProperties.getCurrentActivity().getBaseContext() == null) return;
-		
-		ConnectivityManager cm = (ConnectivityManager)UnityAdsProperties.getCurrentActivity().getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-	    
-		if (cm != null && cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
-			UnityAdsDeviceLog.debug("Starting download for: " + campaign.getVideoFilename());
-			
-			if (campaign != null && campaign.getVideoUrl() != null && campaign.getVideoUrl().length() > 0) {
-				CacheDownload cd = new CacheDownload(campaign);
-				addToCacheDownloads(cd);
-				cd.execute(campaign.getVideoUrl());
-			}
-			else {
-				removeDownload(campaign);
-			}
-	    }
-		else {
-			UnityAdsDeviceLog.debug("No WIFI detected, not downloading: " + campaign.getVideoUrl());
+		UnityAdsDeviceLog.debug("Starting download for: " + campaign.getVideoFilename());
+
+		if (campaign != null && campaign.getVideoUrl() != null && campaign.getVideoUrl().length() > 0) {
+			CacheDownload cd = new CacheDownload(campaign);
+			addToCacheDownloads(cd);
+			cd.execute(campaign.getVideoUrl());
+		} else {
 			removeDownload(campaign);
-			sendToListeners(UnityAdsDownloadEventType.DownloadCancelled, campaign.getVideoUrl());
-			cacheNextFile(); 
 		}
 	}
-	
+
 	private static void cacheNextFile () {
 		if (_downloadList != null && _downloadList.size() > 0) {
 			cacheCampaign(_downloadList.get(0));
