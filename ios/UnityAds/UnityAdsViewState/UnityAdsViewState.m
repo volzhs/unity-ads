@@ -61,7 +61,7 @@
   
   if (data != nil) {
     if ([data objectForKey:kUnityAdsWebViewEventDataBypassAppSheetKey] != nil) {
-      bypassAppSheet = [[data objectForKey:kUnityAdsWebViewEventDataBypassAppSheetKey] boolValue];
+      bypassAppSheet = 0;//[[data objectForKey:kUnityAdsWebViewEventDataBypassAppSheetKey] boolValue];
     }
     if ([data objectForKey:kUnityAdsCampaignStoreIDKey] != nil && [[data objectForKey:kUnityAdsCampaignStoreIDKey] isKindOfClass:[NSString class]]) {
       iTunesId = [data objectForKey:kUnityAdsCampaignStoreIDKey];
