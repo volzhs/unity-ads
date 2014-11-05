@@ -148,6 +148,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_HARDWAREVERSION_KEY = "hardwareVersion";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SDKVERSION_KEY = "sdkVersion";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY = "connectionType";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY = "androidNetworkType";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_TEST_KEY = "test";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY = "encrypted";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY = "screenDensity";
