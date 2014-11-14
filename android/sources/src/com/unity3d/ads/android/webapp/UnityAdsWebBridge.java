@@ -11,7 +11,7 @@ import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsWebBridge {
-	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView, LoadComplete, InitComplete, PlayStore, NavigateTo;
+	private enum UnityAdsWebEvent { PlayVideo, PauseVideo, CloseView, LoadComplete, InitComplete, Orientation, PlayStore, NavigateTo;
 		@Override
 		public String toString () {
 			String retVal = null;
@@ -30,6 +30,9 @@ public class UnityAdsWebBridge {
 					break;
 				case InitComplete:
 					retVal = UnityAdsConstants.UNITY_ADS_WEBVIEW_API_INITCOMPLETE;
+					break;
+				case Orientation:
+					retVal = "orientation";
 					break;
 				case PlayStore:
 					retVal = UnityAdsConstants.UNITY_ADS_WEBVIEW_API_PLAYSTORE;
@@ -96,6 +99,9 @@ public class UnityAdsWebBridge {
 				break;
 			case InitComplete:
 				_listener.onWebAppInitComplete(parameters);
+				break;
+			case Orientation:
+				_listener.onOrientationRequest(parameters);
 				break;
 			case PlayStore:
 				_listener.onOpenPlayStore(parameters);
