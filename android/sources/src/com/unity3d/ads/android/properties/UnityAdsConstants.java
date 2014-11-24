@@ -150,7 +150,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY = "connectionType";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_TEST_KEY = "test";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY = "encrypted";
-	public static final String UNITY_ADS_INIT_QUERYPARAM_SENDINTERNALDETAILS_KEY = "test";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_SENDINTERNALDETAILS_KEY = "sendInternalDetails";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY = "screenDensity";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY = "screenSize";
 
