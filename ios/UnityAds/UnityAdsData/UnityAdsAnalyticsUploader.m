@@ -84,8 +84,12 @@
 - (void)_queueWithURLString:(NSString *)urlString queryString:(NSString *)queryString httpMethod:(NSString *)httpMethod retries:(NSNumber *)retryCount {
 	NSURL *url = [NSURL URLWithString:urlString];
 	NSData *body = nil;
-	if (queryString != nil)
-		body = [queryString dataUsingEncoding:NSUTF8StringEncoding];
+  if (queryString != nil) {
+    NSString * queryStringWithIFV = [queryString stringByAppendingFormat:@"&%@=%@",
+                                     kUnityAdsInitQueryParamIdentifierForVendor,
+                                     [[[UIDevice currentDevice] identifierForVendor] UUIDString], nil];
+		body = [queryStringWithIFV dataUsingEncoding:NSUTF8StringEncoding];
+  }
   
 	[self _queueURL:url body:body httpMethod:httpMethod retries:retryCount];
 }
