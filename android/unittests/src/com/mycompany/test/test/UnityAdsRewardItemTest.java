@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.example.UnityAdsTestStartActivity;
 import com.unity3d.ads.android.item.UnityAdsRewardItem;
-import com.mycompany.test.UnityAdsTestStartActivity;
 
 import android.test.ActivityInstrumentationTestCase2;
 
