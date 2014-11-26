@@ -105,6 +105,7 @@ public class UnityAdsProperties {
 
 		if(SEND_INTERNAL_DETAILS) {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SENDINTERNALDETAILS_KEY, "true");
+			SEND_INTERNAL_DETAILS = false;
 		}
 
 		_campaignQueryString = queryString;
