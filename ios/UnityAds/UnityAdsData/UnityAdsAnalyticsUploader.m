@@ -87,7 +87,7 @@
   if (queryString != nil) {
     NSString * queryStringWithIFV = [queryString stringByAppendingFormat:@"&%@=%@",
                                      kUnityAdsInitQueryParamIdentifierForVendor,
-                                     [[[UIDevice currentDevice] identifierForVendor] UUIDString], nil];
+                                     [UnityAdsDevice identifierForVendor], nil];
 		body = [queryStringWithIFV dataUsingEncoding:NSUTF8StringEncoding];
   }
   

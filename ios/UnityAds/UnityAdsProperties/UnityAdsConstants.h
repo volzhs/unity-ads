@@ -50,6 +50,7 @@ extern NSString * const kUnityAdsWebViewDataParamPlatformKey;
 extern NSString * const kUnityAdsWebViewDataParamDeviceIdKey;
 extern NSString * const kUnityAdsWebViewDataParamGameIdKey;
 extern NSString * const kUnityAdsWebViewDataParamDeviceTypeKey;
+extern NSString * const kUnityAdsWebViewDataParamIdentifierForVendorKey;
 extern NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey;
 extern NSString * const kUnityAdsWebViewDataParamMacAddressKey;
 extern NSString * const kUnityAdsWebViewDataParamSdkVersionKey;

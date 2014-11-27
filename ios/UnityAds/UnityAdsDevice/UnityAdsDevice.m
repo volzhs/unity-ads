@@ -400,4 +400,8 @@ static SCNetworkReachabilityRef reachabilityRef = nil;
   return myNumber;
 }
 
++ (NSString *)identifierForVendor {
+  return [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+}
+
 @end
