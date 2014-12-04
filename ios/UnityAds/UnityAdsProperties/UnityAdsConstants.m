@@ -98,6 +98,7 @@ NSString * const kUnityAdsCampaignAllowedToCacheVideoKey = @"allowCache";
 NSString * const kUnityAdsCampaignBypassAppSheet = @"bypassAppSheet";
 NSString * const kUnityAdsCampaignExpectedFileSize = @"trailerSize";
 NSString * const kUnityAdsCampaignAllowVideoSkipKey = @"allowSkipVideoInSeconds";
+NSString * const kUnityAdsCampaignURLSchemesKey = @"urlSchemes";
 
 /* Reward Item JSON Properties */
 

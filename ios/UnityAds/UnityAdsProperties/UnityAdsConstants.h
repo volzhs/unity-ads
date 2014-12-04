@@ -112,6 +112,7 @@ extern NSString * const kUnityAdsCampaignBypassAppSheet;
 extern NSString * const kUnityAdsCampaignExpectedFileSize;
 extern NSString * const kUnityAdsCampaignGameIconKey;
 extern NSString * const kUnityAdsCampaignAllowVideoSkipKey;
+extern NSString * const kUnityAdsCampaignURLSchemesKey;
 
 /* Reward Item JSON Properties */
 

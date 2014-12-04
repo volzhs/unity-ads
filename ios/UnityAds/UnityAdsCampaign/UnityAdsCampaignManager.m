@@ -35,8 +35,17 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	return sharedUnityAdsInstanceCampaignManager;
 }
 
-
 #pragma mark - Private
+
+- (BOOL)isInstalled:(NSArray *)URLschemes {
+  __block int matchesCount = 0;
+  [URLschemes enumerateObjectsUsingBlock:^(NSString * urlscheme, NSUInteger idx, BOOL *stop) {
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@://", urlscheme]]]) {
+      matchesCount++;
+    }
+  }];
+  return matchesCount == URLschemes.count && URLschemes.count;
+}
 
 - (void)_campaignDataReceived {
   [self _processCampaignDownloadData];
@@ -53,8 +62,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	for (id campaignDictionary in campaignArray) {
 		if ([campaignDictionary isKindOfClass:[NSDictionary class]]) {
 			UnityAdsCampaign *campaign = [[UnityAdsCampaign alloc] initWithData:campaignDictionary];
-      
-      if (campaign.isValidCampaign) {
+      if (campaign.isValidCampaign && ![self isInstalled:campaign.urlSchemes]) {
         [campaigns addObject:campaign];
       }
 		}
@@ -63,7 +71,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 			continue;
 		}
 	}
-	
 	return campaigns;
 }
 
