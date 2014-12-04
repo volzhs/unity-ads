@@ -80,7 +80,11 @@ public class UnityAdsZoneManager {
 		}
 		return zonesArray;
 	}
-	
+
+	public Map<String,UnityAdsZone> getZonesMap() {
+		return _zones;
+	}
+
 	public void clear() {
 		_currentZone = null;
 		_zones.clear();

@@ -246,11 +246,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static boolean show () {
 		return show(null);
 	}
-	
+
 	public static boolean canShowAds () {
-			return webdata != null && 
-			webdata.getViewableVideoPlanCampaigns() != null && 
-			webdata.getViewableVideoPlanCampaigns().size() > 0;
+		return canShow();
 	}
 
 	public static boolean canShow () {
@@ -269,8 +267,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return !_showingAds &&
 				isConnected &&
 				webdata != null &&
-				webdata.getVideoPlanCampaigns() != null &&
-				webdata.getVideoPlanCampaigns().size() > 0;
+				webdata.getViewableVideoPlanCampaigns() != null &&
+				webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
 
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
