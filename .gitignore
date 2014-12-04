@@ -73,3 +73,5 @@ profile
 *.moved-aside
 DerivedData
 .idea/
+
+ios/UnityAds.xcworkspace/xcshareddata/UnityAds.xccheckout
