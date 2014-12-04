@@ -1,4 +1,4 @@
-package com.mycompany.test.test;
+package com.unity3d.ads.android.test;
 
 import java.util.Arrays;
 import java.util.HashMap;
