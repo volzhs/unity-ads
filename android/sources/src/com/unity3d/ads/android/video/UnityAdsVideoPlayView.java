@@ -735,16 +735,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 					}
 				});
 			}
-						
-			if (_videoView != null && bufferPercentage < 15 && _videoView.getParent() == null) {
-				UnityAdsUtils.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						createAndAddBufferingView();
-					}
-				});				
-			}
-			
+
 			if (_videoPlayheadPrepared && _playHeadHasMoved) {
 				UnityAdsUtils.runOnUiThread(new Runnable() {
 					@Override
