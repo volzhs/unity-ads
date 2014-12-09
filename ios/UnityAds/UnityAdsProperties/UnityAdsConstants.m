@@ -181,6 +181,7 @@ NSString * const kUnityAdsInitQueryParamSdkVersionKey = @"sdkVersion";
 NSString * const kUnityAdsInitQueryParamConnectionTypeKey = @"connectionType";
 NSString * const kUnityAdsInitQueryParamTestKey = @"test";
 NSString * const kUnityAdsInitQueryParamEncryptionKey = @"encrypted";
+NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey = @"sendInternalDetails";
 
 
 /* Google Analytics Instrumentation */

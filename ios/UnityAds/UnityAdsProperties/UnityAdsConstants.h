@@ -192,6 +192,7 @@ extern NSString * const kUnityAdsInitQueryParamSdkVersionKey;
 extern NSString * const kUnityAdsInitQueryParamConnectionTypeKey;
 extern NSString * const kUnityAdsInitQueryParamTestKey;
 extern NSString * const kUnityAdsInitQueryParamEncryptionKey;
+extern NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey;
 
 
 /* Google Analytics Instrumentation */
