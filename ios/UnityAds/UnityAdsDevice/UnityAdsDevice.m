@@ -393,4 +393,8 @@ static SCNetworkReachabilityRef reachabilityRef = nil;
   return [[[self softwareVersion] substringToIndex:1] intValue];
 }
 
++ (NSString *)identifierForVendor {
+  return [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+}
+
 @end

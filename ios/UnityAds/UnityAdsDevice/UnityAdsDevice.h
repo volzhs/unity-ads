@@ -11,9 +11,11 @@
 @interface UnityAdsDevice : NSObject
 
 + (NSString *)advertisingIdentifier;
++ (NSString *)identifierForVendor;
 + (BOOL)canUseTracking;
 + (NSString *)machineName;
 + (NSString *)analyticsMachineName;
+
 
 + (void)launchReachabilityCheck;
 + (void)clearReachabilityCheck;
