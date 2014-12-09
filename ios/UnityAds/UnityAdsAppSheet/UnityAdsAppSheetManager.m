@@ -129,7 +129,7 @@ static UnityAdsAppSheetManager *sharedAppSheetManager = nil;
   UALOG_DEBUG(@"");
   if (viewController.presentingViewController != nil) {
     [viewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-    if ([[UnityAdsDevice getIOSExactVersion] floatValue] >= 8.0) {
+    if ([UnityAdsDevice getIOSMajorVersion] >= 8) {
       __block NSString * currentItunesId = nil;
       @synchronized (_appSheetCache) {
         [_appSheetCache enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {

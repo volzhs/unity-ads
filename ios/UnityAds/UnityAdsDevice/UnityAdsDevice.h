@@ -26,7 +26,6 @@
 + (NSString *)md5MACAddressString;
 
 + (int)getIOSMajorVersion;
-+ (NSNumber *)getIOSExactVersion;
 
 + (BOOL)isSimulator;
 + (BOOL)isEncrypted;

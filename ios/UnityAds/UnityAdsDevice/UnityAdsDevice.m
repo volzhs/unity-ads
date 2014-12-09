@@ -393,11 +393,4 @@ static SCNetworkReachabilityRef reachabilityRef = nil;
   return [[[self softwareVersion] substringToIndex:1] intValue];
 }
 
-+ (NSNumber *)getIOSExactVersion {
-  NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
-  [f setNumberStyle:NSNumberFormatterDecimalStyle];
-  NSNumber *myNumber = [f numberFromString:[self softwareVersion]];
-  return myNumber;
-}
-
 @end
