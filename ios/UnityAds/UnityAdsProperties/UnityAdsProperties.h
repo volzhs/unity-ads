@@ -27,6 +27,7 @@
   @property (nonatomic, assign) BOOL sdkIsCurrent;
   @property (nonatomic, assign) BOOL statusBarWasVisible;
   @property (nonatomic, assign) BOOL unityDeveloperInternalTestMode;
+  @property (nonatomic, assign) BOOL sendInternalDetails;
 
 + (UnityAdsProperties *)sharedInstance;
 - (void)refreshCampaignQueryString;
