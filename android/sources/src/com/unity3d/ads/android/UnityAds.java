@@ -551,6 +551,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 	
+	public void onOrientationRequest(JSONObject data) {
+		UnityAdsProperties.CURRENT_ACTIVITY.get().setRequestedOrientation(data.optInt("orientation", -1));
+	}
+	
 	public void onOpenPlayStore (JSONObject data) {
 		UnityAdsDeviceLog.entered();
 
