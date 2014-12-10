@@ -85,6 +85,7 @@ public class UnityAdsProperties {
 
 			if(APPFILTER_LIST != null) {
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY, URLEncoder.encode(APPFILTER_LIST, "UTF-8"));
+				APPFILTER_LIST = null;
 			}
 		}
 		catch (Exception e) {

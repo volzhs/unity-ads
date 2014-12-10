@@ -43,7 +43,6 @@ public class UnityAdsWebData {
 	
 	private JSONObject _campaignJson = null;
 	private ArrayList<UnityAdsCampaign> _campaigns = null;
-	private ArrayList<String> _filteredCampaigns = null;
 	private IUnityAdsWebDataListener _listener = null;
 	private ArrayList<UnityAdsUrlLoader> _urlLoaders = null;
 	private ArrayList<UnityAdsUrlLoader> _failedUrlLoaders = null;
@@ -612,7 +611,8 @@ public class UnityAdsWebData {
 
 			PackageManager pm = activity.getPackageManager();
 
-			ArrayList<UnityAdsCampaign> filteredList = new ArrayList<UnityAdsCampaign>();
+			ArrayList<UnityAdsCampaign> newCampaigns = new ArrayList<UnityAdsCampaign>();
+			ArrayList<String> oldCampaigns = null;
 
 			for(UnityAdsCampaign campaign : campaigns) {
 				String packageName = campaign.getStoreId();
@@ -622,27 +622,28 @@ public class UnityAdsWebData {
 						PackageInfo pkgInfo = pm.getPackageInfo(packageName, 0);
 
 						if(pkgInfo != null && pkgInfo.packageName == packageName) {
-							if(_filteredCampaigns == null) {
-								_filteredCampaigns = new ArrayList<String>();
+							if(oldCampaigns == null) {
+								oldCampaigns = new ArrayList<String>();
 							}
 
-							_filteredCampaigns.add(campaign.getGameId());
+							oldCampaigns.add(campaign.getGameId());
+							UnityAdsDeviceLog.debug("Filtered game id " + campaign.getGameId() + " from ad plan");
 						} else {
-							filteredList.add(campaign);
+							newCampaigns.add(campaign);
 						}
 					} catch (NameNotFoundException e) {
-						filteredList.add(campaign);
+						newCampaigns.add(campaign);
 					}
 				} else {
-					filteredList.add(campaign);
+					newCampaigns.add(campaign);
 				}
 			}
 
-			if(_filteredCampaigns != null) {
-				UnityAdsProperties.APPFILTER_LIST = TextUtils.join(",", _filteredCampaigns);
+			if(oldCampaigns != null) {
+				UnityAdsProperties.APPFILTER_LIST = TextUtils.join(",", oldCampaigns);
 			}
 
-			return filteredList;
+			return newCampaigns;
 		}
 
 		return null;
