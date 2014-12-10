@@ -94,7 +94,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY = "disableBackButtonForSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY = "refreshCampaignsAfterViewed";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY = "refreshCampaignsAfterSeconds";
-
+	public static final String UNITY_ADS_CAMPAIGN_APPFILTERING_KEY = "appFiltering";
+	
 	/* Zone JSON Properties */
 	public static final String UNITY_ADS_ZONES_KEY = "zones";
 	public static final String UNITY_ADS_ZONE_ID_KEY = "id";
@@ -154,6 +155,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SENDINTERNALDETAILS_KEY = "sendInternalDetails";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY = "screenDensity";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY = "screenSize";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY = "appFilterList";
 
 	/* Device types */
 	public static final String UNITY_ADS_DEVICEID_UNKNOWN = "unknown";
