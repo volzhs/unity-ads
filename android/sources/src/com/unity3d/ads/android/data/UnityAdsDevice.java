@@ -180,12 +180,24 @@ public class UnityAdsDevice {
 			return false;
 		}
 	}
-	
-	public static int getScreenDensity () {
+
+	public static int getNetworkType() {
+		Activity activity = UnityAdsProperties.getCurrentActivity();
+
+		if(activity != null) {
+			TelephonyManager tm = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
+
+			return tm.getNetworkType();
+		}
+
+		return TelephonyManager.NETWORK_TYPE_UNKNOWN;
+	}
+
+	public static int getScreenDensity() {
 		return UnityAdsProperties.getCurrentActivity().getResources().getDisplayMetrics().densityDpi;
 	}
-	
-	public static int getScreenSize () {
+
+	public static int getScreenSize() {
 		return getDeviceType();
 	}
 }
