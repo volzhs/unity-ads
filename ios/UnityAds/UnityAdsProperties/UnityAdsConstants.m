@@ -36,6 +36,7 @@ NSString * const kUnityAdsWebViewDataParamPlatformKey = @"platform";
 NSString * const kUnityAdsWebViewDataParamDeviceIdKey = @"deviceId";
 NSString * const kUnityAdsWebViewDataParamGameIdKey = @"gameId";
 NSString * const kUnityAdsWebViewDataParamDeviceTypeKey = @"deviceType";
+NSString * const kUnityAdsWebViewDataParamIdentifierForVendorKey = @"identifierForVendor";
 NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey = @"openUdid";
 NSString * const kUnityAdsWebViewDataParamMacAddressKey = @"macAddress";
 NSString * const kUnityAdsWebViewDataParamSdkVersionKey = @"sdkVersion";
@@ -175,6 +176,7 @@ NSString * const kUnityAdsInitQueryParamOdin1IdKey = @"odin1Id";
 NSString * const kUnityAdsInitQueryParamMacAddressKey = @"macAddress";
 NSString * const kUnityAdsInitQueryParamRawAdvertisingTrackingIdKey = @"rawAdvertisingTrackingId";
 NSString * const kUnityAdsInitQueryParamAdvertisingTrackingIdKey = @"advertisingTrackingId";
+NSString * const kUnityAdsInitQueryParamIdentifierForVendor = @"identifierForVendor";
 NSString * const kUnityAdsInitQueryParamTrackingEnabledKey = @"trackingEnabled";
 NSString * const kUnityAdsInitQueryParamSoftwareVersionKey = @"softwareVersion";
 NSString * const kUnityAdsInitQueryParamHardwareVersionKey = @"hardwareVersion";
@@ -182,6 +184,7 @@ NSString * const kUnityAdsInitQueryParamSdkVersionKey = @"sdkVersion";
 NSString * const kUnityAdsInitQueryParamConnectionTypeKey = @"connectionType";
 NSString * const kUnityAdsInitQueryParamTestKey = @"test";
 NSString * const kUnityAdsInitQueryParamEncryptionKey = @"encrypted";
+NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey = @"sendInternalDetails";
 
 
 /* Google Analytics Instrumentation */

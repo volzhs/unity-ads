@@ -8,5 +8,6 @@ public interface IUnityAdsWebBridgeListener {
 	public void onCloseAdsView (JSONObject data);
 	public void onWebAppLoadComplete (JSONObject data);
 	public void onWebAppInitComplete (JSONObject data);
+	public void onOrientationRequest (JSONObject data);
 	public void onOpenPlayStore (JSONObject data);
 }

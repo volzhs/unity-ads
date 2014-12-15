@@ -202,13 +202,14 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   NSMutableDictionary * webAppValues = [[NSMutableDictionary alloc] init];
     
   [webAppValues setValue: [[UnityAdsCampaignManager sharedInstance] campaignData] forKey:kUnityAdsWebViewDataParamCampaignDataKey];
-  [webAppValues setValue: @"ios"                                                         forKey:kUnityAdsWebViewDataParamPlatformKey];
+  [webAppValues setValue: @"ios"                                                  forKey:kUnityAdsWebViewDataParamPlatformKey];
   [webAppValues setValue: [UnityAdsDevice md5DeviceId]                            forKey:kUnityAdsWebViewDataParamDeviceIdKey];
   [webAppValues setValue: [UnityAdsDevice md5MACAddressString]                    forKey:kUnityAdsWebViewDataParamMacAddressKey];
-  [webAppValues setValue: [[UnityAdsProperties sharedInstance] adsVersion]     forKey:kUnityAdsWebViewDataParamSdkVersionKey];
-  [webAppValues setValue: [[UnityAdsProperties sharedInstance] adsGameId]      forKey:kUnityAdsWebViewDataParamGameIdKey];
+  [webAppValues setValue: [[UnityAdsProperties sharedInstance] adsVersion]        forKey:kUnityAdsWebViewDataParamSdkVersionKey];
+  [webAppValues setValue: [[UnityAdsProperties sharedInstance] adsGameId]         forKey:kUnityAdsWebViewDataParamGameIdKey];
   [webAppValues setValue: [UnityAdsDevice softwareVersion]                        forKey:kUnityAdsWebViewDataParamIosVersionKey];
   [webAppValues setValue: [UnityAdsDevice analyticsMachineName]                   forKey:kUnityAdsWebViewDataParamDeviceTypeKey];
+  [webAppValues setValue: [UnityAdsDevice identifierForVendor]                    forKey:kUnityAdsWebViewDataParamIdentifierForVendorKey];
     
   [self setupWebApp:[[UIScreen mainScreen] bounds]];
   [self loadWebApp:webAppValues];

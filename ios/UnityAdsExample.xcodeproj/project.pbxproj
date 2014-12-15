@@ -25,10 +25,10 @@
 		78ED796415C66FC6007C5BD5 /* UnityAdsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 78ED796215C66FC6007C5BD5 /* UnityAdsViewController.xib */; };
 		78ED798315C6962C007C5BD5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ED798215C6962C007C5BD5 /* AVFoundation.framework */; };
 		78ED798B15C6B04D007C5BD5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ED798A15C6B04D007C5BD5 /* CoreMedia.framework */; };
-		8499CF341A25EA9E001129BE /* UnityAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8499CF331A25EA9E001129BE /* UnityAds.framework */; };
-		8499CF361A25EAA6001129BE /* UnityAds.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8499CF351A25EAA6001129BE /* UnityAds.bundle */; };
 		9017B0AB161086A600ACFC04 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9017B0AA161086A600ACFC04 /* SystemConfiguration.framework */; };
 		907454421609C20C00454427 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 907454411609C20C00454427 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		997165991A2F3FDD000F1DB8 /* UnityAds.bundle in Frameworks */ = {isa = PBXBuildFile; fileRef = 997165981A2F3FDD000F1DB8 /* UnityAds.bundle */; };
+		99C21DF01A2F3537006252A7 /* UnityAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99C21DEF1A2F3537006252A7 /* UnityAds.framework */; };
 		CC46BCE3193FCAD70026AFB5 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CC46BCE2193FCAD70026AFB5 /* Default-568h@2x.png */; };
 		F642682F16088B7C0005B83A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F642682E16088B7C0005B83A /* StoreKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
@@ -57,10 +57,10 @@
 		78ED796315C66FC6007C5BD5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/UnityAdsViewController.xib; sourceTree = "<group>"; };
 		78ED798215C6962C007C5BD5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		78ED798A15C6B04D007C5BD5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		8499CF331A25EA9E001129BE /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnityAds.framework; path = "build/Release-iphoneos/UnityAds.framework"; sourceTree = "<group>"; };
-		8499CF351A25EAA6001129BE /* UnityAds.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = UnityAds.bundle; path = "build/Release-iphoneos/UnityAds.bundle"; sourceTree = "<group>"; };
 		9017B0AA161086A600ACFC04 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		907454411609C20C00454427 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		997165981A2F3FDD000F1DB8 /* UnityAds.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = UnityAds.bundle; path = "build/Release-iphoneos/UnityAds.bundle"; sourceTree = "<group>"; };
+		99C21DEF1A2F3537006252A7 /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnityAds.framework; path = "build/Release-iphoneos/UnityAds.framework"; sourceTree = "<group>"; };
 		CC46BCE2193FCAD70026AFB5 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F642682E16088B7C0005B83A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -70,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				997165991A2F3FDD000F1DB8 /* UnityAds.bundle in Frameworks */,
+				99C21DF01A2F3537006252A7 /* UnityAds.framework in Frameworks */,
 				9017B0AB161086A600ACFC04 /* SystemConfiguration.framework in Frameworks */,
 				907454421609C20C00454427 /* AdSupport.framework in Frameworks */,
 				F642682F16088B7C0005B83A /* StoreKit.framework in Frameworks */,
@@ -78,7 +80,6 @@
 				78ED794E15C66FC6007C5BD5 /* UIKit.framework in Frameworks */,
 				78ED795015C66FC6007C5BD5 /* Foundation.framework in Frameworks */,
 				78ED795215C66FC6007C5BD5 /* CoreGraphics.framework in Frameworks */,
-				8499CF341A25EA9E001129BE /* UnityAds.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,7 +89,6 @@
 		78ED793E15C66FC6007C5BD5 = {
 			isa = PBXGroup;
 			children = (
-				8499CF351A25EAA6001129BE /* UnityAds.bundle */,
 				78ED797315C67398007C5BD5 /* Assets */,
 				78ED795315C66FC6007C5BD5 /* UnityAdsExample */,
 				78ED794C15C66FC6007C5BD5 /* Frameworks */,
@@ -107,7 +107,8 @@
 		78ED794C15C66FC6007C5BD5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				8499CF331A25EA9E001129BE /* UnityAds.framework */,
+				997165981A2F3FDD000F1DB8 /* UnityAds.bundle */,
+				99C21DEF1A2F3537006252A7 /* UnityAds.framework */,
 				F642682E16088B7C0005B83A /* StoreKit.framework */,
 				907454411609C20C00454427 /* AdSupport.framework */,
 				9017B0AA161086A600ACFC04 /* SystemConfiguration.framework */,
@@ -213,7 +214,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8499CF361A25EAA6001129BE /* UnityAds.bundle in Resources */,
 				78ED795815C66FC6007C5BD5 /* InfoPlist.strings in Resources */,
 				78B9CDE61941F42A00B3AE80 /* unityads_settings.png in Resources */,
 				CC46BCE3193FCAD70026AFB5 /* Default-568h@2x.png in Resources */,

@@ -146,8 +146,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public static void changeActivity (Activity activity) {
-		if (activity == null) return;
-		
+		if (activity == null) {
+			UnityAdsDeviceLog.debug("changeActivity: null, ignoring");
+			return;
+		}
+
+		UnityAdsDeviceLog.debug("changeActivity: " + activity.getClass().getName());
+
 		if (activity != null && !activity.equals(UnityAdsProperties.getCurrentActivity())) {
 			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
 			
@@ -246,11 +251,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static boolean show () {
 		return show(null);
 	}
-	
+
 	public static boolean canShowAds () {
-			return webdata != null && 
-			webdata.getViewableVideoPlanCampaigns() != null && 
-			webdata.getViewableVideoPlanCampaigns().size() > 0;
+		return canShow();
 	}
 
 	public static boolean canShow () {
@@ -269,8 +272,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return !_showingAds &&
 				isConnected &&
 				webdata != null &&
-				webdata.getVideoPlanCampaigns() != null &&
-				webdata.getVideoPlanCampaigns().size() > 0;
+				webdata.getViewableVideoPlanCampaigns() != null &&
+				webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
 
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
@@ -546,6 +549,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 				sendReadyEvent();			
 			}
 		}
+	}
+	
+	public void onOrientationRequest(JSONObject data) {
+		UnityAdsProperties.CURRENT_ACTIVITY.get().setRequestedOrientation(data.optInt("orientation", -1));
 	}
 	
 	public void onOpenPlayStore (JSONObject data) {
