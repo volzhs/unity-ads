@@ -120,7 +120,7 @@ static UnityAdsAppSheetManager *sharedAppSheetManager = nil;
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
   UALOG_DEBUG(@"");
   if (viewController.presentingViewController != nil) {
-    [viewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [viewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
   }
 }
 
