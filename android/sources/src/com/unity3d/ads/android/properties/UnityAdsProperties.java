@@ -131,7 +131,15 @@ public class UnityAdsProperties {
 			
 		return String.format("%s%s", url, _campaignQueryString);
 	}
-	
+
+	public static String getCampaignQueryArguments() {
+		if(_campaignQueryString != null && _campaignQueryString.length() > 2) {
+			return _campaignQueryString.substring(1);
+		}
+
+		return "";
+	}
+
 	public static Activity getBaseActivity() {
 		if (BASE_ACTIVITY != null &&
 			BASE_ACTIVITY.get() != null &&

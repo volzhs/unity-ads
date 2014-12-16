@@ -95,6 +95,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY = "refreshCampaignsAfterViewed";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY = "refreshCampaignsAfterSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_APPFILTERING_KEY = "appFiltering";
+	public static final String UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL = "installedAppsUrl";
 	
 	/* Zone JSON Properties */
 	public static final String UNITY_ADS_ZONES_KEY = "zones";
