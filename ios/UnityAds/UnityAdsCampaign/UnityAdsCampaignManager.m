@@ -37,6 +37,24 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 
 #pragma mark - Private
 
+// gameidsTourlschemes[gameid]=@["asd://",....];
+
++ (NSArray *)installedApps:(NSDictionary *)gameidsTourlschemes {
+  __block NSMutableArray * installedApps = [NSMutableArray new];
+  [gameidsTourlschemes enumerateKeysAndObjectsUsingBlock:^(NSString * gameid, NSArray * urlschemes, BOOL *stop) {
+    __block int matchesCount = 0;
+    [urlschemes enumerateObjectsUsingBlock:^(NSString * urlscheme, NSUInteger idx, BOOL *stop) {
+      if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@://", urlscheme]]]) {
+        matchesCount++;
+      }
+    }];
+    if (matchesCount == urlschemes.count && urlschemes.count) {
+      [installedApps addObject:gameid];
+    }
+  }];
+  return [installedApps copy];
+}
+
 - (BOOL)isInstalled:(NSArray *)URLschemes {
   __block int matchesCount = 0;
   [URLschemes enumerateObjectsUsingBlock:^(NSString * urlscheme, NSUInteger idx, BOOL *stop) {
