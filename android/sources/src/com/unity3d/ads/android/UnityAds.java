@@ -146,8 +146,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public static void changeActivity (Activity activity) {
-		if (activity == null) return;
-		
+		if (activity == null) {
+			UnityAdsDeviceLog.debug("changeActivity: null, ignoring");
+			return;
+		}
+
+		UnityAdsDeviceLog.debug("changeActivity: " + activity.getClass().getName());
+
 		if (activity != null && !activity.equals(UnityAdsProperties.getCurrentActivity())) {
 			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
 			
