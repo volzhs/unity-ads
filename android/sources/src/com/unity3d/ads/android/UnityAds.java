@@ -239,6 +239,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				_showingAds = true;
 				_preventVideoDoubleStart = false;
 				_hidingHandled = false;
+				UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
 				startFullscreenActivity();
 				return _showingAds;
 			}
@@ -1060,8 +1061,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 				createPauseScreenTimer();
 				
 				String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
-				if (!UnityAdsUtils.isFileInCache(UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename()))
-					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl(); 
+				if (!UnityAdsUtils.isFileInCache(UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename())) {
+					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl();
+					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
+				} else {
+					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = true;
+				}
 
 				mainview.setViewState(UnityAdsMainViewState.VideoPlayer);
 				UnityAdsDeviceLog.debug("Start videoplayback with: " + playUrl);
