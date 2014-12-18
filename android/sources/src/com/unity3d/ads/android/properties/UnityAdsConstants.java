@@ -158,6 +158,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY = "screenSize";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY = "appFilterList";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CACHEDPLAYBACK_KEY = "cachedPlayback";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_CACHINGSPEED_KEY = "cachingSpeed";
 
 	/* Device types */
 	public static final String UNITY_ADS_DEVICEID_UNKNOWN = "unknown";

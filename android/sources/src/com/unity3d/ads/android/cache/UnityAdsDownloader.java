@@ -13,10 +13,12 @@ import java.util.Vector;
 import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.SystemClock;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsDownloader {
@@ -193,7 +195,7 @@ public class UnityAdsDownloader {
 		
 		@Override
 	    protected String doInBackground(String... sUrl) {
-			long startTime = System.currentTimeMillis();
+			long startTime = SystemClock.elapsedRealtime();
 			long duration = 0;
 			
 			try {
@@ -204,7 +206,7 @@ public class UnityAdsDownloader {
 				onCancelled();
 				return null;
 			}
-			
+
 			try {
 				_urlConnection = _downloadUrl.openConnection();
 				_urlConnection.setConnectTimeout(10000);
@@ -252,10 +254,15 @@ public class UnityAdsDownloader {
 				}
 				
 				closeAndFlushConnection();
-				duration = System.currentTimeMillis() - startTime;
+				duration = SystemClock.elapsedRealtime() - startTime;
 				UnityAdsDeviceLog.debug("File: " + _campaign.getVideoFilename() + " of size: " + total + " downloaded in: " + duration + "ms");
+
+				if(duration > 0 && total > 0) {
+					// Note about units: bytes / millisecond equals to kilobytes / second so CACHING_SPEED is kb/s
+					UnityAdsProperties.CACHING_SPEED = total / duration;
+				}
 			}
-						
+
 			return null;
 		}
 		

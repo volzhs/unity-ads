@@ -216,7 +216,11 @@ public class UnityAdsWebData {
 				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY, URLEncoder.encode(UnityAdsDevice.getConnectionType(), "UTF-8"));
 
 				if(!UnityAdsDevice.isUsingWifi()) {
-					queryParams = String.format("%s&%s=%d", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY, UnityAdsDevice.getNetworkType(), "UTF-8");
+					queryParams = String.format("%s&%s=%d", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY, UnityAdsDevice.getNetworkType());
+				}
+
+				if(UnityAdsProperties.CACHING_SPEED > 0) {
+					queryParams = String.format("%s&%s=%d", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CACHINGSPEED_KEY, UnityAdsProperties.CACHING_SPEED);
 				}
 
 				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());

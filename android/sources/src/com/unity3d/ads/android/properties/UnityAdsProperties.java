@@ -30,6 +30,7 @@ public class UnityAdsProperties {
 	public static int CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
 	public static int CAMPAIGN_REFRESH_VIEWS_MAX = 0;
 	public static int CAMPAIGN_REFRESH_SECONDS = 0;
+	public static long CACHING_SPEED = 0;
 
 	public static String TEST_DATA = null;
 	public static String TEST_URL = null;
@@ -84,6 +85,10 @@ public class UnityAdsProperties {
 
 			if(!UnityAdsDevice.isUsingWifi()) {
 				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY, UnityAdsDevice.getNetworkType(), "UTF-8");
+			}
+
+			if(CACHING_SPEED > 0) {
+				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CACHINGSPEED_KEY, CACHING_SPEED);
 			}
 
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
