@@ -257,24 +257,42 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return canShow();
 	}
 
-	public static boolean canShow () {
-		boolean isConnected = true;
-		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+	// Replacement method for old internal uses of canShowAds
+	private static boolean hasViewableAds() {
+		return webdata != null &&
+			webdata.getViewableVideoPlanCampaigns() != null &&
+			webdata.getViewableVideoPlanCampaigns().size() > 0;
+	}
 
+	public static boolean canShow () {
+		if(_showingAds || webdata == null) return false;
+
+		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
 		if(currentActivity != null) {
 			ConnectivityManager cm = (ConnectivityManager)currentActivity.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
 			if(cm != null) {
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-				isConnected = activeNetwork != null && activeNetwork.isConnected();
+				boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
+
+				if(!isConnected) return false;
 			}
 		}
 
-		return !_showingAds &&
-				isConnected &&
-				webdata != null &&
-				webdata.getViewableVideoPlanCampaigns() != null &&
-				webdata.getViewableVideoPlanCampaigns().size() > 0;
+		ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
+
+		if(viewableCampaigns == null) return false;
+
+		if(viewableCampaigns.size() == 0) return false;
+
+		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
+		if(!nextCampaign.allowStreamingVideo().booleanValue()) {
+			if(!cachemanager.isCampaignCached(nextCampaign)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
@@ -407,7 +425,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
 
-		if (canShowAds())
+		if(hasViewableAds())
 			sendReadyEvent();
 	}
 	
@@ -535,7 +553,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsDeviceLog.entered();
 		Boolean dataOk = true;
 		
-		if (canShowAds()) {
+		if(hasViewableAds()) {
 			JSONObject setViewData = new JSONObject();
 			
 			try {				
