@@ -1078,12 +1078,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 				createPauseScreenTimer();
 				
-				String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
-				if (!UnityAdsUtils.isFileInCache(UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename())) {
+				String playUrl;
+				if (!cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN)) {
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl();
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
+					UnityAdsDeviceLog.debug("JNIDEBUG streaming " + playUrl);
 				} else {
+					playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = true;
+					UnityAdsDeviceLog.debug("JNIDEBUG cached playback " + playUrl);
 				}
 
 				mainview.setViewState(UnityAdsMainViewState.VideoPlayer);
