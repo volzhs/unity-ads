@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
@@ -211,7 +212,7 @@ public class UnityAdsDevice {
 		return getDeviceType();
 	}
 
-	public static JSONArray getPackagesJson() {
+	public static JSONArray getPackageJsonArray() {
 		Activity activity = UnityAdsProperties.getCurrentActivity();
 
 		if(activity == null) return null;
@@ -259,6 +260,20 @@ public class UnityAdsDevice {
 			return retArray;
 		} catch(Exception e) {
 			UnityAdsDeviceLog.debug("Exception in getPackagesJson" + e);
+			return null;
+		}
+	}
+
+	public static String getPackageDataJson() {
+		JSONArray packages = getPackageJsonArray();
+		if(packages == null) return null;
+
+		JSONObject wrapper = new JSONObject();
+		try {
+			wrapper.put("packages", packages);
+			return wrapper.toString();
+		} catch(Exception e) {
+			UnityAdsDeviceLog.debug("Exception in getPackageDataJson" + e);
 			return null;
 		}
 	}

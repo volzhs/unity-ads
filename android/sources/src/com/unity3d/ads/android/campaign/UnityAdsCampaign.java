@@ -92,6 +92,16 @@ public class UnityAdsCampaign {
 		return false;
 	}
 
+	public Boolean allowStreamingVideo() {
+		if(checkDataIntegrity()) {
+			try {
+				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOW_STREAMING_KEY);
+			} catch(Exception e) { }
+		}
+
+		return true;
+	}
+
 	public Boolean shouldBypassAppSheet () {
 		if (checkDataIntegrity()) {
 			try {
