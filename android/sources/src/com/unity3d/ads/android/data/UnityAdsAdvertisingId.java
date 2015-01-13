@@ -60,7 +60,7 @@ public class UnityAdsAdvertisingId {
         		advertisingIdentifier = (String)getId.invoke(advertisingTrackingInfo);
 
         		Method isLimitAdTrackingEnabled = Info.getMethod("isLimitAdTrackingEnabled");
-        		limitedAdvertisingTracking = (Boolean)isLimitAdTrackingEnabled.invoke(Info);
+        		limitedAdvertisingTracking = (Boolean)isLimitAdTrackingEnabled.invoke(advertisingTrackingInfo);
 
         		return true;
     		} else {

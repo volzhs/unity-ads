@@ -241,13 +241,15 @@
 
   [self.delegate mainControllerWillClose];
 
-  [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:animated completion:^{
-    if (self.currentViewState != nil) {
-      [self.currentViewState exitState:nil];
-    }
-    self.isOpen = NO;
-    [self.delegate mainControllerDidClose];
-  }];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[[UnityAdsProperties sharedInstance] currentViewController] dismissViewControllerAnimated:animated completion:^{
+      if (self.currentViewState != nil) {
+        [self.currentViewState exitState:nil];
+      }
+      self.isOpen = NO;
+      [self.delegate mainControllerDidClose];
+    }];
+  });  
 }
 
 
