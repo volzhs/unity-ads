@@ -80,6 +80,18 @@ public class UnityAdsDeviceLog {
 	}
 
 	public static void debug(String message) {
+		int maxDebugMsgLength = 3072;
+
+		if(message.length() > maxDebugMsgLength) {
+			debug(message.substring(0,maxDebugMsgLength));
+
+			if(message.length() < 10 * maxDebugMsgLength) {
+				debug(message.substring(maxDebugMsgLength));
+			}
+
+			return;
+		}
+
 		write(UnityAdsLogLevel.DEBUG, checkMessage(message));
 	}
 

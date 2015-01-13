@@ -1082,11 +1082,9 @@ public class UnityAds implements IUnityAdsCacheListener,
 				if (!cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN)) {
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl();
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
-					UnityAdsDeviceLog.debug("JNIDEBUG streaming " + playUrl);
 				} else {
 					playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = true;
-					UnityAdsDeviceLog.debug("JNIDEBUG cached playback " + playUrl);
 				}
 
 				mainview.setViewState(UnityAdsMainViewState.VideoPlayer);
