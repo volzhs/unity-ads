@@ -121,6 +121,9 @@ NSString * const kUnityAdsUrlKey = @"impactUrl";
 NSString * const kUnityAdsWebViewUrlKey = @"webViewUrl";
 NSString * const kUnityAdsAnalyticsUrlKey = @"analyticsUrl";
 NSString * const kUnityAdsSdkVersionKey = @"nativeSdkVersion";
+NSString * const kUnityAdsAppFilteringKey = @"appFiltering";
+NSString * const kUnityAdsUrlSchemeMapKey = @"urlSchemeMap";
+NSString * const kUnityAdsInstalledAppsUrlKey = @"installedAppsUrl";
 
 
 /* Analytics Uploader */
@@ -185,6 +188,7 @@ NSString * const kUnityAdsInitQueryParamConnectionTypeKey = @"connectionType";
 NSString * const kUnityAdsInitQueryParamTestKey = @"test";
 NSString * const kUnityAdsInitQueryParamEncryptionKey = @"encrypted";
 NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey = @"sendInternalDetails";
+NSString * const kUnityAdsInitQueryParamAppFilterListKey = @"appFilterList";
 
 
 /* Google Analytics Instrumentation */
