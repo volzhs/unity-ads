@@ -146,7 +146,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     
     NSString * appFiltering = (NSString *)[jsonDictionary objectForKey:kUnityAdsAppFilteringKey];
     if(appFiltering != nil && [appFiltering length] > 0) {
-      [[UnityAdsProperties sharedInstance] setAppFiltering:@"advanced"];
+      [[UnityAdsProperties sharedInstance] setAppFiltering:appFiltering];
     }
     
     NSString * urlSchemeMapString = (NSString *)[jsonDictionary objectForKey:kUnityAdsUrlSchemeMapKey];
