@@ -9,17 +9,25 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.text.TextUtils;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
@@ -47,10 +55,13 @@ public class UnityAdsWebData {
 	private int _totalUrlsSent = 0;
 	private int _totalLoadersCreated = 0;
 	private int _totalLoadersHaveRun = 0;
-	
+
 	private boolean _isLoading = false;
 	private boolean _initInProgress = false;
-	
+
+	private static boolean whitelistRequested = false;
+	private static boolean installedAppsSent = false;
+
 	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
 		@SuppressLint("DefaultLocale")
 		@Override
@@ -81,7 +92,7 @@ public class UnityAdsWebData {
 		}
 	};
 	
-	private static enum UnityAdsRequestType { Analytics, VideoPlan, VideoViewed, Unsent;
+	private static enum UnityAdsRequestType { Analytics, VideoPlan, VideoViewed, Unsent, AppWhitelist, InstalledApps;
 		@SuppressLint("DefaultLocale")
 		@Override
 		public String toString () {
@@ -207,8 +218,19 @@ public class UnityAdsWebData {
 				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_HARDWAREVERSION_KEY, URLEncoder.encode(UnityAdsDevice.getHardwareVersion(), "UTF-8"));
 				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
 				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY, URLEncoder.encode(UnityAdsDevice.getConnectionType(), "UTF-8"));
+
+				if(!UnityAdsDevice.isUsingWifi()) {
+					queryParams = String.format("%s&%s=%d", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY, UnityAdsDevice.getNetworkType());
+				}
+
+				if(UnityAdsProperties.CACHING_SPEED > 0) {
+					queryParams = String.format("%s&%s=%d", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CACHINGSPEED_KEY, UnityAdsProperties.CACHING_SPEED);
+				}
+
 				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
 				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
+
+				queryParams = String.format("%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CACHEDPLAYBACK_KEY, UnityAdsProperties.SELECTED_CAMPAIGN_CACHED ? "true" : "false");
 			}
 			catch (Exception e) {
 				UnityAdsDeviceLog.error("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString());
@@ -337,6 +359,10 @@ public class UnityAdsWebData {
 					break;
 				case Analytics:
 					break;
+				case AppWhitelist:
+					whitelistReceived(loader.getData());
+				case InstalledApps:
+					break;
 			}
 			
 			loader.clear();
@@ -352,7 +378,7 @@ public class UnityAdsWebData {
 		_isLoading = false;
 		startNextLoader();
 	}
-	
+
 	private void urlLoadFailed (UnityAdsUrlLoader loader) {
 		if (loader != null && loader.getRequestType() != null) {
 			switch (loader.getRequestType()) {
@@ -364,18 +390,23 @@ public class UnityAdsWebData {
 				case VideoPlan:
 					campaignDataFailed();
 					break;
+				case AppWhitelist:
+					break;
+				case InstalledApps:
+					// never retry sending installed apps
+					break;
 			}
-			
+
 			loader.clear();
 		}
 		else {
 			UnityAdsDeviceLog.error("Got broken urlLoader!");
 		}
-		
+
 		_isLoading = false;
 		startNextLoader();
 	}
-	
+
 	private void checkFailedUrls () {
 		File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
 		
@@ -452,8 +483,8 @@ public class UnityAdsWebData {
 			}
 		}
 	}
-	
-	private void campaignDataReceived (String json) {
+
+	private void campaignDataReceived(String json) {
 		Boolean validData = true;
 
 		_initInProgress = false;
@@ -461,54 +492,85 @@ public class UnityAdsWebData {
 		try {
 			_campaignJson = new JSONObject(json);
 			JSONObject data = null;
-			
+
 			if (_campaignJson.has(UnityAdsConstants.UNITY_ADS_JSON_DATA_ROOTKEY)) {
 				try {
 					data = _campaignJson.getJSONObject(UnityAdsConstants.UNITY_ADS_JSON_DATA_ROOTKEY);
 				}
-				catch (Exception e) {
+				catch(Exception e) {
 					UnityAdsDeviceLog.error("Malformed data JSON");
 				}
-				
-				if (!data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_URL_KEY)) validData = false;
-				if (!data.has(UnityAdsConstants.UNITY_ADS_ANALYTICS_URL_KEY)) validData = false;
-				if (!data.has(UnityAdsConstants.UNITY_ADS_URL_KEY)) validData = false;
-				if (!data.has(UnityAdsConstants.UNITY_ADS_GAMER_ID_KEY)) validData = false;
-				if (!data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGNS_KEY)) validData = false;
-				if (!data.has(UnityAdsConstants.UNITY_ADS_ZONES_KEY)) validData = false;
-				
+
+				if(!data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_URL_KEY)) validData = false;
+				if(!data.has(UnityAdsConstants.UNITY_ADS_ANALYTICS_URL_KEY)) validData = false;
+				if(!data.has(UnityAdsConstants.UNITY_ADS_URL_KEY)) validData = false;
+				if(!data.has(UnityAdsConstants.UNITY_ADS_GAMER_ID_KEY)) validData = false;
+				if(!data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGNS_KEY)) validData = false;
+				if(!data.has(UnityAdsConstants.UNITY_ADS_ZONES_KEY)) validData = false;
+
+				// Parse campaigns
+				if(validData) {
+					ArrayList<UnityAdsCampaign> tmpCampaigns = null;
+
+					JSONArray campaigns = data.getJSONArray(UnityAdsConstants.UNITY_ADS_CAMPAIGNS_KEY);
+					if (campaigns != null) {
+						tmpCampaigns = deserializeCampaigns(campaigns);
+					}
+
+					if(data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_APPFILTERING_KEY)) {
+						String appFiltering = data.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_APPFILTERING_KEY);
+
+						if(appFiltering != null && (appFiltering.equals("simple") || appFiltering.equals("advanced"))) {
+							if(appFiltering.equals("advanced")) {
+								if(data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL) && data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_APP_WHITELIST_URL)) {
+									UnityAdsProperties.INSTALLED_APPS_URL = data.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL);
+									String whitelistUrl = data.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_APP_WHITELIST_URL);
+
+									requestAppWhitelist(whitelistUrl);
+								}
+							}
+
+							if(tmpCampaigns != null && tmpCampaigns.size() > 0) {
+								ArrayList<UnityAdsCampaign> filteredCampaigns = filterCampaigns(tmpCampaigns);
+
+								if(filteredCampaigns != null && filteredCampaigns.size() == 0) {
+									initCampaigns();
+									return;
+								}
+
+								tmpCampaigns = filteredCampaigns;
+							}
+						}
+					}
+
+					_campaigns = tmpCampaigns;
+				}
+
+				// Fall back, if campaigns were not found just set it to size 0
+				if(_campaigns == null)
+					_campaigns = new ArrayList<UnityAdsCampaign>();
+
+				UnityAdsDeviceLog.debug("Parsed total of " + _campaigns.size() + " campaigns");
+
 				// Parse basic properties
 				UnityAdsProperties.WEBVIEW_BASE_URL = data.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_URL_KEY);
 				UnityAdsProperties.ANALYTICS_BASE_URL = data.getString(UnityAdsConstants.UNITY_ADS_ANALYTICS_URL_KEY);
 				UnityAdsProperties.UNITY_ADS_BASE_URL = data.getString(UnityAdsConstants.UNITY_ADS_URL_KEY);
 				UnityAdsProperties.UNITY_ADS_GAMER_ID = data.getString(UnityAdsConstants.UNITY_ADS_GAMER_ID_KEY);
-				
+
 				// Refresh campaigns after "n" endscreens
-				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY)) {
+				if(data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY)) {
 					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
 					UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY);
 				}
-				
+
 				// Refresh campaigns after "n" seconds
-				if (data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY)) {
+				if(data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY)) {
 					UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS = data.getInt(UnityAdsConstants.UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY);
 				}
-				
-				// Parse campaigns
-				if (validData) {
-					JSONArray campaigns = data.getJSONArray(UnityAdsConstants.UNITY_ADS_CAMPAIGNS_KEY);
-					if (campaigns != null)
-						_campaigns = deserializeCampaigns(campaigns);
-				}
-				
-				// Fall back, if campaigns were not found just set it to size 0
-				if (_campaigns == null)
-					_campaigns = new ArrayList<UnityAdsCampaign>();
-				
-				UnityAdsDeviceLog.debug("Parsed total of " + _campaigns.size() + " campaigns");
-				
+
 				// Zone parsing
-				if (validData) {
+				if(validData) {
 					if(_zoneManager != null) {
 						_zoneManager.clear();
 						_zoneManager = null;
@@ -521,20 +583,20 @@ public class UnityAdsWebData {
 				return;
 			}
 		}
-		catch (Exception e) {
+		catch(Exception e) {
 			UnityAdsDeviceLog.error("Malformed JSON: " + e.getMessage());
-			
+
 			if (e.getStackTrace() != null) {
 				for (StackTraceElement element : e.getStackTrace()) {
 					UnityAdsDeviceLog.error("Malformed JSON: " + element.toString());
 				}
 			}
-			
+
 			campaignDataFailed();
 			return;
 		}
-		
-		if (_listener != null && validData && _campaigns != null && _campaigns.size() > 0) {
+
+		if(_listener != null && validData && _campaigns != null && _campaigns.size() > 0) {
 			UnityAdsDeviceLog.debug("WebDataCompleted: " + json);
 			_listener.onWebDataCompleted();
 			return;
@@ -544,22 +606,22 @@ public class UnityAdsWebData {
 			return;
 		}
 	}
-	
+
 	private void campaignDataFailed () {
 		if (_listener != null)
 			_listener.onWebDataFailed();		
 	}
-	
-	private ArrayList<UnityAdsCampaign> deserializeCampaigns (JSONArray campaignsArray) {
+
+	private ArrayList<UnityAdsCampaign> deserializeCampaigns(JSONArray campaignsArray) {
 		if (campaignsArray != null && campaignsArray.length() > 0) {			
 			UnityAdsCampaign campaign = null;
 			ArrayList<UnityAdsCampaign> retList = new ArrayList<UnityAdsCampaign>();
-			
+
 			for (int i = 0; i < campaignsArray.length(); i++) {
 				try {
 					JSONObject jsonCampaign = campaignsArray.getJSONObject(i);
 					campaign = new UnityAdsCampaign(jsonCampaign);
-					
+
 					if (campaign.hasValidData()) {
 						UnityAdsDeviceLog.debug("Adding campaign to cache");
 						retList.add(campaign);
@@ -569,14 +631,111 @@ public class UnityAdsWebData {
 					UnityAdsDeviceLog.error("Problem with the campaign, skipping.");
 				}
 			}
-			
+
 			return retList;
 		}
-		
+
 		return null;
 	}
-	
-	
+
+	private ArrayList<UnityAdsCampaign> filterCampaigns(ArrayList<UnityAdsCampaign> campaigns) {
+		if(campaigns != null && campaigns.size() > 0) {
+			Activity activity = UnityAdsProperties.getCurrentActivity();
+
+			if(activity == null) return campaigns;
+
+			PackageManager pm = activity.getPackageManager();
+
+			ArrayList<UnityAdsCampaign> newCampaigns = new ArrayList<UnityAdsCampaign>();
+			ArrayList<String> oldCampaigns = null;
+
+			for(UnityAdsCampaign campaign : campaigns) {
+				String packageName = campaign.getStoreId();
+
+				if(packageName != null) {
+					try {
+						PackageInfo pkgInfo = pm.getPackageInfo(packageName, 0);
+
+						if(pkgInfo != null && pkgInfo.packageName == packageName) {
+							if(oldCampaigns == null) {
+								oldCampaigns = new ArrayList<String>();
+							}
+
+							oldCampaigns.add(campaign.getGameId());
+							UnityAdsDeviceLog.debug("Filtered game id " + campaign.getGameId() + " from ad plan");
+						} else {
+							newCampaigns.add(campaign);
+						}
+					} catch (NameNotFoundException e) {
+						newCampaigns.add(campaign);
+					}
+				} else {
+					newCampaigns.add(campaign);
+				}
+			}
+
+			if(oldCampaigns != null) {
+				UnityAdsProperties.APPFILTER_LIST = TextUtils.join(",", oldCampaigns);
+			}
+
+			return newCampaigns;
+		}
+
+		return null;
+	}
+
+	private void requestAppWhitelist(String url) {
+		if(whitelistRequested) return;
+
+		whitelistRequested = true;
+
+		UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(url, null, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.AppWhitelist, 0);
+		UnityAdsUtils.runOnUiThread(ulc);
+	}
+
+	private void whitelistReceived(String json) {
+		UnityAdsDeviceLog.debug("Received whitelist");
+
+		try {
+			JSONObject appWhitelist = new JSONObject(json);
+			HashMap<String,String> parsedWhitelist = new HashMap<String,String>();
+
+			JSONArray whitelistArray = appWhitelist.getJSONArray("whitelist");
+
+			for(int i = 0; i < whitelistArray.length(); i++) {
+				try {
+					JSONObject appEntry = whitelistArray.getJSONObject(i);
+
+					if(appEntry.has("game") && appEntry.has("id")) {
+						parsedWhitelist.put(appEntry.getString("game").toUpperCase(), appEntry.getString("id"));
+					}
+				} catch(JSONException e) {
+					// Continue to next array item if there were errors during parsing
+				}
+			}
+
+			sendInstalledApps(UnityAdsProperties.INSTALLED_APPS_URL, parsedWhitelist);
+		} catch(Exception e) {
+			UnityAdsDeviceLog.debug("Failed to parse app whitelist " + e);
+		}
+	}
+
+	private void sendInstalledApps(String url, Map<String,String> whitelist) {
+		if(installedAppsSent) return;
+
+		installedAppsSent = true;
+
+		String appsJson = UnityAdsDevice.getPackageDataJson(whitelist);
+
+		if(appsJson != null) {
+			UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(url, UnityAdsProperties.getCampaignQueryArguments(), UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_POST, UnityAdsRequestType.InstalledApps, 0);
+			ulc.setPostBody(appsJson);
+			UnityAdsUtils.runOnUiThread(ulc);
+		} else {
+			UnityAdsDeviceLog.debug("Nothing to send for installed applications");
+		}
+	}
+
 	/* INTERNAL CLASSES */
 	
 	private class UnityAdsUrlLoaderCreator implements Runnable {
@@ -585,7 +744,8 @@ public class UnityAdsWebData {
 		private String _requestMethod = null;
 		private UnityAdsRequestType _requestType = null;
 		private int _retries = 0;
-		
+		private String _postBody = null;
+
 		public UnityAdsUrlLoaderCreator (String urlPart1, String urlPart2, String requestMethod, UnityAdsRequestType requestType, int retries) {
 			_url = urlPart1;
 			_queryParams = urlPart2;
@@ -593,17 +753,26 @@ public class UnityAdsWebData {
 			_requestType = requestType;
 			_retries = retries;
 		}
+
+		public void setPostBody(String body) {
+			_postBody = body;
+		}
+
 		public void run () {
 			UnityAdsUrlLoader loader = new UnityAdsUrlLoader(_url, _queryParams, _requestMethod, _requestType, _retries);
 			UnityAdsDeviceLog.debug("URL: " + loader.getUrl());
-			
+
+			if(_postBody != null) {
+				loader.setPostBody(_postBody);
+			}
+
 			if (_retries <= UnityAdsProperties.MAX_NUMBER_OF_ANALYTICS_RETRIES)
 				addLoader(loader);
-			
+
 			startNextLoader();
 		}
 	}
-	
+
 	private class UnityAdsCancelUrlLoaderRunner implements Runnable {
 		private UnityAdsUrlLoader _loader = null;
 		public UnityAdsCancelUrlLoaderRunner (UnityAdsUrlLoader loader) {
@@ -634,7 +803,8 @@ public class UnityAdsWebData {
 		private String _queryParams = null;
 		private String _baseUrl = null;
 		private Boolean _done = false;
-		
+		private String _postBody = null;
+
 		public UnityAdsUrlLoader (String url, String queryParams, String httpMethod, UnityAdsRequestType requestType, int existingRetries) {
 			super();
 			try {
@@ -686,7 +856,15 @@ public class UnityAdsWebData {
 		public UnityAdsRequestType getRequestType () {
 			return _requestType;
 		}
-		
+
+		public void setPostBody(String body) {
+			if(_queryParams != null && _queryParams.length() > 2) {
+				_finalUrl = _baseUrl + "?" + _queryParams;
+			}
+
+			_postBody = body;
+		}
+
 		public void clear () {
 			_url = null;
 			_downloadLength = 0;
@@ -697,6 +875,7 @@ public class UnityAdsWebData {
 			_httpMethod = null;
 			_queryParams = null;
 			_baseUrl = null;
+			_postBody = null;
 		}
 		
 		private void cancelInMainThread () {
@@ -716,7 +895,11 @@ public class UnityAdsWebData {
 				_connection.setConnectTimeout(20000);
 				_connection.setReadTimeout(30000);
 				_connection.setRequestMethod(_httpMethod);
-				_connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+				if(_postBody == null) {
+					_connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+				} else {
+					_connection.setRequestProperty("Content-type", "application/json");
+				}
 				_connection.setDoInput(true);
 				
 				if (_httpMethod.equals(UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_POST))
@@ -732,7 +915,11 @@ public class UnityAdsWebData {
 				if (_httpMethod.equals(UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_POST)) {
 					try {
 						PrintWriter pout = new PrintWriter(new OutputStreamWriter(_connection.getOutputStream(), "UTF-8"), true);
-						pout.print(_queryParams);
+						if(_postBody == null) {
+							pout.print(_queryParams);
+						} else {
+							pout.print(_postBody);
+						}
 						pout.flush();
 					}
 					catch (Exception e) {

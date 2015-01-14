@@ -1,4 +1,4 @@
-package com.mycompany.test.test;
+package com.unity3d.ads.android.test;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,9 +6,9 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.unity3d.ads.android.example.UnityAdsTestStartActivity;
 import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
-import com.mycompany.test.UnityAdsTestStartActivity;
 
 import android.test.ActivityInstrumentationTestCase2;
 

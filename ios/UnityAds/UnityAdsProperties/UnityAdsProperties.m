@@ -11,7 +11,7 @@
 #import "../UnityAds.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 
-NSString * const kUnityAdsVersion = @"1308";
+NSString * const kUnityAdsVersion = @"1310";
 
 @implementation UnityAdsProperties
 
@@ -67,6 +67,7 @@ static UnityAdsProperties *sharedProperties = nil;
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamSoftwareVersionKey, [UnityAdsDevice softwareVersion]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamDeviceTypeKey, [UnityAdsDevice analyticsMachineName]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamConnectionTypeKey, [UnityAdsDevice currentConnectionType]];
+  queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamIdentifierForVendor, [UnityAdsDevice identifierForVendor]];
   
   if ([self testModeEnabled]) {
     queryParams = [NSString stringWithFormat:@"%@&%@=true", queryParams, kUnityAdsInitQueryParamTestKey];
@@ -80,6 +81,10 @@ static UnityAdsProperties *sharedProperties = nil;
   }
   else {
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamEncryptionKey, [UnityAdsDevice isEncrypted] ? @"true" : @"false"];
+  }
+  
+  if (self.sendInternalDetails) {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamSendInternalDetailsKey, @"true"];
   }
   
   return queryParams;

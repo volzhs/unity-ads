@@ -20,14 +20,19 @@ public class UnityAdsProperties {
 	public static String CAMPAIGN_QUERY_STRING = null;
 	public static String UNITY_ADS_GAME_ID = null;
 	public static String UNITY_ADS_GAMER_ID = null;
+	public static String APPFILTER_LIST = null;
+	public static String INSTALLED_APPS_URL = null;
 	public static Boolean TESTMODE_ENABLED = false;
+	public static Boolean SEND_INTERNAL_DETAILS = false;
 	public static WeakReference<Activity> BASE_ACTIVITY = null;
 	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
+	public static Boolean SELECTED_CAMPAIGN_CACHED = false;
 	public static int CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
 	public static int CAMPAIGN_REFRESH_VIEWS_MAX = 0;
 	public static int CAMPAIGN_REFRESH_SECONDS = 0;
-	
+	public static long CACHING_SPEED = 0;
+
 	public static String TEST_DATA = null;
 	public static String TEST_URL = null;
 	public static String TEST_JAVASCRIPT = null;
@@ -78,8 +83,22 @@ public class UnityAdsProperties {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_HARDWAREVERSION_KEY, URLEncoder.encode(UnityAdsDevice.getHardwareVersion(), "UTF-8"));
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY, URLEncoder.encode(UnityAdsDevice.getConnectionType(), "UTF-8"));
+
+			if(!UnityAdsDevice.isUsingWifi()) {
+				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY, UnityAdsDevice.getNetworkType(), "UTF-8");
+			}
+
+			if(CACHING_SPEED > 0) {
+				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CACHINGSPEED_KEY, CACHING_SPEED);
+			}
+
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
+
+			if(APPFILTER_LIST != null) {
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY, URLEncoder.encode(APPFILTER_LIST, "UTF-8"));
+				APPFILTER_LIST = null;
+			}
 		}
 		catch (Exception e) {
 			UnityAdsDeviceLog.error("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString());
@@ -101,7 +120,12 @@ public class UnityAdsProperties {
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity()) ? "false" : "true");
 			}
 		}
-				
+
+		if(SEND_INTERNAL_DETAILS) {
+			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SENDINTERNALDETAILS_KEY, "true");
+			SEND_INTERNAL_DETAILS = false;
+		}
+
 		_campaignQueryString = queryString;
 	}
 	
@@ -114,7 +138,15 @@ public class UnityAdsProperties {
 			
 		return String.format("%s%s", url, _campaignQueryString);
 	}
-	
+
+	public static String getCampaignQueryArguments() {
+		if(_campaignQueryString != null && _campaignQueryString.length() > 2) {
+			return _campaignQueryString.substring(1);
+		}
+
+		return "";
+	}
+
 	public static Activity getBaseActivity() {
 		if (BASE_ACTIVITY != null &&
 			BASE_ACTIVITY.get() != null &&

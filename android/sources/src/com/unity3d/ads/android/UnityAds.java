@@ -146,8 +146,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 	
 	public static void changeActivity (Activity activity) {
-		if (activity == null) return;
-		
+		if (activity == null) {
+			UnityAdsDeviceLog.debug("changeActivity: null, ignoring");
+			return;
+		}
+
+		UnityAdsDeviceLog.debug("changeActivity: " + activity.getClass().getName());
+
 		if (activity != null && !activity.equals(UnityAdsProperties.getCurrentActivity())) {
 			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
 			
@@ -234,6 +239,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				_showingAds = true;
 				_preventVideoDoubleStart = false;
 				_hidingHandled = false;
+				UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
 				startFullscreenActivity();
 				return _showingAds;
 			}
@@ -246,31 +252,47 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static boolean show () {
 		return show(null);
 	}
-	
+
 	public static boolean canShowAds () {
-			return webdata != null && 
-			webdata.getViewableVideoPlanCampaigns() != null && 
+		return canShow();
+	}
+
+	// Replacement method for old internal uses of canShowAds
+	private static boolean hasViewableAds() {
+		return webdata != null &&
+			webdata.getViewableVideoPlanCampaigns() != null &&
 			webdata.getViewableVideoPlanCampaigns().size() > 0;
 	}
 
 	public static boolean canShow () {
-		boolean isConnected = true;
-		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+		if(_showingAds || webdata == null) return false;
 
+		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
 		if(currentActivity != null) {
 			ConnectivityManager cm = (ConnectivityManager)currentActivity.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
 			if(cm != null) {
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-				isConnected = activeNetwork != null && activeNetwork.isConnected();
+				boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
+
+				if(!isConnected) return false;
 			}
 		}
 
-		return !_showingAds &&
-				isConnected &&
-				webdata != null &&
-				webdata.getVideoPlanCampaigns() != null &&
-				webdata.getVideoPlanCampaigns().size() > 0;
+		ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
+
+		if(viewableCampaigns == null) return false;
+
+		if(viewableCampaigns.size() == 0) return false;
+
+		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
+		if(!nextCampaign.allowStreamingVideo().booleanValue()) {
+			if(!cachemanager.isCampaignCached(nextCampaign)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
@@ -403,7 +425,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
 
-		if (canShowAds())
+		if(hasViewableAds())
 			sendReadyEvent();
 	}
 	
@@ -531,7 +553,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsDeviceLog.entered();
 		Boolean dataOk = true;
 		
-		if (canShowAds()) {
+		if(hasViewableAds()) {
 			JSONObject setViewData = new JSONObject();
 			
 			try {				
@@ -546,6 +568,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 				sendReadyEvent();			
 			}
 		}
+	}
+	
+	public void onOrientationRequest(JSONObject data) {
+		UnityAdsProperties.CURRENT_ACTIVITY.get().setRequestedOrientation(data.optInt("orientation", -1));
 	}
 	
 	public void onOpenPlayStore (JSONObject data) {
@@ -1052,9 +1078,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 				
 				createPauseScreenTimer();
 				
-				String playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
-				if (!UnityAdsUtils.isFileInCache(UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename()))
-					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl(); 
+				String playUrl;
+				if (!cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN)) {
+					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl();
+					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
+				} else {
+					playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
+					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = true;
+				}
 
 				mainview.setViewState(UnityAdsMainViewState.VideoPlayer);
 				UnityAdsDeviceLog.debug("Start videoplayback with: " + playUrl);

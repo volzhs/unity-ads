@@ -1,4 +1,4 @@
-package com.mycompany.test.test;
+package com.unity3d.ads.android.test;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,7 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.test.ActivityInstrumentationTestCase2;
-import com.mycompany.test.UnityAdsTestStartActivity;
+
+import com.unity3d.ads.android.example.UnityAdsTestStartActivity;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 
 @SuppressWarnings("serial")

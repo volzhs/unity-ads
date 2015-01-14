@@ -111,7 +111,16 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	}
 
 	public boolean isCampaignCached(UnityAdsCampaign campaign) {
-		return UnityAdsUtils.isFileInCache(campaign.getVideoFilename());
+		if(UnityAdsUtils.isFileInCache(campaign.getVideoFilename())) {
+			long localSize = UnityAdsUtils.getSizeForLocalFile(campaign.getVideoFilename());
+			long expectedSize = campaign.getVideoFileExpectedSize();
+
+			if(localSize > 0 && expectedSize > 0 && localSize == expectedSize) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public void cacheNextVideo(UnityAdsCampaign campaign) {

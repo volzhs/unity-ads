@@ -13,7 +13,7 @@ public class UnityAdsConstants {
 	 */
 
 	/* Unity Ads */
-	public static final String UNITY_ADS_VERSION = "1308";
+	public static final String UNITY_ADS_VERSION = "1310";
 	public static final String UNITY_ADS_REQUEST_METHOD_POST = "POST";
 	public static final String UNITY_ADS_REQUEST_METHOD_GET = "GET";
 
@@ -89,12 +89,16 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_STOREID_KEY = "storeId";
 	public static final String UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY = "cacheVideo";
 	public static final String UNITY_ADS_CAMPAIGN_ALLOW_CACHE_KEY = "allowCache";
+	public static final String UNITY_ADS_CAMPAIGN_ALLOW_STREAMING_KEY = "allowStreaming";
 	public static final String UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY = "bypassAppSheet";
 	public static final String UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY = "allowSkipVideoInSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY = "disableBackButtonForSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY = "refreshCampaignsAfterViewed";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY = "refreshCampaignsAfterSeconds";
-
+	public static final String UNITY_ADS_CAMPAIGN_APPFILTERING_KEY = "appFiltering";
+	public static final String UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL = "installedAppsUrl";
+	public static final String UNITY_ADS_CAMPAIGN_APP_WHITELIST_URL = "appWhitelist";
+	
 	/* Zone JSON Properties */
 	public static final String UNITY_ADS_ZONES_KEY = "zones";
 	public static final String UNITY_ADS_ZONE_ID_KEY = "id";
@@ -128,7 +132,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_URL_KEY = "impactUrl";
 	public static final String UNITY_ADS_WEBVIEW_URL_KEY = "webViewUrl";	
 	public static final String UNITY_ADS_ANALYTICS_URL_KEY = "analyticsUrl";
-	
+
 	/* Init Query Params */
 	public static final String UNITY_ADS_INIT_QUERYPARAM_DEVICEID_KEY = "deviceId";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_ANDROIDID_KEY = "androidId";
@@ -148,11 +152,16 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_HARDWAREVERSION_KEY = "hardwareVersion";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SDKVERSION_KEY = "sdkVersion";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY = "connectionType";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY = "androidNetworkType";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_TEST_KEY = "test";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY = "encrypted";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_SENDINTERNALDETAILS_KEY = "sendInternalDetails";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY = "screenDensity";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_SCREENSIZE_KEY = "screenSize";
-	
+	public static final String UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY = "appFilterList";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_CACHEDPLAYBACK_KEY = "cachedPlayback";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_CACHINGSPEED_KEY = "cachingSpeed";
+
 	/* Device types */
 	public static final String UNITY_ADS_DEVICEID_UNKNOWN = "unknown";
 	

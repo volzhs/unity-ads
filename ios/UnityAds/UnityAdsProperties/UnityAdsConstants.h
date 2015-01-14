@@ -50,6 +50,7 @@ extern NSString * const kUnityAdsWebViewDataParamPlatformKey;
 extern NSString * const kUnityAdsWebViewDataParamDeviceIdKey;
 extern NSString * const kUnityAdsWebViewDataParamGameIdKey;
 extern NSString * const kUnityAdsWebViewDataParamDeviceTypeKey;
+extern NSString * const kUnityAdsWebViewDataParamIdentifierForVendorKey;
 extern NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey;
 extern NSString * const kUnityAdsWebViewDataParamMacAddressKey;
 extern NSString * const kUnityAdsWebViewDataParamSdkVersionKey;
@@ -185,6 +186,7 @@ extern NSString * const kUnityAdsInitQueryParamOpenUdidKey;
 extern NSString * const kUnityAdsInitQueryParamMacAddressKey;
 extern NSString * const kUnityAdsInitQueryParamRawAdvertisingTrackingIdKey;
 extern NSString * const kUnityAdsInitQueryParamAdvertisingTrackingIdKey;
+extern NSString * const kUnityAdsInitQueryParamIdentifierForVendor;
 extern NSString * const kUnityAdsInitQueryParamTrackingEnabledKey;
 extern NSString * const kUnityAdsInitQueryParamSoftwareVersionKey;
 extern NSString * const kUnityAdsInitQueryParamHardwareVersionKey;
@@ -192,6 +194,7 @@ extern NSString * const kUnityAdsInitQueryParamSdkVersionKey;
 extern NSString * const kUnityAdsInitQueryParamConnectionTypeKey;
 extern NSString * const kUnityAdsInitQueryParamTestKey;
 extern NSString * const kUnityAdsInitQueryParamEncryptionKey;
+extern NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey;
 
 
 /* Google Analytics Instrumentation */

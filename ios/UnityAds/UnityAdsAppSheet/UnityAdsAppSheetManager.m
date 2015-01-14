@@ -10,6 +10,7 @@
 #import "UnityAdsAppSheetManager.h"
 #import "UnityAdsCampaignManager.h"
 #import "UnityAdsAnalyticsUploader.h"
+#import "UnityAdsDevice.h"
 
 @implementation CustomStoreProductViewController
 
@@ -35,7 +36,10 @@
 
 @end
 
-@interface UnityAdsAppSheetManager ()
+@interface UnityAdsAppSheetManager () {
+@protected
+  NSString * _currentItunesId;
+}
 @property (nonatomic, strong) NSMutableDictionary *appSheetCache;
 @end
 
@@ -44,20 +48,20 @@
 static UnityAdsAppSheetManager *sharedAppSheetManager = nil;
 
 + (id)sharedInstance {
-	@synchronized(self) {
-		if (sharedAppSheetManager == nil) {
+  @synchronized(self) {
+    if (sharedAppSheetManager == nil) {
       sharedAppSheetManager = [[UnityAdsAppSheetManager alloc] init];
     }
-	}
-	
-	return sharedAppSheetManager;
+  }
+  
+  return sharedAppSheetManager;
 }
 
 - (id)init {
-	if ((self = [super init])) {
+  if ((self = [super init])) {
     _appSheetCache = [[NSMutableDictionary alloc] init];
-	}
-	return self;
+  }
+  return self;
 }
 
 - (void)preloadAppSheetWithId:(NSString *)iTunesId {
@@ -65,7 +69,7 @@ static UnityAdsAppSheetManager *sharedAppSheetManager = nil;
   if ([UnityAdsAppSheetManager canOpenStoreProductViewController]) {
     UALOG_DEBUG(@"Can open storeProductViewController");
     if (![iTunesId isKindOfClass:[NSString class]] || iTunesId == nil || [iTunesId length] < 1) return;
-
+    
     NSDictionary *productParams = @{@"id":iTunesId};
     id storeController = [[CustomStoreProductViewController alloc] init];
     if ([storeController respondsToSelector:@selector(setDelegate:)]) {
@@ -76,7 +80,9 @@ static UnityAdsAppSheetManager *sharedAppSheetManager = nil;
       [storeController loadProductWithParameters:productParams completionBlock:^(BOOL result, NSError *error) {
         if (result) {
           UALOG_DEBUG(@"Preloading product information succeeded for id: %@.", iTunesId);
-          [_appSheetCache setValue:storeController forKey:iTunesId];
+          @synchronized(_appSheetCache) {
+            [_appSheetCache setValue:storeController forKey:iTunesId];
+          }
         } else {
           UALOG_DEBUG(@"Preloading product information failed for id: %@ with error: %@", iTunesId, error);
         }
@@ -86,7 +92,9 @@ static UnityAdsAppSheetManager *sharedAppSheetManager = nil;
 }
 
 - (id)getAppSheetController:(NSString *)iTunesId {
-  return [_appSheetCache valueForKey:iTunesId];
+  @synchronized(_appSheetCache) {
+    return [_appSheetCache valueForKey:iTunesId];
+  }
 }
 
 - (void)openAppSheetWithId:(NSString *)iTunesId toViewController:(UIViewController *)targetViewController withCompletionBlock:(void (^)(BOOL result, NSError *error))completionBlock {
@@ -120,7 +128,21 @@ static UnityAdsAppSheetManager *sharedAppSheetManager = nil;
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
   UALOG_DEBUG(@"");
   if (viewController.presentingViewController != nil) {
-    [viewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [viewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
+    if ([UnityAdsDevice getIOSMajorVersion] >= 8) {
+      __block NSString * currentItunesId = nil;
+      @synchronized (_appSheetCache) {
+        [_appSheetCache enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+          if ([obj isEqual:viewController]) {
+            currentItunesId = key;
+            *stop = YES;
+          }
+        }];
+        if (!currentItunesId) return;
+        [_appSheetCache removeObjectForKey:currentItunesId];
+      }
+      [self preloadAppSheetWithId:currentItunesId];
+    }
   }
 }
 

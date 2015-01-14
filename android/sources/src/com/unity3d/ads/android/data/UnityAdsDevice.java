@@ -4,11 +4,17 @@ import java.lang.reflect.Method;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -180,12 +186,74 @@ public class UnityAdsDevice {
 			return false;
 		}
 	}
-	
-	public static int getScreenDensity () {
+
+	public static int getNetworkType() {
+		Activity activity = UnityAdsProperties.getCurrentActivity();
+
+		if(activity != null) {
+			TelephonyManager tm = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
+
+			return tm.getNetworkType();
+		}
+
+		return TelephonyManager.NETWORK_TYPE_UNKNOWN;
+	}
+
+	public static int getScreenDensity() {
 		return UnityAdsProperties.getCurrentActivity().getResources().getDisplayMetrics().densityDpi;
 	}
-	
-	public static int getScreenSize () {
+
+	public static int getScreenSize() {
 		return getDeviceType();
+	}
+
+	public static JSONArray getPackageJsonArray(Map<String,String> whitelist) {
+		if(whitelist == null || whitelist.size() == 0) return null;
+
+		Activity activity = UnityAdsProperties.getCurrentActivity();
+
+		if(activity == null) return null;
+
+		PackageManager pm = activity.getPackageManager();
+		JSONArray pkgList = null;
+
+		for(PackageInfo pkg : pm.getInstalledPackages(0)) {
+			try {
+				if(pkg.packageName != null && pkg.packageName.length() > 0) {
+					String md5pkg = UnityAdsUtils.Md5(pkg.packageName);
+
+					if(whitelist.containsKey(md5pkg)) {
+						whitelist.get(md5pkg);
+						JSONObject jsonEntry = new JSONObject();
+
+						jsonEntry.put("id", whitelist.get(md5pkg));
+						if(pkg.firstInstallTime > 0) {
+							jsonEntry.put("timestamp", pkg.firstInstallTime);
+						}
+
+						if(pkgList == null) pkgList = new JSONArray();
+						pkgList.put(jsonEntry);
+					}
+				}
+			} catch(Exception e) {
+				UnityAdsDeviceLog.debug("Exception when processing package " + pkg.packageName + " " + e);
+			}
+		}
+
+		return pkgList;
+	}
+
+	public static String getPackageDataJson(Map<String,String> whitelist) {
+		JSONArray packages = getPackageJsonArray(whitelist);
+		if(packages == null) return null;
+
+		JSONObject wrapper = new JSONObject();
+		try {
+			wrapper.put("games", packages);
+			return wrapper.toString();
+		} catch(Exception e) {
+			UnityAdsDeviceLog.debug("Exception in getPackageDataJson" + e);
+			return null;
+		}
 	}
 }

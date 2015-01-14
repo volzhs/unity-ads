@@ -1,5 +1,5 @@
 
-package com.mycompany.test;
+package com.unity3d.ads.android.example;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.unity3d.ads.android.example.R;
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.IUnityAdsListener;
 

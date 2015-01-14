@@ -25,7 +25,6 @@ import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.view.UnityAdsBufferingView;
 import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
 import com.unity3d.ads.android.view.UnityAdsMuteVideoButton.UnityAdsMuteVideoButtonState;
 import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
@@ -56,7 +55,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private Timer _videoPausedTimer = null;
 	private VideoView _videoView = null;
 	private String _videoFileName = null;
-	private UnityAdsBufferingView _bufferingView = null;
 	private UnityAdsVideoPausedView _pausedView = null;
 	private UnityAdsMuteVideoButton _muteButton = null;
 	private boolean _videoPlayheadPrepared = false;
@@ -144,7 +142,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		
 		hideSkipText();
 		hideTimeRemainingLabel();
-		hideBufferingView();
 		hideVideoPausedView();
 		purgeVideoPausedTimer();
 				
@@ -159,7 +156,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_skipTextView = null;
 		
 		_bufferingText = null;
-		_bufferingView = null;
 				
 		_countDownText = null;
 		_timeLeftInSecondsText = null;
@@ -432,18 +428,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		}
 	}
 	
-	private void createAndAddBufferingView () {
-		if (_bufferingView == null) {
-    		_bufferingView = new UnityAdsBufferingView(getContext());
-    	}
-    	
-    	if (_bufferingView != null && _bufferingView.getParent() == null) {
-    		RelativeLayout.LayoutParams bufferingLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-    		bufferingLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-    		addView(_bufferingView, bufferingLayoutParams);
-    	}  		
-	}
-	
 	private boolean hasSkipDuration () {
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		return currentZone.allowVideoSkipInSeconds() > 0;
@@ -516,11 +500,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_countDownText.removeAllViews();
 			removeView(_countDownText);			
 		}
-	}
-	
-	private void hideBufferingView () {
-		if (_bufferingView != null && _bufferingView.getParent() != null)
-			removeView(_bufferingView);
 	}
 	
 	private void hideVideoPausedView () {
@@ -735,21 +714,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 					}
 				});
 			}
-						
-			if (_videoView != null && bufferPercentage < 15 && _videoView.getParent() == null) {
-				UnityAdsUtils.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						createAndAddBufferingView();
-					}
-				});				
-			}
-			
+
 			if (_videoPlayheadPrepared && _playHeadHasMoved) {
 				UnityAdsUtils.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						hideBufferingView();
 						if (!_videoPlaybackStartedSent) {
 							if (_listener != null) {
 								_videoPlaybackStartedSent = true;
