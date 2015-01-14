@@ -21,6 +21,7 @@ public class UnityAdsProperties {
 	public static String UNITY_ADS_GAME_ID = null;
 	public static String UNITY_ADS_GAMER_ID = null;
 	public static String APPFILTER_LIST = null;
+	public static String INSTALLED_APPS_URL = null;
 	public static Boolean TESTMODE_ENABLED = false;
 	public static Boolean SEND_INTERNAL_DETAILS = false;
 	public static WeakReference<Activity> BASE_ACTIVITY = null;

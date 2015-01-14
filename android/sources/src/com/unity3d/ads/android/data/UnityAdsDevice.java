@@ -3,23 +3,18 @@ package com.unity3d.ads.android.data;
 import java.lang.reflect.Method;
 import java.net.NetworkInterface;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -212,65 +207,49 @@ public class UnityAdsDevice {
 		return getDeviceType();
 	}
 
-	public static JSONArray getPackageJsonArray() {
+	public static JSONArray getPackageJsonArray(Map<String,String> whitelist) {
+		if(whitelist == null || whitelist.size() == 0) return null;
+
 		Activity activity = UnityAdsProperties.getCurrentActivity();
 
 		if(activity == null) return null;
 
-		try {
-			HashMap<String,ApplicationInfo> pkgMap = new HashMap<String,ApplicationInfo>();
+		PackageManager pm = activity.getPackageManager();
+		JSONArray pkgList = null;
 
-			PackageManager pm = activity.getPackageManager();
-			Intent launcherIcons = new Intent("android.intent.action.MAIN");
-			launcherIcons.addCategory("android.intent.category.LAUNCHER");
+		for(PackageInfo pkg : pm.getInstalledPackages(0)) {
+			try {
+				if(pkg.packageName != null && pkg.packageName.length() > 0) {
+					String md5pkg = UnityAdsUtils.Md5(pkg.packageName);
 
-			// queryIntentActivities may return multiple launch activities for the same app but HashMap filters duplicates
-			for(ResolveInfo pkg : pm.queryIntentActivities(launcherIcons, 0)) {
-				ApplicationInfo ai = pkg.activityInfo.applicationInfo;
+					if(whitelist.containsKey(md5pkg)) {
+						whitelist.get(md5pkg);
+						JSONObject jsonEntry = new JSONObject();
 
-				if((ai.flags & ApplicationInfo.FLAG_SYSTEM) == 0 && (ai.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0) {
-					pkgMap.put(ai.packageName, ai);
-					UnityAdsDeviceLog.debug("Added pkg " + ai.packageName);
-				} else {
-					UnityAdsDeviceLog.debug("Skipped " + ai.packageName + " " + ai.flags);
+						jsonEntry.put("id", whitelist.get(md5pkg));
+						if(pkg.firstInstallTime > 0) {
+							jsonEntry.put("timestamp", pkg.firstInstallTime);
+						}
+
+						if(pkgList == null) pkgList = new JSONArray();
+						pkgList.put(jsonEntry);
+					}
 				}
+			} catch(Exception e) {
+				UnityAdsDeviceLog.debug("Exception when processing package " + pkg.packageName + " " + e);
 			}
-
-			if(pkgMap.size() == 0) {
-				return null;
-			}
-
-			JSONArray retArray = new JSONArray();
-
-			for(Map.Entry<String,ApplicationInfo> entry : pkgMap.entrySet()) {
-				PackageInfo pkgInfo = pm.getPackageInfo(entry.getKey(), 0);
-				JSONObject jsonEntry = new JSONObject();
-
-				jsonEntry.put("package", entry.getKey());
-				jsonEntry.put("installTime", pkgInfo.firstInstallTime);
-
-				String installer = pm.getInstallerPackageName(entry.getKey());
-				if(installer != null && installer.length() > 0) {
-					jsonEntry.put("installer", installer);
-				}
-
-				retArray.put(jsonEntry);
-			}
-
-			return retArray;
-		} catch(Exception e) {
-			UnityAdsDeviceLog.debug("Exception in getPackagesJson" + e);
-			return null;
 		}
+
+		return pkgList;
 	}
 
-	public static String getPackageDataJson() {
-		JSONArray packages = getPackageJsonArray();
+	public static String getPackageDataJson(Map<String,String> whitelist) {
+		JSONArray packages = getPackageJsonArray(whitelist);
 		if(packages == null) return null;
 
 		JSONObject wrapper = new JSONObject();
 		try {
-			wrapper.put("packages", packages);
+			wrapper.put("games", packages);
 			return wrapper.toString();
 		} catch(Exception e) {
 			UnityAdsDeviceLog.debug("Exception in getPackageDataJson" + e);

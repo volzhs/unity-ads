@@ -9,11 +9,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
@@ -56,6 +59,7 @@ public class UnityAdsWebData {
 	private boolean _isLoading = false;
 	private boolean _initInProgress = false;
 
+	private static boolean whitelistRequested = false;
 	private static boolean installedAppsSent = false;
 
 	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
@@ -88,7 +92,7 @@ public class UnityAdsWebData {
 		}
 	};
 	
-	private static enum UnityAdsRequestType { Analytics, VideoPlan, VideoViewed, Unsent, InstalledApps;
+	private static enum UnityAdsRequestType { Analytics, VideoPlan, VideoViewed, Unsent, AppWhitelist, InstalledApps;
 		@SuppressLint("DefaultLocale")
 		@Override
 		public String toString () {
@@ -355,6 +359,8 @@ public class UnityAdsWebData {
 					break;
 				case Analytics:
 					break;
+				case AppWhitelist:
+					whitelistReceived(loader.getData());
 				case InstalledApps:
 					break;
 			}
@@ -383,6 +389,8 @@ public class UnityAdsWebData {
 					break;
 				case VideoPlan:
 					campaignDataFailed();
+					break;
+				case AppWhitelist:
 					break;
 				case InstalledApps:
 					// never retry sending installed apps
@@ -513,10 +521,13 @@ public class UnityAdsWebData {
 						String appFiltering = data.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_APPFILTERING_KEY);
 
 						if(appFiltering != null && (appFiltering.equals("simple") || appFiltering.equals("advanced"))) {
-							if(appFiltering.equals("advanced") && data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL)) {
-								String installedAppsUrl = data.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL);
+							if(appFiltering.equals("advanced")) {
+								if(data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL) && data.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_APP_WHITELIST_URL)) {
+									UnityAdsProperties.INSTALLED_APPS_URL = data.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL);
+									String whitelistUrl = data.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_APP_WHITELIST_URL);
 
-								sendInstalledApps(installedAppsUrl);
+									requestAppWhitelist(whitelistUrl);
+								}
 							}
 
 							if(tmpCampaigns != null && tmpCampaigns.size() > 0) {
@@ -673,19 +684,55 @@ public class UnityAdsWebData {
 		return null;
 	}
 
-	private void sendInstalledApps(String url) {
+	private void requestAppWhitelist(String url) {
+		if(whitelistRequested) return;
+
+		whitelistRequested = true;
+
+		UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(url, null, UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.AppWhitelist, 0);
+		UnityAdsUtils.runOnUiThread(ulc);
+	}
+
+	private void whitelistReceived(String json) {
+		UnityAdsDeviceLog.debug("Received whitelist");
+
+		try {
+			JSONObject appWhitelist = new JSONObject(json);
+			HashMap<String,String> parsedWhitelist = new HashMap<String,String>();
+
+			JSONArray whitelistArray = appWhitelist.getJSONArray("whitelist");
+
+			for(int i = 0; i < whitelistArray.length(); i++) {
+				try {
+					JSONObject appEntry = whitelistArray.getJSONObject(i);
+
+					if(appEntry.has("game") && appEntry.has("id")) {
+						parsedWhitelist.put(appEntry.getString("game").toUpperCase(), appEntry.getString("id"));
+					}
+				} catch(JSONException e) {
+					// Continue to next array item if there were errors during parsing
+				}
+			}
+
+			sendInstalledApps(UnityAdsProperties.INSTALLED_APPS_URL, parsedWhitelist);
+		} catch(Exception e) {
+			UnityAdsDeviceLog.debug("Failed to parse app whitelist " + e);
+		}
+	}
+
+	private void sendInstalledApps(String url, Map<String,String> whitelist) {
 		if(installedAppsSent) return;
 
 		installedAppsSent = true;
 
-		String appsJson = UnityAdsDevice.getPackageDataJson();
+		String appsJson = UnityAdsDevice.getPackageDataJson(whitelist);
 
 		if(appsJson != null) {
 			UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(url, UnityAdsProperties.getCampaignQueryArguments(), UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_POST, UnityAdsRequestType.InstalledApps, 0);
 			ulc.setPostBody(appsJson);
 			UnityAdsUtils.runOnUiThread(ulc);
 		} else {
-			UnityAdsDeviceLog.debug("Unable to read installed applications, not sending");
+			UnityAdsDeviceLog.debug("Nothing to send for installed applications");
 		}
 	}
 

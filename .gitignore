@@ -73,7 +73,7 @@ profile
 *.moved-aside
 DerivedData
 .idea/
-
 ios/UnityAds.xcworkspace/xcshareddata/UnityAds.xccheckout
 
-ios/UnityAds.xcworkspace/xcshareddata/UnityAds.xccheckout
+# Gradle
+.gradle
