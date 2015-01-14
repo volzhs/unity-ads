@@ -89,9 +89,8 @@ static UnityAdsProperties *sharedProperties = nil;
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamEncryptionKey, [UnityAdsDevice isEncrypted] ? @"true" : @"false"];
   }
   
-  if([[self installedApps] count] > 0) {
+  if(withInstalledApps && [[self installedApps] count] > 0) {
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamAppFilterListKey, [[self installedApps].allObjects componentsJoinedByString:@","]];
-    [[self installedApps] removeAllObjects];
   }
   
   if (self.sendInternalDetails) {
