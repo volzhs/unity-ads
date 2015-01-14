@@ -69,12 +69,15 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		// Active -list contains campaigns that came with the videoPlan
 		if (activeList != null) {
 			_totalCampaigns = activeList.size();
+			boolean firstInAdPlan = true;
+
 			UnityAdsDeviceLog.debug("Updating cache: Going through active campaigns: " + _totalCampaigns);			
 			for (UnityAdsCampaign campaign : activeList) {
 				UnityAdsCampaignHandler campaignHandler = new UnityAdsCampaignHandler(campaign);
 				addToUpdatingHandlers(campaignHandler);
 				campaignHandler.setListener(this);
-				campaignHandler.initCampaign();
+				campaignHandler.initCampaign(firstInAdPlan);
+				firstInAdPlan = false;
 				
 				if (campaignHandler.hasDownloads()) {
 					addToDownloadingHandlers(campaignHandler);
