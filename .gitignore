@@ -73,3 +73,6 @@ profile
 *.moved-aside
 DerivedData
 .idea/
+
+# Gradle
+.gradle
