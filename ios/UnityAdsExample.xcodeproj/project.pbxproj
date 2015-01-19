@@ -27,6 +27,7 @@
 		78ED798B15C6B04D007C5BD5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ED798A15C6B04D007C5BD5 /* CoreMedia.framework */; };
 		9017B0AB161086A600ACFC04 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9017B0AA161086A600ACFC04 /* SystemConfiguration.framework */; };
 		907454421609C20C00454427 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 907454411609C20C00454427 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		9926FA351A6D22CC004806B1 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926FA341A6D22CC004806B1 /* CoreTelephony.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		99B08F5E1A3F1B8000BFBD9C /* UnityAds.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 997165981A2F3FDD000F1DB8 /* UnityAds.bundle */; };
 		99C21DF01A2F3537006252A7 /* UnityAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99C21DEF1A2F3537006252A7 /* UnityAds.framework */; };
 		CC46BCE3193FCAD70026AFB5 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CC46BCE2193FCAD70026AFB5 /* Default-568h@2x.png */; };
@@ -59,6 +60,7 @@
 		78ED798A15C6B04D007C5BD5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		9017B0AA161086A600ACFC04 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		907454411609C20C00454427 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		9926FA341A6D22CC004806B1 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		997165981A2F3FDD000F1DB8 /* UnityAds.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = UnityAds.bundle; path = "build/Release-iphoneos/UnityAds.bundle"; sourceTree = "<group>"; };
 		99C21DEF1A2F3537006252A7 /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnityAds.framework; path = "build/Release-iphoneos/UnityAds.framework"; sourceTree = "<group>"; };
 		CC46BCE2193FCAD70026AFB5 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9926FA351A6D22CC004806B1 /* CoreTelephony.framework in Frameworks */,
 				99C21DF01A2F3537006252A7 /* UnityAds.framework in Frameworks */,
 				9017B0AB161086A600ACFC04 /* SystemConfiguration.framework in Frameworks */,
 				907454421609C20C00454427 /* AdSupport.framework in Frameworks */,
@@ -106,6 +109,7 @@
 		78ED794C15C66FC6007C5BD5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9926FA341A6D22CC004806B1 /* CoreTelephony.framework */,
 				997165981A2F3FDD000F1DB8 /* UnityAds.bundle */,
 				99C21DEF1A2F3537006252A7 /* UnityAds.framework */,
 				F642682E16088B7C0005B83A /* StoreKit.framework */,

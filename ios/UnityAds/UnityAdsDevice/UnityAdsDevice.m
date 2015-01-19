@@ -12,6 +12,7 @@
 #include <net/if_dl.h>
 #include <CommonCrypto/CommonDigest.h>
 
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
 #import "UnityAdsDevice.h"
@@ -373,6 +374,18 @@ static SCNetworkReachabilityRef reachabilityRef = nil;
     CFRelease(reachabilityRef);
     reachabilityRef = NULL;
   }
+}
+
++ (NSString *)getNetworkType {
+#ifdef __IPHONE_7_0
+  if([self getIOSMajorVersion] >= 7) {
+    CTTelephonyNetworkInfo *telephonyInfo = [CTTelephonyNetworkInfo new];
+    return telephonyInfo.currentRadioAccessTechnology;
+  }
+  return nil;
+#else
+  return nil;
+#endif
 }
   
 + (NSString *)currentConnectionType {

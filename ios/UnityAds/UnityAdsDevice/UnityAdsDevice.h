@@ -21,6 +21,8 @@
 + (void)clearReachabilityCheck;
 + (NSString *)currentConnectionType;
 
++ (NSString *)getNetworkType;
+
 + (NSString *)softwareVersion;
 
 + (NSString *)md5DeviceId;

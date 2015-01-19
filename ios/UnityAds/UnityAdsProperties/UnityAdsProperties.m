@@ -75,6 +75,11 @@ static UnityAdsProperties *sharedProperties = nil;
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamConnectionTypeKey, [UnityAdsDevice currentConnectionType]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamIdentifierForVendor, [UnityAdsDevice identifierForVendor]];
   
+  id networkType = [UnityAdsDevice getNetworkType];
+  if(networkType != nil) {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamNetworkTypeKey, networkType];
+  }
+  
   if ([self testModeEnabled]) {
     queryParams = [NSString stringWithFormat:@"%@&%@=true", queryParams, kUnityAdsInitQueryParamTestKey];
     
