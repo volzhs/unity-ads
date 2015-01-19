@@ -174,7 +174,12 @@ public class UnityAdsWebData {
 			Activity currentActivity = UnityAdsProperties.getCurrentActivity();
 			if(currentActivity == null) {
 				UnityAdsDeviceLog.error("initCampaigns failed due to currentActivity null");
-				campaignDataFailed();
+				UnityAdsUtils.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						campaignDataFailed();
+					}
+				});
 				return true;
 			}
 			
@@ -188,7 +193,12 @@ public class UnityAdsWebData {
 
 			if(!isConnected) {
 				UnityAdsDeviceLog.error("Device offline, can't init campaigns");
-				campaignDataFailed();
+				UnityAdsUtils.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						campaignDataFailed();
+					}
+				});
 				return true;
 			}
 
@@ -197,12 +207,22 @@ public class UnityAdsWebData {
 			UnityAdsDeviceLog.debug("Ad server resolves to " + adServer);
 			if(adServer.isLoopbackAddress()) {
 				UnityAdsDeviceLog.error("initCampaigns failed, ad server resolves to loopback address (due to ad blocker?)");
-				campaignDataFailed();
+				UnityAdsUtils.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						campaignDataFailed();
+					}
+				});
 				return true;
 			}
 		} catch(UnknownHostException e) {
 			UnityAdsDeviceLog.error("initCampaigns failed due to DNS error, unable to resolve ad server address");
-			campaignDataFailed();
+			UnityAdsUtils.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					campaignDataFailed();
+				}
+			});
 			return true;
 		} catch(Exception e) {
 			UnityAdsDeviceLog.debug("Unknown exception during DNS test: " + e);
