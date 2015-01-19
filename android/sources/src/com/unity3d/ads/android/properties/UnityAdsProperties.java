@@ -96,7 +96,7 @@ public class UnityAdsProperties {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_SCREENDENSITY_KEY, UnityAdsDevice.getScreenDensity());
 
 			if(APPFILTER_LIST != null) {
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY, URLEncoder.encode(APPFILTER_LIST, "UTF-8"));
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY, APPFILTER_LIST);
 				APPFILTER_LIST = null;
 			}
 		}

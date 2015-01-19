@@ -70,9 +70,9 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		}
 	}
 	
-	public void initCampaign () {
+	public void initCampaign(boolean firstInAdPlan) {
 		// Check video
-		checkFileAndDownloadIfNeeded(_campaign.getVideoUrl());
+		checkFileAndDownloadIfNeeded(_campaign.getVideoUrl(), firstInAdPlan);
 		
 		if (_handlerListener != null) {
 			_handlerListener.onCampaignHandled(this);
@@ -125,8 +125,8 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		return false;
 	}
 	
-	private void checkFileAndDownloadIfNeeded (String fileUrl) {
-		if (_campaign.shouldCacheVideo() && !UnityAdsUtils.isFileInCache(_campaign.getVideoFilename()) && UnityAdsUtils.canUseExternalStorage()) {
+	private void checkFileAndDownloadIfNeeded(String fileUrl, boolean firstInAdPlan) {
+		if((_campaign.shouldCacheVideo() || (_campaign.allowCacheVideo() && firstInAdPlan)) && !UnityAdsUtils.isFileInCache(_campaign.getVideoFilename()) && UnityAdsUtils.canUseExternalStorage()) {
 			if (!hasDownloads())
 				UnityAdsDownloader.addListener(this);
 			

@@ -25,12 +25,6 @@
 
 @implementation UnityAdsWebAppController
 
-- (UnityAdsWebAppController *)init {
-  if (self = [super init]) {
-  }
-  return self;
-}
-
 static UnityAdsWebAppController *sharedWebAppController = nil;
 
 + (id)sharedInstance {

@@ -113,6 +113,7 @@ extern NSString * const kUnityAdsCampaignBypassAppSheet;
 extern NSString * const kUnityAdsCampaignExpectedFileSize;
 extern NSString * const kUnityAdsCampaignGameIconKey;
 extern NSString * const kUnityAdsCampaignAllowVideoSkipKey;
+extern NSString * const kUnityAdsCampaignURLSchemesKey;
 
 /* Reward Item JSON Properties */
 
@@ -133,6 +134,9 @@ extern NSString * const kUnityAdsUrlKey;
 extern NSString * const kUnityAdsWebViewUrlKey;
 extern NSString * const kUnityAdsAnalyticsUrlKey;
 extern NSString * const kUnityAdsSdkVersionKey;
+extern NSString * const kUnityAdsAppFilteringKey;
+extern NSString * const kUnityAdsUrlSchemeMapKey;
+extern NSString * const kUnityAdsInstalledAppsUrlKey;
 
 /* Analytics Uploader */
 
@@ -194,6 +198,7 @@ extern NSString * const kUnityAdsInitQueryParamSdkVersionKey;
 extern NSString * const kUnityAdsInitQueryParamConnectionTypeKey;
 extern NSString * const kUnityAdsInitQueryParamTestKey;
 extern NSString * const kUnityAdsInitQueryParamEncryptionKey;
+extern NSString * const kUnityAdsInitQueryParamAppFilterListKey;
 extern NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey;
 
 

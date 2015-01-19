@@ -30,9 +30,11 @@ static UnityAdsProperties *sharedProperties = nil;
   if (self = [super init]) {
     [self setMaxNumberOfAnalyticsRetries:5];
     [self setCampaignDataUrl:@"https://impact.applifier.com/mobile/campaigns"];
-    [self setCampaignQueryString:[self _createCampaignQueryString]];
+    [self setCampaignQueryString:[self createCampaignQueryString]];
     [self setSdkIsCurrent:true];
     [self setExpectedSdkVersion:@"0"];
+    [self setAppFiltering:@"off"];
+    [self setInstalledApps:[[NSMutableSet alloc] init]];
   }
   
   return self;
@@ -42,7 +44,11 @@ static UnityAdsProperties *sharedProperties = nil;
   return kUnityAdsVersion;
 }
 
-- (NSString *)_createCampaignQueryString {
+- (NSString *)createCampaignQueryString {
+  return [self createCampaignQueryString:YES];
+}
+
+- (NSString *)createCampaignQueryString:(BOOL)withInstalledApps {
   NSString *queryParams = @"?";
   
   // Mandatory params
@@ -83,6 +89,10 @@ static UnityAdsProperties *sharedProperties = nil;
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamEncryptionKey, [UnityAdsDevice isEncrypted] ? @"true" : @"false"];
   }
   
+  if(withInstalledApps && [[self installedApps] count] > 0) {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamAppFilterListKey, [[self installedApps].allObjects componentsJoinedByString:@","]];
+  }
+  
   if (self.sendInternalDetails) {
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamSendInternalDetailsKey, @"true"];
   }
@@ -91,12 +101,12 @@ static UnityAdsProperties *sharedProperties = nil;
 }
 
 - (void)refreshCampaignQueryString {
-  [self setCampaignQueryString:[self _createCampaignQueryString]];
+  [self setCampaignQueryString:[self createCampaignQueryString]];
 }
 
 - (void)enableUnityDeveloperInternalTestMode {
   [self setCampaignDataUrl:@"https://impact.staging.applifier.com/mobile/campaigns"];
-  [self setCampaignQueryString:[self _createCampaignQueryString]];
+  [self setCampaignQueryString:[self createCampaignQueryString]];
   [self setUnityDeveloperInternalTestMode:true];
 }
 

@@ -31,6 +31,7 @@
 @property (nonatomic, assign) long long videoBufferingStartTime;
 @property (nonatomic, assign) long long videoBufferingEndTime;
 @property (nonatomic, assign) BOOL nativeTrackingQuerySent;
+@property (nonatomic, strong) NSArray * urlSchemes;
 
 - (id)initWithData:(NSDictionary *)data;
 - (long long)geBufferingDuration;

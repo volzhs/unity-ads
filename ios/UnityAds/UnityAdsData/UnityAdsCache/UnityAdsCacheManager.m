@@ -113,8 +113,6 @@ static UnityAdsCacheManager * _inst = nil;
 #pragma mark - Public
 
 - (id)init {
-	UAAssertV(![NSThread isMainThread], nil);
-	
 	if ((self = [super init])) {
     UALOG_DEBUG(@"creating downloadqueue");
     self.cacheOperationsQueue = [NSOperationQueue new];

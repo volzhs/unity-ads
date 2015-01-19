@@ -146,6 +146,10 @@
     UALOG_DEBUG(@"Not a valid URL: %@", customClickURLString);
   }
   
+  if (data[kUnityAdsCampaignURLSchemesKey] != nil) {
+    self.urlSchemes = data[kUnityAdsCampaignURLSchemesKey];
+  }
+  
   data = nil;
 }
 
