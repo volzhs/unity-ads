@@ -186,7 +186,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
       
       [self.campaigns enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
-        if (campaign.shouldCacheVideo) {
+        if ((campaign.shouldCacheVideo && campaign.allowedToCacheVideo) || (campaign.allowedToCacheVideo && idx == 0)) {
           [[UnityAdsCacheManager sharedInstance] cache:ResourceTypeTrailerVideo forCampaign:campaign];
         }
       }];
