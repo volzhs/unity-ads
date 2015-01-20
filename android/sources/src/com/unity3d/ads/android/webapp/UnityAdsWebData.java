@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +24,12 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
@@ -152,6 +157,7 @@ public class UnityAdsWebData {
 		return viewableCampaigns;
 	}
 
+	// TODO: This method always returns true regardless of success. Needs refactoring.
 	public boolean initCampaigns () {
 		if(_initInProgress) {
 			return true;
@@ -163,6 +169,64 @@ public class UnityAdsWebData {
 		}
 
 		_initInProgress = true;
+
+		try {
+			Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+			if(currentActivity == null) {
+				UnityAdsDeviceLog.error("initCampaigns failed due to currentActivity null");
+				UnityAdsUtils.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						campaignDataFailed();
+					}
+				});
+				return true;
+			}
+			
+			boolean isConnected = false;
+			ConnectivityManager cm = (ConnectivityManager)currentActivity.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+			if(cm != null) {
+				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+				isConnected = activeNetwork != null && activeNetwork.isConnected();
+			}
+
+			if(!isConnected) {
+				UnityAdsDeviceLog.error("Device offline, can't init campaigns");
+				UnityAdsUtils.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						campaignDataFailed();
+					}
+				});
+				return true;
+			}
+
+			InetAddress adServer = InetAddress.getByName("impact.applifier.com");
+
+			UnityAdsDeviceLog.debug("Ad server resolves to " + adServer);
+			if(adServer.isLoopbackAddress()) {
+				UnityAdsDeviceLog.error("initCampaigns failed, ad server resolves to loopback address (due to ad blocker?)");
+				UnityAdsUtils.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						campaignDataFailed();
+					}
+				});
+				return true;
+			}
+		} catch(UnknownHostException e) {
+			UnityAdsDeviceLog.error("initCampaigns failed due to DNS error, unable to resolve ad server address");
+			UnityAdsUtils.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					campaignDataFailed();
+				}
+			});
+			return true;
+		} catch(Exception e) {
+			UnityAdsDeviceLog.debug("Unknown exception during DNS test: " + e);
+		}
 
 		String url = UnityAdsProperties.getCampaignQueryUrl();
 		String[] parts = url.split("\\?");
@@ -997,10 +1061,15 @@ public class UnityAdsWebData {
 		
 		private void closeAndFlushConnection () {
 			try {
-				_input.close();
-				_input = null;
-				_binput.close();
-				_binput = null;
+				if(_input != null) {
+					_input.close();
+					_input = null;
+				}
+
+				if(_binput != null) {
+					_binput.close();
+					_binput = null;
+				}
 			}
 			catch (Exception e) {
 				UnityAdsDeviceLog.error("Problems closing streams: " + e.getMessage());
