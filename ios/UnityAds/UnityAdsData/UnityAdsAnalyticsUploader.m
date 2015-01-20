@@ -188,6 +188,12 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
       trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamSoftwareVersionKey, [UnityAdsDevice softwareVersion]];
       trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamDeviceTypeKey, [UnityAdsDevice analyticsMachineName]];
       trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamConnectionTypeKey, [UnityAdsDevice currentConnectionType]];
+      
+      id networkType = [UnityAdsDevice getNetworkType];
+      if(networkType != nil) {
+        trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamNetworkTypeKey, networkType];
+      }
+      
       trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamCachedPlaybackKey, cached ? @"true" : @"false"];
       
       if([currentZone isIncentivized]) {
