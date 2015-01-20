@@ -144,7 +144,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 
 #pragma mark - Video analytics
 
-- (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaignId:(NSString *)campaignId viewed:(BOOL)viewed {
+- (void)logVideoAnalyticsWithPosition:(VideoAnalyticsPosition)videoPosition campaignId:(NSString *)campaignId viewed:(BOOL)viewed cached:(BOOL)cached {
   UALOG_DEBUG(@"");
 	if (campaignId == nil) {
 		UALOG_DEBUG(@"Campaign is nil.");
@@ -188,6 +188,7 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
       trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamSoftwareVersionKey, [UnityAdsDevice softwareVersion]];
       trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamDeviceTypeKey, [UnityAdsDevice analyticsMachineName]];
       trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsInitQueryParamConnectionTypeKey, [UnityAdsDevice currentConnectionType]];
+      trackingQuery = [NSString stringWithFormat:@"%@&%@=%@", trackingQuery, kUnityAdsAnalyticsQueryParamCachedPlaybackKey, cached ? @"true" : @"false"];
       
       if([currentZone isIncentivized]) {
         id itemManager = [((UnityAdsIncentivizedZone *)currentZone) itemManager];

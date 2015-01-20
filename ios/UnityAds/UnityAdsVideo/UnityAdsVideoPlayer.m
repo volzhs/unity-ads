@@ -14,6 +14,7 @@
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsData/UnityAdsInstrumentation.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
+#import "UnityAdsCacheManager.h"
 
 @interface UnityAdsVideoPlayer ()
   @property (nonatomic, assign) id timeObserver;
@@ -253,7 +254,8 @@
   UALOG_DEBUG(@"_logVideoAnalytics");
 	self.videoPosition++;
   UnityAdsCampaign *campaign = [[UnityAdsCampaignManager sharedInstance] selectedCampaign];
-  [[UnityAdsAnalyticsUploader sharedInstance] logVideoAnalyticsWithPosition:self.videoPosition campaignId:campaign.id viewed:campaign.viewed];
+  BOOL cached = [[UnityAdsCacheManager sharedInstance] is:ResourceTypeTrailerVideo cachedForCampaign:campaign];
+  [[UnityAdsAnalyticsUploader sharedInstance] logVideoAnalyticsWithPosition:self.videoPosition campaignId:campaign.id viewed:campaign.viewed cached:cached];
 }
 
 @end
