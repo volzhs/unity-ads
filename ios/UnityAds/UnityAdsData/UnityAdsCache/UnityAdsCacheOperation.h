@@ -31,5 +31,6 @@ typedef enum {
 @property (nonatomic, assign) long long expectedFileSize;
 @property (nonatomic, copy)   NSString * operationKey;
 @property (nonatomic, assign) ResourceType resourceType;
+@property (nonatomic, assign) unsigned long long cachingSpeed;
 
 @end

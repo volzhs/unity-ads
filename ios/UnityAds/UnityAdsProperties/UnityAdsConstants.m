@@ -190,6 +190,7 @@ NSString * const kUnityAdsInitQueryParamTestKey = @"test";
 NSString * const kUnityAdsInitQueryParamEncryptionKey = @"encrypted";
 NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey = @"sendInternalDetails";
 NSString * const kUnityAdsInitQueryParamAppFilterListKey = @"appFilterList";
+NSString * const kUnityAdsInitQueryParamCachingSpeedKey = @"cachingSpeed";
 
 
 /* Google Analytics Instrumentation */

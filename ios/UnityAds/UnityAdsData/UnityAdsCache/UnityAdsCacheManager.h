@@ -23,6 +23,7 @@
 @interface UnityAdsCacheManager : NSObject
 
 @property (nonatomic, weak) id <UnityAdsCacheManagerDelegate> delegate;
+@property (nonatomic, assign) unsigned long long cachingSpeed;
 
 - (BOOL)cache:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
 - (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;

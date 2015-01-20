@@ -201,6 +201,7 @@ extern NSString * const kUnityAdsInitQueryParamTestKey;
 extern NSString * const kUnityAdsInitQueryParamEncryptionKey;
 extern NSString * const kUnityAdsInitQueryParamAppFilterListKey;
 extern NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey;
+extern NSString * const kUnityAdsInitQueryParamCachingSpeedKey;
 
 
 /* Google Analytics Instrumentation */

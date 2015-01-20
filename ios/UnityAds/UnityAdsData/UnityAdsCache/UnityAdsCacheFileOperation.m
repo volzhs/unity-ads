@@ -60,6 +60,8 @@
   if ([self.delegate respondsToSelector:@selector(cacheOperationStarted:)])
     [self.delegate cacheOperationStarted:self];
   
+  NSTimeInterval cachingDuration = 0.0;
+  
   NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.filePath error:nil];
   long long size = [attributes fileSize];
   if (size != self.expectedFileSize) {
@@ -76,12 +78,16 @@
     [[NSFileManager defaultManager] createFileAtPath:self.filePath contents:nil attributes:nil];
     _fileHandle = [NSFileHandle fileHandleForWritingAtPath:self.filePath];
     NSURLRequest * request = [NSURLRequest requestWithURL:self.downloadURL];
+    
+    NSDate *startDate = [NSDate date];
     _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [self threadBlocked:^BOOL{
       @synchronized(self) {
         return ![self isFinished] && ![self isCancelled] && !_cancelEventSent;
       }
     }];
+    NSDate *endDate = [NSDate date];
+    cachingDuration = [endDate timeIntervalSinceDate:startDate];
   }
   
   @synchronized(self) {
@@ -93,6 +99,11 @@
   
   attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.filePath error:nil];
   size = [attributes fileSize];
+
+  if(cachingDuration > 0.0) {
+    [self setCachingSpeed:size / cachingDuration / 1000];
+  }  
+  
   @synchronized (self) {
     if ([self isCancelled] && !_cancelEventSent) {
       if ([self.delegate respondsToSelector:@selector(cacheOperationCancelled:)])

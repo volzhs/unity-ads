@@ -10,6 +10,7 @@
 #import "UnityAdsConstants.h"
 #import "../UnityAds.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
+#import "UnityAdsCacheManager.h"
 
 NSString * const kUnityAdsVersion = @"1310";
 
@@ -78,6 +79,11 @@ static UnityAdsProperties *sharedProperties = nil;
   id networkType = [UnityAdsDevice getNetworkType];
   if(networkType != nil) {
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamNetworkTypeKey, networkType];
+  }
+  
+  unsigned long long cachingSpeed = [[UnityAdsCacheManager sharedInstance] cachingSpeed];
+  if(cachingSpeed > 0.0) {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%llu", queryParams, kUnityAdsInitQueryParamCachingSpeedKey, cachingSpeed];
   }
   
   if ([self testModeEnabled]) {
