@@ -150,6 +150,13 @@
     self.urlSchemes = data[kUnityAdsCampaignURLSchemesKey];
   }
   
+  self.allowStreaming = YES;
+  if ([data objectForKey:kUnityAdsCampaignAllowStreamingKey] != nil) {
+    if ([[data valueForKey:kUnityAdsCampaignAllowStreamingKey] boolValue] == 0) {
+      self.allowStreaming = NO;
+    }
+  }
+  
   data = nil;
 }
 
