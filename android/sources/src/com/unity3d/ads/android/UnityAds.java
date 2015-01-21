@@ -228,7 +228,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 						if(viewableCampaigns.size() > 1) {
 							UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
 
-							if(cachemanager.isCampaignCached(selectedCampaign) && !cachemanager.isCampaignCached(nextCampaign) && nextCampaign.allowCacheVideo()) {
+							if(cachemanager.isCampaignCached(selectedCampaign, true) && !cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
 								cachemanager.cacheNextVideo(nextCampaign);
 							}
 						}
@@ -287,7 +287,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
 		if(!nextCampaign.allowStreamingVideo().booleanValue()) {
-			if(!cachemanager.isCampaignCached(nextCampaign)) {
+			if(!cachemanager.isCampaignCached(nextCampaign, true)) {
 				return false;
 			}
 		}
@@ -911,8 +911,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 		_pauseTimer = new Timer();
 		_pauseTimer.scheduleAtFixedRate(_pauseScreenTimer, 0, 50);
 	}
-	
-	private static void refreshCampaigns() {
+
+	// After ad unit closes, ad plan is refreshed if necessary
+	// If ad plan is not refreshed and next video is not yet cached, start caching
+	private static void refreshCampaignsOrCacheNextVideo() {
 		if(_refreshAfterShowAds) {
 			_refreshAfterShowAds = false;
 			UnityAdsDeviceLog.debug("Starting delayed ad plan refresh");
@@ -951,6 +953,18 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 		} else {
 			UnityAdsDeviceLog.error("Unable to read video data to determine if ad plans should be refreshed");
+		}
+
+		// Ad plan not refreshed, cache next video if necessary
+		if(webdata == null) return;
+
+		ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
+		if(viewableCampaigns != null && viewableCampaigns.size() > 0) {
+			UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
+
+			if(!cachemanager.isCampaignCached(nextCampaign, false) && nextCampaign.allowCacheVideo()) {
+				cachemanager.cacheNextVideo(nextCampaign);
+			}
 		}
 	}
 
@@ -1052,7 +1066,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				if (_adsListener != null)
 					_adsListener.onHide();
 
-				refreshCampaigns();
+				refreshCampaignsOrCacheNextVideo();
 			}
 		}, delay);
 	}
@@ -1079,7 +1093,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 				createPauseScreenTimer();
 				
 				String playUrl;
-				if (!cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN)) {
+				if (!cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true)) {
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl();
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
 				} else {
