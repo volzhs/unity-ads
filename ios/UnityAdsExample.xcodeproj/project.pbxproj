@@ -28,7 +28,6 @@
 		9017B0AB161086A600ACFC04 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9017B0AA161086A600ACFC04 /* SystemConfiguration.framework */; };
 		907454421609C20C00454427 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 907454411609C20C00454427 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		9926FA351A6D22CC004806B1 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926FA341A6D22CC004806B1 /* CoreTelephony.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		99B08F5E1A3F1B8000BFBD9C /* UnityAds.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 997165981A2F3FDD000F1DB8 /* UnityAds.bundle */; };
 		99C21DF01A2F3537006252A7 /* UnityAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99C21DEF1A2F3537006252A7 /* UnityAds.framework */; };
 		CC46BCE3193FCAD70026AFB5 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CC46BCE2193FCAD70026AFB5 /* Default-568h@2x.png */; };
 		F642682F16088B7C0005B83A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F642682E16088B7C0005B83A /* StoreKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -175,6 +174,7 @@
 				78ED794515C66FC6007C5BD5 /* Sources */,
 				78ED794615C66FC6007C5BD5 /* Frameworks */,
 				78ED794715C66FC6007C5BD5 /* Resources */,
+				99EBBA9A1A6FA7DD001C16DC /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -217,7 +217,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99B08F5E1A3F1B8000BFBD9C /* UnityAds.bundle in Resources */,
 				78ED795815C66FC6007C5BD5 /* InfoPlist.strings in Resources */,
 				78B9CDE61941F42A00B3AE80 /* unityads_settings.png in Resources */,
 				CC46BCE3193FCAD70026AFB5 /* Default-568h@2x.png in Resources */,
@@ -233,6 +232,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		99EBBA9A1A6FA7DD001C16DC /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copy correct bundle file based on configuration\ncp -R ${SRCROOT}/build/${CONFIGURATION}-${PLATFORM_NAME}/UnityAds.bundle ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/UnityAds.bundle\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		78ED794515C66FC6007C5BD5 /* Sources */ = {
@@ -368,12 +383,12 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/build/Debug-iphoneos\"",
 					"\"$(SRCROOT)/build/Release-iphoneos\"",
-					"$(PROJECT_DIR)/build/Release-iphoneos",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnityAdsExample/UnityAdsExample-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "UnityAdsExample/UnityAdsExample-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -393,12 +408,12 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/build/Debug-iphoneos\"",
 					"\"$(SRCROOT)/build/Release-iphoneos\"",
-					"$(PROJECT_DIR)/build/Release-iphoneos",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnityAdsExample/UnityAdsExample-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "UnityAdsExample/UnityAdsExample-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-weak_library",
 					/usr/lib/libSystem.B.dylib,
@@ -464,12 +479,12 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/build/Debug-iphoneos\"",
 					"\"$(SRCROOT)/build/Release-iphoneos\"",
-					"$(PROJECT_DIR)/build/Release-iphoneos",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnityAdsExample/UnityAdsExample-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "UnityAdsExample/UnityAdsExample-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-weak_library",
 					/usr/lib/libSystem.B.dylib,
