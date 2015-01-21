@@ -122,7 +122,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
   
   [[UnityAdsProperties sharedInstance] setCurrentViewController:viewController];
 	[[UnityAdsProperties sharedInstance] setAdsGameId:gameId];
-  [[UnityAdsMainViewController sharedInstance] setDelegate:self];
+  [(UnityAdsMainViewController *)[UnityAdsMainViewController sharedInstance] setDelegate:self];
   
   self.initializer = [[UnityAdsDefaultInitializer alloc] init];
   

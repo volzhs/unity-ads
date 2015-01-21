@@ -28,17 +28,6 @@ static const NSString *kUnityAdsURLProtocolHostname = @"nativebridge.unityads.un
   return FALSE;
 }
 
-+ (NSString *)stringWithUriEncoding:(NSString *)string; {
-  NSString *result = (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                                                  (__bridge CFStringRef)string, NULL,(CFStringRef)@":/?#[]@!$&’()*+,;=", kCFStringEncodingUTF8);
-  return result;
-}
-
-+ (NSString *)stringWithoutUriEncoding:(NSString *)string; {
-  NSString *result = (__bridge NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault, (__bridge CFStringRef)string, CFSTR(""), kCFStringEncodingUTF8);
-  return result;
-}
-
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
   return request;
 }

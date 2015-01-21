@@ -13,6 +13,4 @@
 #import "UnityAds.h"
 
 @interface UnityAdsURLProtocol : NSURLProtocol
-+ (NSString *)stringWithUriEncoding:(NSString *)string;
-+ (NSString *)stringWithoutUriEncoding:(NSString *)string;
 @end
