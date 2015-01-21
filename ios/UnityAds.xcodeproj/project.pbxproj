@@ -91,6 +91,7 @@
 		99A8516217FACAAA0090F8FF /* UnityAdsIncentivizedZone.m in Sources */ = {isa = PBXBuildFile; fileRef = 99A8516017FACAAA0090F8FF /* UnityAdsIncentivizedZone.m */; };
 		99A8516817FC41C00090F8FF /* UnityAdsRewardItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 99A8516717FC41C00090F8FF /* UnityAdsRewardItemTests.m */; };
 		99A8516A17FC45160090F8FF /* UnityAdsRewardItemManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 99A8516917FC45160090F8FF /* UnityAdsRewardItemManagerTests.m */; };
+		99EBBA9E1A6FB08A001C16DC /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99EBBA9D1A6FB08A001C16DC /* CoreTelephony.framework */; };
 		99F2F6181858A52200A773C2 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99FE3C2B17E8881300845E0B /* StoreKit.framework */; };
 		99FE3C0117E85B2200845E0B /* UnityAdsZone.h in Headers */ = {isa = PBXBuildFile; fileRef = 99FE3BFF17E85B2200845E0B /* UnityAdsZone.h */; };
 		99FE3C0217E85B2200845E0B /* UnityAdsZone.m in Sources */ = {isa = PBXBuildFile; fileRef = 99FE3C0017E85B2200845E0B /* UnityAdsZone.m */; };
@@ -275,6 +276,7 @@
 		99A8516017FACAAA0090F8FF /* UnityAdsIncentivizedZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnityAdsIncentivizedZone.m; path = UnityAdsZone/UnityAdsIncentivizedZone.m; sourceTree = "<group>"; };
 		99A8516717FC41C00090F8FF /* UnityAdsRewardItemTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsRewardItemTests.m; sourceTree = "<group>"; };
 		99A8516917FC45160090F8FF /* UnityAdsRewardItemManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsRewardItemManagerTests.m; sourceTree = "<group>"; };
+		99EBBA9D1A6FB08A001C16DC /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		99FE3BFF17E85B2200845E0B /* UnityAdsZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnityAdsZone.h; path = UnityAdsZone/UnityAdsZone.h; sourceTree = "<group>"; };
 		99FE3C0017E85B2200845E0B /* UnityAdsZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnityAdsZone.m; path = UnityAdsZone/UnityAdsZone.m; sourceTree = "<group>"; };
 		99FE3C1017E87E1300845E0B /* UnityAdsTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnityAdsTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -324,6 +326,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99EBBA9E1A6FB08A001C16DC /* CoreTelephony.framework in Frameworks */,
 				C822D7B018CF4EC2007AAE44 /* SenTestingKit.framework in Frameworks */,
 				C822D7AF18CF4E67007AAE44 /* AVFoundation.framework in Frameworks */,
 				C822D79618CF4DA6007AAE44 /* UIKit.framework in Frameworks */,
@@ -641,6 +644,7 @@
 		CCF83B871733A13200DA12C1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				99EBBA9D1A6FB08A001C16DC /* CoreTelephony.framework */,
 				C822D79D18CF4DE9007AAE44 /* XCTest.framework */,
 				C822D79518CF4DA6007AAE44 /* UIKit.framework */,
 				99FE3C3817E889D900845E0B /* SystemConfiguration.framework */,
@@ -751,7 +755,7 @@
 			name = UnityAdsTests;
 			productName = UnityAdsTests;
 			productReference = 99FE3C1017E87E1300845E0B /* UnityAdsTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 		CC158909150789ED00B3D188 /* UnityAds */ = {
 			isa = PBXNativeTarget;
