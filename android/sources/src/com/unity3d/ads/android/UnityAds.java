@@ -1,6 +1,7 @@
 package com.unity3d.ads.android;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Timer;
@@ -664,6 +665,21 @@ public class UnityAds implements IUnityAdsCacheListener,
 			} catch(NumberFormatException e) {
 				throw new IllegalArgumentException("gameId does not parse as an integer");
 			}
+		}
+
+		try {
+			Class<?> unityAdsWebBridge = Class.forName("com.unity3d.ads.android.webapp.UnityAdsWebBridge");
+			@SuppressWarnings("unused")
+			Method handleWebEvent = unityAdsWebBridge.getMethod("handleWebEvent", String.class, String.class);
+			UnityAdsDeviceLog.debug("UnityAds ProGuard check OK");
+		} catch(ClassNotFoundException e) {
+			UnityAdsDeviceLog.error("UnityAds ProGuard check fail: com.unity3d.ads.android.webapp.UnityAdsWebBridge class not found, check ProGuard settings");
+			return;
+		} catch(NoSuchMethodException e) {
+			UnityAdsDeviceLog.error("UnityAds ProGuard check fail: com.unity3d.ads.android.webapp.handleWebEvent method not found, check ProGuard settings");
+			return;
+		} catch(Exception e) {
+			UnityAdsDeviceLog.debug("UnityAds ProGuard check: Unknown exception: " + e);
 		}
 
 		String pkgName = activity.getPackageName();
