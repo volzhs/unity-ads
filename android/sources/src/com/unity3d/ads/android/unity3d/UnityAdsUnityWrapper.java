@@ -18,7 +18,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	private boolean _testMode = false;
 	private static Boolean _constructed = false;
 	private static Boolean _initialized = false;
-	
+
 	public UnityAdsUnityWrapper () {
 		if (!_constructed) {
 			_constructed = true;
@@ -29,20 +29,20 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	                paramTypes[1] = String.class;
 	                paramTypes[2] = String.class;
 	                _sendMessageMethod = unityClass.getDeclaredMethod("UnitySendMessage", paramTypes);
-	        } 
+	        }
 	        catch (Exception e) {
 	        	UnityAdsDeviceLog.error("Error getting class or method of com.unity3d.player.UnityPlayer, method UnitySendMessage(string, string, string). " + e.getLocalizedMessage());
 	        }
 		}
 	}
-	
-	
+
+
 	// Public methods
 
 	public boolean isSupported () {
 		return UnityAds.isSupported();
 	}
-	
+
 	public String getSDKVersion () {
 		return UnityAds.getSDKVersion();
 	}
@@ -78,7 +78,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	public boolean show (final String zoneId, final String rewardItemKey, final String optionsString) {
 		if(UnityAds.canShow()) {
 			HashMap<String, Object> options = null;
-			
+
 			if(optionsString.length() > 0) {
 				options = new HashMap<String, Object>();
 				for(String rawOptionPair : optionsString.split(",")) {
@@ -86,27 +86,27 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 					options.put(optionPair[0], optionPair[1]);
 				}
 			}
-			
+
 			if(rewardItemKey.length() > 0) {
 				UnityAds.setZone(zoneId, rewardItemKey);
 			} else {
 				UnityAds.setZone(zoneId);
 			}
-			
+
 			return UnityAds.show(options);
 		}
-		
+
 		return false;
 	}
-	
+
 	public void hide () {
 		UnityAds.hide();
 	}
-	
+
 	public boolean canShowAds () {
 		return UnityAds.canShowAds();
 	}
-	
+
 	public boolean canShow () {
 		return UnityAds.canShow();
 	}
@@ -114,7 +114,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	public boolean hasMultipleRewardItems () {
 		return UnityAds.hasMultipleRewardItems();
 	}
-	
+
 	public String getRewardItemKeys () {
 		if (UnityAds.getRewardItemKeys() == null) return null;
 		if (UnityAds.getRewardItemKeys().size() > 0) {
@@ -125,38 +125,38 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 				}
 				keys += key;
 			}
-			
+
 			return keys;
 		}
-		
+
 		return null;
 	}
-	
+
 	public String getDefaultRewardItemKey () {
 		return UnityAds.getDefaultRewardItemKey();
 	}
-	
+
 	public String getCurrentRewardItemKey () {
 		return UnityAds.getCurrentRewardItemKey();
 	}
-	
+
 	public boolean setRewardItemKey (String rewardItemKey) {
 		return UnityAds.setRewardItemKey(rewardItemKey);
 	}
-	
+
 	public void setDefaultRewardItemAsRewardItem () {
 		UnityAds.setDefaultRewardItemAsRewardItem();
 	}
-	
+
 	public String getRewardItemDetailsWithKey (String rewardItemKey) {
 		String retString = "";
-		
+
 		if (UnityAds.getRewardItemDetailsWithKey(rewardItemKey) != null) {
 			UnityAdsDeviceLog.debug("Fetching reward data");
-			
+
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			HashMap<String, String> rewardMap = (HashMap)UnityAds.getRewardItemDetailsWithKey(rewardItemKey);
-			
+
 			if (rewardMap != null) {
 				retString = rewardMap.get(UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY);
 				retString += ";" + rewardMap.get(UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY);
@@ -184,8 +184,12 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		UnityAds.enableUnityDeveloperInternalTestMode();
 	}
 
+	public void setCampaignDataURL(String campaignDataURL) {
+		UnityAds.setCampaignDataURL(campaignDataURL);
+	}
+
 	// IUnityAdsListener
-	
+
 	@Override
 	public void onHide() {
 		sendMessageToUnity3D("onHide", null);
@@ -215,7 +219,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	public void onFetchFailed() {
 		sendMessageToUnity3D("onFetchFailed", null);
 	}
-	
+
     public void sendMessageToUnity3D(String methodName, String parameter) {
         // Unity Development build crashes if parameter is NULL
         if (parameter == null)
@@ -228,10 +232,10 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
         try {
         	UnityAdsDeviceLog.debug("Sending message (" + methodName + ", " + parameter + ") to Unity3D");
         	_sendMessageMethod.invoke(null, _gameObject, methodName, parameter);
-        } 
+        }
         catch (Exception e) {
         	UnityAdsDeviceLog.error("Can't invoke UnitySendMessage method. Error = "  + e.getLocalizedMessage());
         }
     }
-    
+
 }
