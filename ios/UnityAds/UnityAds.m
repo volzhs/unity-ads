@@ -105,6 +105,11 @@ static UnityAds *sharedUnityAdsInstance = nil;
   [[UnityAdsProperties sharedInstance] enableUnityDeveloperInternalTestMode];
 }
 
+- (void)setCampaignDataURL:(NSString *)campaignDataUrl {
+  [[UnityAdsProperties sharedInstance] setCampaignDataUrl:campaignDataUrl];
+  [[UnityAdsProperties sharedInstance] setCampaignQueryString:[[UnityAdsProperties sharedInstance] createCampaignQueryString]];
+}
+
 - (BOOL)startWithGameId:(NSString *)gameId {
   if (![UnityAds isSupported]) return false;
   return [self startWithGameId:gameId andViewController:nil];
