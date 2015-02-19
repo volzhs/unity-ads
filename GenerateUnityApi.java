@@ -106,7 +106,6 @@ public class GenerateUnityApi
             sourceWriter.println("static jmethodID " + ef.funcName + ";");
         }
         sourceWriter.println("");
-        //sourceWriter.println("")
         sourceWriter.println("void RegisterMethods()");
         sourceWriter.println("{");
         sourceWriter.println("\tJAVA_ATTACH_CURRENT_THREAD();");
@@ -122,6 +121,7 @@ public class GenerateUnityApi
                 paramsStr += JavaTypeAbbreviation(ef.argTypes.get(p));
             }
             sourceWriter.println("\t" + ef.funcName + " = jni_env->GetMethodID(adsWrapperClass, \"" + funcName + "\", \"(" + paramsStr + ")" + JavaTypeAbbreviation(ef.returnType) + "\");");
+            sourceWriter.println("\tPRINT_CLEAR_EXCEPTION");
             sourceWriter.println("\tif (" + ef.funcName + " == 0)");
             sourceWriter.println("\t\tUNITYADS_DEBUG(\"Couldn\'t find function:" + funcName + "\");");
         }
