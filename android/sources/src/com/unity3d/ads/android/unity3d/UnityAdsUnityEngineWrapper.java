@@ -99,7 +99,7 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
     UnityAds.hide();
   }
 
-  public boolean canShowAds (String network) {
+  public boolean canShowAds () {
     return UnityAds.canShowAds();
   }
 
