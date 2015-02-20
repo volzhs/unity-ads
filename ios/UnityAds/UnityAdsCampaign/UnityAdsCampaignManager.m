@@ -346,7 +346,6 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 }
 
 - (NSArray *)getViewableCampaigns {
-	UALOG_DEBUG(@"");
   NSMutableArray *retAr = [[NSMutableArray alloc] init];
   
   if (self.campaigns != nil) {

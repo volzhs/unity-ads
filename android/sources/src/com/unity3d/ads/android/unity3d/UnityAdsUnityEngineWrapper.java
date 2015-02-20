@@ -86,7 +86,9 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
       if(rewardItemKey.length() > 0) {
         UnityAds.setZone(zoneId, rewardItemKey);
       } else {
-        UnityAds.setZone(zoneId);
+        if (zoneId.length() > 0) {
+          UnityAds.setZone(zoneId);
+        }
       }
 
       return UnityAds.show(options);
@@ -175,6 +177,8 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
   public void setLogLevel(int logLevel) {
     UnityAdsDeviceLog.setLogLevel(logLevel);
   }
+
+  public void setCampaignDataURL(String url) { UnityAds.setCampaignDataURL(url); }
 
   // IUnityAdsListener
 
