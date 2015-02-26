@@ -18,7 +18,7 @@ static const NSString *kUnityAdsURLProtocolHostname = @"nativebridge.unityads.un
   NSURL *url = [request URL];
   
   if ([[url scheme] isEqualToString:@"http"]) {
-    if ([[request HTTPMethod] isEqualToString:@"POST"]) {
+    if ([[request HTTPMethod] isEqualToString:@"POST"] || [[request HTTPMethod] isEqualToString:@"OPTIONS"]) {
       if ([[url host] isEqualToString:(NSString *)kUnityAdsURLProtocolHostname]) {
         return TRUE;
       }
@@ -36,15 +36,21 @@ static const NSString *kUnityAdsURLProtocolHostname = @"nativebridge.unityads.un
   NSURLRequest *request = [self request];
   NSData *reqData = [request HTTPBody];
 
-  [self actOnJSONResults: reqData];
+  if(reqData != nil) {
+    [self actOnJSONResults: reqData];
+  }
   
   // Create the response
-  NSData *responseData = [@"status: ok" dataUsingEncoding:NSUTF8StringEncoding];
-	NSURLResponse *response =
-  [[NSURLResponse alloc] initWithURL:[request URL]
-                            MIMEType:@"application/json"
-               expectedContentLength:-1
-                    textEncodingName:nil];
+  NSData *responseData = [@"{\"status\":\"ok\"}" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSDictionary *headers = @{
+                            @"Access-Control-Allow-Origin":@"*",
+                            @"Access-Control-Allow-Headers":@"origin, content-type",
+                            @"Content-Type":@"application/json",
+                            @"Content-Length":[NSString stringWithFormat:@"%lu", (unsigned long)responseData.length]
+                            };
+  
+  NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[request URL] statusCode:200 HTTPVersion:@"1.1" headerFields:headers];
   
   // get a reference to the client so we can hand off the data
   id<NSURLProtocolClient> client = [self client];
