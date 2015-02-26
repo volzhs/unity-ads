@@ -9,6 +9,8 @@ import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.IUnityAdsListener;
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.webapp.UnityAdsWebData;
+import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	private Activity _startupActivity = null;
@@ -76,7 +78,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	}
 
 	public boolean show (final String zoneId, final String rewardItemKey, final String optionsString) {
-		if(UnityAds.canShow()) {
+		if(canShowZone(zoneId)) {
 			HashMap<String, Object> options = null;
 
 			if(optionsString.length() > 0) {
@@ -88,9 +90,13 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 			}
 
 			if(rewardItemKey.length() > 0) {
-				UnityAds.setZone(zoneId, rewardItemKey);
+				if(zoneId != null && zoneId.length() > 0) {
+					UnityAds.setZone(zoneId, rewardItemKey);
+				}
 			} else {
-				UnityAds.setZone(zoneId);
+				if(zoneId != null && zoneId.length() > 0) {
+					UnityAds.setZone(zoneId);
+				}
 			}
 
 			return UnityAds.show(options);
@@ -103,11 +109,24 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		UnityAds.hide();
 	}
 
-	public boolean canShowAds () {
-		return UnityAds.canShowAds();
+	public boolean canShow () {
+		return UnityAds.canShow();
 	}
 
-	public boolean canShow () {
+	public boolean canShowZone(String zone) {
+		if(zone != null && zone.length() > 0) {
+			UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
+			if(zoneManager != null) {
+				if(zoneManager.getZone(zone) != null) {
+					return UnityAds.canShow();
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
 		return UnityAds.canShow();
 	}
 

@@ -154,6 +154,18 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	return [self adsCanBeShown];
 }
 
+- (BOOL)canShowZone:(NSString *)zoneId {
+  if([zoneId length] > 0) {
+    if([[UnityAdsZoneManager sharedInstance] getZone:zoneId] != nil) {
+      return [self canShow];
+    } else {
+      return NO;
+    }
+  } else {
+    return [self canShow];
+  }
+}
+
 - (BOOL)setZone:(NSString *)zoneId {
   if (![[UnityAdsMainViewController sharedInstance] mainControllerVisible]) {
     return [[UnityAdsZoneManager sharedInstance] setCurrentZone:zoneId];
