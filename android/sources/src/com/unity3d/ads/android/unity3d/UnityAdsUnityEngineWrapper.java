@@ -8,6 +8,8 @@ import com.unity3d.ads.android.IUnityAdsListener;
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.webapp.UnityAdsWebData;
+import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 import java.util.HashMap;
 
@@ -68,8 +70,21 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
     return false;
   }
 
-  public boolean canShowAds () {
-    return UnityAds.canShowAds();
+  public boolean canShowZone(String zone) {
+    if(zone != null && zone.length() > 0) {
+      UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
+      if(zoneManager != null) {
+        if(zoneManager.getZone(zone) != null) {
+          return UnityAds.canShow();
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
+
+    return UnityAds.canShow();
   }
 
   public void setLogLevel(int logLevel) {
