@@ -219,7 +219,7 @@ public class UnityAdsDownloader {
 				_downloadLength = _urlConnection.getContentLength();
 				
 				try {
-					_input = new BufferedInputStream(_downloadUrl.openStream());
+					_input = new BufferedInputStream(_urlConnection.getInputStream());
 				}
 				catch (Exception e) {
 					UnityAdsDeviceLog.error("Problems opening stream: " + e.getMessage());
