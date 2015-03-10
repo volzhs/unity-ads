@@ -779,15 +779,20 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 						UnityAdsUtils.runOnUiThread(new Runnable() {
 							public void run() {
-								mainview.openAds(view, data);
+								if(mainview != null) {
+									mainview.openAds(view, data);
 
-								UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-								if (currentZone.noOfferScreen()) {
-									playVideo();
+									UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+									if (currentZone.noOfferScreen()) {
+										playVideo();
+									}
+
+									if (_adsListener != null)
+										_adsListener.onShow();
+								} else {
+									UnityAdsDeviceLog.error("mainview null after open, closing");
+									close();
 								}
-
-								if (_adsListener != null)
-									_adsListener.onShow();
 							}
 						});
 
