@@ -726,7 +726,7 @@ public class UnityAdsWebData {
 					try {
 						PackageInfo pkgInfo = pm.getPackageInfo(packageName, 0);
 
-						if(pkgInfo != null && pkgInfo.packageName == packageName) {
+						if(pkgInfo != null && packageName.equals(pkgInfo.packageName)) {
 							if(oldCampaigns == null) {
 								oldCampaigns = new ArrayList<String>();
 							}
