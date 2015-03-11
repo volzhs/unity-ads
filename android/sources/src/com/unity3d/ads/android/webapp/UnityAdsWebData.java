@@ -717,6 +717,11 @@ public class UnityAdsWebData {
 			for(UnityAdsCampaign campaign : campaigns) {
 				String packageName = campaign.getStoreId();
 
+				// Sometimes getStoreId returns stuff like com.company.game&hl=en so strip ampersand(0x26) and everything after that
+				if(packageName.indexOf(0x26) != -1) {
+					packageName = packageName.substring(0, packageName.indexOf(0x26));
+				}
+
 				if(packageName != null) {
 					try {
 						PackageInfo pkgInfo = pm.getPackageInfo(packageName, 0);
