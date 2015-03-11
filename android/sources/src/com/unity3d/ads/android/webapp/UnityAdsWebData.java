@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
@@ -924,6 +925,11 @@ public class UnityAdsWebData {
 		public void setPostBody(String body) {
 			if(_queryParams != null && _queryParams.length() > 2) {
 				_finalUrl = _baseUrl + "?" + _queryParams;
+				try {
+					_url = new URL(_finalUrl);
+				} catch(MalformedURLException e) {
+					UnityAdsDeviceLog.error("Error when creating adding query parameters to URL " + e);
+				}
 			}
 
 			_postBody = body;
