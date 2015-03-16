@@ -107,6 +107,8 @@
   self.timeOutTimer = [NSTimer scheduledTimerWithTimeInterval:25 target:self selector:@selector(checkIfPlayed) userInfo:nil repeats:false];
   
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_videoPlaybackEnded:) name:AVPlayerItemDidPlayToEndTimeNotification object:self.currentItem];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleAudioSessionInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleMediaServicesReset:) name:AVAudioSessionMediaServicesWereResetNotification object:[AVAudioSession sharedInstance]];
 }
 
 - (void)clearTimeOutTimer {
@@ -127,6 +129,8 @@
   UALOG_DEBUG(@"");
   UAAssert([NSThread isMainThread]);
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:AVAudioSessionInterruptionNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:AVAudioSessionMediaServicesWereResetNotification object:nil];
   
   if (self.timeObserver != nil) {
     [self removeTimeObserver:self.timeObserver];
@@ -203,6 +207,28 @@
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
+}
+
+#pragma mark Audio notifications
+
+- (void)_handleAudioSessionInterruption:(NSNotification *)notification {
+  NSNumber *interruptionType = [[notification userInfo] objectForKey:AVAudioSessionInterruptionTypeKey];
+  NSNumber *interruptionOption = [[notification userInfo] objectForKey:AVAudioSessionInterruptionOptionKey];
+  
+  switch (interruptionType.unsignedIntegerValue) {
+    case AVAudioSessionInterruptionTypeEnded:
+      if (interruptionOption.unsignedIntegerValue == AVAudioSessionInterruptionOptionShouldResume) {
+        [self play];
+      }
+      break;
+      
+    default:
+      break;
+  }
+}
+
+- (void)_handleMediaServicesReset {
+  [self _videoPlaybackEnded:nil];
 }
 
 #pragma mark Video progress
