@@ -56,12 +56,16 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
         }
       }
 
-      if(rewardItemKey.length() > 0) {
-        UnityAds.setZone(zoneId, rewardItemKey);
-      } else {
-        if (zoneId.length() > 0) {
-          UnityAds.setZone(zoneId);
+      if(canShowZone(zoneId)) {
+        if (rewardItemKey.length() > 0) {
+          UnityAds.setZone(zoneId, rewardItemKey);
+        } else {
+          if (zoneId.length() > 0) {
+            UnityAds.setZone(zoneId);
+          }
         }
+      } else {
+        return false;
       }
 
       return UnityAds.show(options);
