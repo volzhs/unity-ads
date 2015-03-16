@@ -156,6 +156,7 @@
       __block UnityAdsVideoPlayer *blockSelf = self;
       
       self.lastUpdate = kCMTimeInvalid;
+      [self clearVideoProgressMonitor];
       self.videoProgressMonitor = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(_videoProgressMonitor:) userInfo:nil repeats:YES];
       
       Float64 duration = [self _currentVideoDuration];
