@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import com.mopub.mobileads.CustomEventInterstitial;
 import com.mopub.mobileads.MoPubErrorCode;
@@ -17,6 +18,10 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 	private String gameId = null;
 	private String zoneId = null;
 	private Map<String, Object> options = null;
+
+	private static UnityAdsMopubEvents currentShowingWrapper = null;
+	private UnityAdsMopubEvents wrapperAfterShow = null;
+	private Activity nextActivity = null;
 
 	@Override
 	protected void loadInterstitial(Context context,
@@ -36,13 +41,31 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 		options.putAll(localExtras);
 		options.putAll(serverExtras);
 		
-		UnityAds.setDebugMode(true);
-		
-		UnityAds.init((Activity)context, gameId, this);
-		UnityAds.changeActivity((Activity)context);
+		if(currentShowingWrapper == null) {
+			UnityAds.setDebugMode(true);
+
+			UnityAds.init((Activity)context, gameId, this);
+			UnityAds.changeActivity((Activity)context);
+			UnityAds.setListener(this);
+
+			if(UnityAds.canShow() && UnityAds.canShowAds()) {
+				listener.onInterstitialLoaded();
+			}
+		} else {
+			currentShowingWrapper.setNextWrapper(this);
+			nextActivity = (Activity)context;
+		}
+	}
+
+	private void setNextWrapper(UnityAdsMopubEvents nextWrapper) {
+		wrapperAfterShow = nextWrapper;
+	}
+
+	private void activateNextWrapper() {
+		UnityAds.changeActivity(nextActivity);
 		UnityAds.setListener(this);
-		
-		if (UnityAds.canShowAds()) {
+
+		if(UnityAds.canShow() && UnityAds.canShowAds()) {
 			listener.onInterstitialLoaded();
 		}
 	}
@@ -50,8 +73,12 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 	@Override
 	protected void showInterstitial() {
 		if(UnityAds.canShow() && UnityAds.canShowAds()) {
-			UnityAds.setZone(zoneId);			
-			UnityAds.show(options);
+			UnityAds.setZone(zoneId);
+			if(UnityAds.show(options)) {
+				currentShowingWrapper = this;
+			} else {
+				listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);
+			}
 		} else {
 			listener.onInterstitialFailed(MoPubErrorCode.NO_FILL);
 		}
@@ -63,6 +90,13 @@ public class UnityAdsMopubEvents extends CustomEventInterstitial implements IUni
 
 	@Override
 	public void onHide() {
+		currentShowingWrapper = null;
+
+		if(wrapperAfterShow != null) {
+			wrapperAfterShow.activateNextWrapper();
+			wrapperAfterShow = null;
+		}
+
 		listener.onInterstitialDismissed();
 	}
 
