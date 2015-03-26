@@ -40,6 +40,7 @@
 }
 
 - (void)clearPlayer {
+  [self pause];
   self.isPlaying = false;
   self.hasPlayed = false;
   self.hasMoved = false;
