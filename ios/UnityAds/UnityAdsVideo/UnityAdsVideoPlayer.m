@@ -108,7 +108,7 @@
   
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_videoPlaybackEnded:) name:AVPlayerItemDidPlayToEndTimeNotification object:self.currentItem];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleAudioSessionInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleMediaServicesReset:) name:AVAudioSessionMediaServicesWereResetNotification object:[AVAudioSession sharedInstance]];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleMediaServicesReset) name:AVAudioSessionMediaServicesWereResetNotification object:[AVAudioSession sharedInstance]];
 }
 
 - (void)clearTimeOutTimer {
