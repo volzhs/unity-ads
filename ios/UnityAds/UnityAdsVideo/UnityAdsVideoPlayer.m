@@ -110,6 +110,7 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_videoPlaybackEnded:) name:AVPlayerItemDidPlayToEndTimeNotification object:self.currentItem];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleAudioSessionInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleMediaServicesReset) name:AVAudioSessionMediaServicesWereResetNotification object:[AVAudioSession sharedInstance]];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleApplicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:[UIApplication sharedApplication]];
 }
 
 - (void)clearTimeOutTimer {
@@ -132,6 +133,7 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVAudioSessionInterruptionNotification object:nil];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVAudioSessionMediaServicesWereResetNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
   
   if (self.timeObserver != nil) {
     [self removeTimeObserver:self.timeObserver];
@@ -217,9 +219,17 @@
   NSNumber *interruptionOption = [[notification userInfo] objectForKey:AVAudioSessionInterruptionOptionKey];
   
   switch (interruptionType.unsignedIntegerValue) {
+    case AVAudioSessionInterruptionTypeBegan:
+      UALOG_DEBUG(@"Audio session interruption began");
+      break;
+      
     case AVAudioSessionInterruptionTypeEnded:
       if (interruptionOption.unsignedIntegerValue == AVAudioSessionInterruptionOptionShouldResume) {
+        UALOG_DEBUG(@"Resuming video playback after audio session interrupt");
         [self play];
+      } else {
+        UALOG_DEBUG(@"Ending video playback after audio session interrupt");
+        [self _videoPlaybackEnded:nil];
       }
       break;
       
@@ -229,7 +239,16 @@
 }
 
 - (void)_handleMediaServicesReset {
+  UALOG_DEBUG(@"Media services reset");
   [self _videoPlaybackEnded:nil];
+}
+
+#pragma mark Application lifecycle notifications
+
+- (void)_handleApplicationDidBecomeActive:(UIApplication*)application {
+  if(self.isPlaying) {
+    [self play];
+  }
 }
 
 #pragma mark Video progress
