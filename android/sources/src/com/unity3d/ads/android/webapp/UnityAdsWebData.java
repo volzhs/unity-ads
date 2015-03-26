@@ -230,6 +230,7 @@ public class UnityAdsWebData {
 		}
 
 		String url = UnityAdsProperties.getCampaignQueryUrl();
+		UnityAdsDeviceLog.info("Requesting Unity Ads ad plan from " + url);
 		String[] parts = url.split("\\?");
 		
 		UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(parts[0], parts[1], UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.VideoPlan, 0);
@@ -663,6 +664,7 @@ public class UnityAdsWebData {
 
 		if(_listener != null && validData && _campaigns != null && _campaigns.size() > 0) {
 			UnityAdsDeviceLog.debug("WebDataCompleted: " + json);
+			UnityAdsDeviceLog.info("Unity Ads initialized with " + _campaigns.size() + " campaigns and " + (_zoneManager != null ? _zoneManager.zoneCount() : 0) + " zones");
 			_listener.onWebDataCompleted();
 			return;
 		}

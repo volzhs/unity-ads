@@ -248,7 +248,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 				startFullscreenActivity();
 				return _showingAds;
 			}
-
+		} else {
+			UnityAdsDeviceLog.error("Unity Ads not ready to show ads");
 		}
 
 		return false;
@@ -658,7 +659,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static void init (final Activity activity, String gameId, IUnityAdsListener listener) {
 		if (_instance != null || _initialized) return;
 
-		if(gameId.length() == 0) {
+		if(gameId == null || gameId.length() == 0) {
 			throw new IllegalArgumentException("gameId is empty");
 		} else {
 			try {
@@ -670,6 +671,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 				throw new IllegalArgumentException("gameId does not parse as an integer");
 			}
 		}
+
+		UnityAdsDeviceLog.info("Initializing Unity Ads with gameId " + gameId);
 
 		try {
 			Class<?> unityAdsWebBridge = Class.forName("com.unity3d.ads.android.webapp.UnityAdsWebBridge");
