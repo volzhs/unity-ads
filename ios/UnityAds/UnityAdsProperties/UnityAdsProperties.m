@@ -12,7 +12,7 @@
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "UnityAdsCacheManager.h"
 
-NSString * const kUnityAdsVersion = @"1400";
+NSString * const kUnityAdsVersion = @"1401";
 
 @implementation UnityAdsProperties
 
