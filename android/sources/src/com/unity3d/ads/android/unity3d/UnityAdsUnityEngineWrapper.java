@@ -22,7 +22,7 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
 
   // Public methods
 
-  public void init (final String gameId, final Activity activity, final boolean testMode, final int logLevel) {
+  public void init (final Activity activity, final String gameId, final boolean testMode, final int logLevel) {
     if (!_initialized) {
       _initialized = true;
 
@@ -56,7 +56,7 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
         }
       }
 
-      if(canShowZone(zoneId)) {
+      if(canShowAds(zoneId)) {
         if (rewardItemKey.length() > 0) {
           UnityAds.setZone(zoneId, rewardItemKey);
         } else {
@@ -74,7 +74,7 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
     return false;
   }
 
-  public boolean canShowZone(String zone) {
+  public boolean canShowAds(String zone) {
     if(zone != null && zone.length() > 0) {
       UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
       if(zoneManager != null) {

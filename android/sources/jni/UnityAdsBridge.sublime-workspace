@@ -1,0 +1,405 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"initialize",
+				"initializeOnStartup"
+			],
+			[
+				"Runtime",
+				"RuntimePlatform"
+			],
+			[
+				"Aver",
+				"AdvertisementSettings"
+			],
+			[
+				"Adver",
+				"AdvertisementSettings"
+			],
+			[
+				"m_",
+				"m_WebServer"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"syntax",
+				"Set Syntax: Unity C#"
+			],
+			[
+				"Package Control: Insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/rikshot/unity-staging/Projects/Jam/WorkSpaceGenerationConfigWin.jam",
+		"/Users/rikshot/unity-staging/Projects/CSharp/root/jam.pl",
+		"/Users/rikshot/unity-staging/Configuration/GlobalDefines.jam",
+		"/Users/rikshot/unity-staging/Tests/Unity.IntegrationTests/Unity.IntegrationTests.csproj",
+		"/Users/rikshot/unity-staging/Tools/DocTools/MissingDocsWhiteList.txt",
+		"/Users/rikshot/unity-staging/Editor/Src/EditorHelper.cpp",
+		"/Users/rikshot/unity-staging/artifacts/generated/common/editor/UtilityBindings.gen.cs",
+		"/Users/rikshot/unity-staging/PlatformDependent/iPhonePlayer/Extensions/XCode/PBXProject.cs",
+		"/Users/rikshot/unity-staging/Runtime/Modules/RegisterStaticallyLinkedModules.cpp",
+		"/Users/rikshot/unity-staging/Runtime/BaseClasses/ClassRegistration.cpp",
+		"/Users/rikshot/unity-staging/Runtime/Modules/StaticallyLinkedModuleList.h",
+		"/Users/rikshot/unity-staging/Runtime/Modules/ModuleRegistration.h",
+		"/Users/rikshot/unity-staging/Runtime/UnityAds/UnityAdsModule.inc",
+		"/Users/rikshot/unity-staging/Runtime/UnityAds/UnityAdsModuleRegistration.cpp",
+		"/Users/rikshot/unity-staging/Runtime/Modules/ModuleTemplate.inc",
+		"/Users/rikshot/unity-staging/Runtime/Core/Callbacks/CallbackArray.h",
+		"/Users/rikshot/unity-staging/Extensions/UnityAds/UnityAds/Advertisement.cs",
+		"/Users/rikshot/unity-staging/Runtime/UnityAds/UnityAdsBindings.txt",
+		"/Users/rikshot/unity-staging/Extensions/UnityAds/UnityAds/ShowOptions.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/UnityAds/AdvertisementIsInitialized.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/UnityAds/AdvertisementDebugLevel.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/UnityAds/AdvertisementIsSupported.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests.Framework/Unity.RuntimeTests.Framework.csproj",
+		"/Users/rikshot/unity-staging/Tests/Unity.IntegrationTests/Networking/WWWClass/WWWCanReadTextWithUncommonTextEncoding.cs",
+		"/Users/rikshot/unity-staging/Extensions/UnityAds/UnityAds/UnityAds.cs",
+		"/Users/rikshot/unity-staging/PlatformDependent/iPhonePlayer/Trampoline/Classes/UnityAds/UnityAdsUnityWrapper.mm",
+		"/Users/rikshot/unity-staging/Runtime/Export/UnityAds/UnityAds.txt",
+		"/Users/rikshot/unity-staging/Runtime/UnityAds/UnityAdsBridge.h",
+		"/Users/rikshot/unity-staging/PlatformDependent/AndroidPlayer/Source/UnityAdsBridge.cpp",
+		"/Users/rikshot/unity-staging/PlatformDependent/iPhonePlayer/UnityAdsiPhoneBridge.cpp",
+		"/Users/rikshot/unity-staging/Editor/Mono/WebViewEditorWindow/BaseObjects/AdsAccess.cs",
+		"/Users/rikshot/unity-staging/Runtime/Export/UnityAds/UnityAdsInternal.cs",
+		"/Users/rikshot/unity-staging/Runtime/Export/UnityAds/UnityAdsSettings.cpp",
+		"/Users/rikshot/unity-staging/Runtime/Export/UnityAds/UnityAdsSettings.h",
+		"/Users/rikshot/unity-staging/Runtime/UnityAds/UnityAdsCallbacks.cpp",
+		"/Users/rikshot/unity-staging/Runtime/UnityAds/UnityAdsCallbacks.h",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/Unity.RuntimeTests.csproj",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/UnityAds/URLSettings.cs",
+		"/Users/rikshot/unity-staging/Extensions/UnityAds/UnityAds.jam",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests.Framework/ProjectBuilder/ProjectWithTestsCreator.cs",
+		"/Users/rikshot/unity-staging/artifacts/generated/common/modules/UnityAdsBindings.gen.cs",
+		"/Users/rikshot/unity-staging/Projects/CSharp/csproj_head_unity.runtimetests",
+		"/Users/rikshot/unity-staging/artifacts/generated/common/modules/UnityAdsBindings.gen.cpp",
+		"/Users/rikshot/unity-staging/Runtime/Misc/SystemInfo.h",
+		"/Users/rikshot/unity-staging/Runtime/Misc/SystemInfo.cpp",
+		"/Users/rikshot/unity-staging/PlatformDependent/AndroidPlayer/Source/AndroidWWW.h",
+		"/Users/rikshot/unity-staging/PlatformDependent/Xbox360/Source/ScriptBindings/XboxKinect.txt",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/Scripting/MonoBehaviour/Namespaces.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/Profiling/TestProfilerGCMemory.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests.Framework/RuntimeWebServer.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.Automation.Tests/FakeWebServerTests.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/Networking/WWW/FakeWebServerFetchUrl.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.Automation.Tests/Players/PlayerStartPathTests.cs",
+		"/Users/rikshot/unity-staging/Tests/UnityEngine.Common/WebBrowser/FakeWebServer.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests.Framework/IWebServer.cs",
+		"/Users/rikshot/unity-staging/Tests/UnityEngine.Common/WebBrowser/HttpGetResponse.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests.Framework/RuntimeTest.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests.Framework/RuntimeTestBase.cs",
+		"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/UnityAds/Resources/index.html",
+		"/Users/rikshot/unity-staging/artifacts/generated/common/modules/UnityEngineWebCamTexture.gen.cpp",
+		"/Users/rikshot/unity-staging/artifacts/generated/common/modules/UnityEngineWebCamTexture.gen.cs",
+		"/Users/rikshot/unity-staging/Extensions/UnityAds/UnityAdsEditor/UnityAdsPostprocessor.cs",
+		"/Users/rikshot/unity-staging/PlatformDependent/AndroidPlayer/Source/UnityAds/UnityAdsAndroidBridge.h",
+		"/Users/rikshot/unity-staging/PlatformDependent/AndroidPlayer/Source/UnityAds/UnityAdsAndroidBridgeJNI.h",
+		"/Users/rikshot/unity-staging/PlatformDependent/AndroidPlayer/Source/UnityAds/UnityAdsAndroidBridgeGenerated.cpp",
+		"/Users/rikshot/unity-staging/Tests/Unity.IntegrationTests/Prefabs/Assets/Editor/Undo/OnDestroyHasAccessToParent.cs.meta",
+		"/Users/rikshot/unity-staging/Tests/Players/Unity.Automation.Players/Unity.Automation.Players.csproj",
+		"/Users/rikshot/unity-staging/Projects/CSharp/csproj_head_unityeditor",
+		"/Users/rikshot/unity-staging/Projects/CSharp/csproj_head_unityengine",
+		"/Users/rikshot/unity-staging/Editor/Src/BuildPipeline/BuildPlayer.h",
+		"/Users/rikshot/unity-staging/Tools/ScriptUpdater/IntegrationTests/ConfiguredUpdates/iOSUpdatesTests.cs",
+		"/Users/rikshot/Library/Application Support/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/Users/rikshot/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/Users/rikshot/unity-staging/Editor/Mono/BuildTarget.txt",
+		"/Users/rikshot/unity-staging/Tests/Unity.IntegrationTests/Scripting/ScriptUpdating/RenamedEmptyTypeMemberReferenceTests.cs",
+		"/Users/rikshot/unity-staging/Extensions/UnityAds/UnityAds/UnityEngine.Advertisements.csproj",
+		"/Users/rikshot/unity-staging/Extensions/UnityAds/UnityAdsEditor/UnityEditor.Advertisements.csproj",
+		"/Users/rikshot/unity-staging/Editor/Resources/Common/TreeEditor_UI_Strings_EN.txt",
+		"/Users/rikshot/unity-staging/Jamfile.jam.orig"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/Users/rikshot/unity-staging/",
+			"/Users/rikshot/unity-staging/Projects/",
+			"/Users/rikshot/unity-staging/",
+			"/Users/rikshot/unity-staging",
+			"/Users/rikshot/unity-staging/Extensions",
+			"",
+			"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests",
+			"/Users/rikshot/unity-staging/Tests/Unity.RuntimeTests/UnityAds",
+			"PlatformDependent/AndroidPlayer",
+			"PlatfromDependent/AndroidPlayer",
+			"",
+			"Runtime/*",
+			"",
+			"PlatformDependent/AndroidPlayer/*",
+			"",
+			"Tests/Unity.RuntimeTests/*",
+			"Tests/*",
+			"Tests",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"ENABLE_CLOUD_SERVICES_ADS",
+			"IgnoreHttp",
+			"Ignore",
+			"win64",
+			"win32",
+			"-sPLATFORM",
+			"sPLATFORM",
+			"win64",
+			"win",
+			"win64",
+			"AnalyticsCloudService",
+			"GetApplicationFolder",
+			"IsDeveloperBuildInternal",
+			"IsDeveloperBuild",
+			"Debug.",
+			"STATICALLY_LINKED_MODULE",
+			"RegisterAllClasses",
+			"UnityAdsConfig",
+			"UnityConnectServiceData",
+			"localhost",
+			"8088",
+			"localhost:8088",
+			"29B97314FDCFA39411CA2CEA",
+			"29B97323FDCFA39411CA2CEA",
+			"AdSupport",
+			"URLSettings",
+			"loadLibrary",
+			"LoadLibrary",
+			"loadLibrary",
+			"SetBuildTargetEnabled",
+			"RuntimePlatform",
+			"JNI",
+			"[FlagsAttribute]",
+			"'",
+			"RuntimePlatform",
+			"TestingPlatform",
+			"FakeWebServer",
+			"IWebServer",
+			"FakeWebServer",
+			"IgnoreHttpParameters",
+			"IWebServer",
+			"ignore",
+			"SetupUnityAds",
+			"ENABLE_CLOUD",
+			"GetBuildTargetName",
+			"buildplayer(",
+			"buildplayer",
+			"BuildTarget.iPhone",
+			"BuildPlayer",
+			"BuildPlayerSetup",
+			"BuildPlayerSetup\n\nBuildPlayerSetup",
+			"BuildPlayerInternal",
+			"BuildPlayer",
+			"BuildPipeline.BuildPlayer",
+			"BuildTarget",
+			"BuildTarget.iPhone",
+			"SetupUnityAds",
+			"fail"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"\""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"fakeweb",
+				"Tests/UnityEngine.Common/WebBrowser/FakeWebServer.cs"
+			],
+			[
+				"callbackarra",
+				"Generic/Runtime/Core/Callbacks/CallbackArray.h"
+			],
+			[
+				"moduletempl",
+				"Generic/Runtime/Modules/ModuleTemplate.inc"
+			],
+			[
+				"unityadsmod",
+				"Generic/Runtime/UnityAds/UnityAdsModuleRegistration.cpp"
+			],
+			[
+				"unityadsmodu",
+				"Generic/Runtime/UnityAds/UnityAdsModule.inc"
+			],
+			[
+				"moduleregi",
+				"Generic/Runtime/Modules/ModuleRegistration.h"
+			],
+			[
+				"statically",
+				"Generic/Runtime/Modules/StaticallyLinkedModuleList.h"
+			],
+			[
+				"wwwcanreadtextwithuncommontextencoding",
+				"Tests/Unity.IntegrationTests/Networking/WWWClass/WWWCanReadTextWithUncommonTextEncoding.cs"
+			],
+			[
+				"adsacc",
+				"Editor - Mono/WebViewEditorWindow/BaseObjects/AdsAccess.cs"
+			],
+			[
+				"systeminfo.h",
+				"Generic/Runtime/Misc/SystemInfo.h"
+			],
+			[
+				"adsacce",
+				"Tests/Unity.IntegrationTests/Prefabs/Assets/Editor/Undo/OnDestroyHasAccessToParent.cs.meta"
+			],
+			[
+				"adsaccee",
+				"Tests/Unity.IntegrationTests/Prefabs/Assets/Editor/Undo/OnDestroyHasAccessToParent.cs.meta"
+			],
+			[
+				"iwebser",
+				"Tests/Unity.RuntimeTests.Framework/IWebServer.cs"
+			],
+			[
+				"renamedemptytypememberreferencetests",
+				"Tests/Unity.IntegrationTests/Scripting/ScriptUpdating/RenamedEmptyTypeMemberReferenceTests.cs"
+			],
+			[
+				"iosupd",
+				"Tools/ScriptUpdater/IntegrationTests/ConfiguredUpdates/iOSUpdatesTests.cs"
+			],
+			[
+				"unityadssettings",
+				"Generic/Runtime/Export/UnityAds/UnityAdsSettings.h"
+			],
+			[
+				"unityadsbri",
+				"PlatformDependent - AndroidPlayer/Source/UnityAdsBridge.cpp"
+			],
+			[
+				"projectwithte",
+				"Tests/Unity.RuntimeTests.Framework/ProjectBuilder/ProjectWithTestsCreator.cs"
+			],
+			[
+				"unityadsbrid",
+				"PlatformDependent - AndroidPlayer/Source/UnityAdsBridge.cpp"
+			],
+			[
+				"unityadsand",
+				"PlatformDependent - AndroidPlayer/Source/UnityAds/UnityAdsAndroidBridgeJNI.h"
+			],
+			[
+				"unityandroidbri",
+				"PlatformDependent - AndroidPlayer/Source/UnityAds/UnityAdsAndroidBridgeGenerated.cpp"
+			],
+			[
+				"jamfile",
+				"Generic/Jamfile.jam.orig"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 400.0,
+	"status_bar_visible": true
+}
