@@ -245,7 +245,7 @@ public class UnityAdsWebData {
 		boolean progressSent = false;
 		if (campaign == null) return progressSent;
 
-		UnityAdsDeviceLog.debug("VP: " + position.toString() + ", " + UnityAdsProperties.UNITY_ADS_GAMER_ID);
+		UnityAdsDeviceLog.info("Unity Ads video position: " + position.toString() + ", gamer id: " + UnityAdsProperties.UNITY_ADS_GAMER_ID);
 
 		if (position != null && UnityAdsProperties.UNITY_ADS_GAMER_ID != null) {			
 			String viewUrl = String.format("%s%s", UnityAdsProperties.UNITY_ADS_BASE_URL, UnityAdsConstants.UNITY_ADS_ANALYTICS_TRACKING_PATH);

@@ -218,6 +218,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (canShow()) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 
+			String zoneName = "(null)";
 			if (currentZone != null) {
 				UnityAdsDownloader.stopAllDownloads();
 
@@ -239,6 +240,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 						}
 					}
 				}
+
+				UnityAdsDeviceLog.info("Launching ad from \"" + currentZone.getZoneName() + "\", options: " + currentZone.getZoneOptions().toString());
 
 				_openRequestFromDeveloper = true;
 				_showingAds = true;
@@ -400,6 +403,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case VideoEnd:
 				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
+					UnityAdsDeviceLog.info("Unity Ads video completed");
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), false);
 				}
@@ -407,6 +411,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case VideoSkipped:
 				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
+					UnityAdsDeviceLog.info("Unity Ads video skipped");
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), true);
 				}
