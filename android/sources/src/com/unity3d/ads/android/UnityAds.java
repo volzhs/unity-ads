@@ -218,7 +218,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (canShow()) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 
-			String zoneName = "(null)";
 			if (currentZone != null) {
 				UnityAdsDownloader.stopAllDownloads();
 
@@ -250,6 +249,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 				UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
 				startFullscreenActivity();
 				return _showingAds;
+			} else {
+				UnityAdsDeviceLog.error("Unity Ads current zone is null");
 			}
 		} else {
 			UnityAdsDeviceLog.error("Unity Ads not ready to show ads");
