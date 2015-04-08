@@ -230,6 +230,7 @@ public class UnityAdsWebData {
 		}
 
 		String url = UnityAdsProperties.getCampaignQueryUrl();
+		UnityAdsDeviceLog.info("Requesting Unity Ads ad plan from " + url);
 		String[] parts = url.split("\\?");
 		
 		UnityAdsUrlLoaderCreator ulc = new UnityAdsUrlLoaderCreator(parts[0], parts[1], UnityAdsConstants.UNITY_ADS_REQUEST_METHOD_GET, UnityAdsRequestType.VideoPlan, 0);
@@ -244,7 +245,7 @@ public class UnityAdsWebData {
 		boolean progressSent = false;
 		if (campaign == null) return progressSent;
 
-		UnityAdsDeviceLog.debug("VP: " + position.toString() + ", " + UnityAdsProperties.UNITY_ADS_GAMER_ID);
+		UnityAdsDeviceLog.info("Unity Ads video position: " + position.toString() + ", gamer id: " + UnityAdsProperties.UNITY_ADS_GAMER_ID);
 
 		if (position != null && UnityAdsProperties.UNITY_ADS_GAMER_ID != null) {			
 			String viewUrl = String.format("%s%s", UnityAdsProperties.UNITY_ADS_BASE_URL, UnityAdsConstants.UNITY_ADS_ANALYTICS_TRACKING_PATH);
@@ -663,6 +664,7 @@ public class UnityAdsWebData {
 
 		if(_listener != null && validData && _campaigns != null && _campaigns.size() > 0) {
 			UnityAdsDeviceLog.debug("WebDataCompleted: " + json);
+			UnityAdsDeviceLog.info("Unity Ads initialized with " + _campaigns.size() + " campaigns and " + (_zoneManager != null ? _zoneManager.zoneCount() : 0) + " zones");
 			_listener.onWebDataCompleted();
 			return;
 		}

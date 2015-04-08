@@ -191,6 +191,8 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
         }
       }];
       
+      NSLog(@"Unity Ads initialized with %lu campaigns and %d zones", (unsigned long)[self.campaigns count], addedZones);
+      
       dispatch_async(dispatch_get_main_queue(), ^(void) {
         [self.delegate campaignManagerCampaignDataReceived];
       });
@@ -253,7 +255,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
   if ([[UnityAdsProperties sharedInstance] campaignQueryString] != nil)
 		urlString = [urlString stringByAppendingString:[[UnityAdsProperties sharedInstance] campaignQueryString]];
   
-  UALOG_DEBUG(@"UrlString %@", urlString);
+  NSLog(@"Requesting Unity Ads ad plan from %@", urlString);
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:60];
 	self.urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	[self.urlConnection start];

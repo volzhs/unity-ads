@@ -121,7 +121,9 @@ static UnityAds *sharedUnityAdsInstance = nil;
   if ([[UnityAdsProperties sharedInstance] adsGameId] != nil) return false;
 	if (gameId == nil || [gameId length] == 0) return false;
   if (self.initializer != nil) return false;
-  
+
+  NSLog(@"Initializing Unity Ads with gameId %@", gameId);
+
   NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
   [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];
   
@@ -196,6 +198,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
       state = kUnityAdsViewStateTypeVideoPlayer;
     }
     
+    NSLog(@"Launching ad from %@, options: %@", [currentZone getZoneId], [currentZone getZoneOptions]);
     [[UnityAdsMainViewController sharedInstance] openAds:[currentZone openAnimated] inState:state withOptions:options];
     
     return true;
@@ -398,6 +401,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	
   if (![[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed) {
     [[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
+    NSLog(@"Unity Ads video completed");
     
     if (self.delegate != nil) {
       NSString *key = nil;
@@ -417,6 +421,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	
   if (![[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed) {
     [[UnityAdsCampaignManager sharedInstance] selectedCampaign].viewed = YES;
+    NSLog(@"Unity Ads video skipped");
     
     if (self.delegate != nil) {
       NSString *key = nil;

@@ -240,6 +240,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 					}
 				}
 
+				UnityAdsDeviceLog.info("Launching ad from \"" + currentZone.getZoneName() + "\", options: " + currentZone.getZoneOptions().toString());
+
 				_openRequestFromDeveloper = true;
 				_showingAds = true;
 				_preventVideoDoubleStart = false;
@@ -247,8 +249,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 				UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
 				startFullscreenActivity();
 				return _showingAds;
+			} else {
+				UnityAdsDeviceLog.error("Unity Ads current zone is null");
 			}
-
+		} else {
+			UnityAdsDeviceLog.error("Unity Ads not ready to show ads");
 		}
 
 		return false;
@@ -399,6 +404,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case VideoEnd:
 				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
+					UnityAdsDeviceLog.info("Unity Ads video completed");
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), false);
 				}
@@ -406,6 +412,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case VideoSkipped:
 				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
 				if (_adsListener != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
+					UnityAdsDeviceLog.info("Unity Ads video skipped");
 					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaignStatus.VIEWED);
 					_adsListener.onVideoCompleted(getCurrentRewardItemKey(), true);
 				}
@@ -658,7 +665,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	public static void init (final Activity activity, String gameId, IUnityAdsListener listener) {
 		if (_instance != null || _initialized) return;
 
-		if(gameId.length() == 0) {
+		if(gameId == null || gameId.length() == 0) {
 			throw new IllegalArgumentException("gameId is empty");
 		} else {
 			try {
@@ -670,6 +677,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 				throw new IllegalArgumentException("gameId does not parse as an integer");
 			}
 		}
+
+		UnityAdsDeviceLog.info("Initializing Unity Ads with gameId " + gameId);
 
 		try {
 			Class<?> unityAdsWebBridge = Class.forName("com.unity3d.ads.android.webapp.UnityAdsWebBridge");
