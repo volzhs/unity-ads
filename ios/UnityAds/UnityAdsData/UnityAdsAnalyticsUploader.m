@@ -166,6 +166,8 @@ static UnityAdsAnalyticsUploader *sharedUnityAdsInstanceAnalyticsUploader = nil;
 			positionString = kUnityAdsAnalyticsEventTypeVideoEnd;
 
     if (positionString != nil) {
+      NSLog(@"Unity Ads video position: %@, gamer id: %@", positionString, [[UnityAdsProperties sharedInstance] gamerId]);
+
       NSString *trackingQuery = [NSString stringWithFormat:@"%@/video/%@/%@/%@", [[UnityAdsProperties sharedInstance] gamerId], positionString, campaignId, [[UnityAdsProperties sharedInstance] adsGameId]];
 
       id currentZone = [[UnityAdsZoneManager sharedInstance] getCurrentZone];
