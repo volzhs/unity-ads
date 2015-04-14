@@ -60,7 +60,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
   __block NSMutableArray * installedApps = [NSMutableArray new];
   [urlSchemeMap enumerateObjectsUsingBlock:^(NSDictionary *urlSchemesEntry, NSUInteger idx, BOOL *stop) {
     if ([UnityAdsCampaignManager isInstalled:[urlSchemesEntry objectForKey:@"schemes"]]) {
-      [installedApps addObject:[urlSchemesEntry objectForKey:@"id"]];
+      [installedApps addObject:@{@"id": [urlSchemesEntry objectForKey:@"id"]}];
     }
   }];
   return [installedApps copy];
@@ -226,12 +226,13 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     NSArray *urlSchemeMap = [self _parseUrlSchemeMap:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
     if(urlSchemeMap != nil) {
       NSArray *installedApps = [UnityAdsCampaignManager installedApps:urlSchemeMap];
+      NSDictionary *installedAppsDict = @{@"games": installedApps};
       
       if([installedApps count] > 0) {
         NSURL *installedAppsUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [UnityAdsProperties sharedInstance].installedAppsUrl, [[UnityAdsProperties sharedInstance] createCampaignQueryString:FALSE]]];
         NSMutableURLRequest *installedAppsRequest = [[NSMutableURLRequest alloc] initWithURL:installedAppsUrl cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:60];
         [installedAppsRequest setHTTPMethod:@"POST"];
-        [installedAppsRequest setHTTPBody:[[installedApps componentsJoinedByString:@","] dataUsingEncoding:NSUTF8StringEncoding]];
+        [installedAppsRequest setHTTPBody:[[installedAppsDict JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
         [NSURLConnection sendAsynchronousRequest:installedAppsRequest queue:[self installedAppsQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
           if(data == nil) {
             UALOG_DEBUG(@"Error sending installed apps");
