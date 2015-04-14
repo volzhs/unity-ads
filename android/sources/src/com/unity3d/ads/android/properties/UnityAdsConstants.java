@@ -46,6 +46,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_ADVERTISINGTRACKINGID_KEY = "advertisingTrackingId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_RAWADVERTISINGTRACKINGID_KEY = "rawAdvertisingTrackingId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_TRACKINGENABLED_KEY = "trackingEnabled";
+  public static final String UNITY_ADS_WEBVIEW_DATAPARAM_UNITYVERSION_KEY = "unityVersion";
 
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED = "completed";
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_START = "start";
@@ -161,6 +162,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY = "appFilterList";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CACHEDPLAYBACK_KEY = "cachedPlayback";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CACHINGSPEED_KEY = "cachingSpeed";
+  public static final String UNITY_ADS_INIT_QUERYPARAM_UNITYVERSION_KEY = "unityVersion";
 
 	/* Device types */
 	public static final String UNITY_ADS_DEVICEID_UNKNOWN = "unknown";

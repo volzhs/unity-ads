@@ -8,6 +8,7 @@ import com.unity3d.ads.android.IUnityAdsListener;
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
@@ -22,7 +23,7 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
 
   // Public methods
 
-  public void init (final Activity activity, final String gameId, final boolean testMode, final int logLevel) {
+  public void init (final Activity activity, final String gameId, final boolean testMode, final int logLevel, final String unityVersion) {
     if (!_initialized) {
       _initialized = true;
 
@@ -34,6 +35,9 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
           public void run() {
             UnityAdsDeviceLog.setLogLevel(logLevel);
             UnityAds.setTestMode(testMode);
+            if(unityVersion.length() > 0) {
+              UnityAdsProperties.UNITY_VERSION = unityVersion;
+            }
             UnityAds.init(activity, gameId, listener);
           }
         });

@@ -110,6 +110,10 @@ static UnityAds *sharedUnityAdsInstance = nil;
   [[UnityAdsProperties sharedInstance] setCampaignQueryString:[[UnityAdsProperties sharedInstance] createCampaignQueryString]];
 }
 
+- (void)setUnityVersion:(NSString *)unityVersion {
+  [[UnityAdsProperties sharedInstance] setUnityVersion:unityVersion];
+}
+
 - (BOOL)startWithGameId:(NSString *)gameId {
   if (![UnityAds isSupported]) return false;
   return [self startWithGameId:gameId andViewController:nil];

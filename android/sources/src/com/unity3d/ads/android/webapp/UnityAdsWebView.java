@@ -202,6 +202,10 @@ public class UnityAdsWebView extends WebView {
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_ZONES_KEY, UnityAdsWebData.getZoneManager().getZonesJson());
 
+        if(UnityAdsProperties.UNITY_VERSION != null && UnityAdsProperties.UNITY_VERSION.length() > 0) {
+          initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_UNITYVERSION_KEY, UnityAdsProperties.UNITY_VERSION);
+        }
+
 				// Tracking data
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY, UnityAdsDevice.getSoftwareVersion());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());

@@ -204,6 +204,11 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   [webAppValues setValue: [UnityAdsDevice softwareVersion]                        forKey:kUnityAdsWebViewDataParamIosVersionKey];
   [webAppValues setValue: [UnityAdsDevice analyticsMachineName]                   forKey:kUnityAdsWebViewDataParamDeviceTypeKey];
   [webAppValues setValue: [UnityAdsDevice identifierForVendor]                    forKey:kUnityAdsWebViewDataParamIdentifierForVendorKey];
+  
+  id unityVersion = [[UnityAdsProperties sharedInstance] unityVersion];
+  if(unityVersion != nil && [unityVersion length] > 0) {
+    [webAppValues setValue: unityVersion forKey:kUnityAdsWebViewDataParamUnityVersionKey];
+  }
     
   [self setupWebApp:[[UIScreen mainScreen] bounds]];
   [self loadWebApp:webAppValues];

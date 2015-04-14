@@ -32,6 +32,7 @@
   @property (nonatomic, assign) BOOL statusBarWasVisible;
   @property (nonatomic, assign) BOOL unityDeveloperInternalTestMode;
   @property (nonatomic, assign) BOOL sendInternalDetails;
+  @property (nonatomic, strong) NSString *unityVersion;
 
 + (UnityAdsProperties *)sharedInstance;
 - (NSString *)createCampaignQueryString;

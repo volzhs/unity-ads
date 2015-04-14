@@ -35,6 +35,7 @@ static UnityAdsProperties *sharedProperties = nil;
     [self setSdkIsCurrent:true];
     [self setExpectedSdkVersion:@"0"];
     [self setAppFiltering:@"off"];
+    [self setUnityVersion:nil];
     [self setInstalledApps:[[NSMutableSet alloc] init]];
   }
   
@@ -75,6 +76,10 @@ static UnityAdsProperties *sharedProperties = nil;
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamDeviceTypeKey, [UnityAdsDevice analyticsMachineName]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamConnectionTypeKey, [UnityAdsDevice currentConnectionType]];
   queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamIdentifierForVendor, [UnityAdsDevice identifierForVendor]];
+  
+  if(self.unityVersion != nil && self.unityVersion.length > 0) {
+    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamUnityVersionKey, self.unityVersion];
+  }
   
   id networkType = [UnityAdsDevice getNetworkType];
   if(networkType != nil) {

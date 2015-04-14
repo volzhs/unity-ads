@@ -58,6 +58,7 @@ extern NSString * const kUnityAdsWebViewDataParamSdkIsCurrentKey;
 extern NSString * const kUnityAdsWebViewDataParamIosVersionKey;
 extern NSString * const kUnityAdsWebViewDataParamZoneKey;
 extern NSString * const kUnityAdsWebViewDataParamZonesKey;
+extern NSString * const kUnityAdsWebViewDataParamUnityVersionKey;
 
 extern NSString * const kUnityAdsWebViewEventDataCampaignIdKey;
 extern NSString * const kUnityAdsWebViewEventDataRewatchKey;
@@ -204,6 +205,7 @@ extern NSString * const kUnityAdsInitQueryParamEncryptionKey;
 extern NSString * const kUnityAdsInitQueryParamAppFilterListKey;
 extern NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey;
 extern NSString * const kUnityAdsInitQueryParamCachingSpeedKey;
+extern NSString * const kUnityAdsInitQueryParamUnityVersionKey;
 
 
 /* Google Analytics Instrumentation */
