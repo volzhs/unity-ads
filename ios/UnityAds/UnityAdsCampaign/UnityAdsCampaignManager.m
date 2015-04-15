@@ -233,6 +233,7 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
         NSMutableURLRequest *installedAppsRequest = [[NSMutableURLRequest alloc] initWithURL:installedAppsUrl cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:60];
         [installedAppsRequest setHTTPMethod:@"POST"];
         [installedAppsRequest setHTTPBody:[[installedAppsDict JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
+        [installedAppsRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         [NSURLConnection sendAsynchronousRequest:installedAppsRequest queue:[self installedAppsQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
           if(data == nil) {
             UALOG_DEBUG(@"Error sending installed apps");
