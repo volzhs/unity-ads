@@ -16,12 +16,15 @@ import java.util.ArrayList;
 import javax.security.auth.x500.X500Principal;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,9 +32,11 @@ import android.os.Looper;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsUtils {
 
 	private static final X500Principal DEBUG_DN = new X500Principal("CN=Android Debug,O=Android,C=US");
+	private static String _cacheDirectory = null;
 	
 	public static boolean isDebuggable(Context ctx) {
 	    boolean debuggable = false;
@@ -200,9 +205,20 @@ public class UnityAdsUtils {
 		
 		return size;
 	}
-	
+
+	public static void chooseCacheDirectory(Activity activity) {
+		File externalCacheDirectory = activity.getExternalCacheDir();
+
+		// If possible, use app private external cache directory. It requires no external storage permission for api level 19+ devices.
+		if(externalCacheDirectory != null && externalCacheDirectory.getAbsolutePath() != null) {
+			_cacheDirectory = externalCacheDirectory.getAbsolutePath() + "/" + UnityAdsConstants.CACHE_DIR_NAME;
+		} else {
+			_cacheDirectory = Environment.getExternalStorageDirectory() + "/" + UnityAdsConstants.CACHE_DIR_NAME;
+		}
+	}
+
 	public static String getCacheDirectory () {
-		return Environment.getExternalStorageDirectory().toString() + "/" + UnityAdsConstants.CACHE_DIR_NAME;
+		return _cacheDirectory;
 	}
 	
 	public static boolean canUseExternalStorage () {

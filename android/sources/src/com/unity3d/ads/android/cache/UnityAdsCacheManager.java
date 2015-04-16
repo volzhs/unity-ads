@@ -3,6 +3,8 @@ package com.unity3d.ads.android.cache;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.app.Activity;
+
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
@@ -17,11 +19,13 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	private ArrayList<UnityAdsCampaignHandler> _handlers = null;	
 	private int _amountPrepared = 0;
 	private int _totalCampaigns = 0;
-	
-	
-	public UnityAdsCacheManager () {
+
+	public UnityAdsCacheManager(Activity activity) {
+		UnityAdsUtils.chooseCacheDirectory(activity);
+		UnityAdsDeviceLog.debug("Unity Ads cache directory: " + UnityAdsUtils.getCacheDirectory());
+
 		if (UnityAdsUtils.canUseExternalStorage()) {
-			UnityAdsDeviceLog.debug("External storagedir: " + UnityAdsUtils.getCacheDirectory() + " created with result: " + UnityAdsUtils.createCacheDir());
+			UnityAdsDeviceLog.debug("Cache directory created with result: " + UnityAdsUtils.createCacheDir());
 		}
 		else {
 			UnityAdsDeviceLog.info("Could not create cache, no external memory present");
