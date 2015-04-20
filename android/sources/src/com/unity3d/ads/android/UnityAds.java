@@ -726,7 +726,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable(activity));
 
-		cachemanager = new UnityAdsCacheManager();
+		cachemanager = new UnityAdsCacheManager(activity);
 		cachemanager.setDownloadListener(_instance);
 		webdata = new UnityAdsWebData();
 		webdata.setWebDataListener(_instance);
