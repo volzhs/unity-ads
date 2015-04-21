@@ -8,8 +8,6 @@ base_sdk_dir=`eval "echo $base_sdk_dir"`
 prefix=$(cd "$(dirname "$0")"; pwd)
 cd $prefix
 
-unity_app="/Applications/Unity-3.5.7/Unity.app/Contents/MacOS/Unity"
-
 ios_repo="ios"
 ios_build="unknown"
 
@@ -25,7 +23,6 @@ if [ -e $android_repo/src/com/unity3d/ads/android/properties/UnityAdsConstants.j
 fi
 
 set -e
-# set -v
 
 unity_sdk_date="$date-$ios_build-$android_build"
 unity_sdk_dir="$base_sdk_dir/unity/$unity_sdk_date"
@@ -49,9 +46,6 @@ mkdir -p unity/unityads-project/Assets/Plugins/Android
 
 mkdir -p unity/unityads-project/Assets/Plugins/UnityAds/iOS
 
-#rm -rf unity/unityads-project/Assets/Plugins/UnityAds/Resources
-#rm -f unity/unityads-project/Assets/Plugins/UnityAds/Resources.meta
-
 rm -rf temp
 mkdir temp
 
@@ -67,10 +61,4 @@ else
   (cd $android_repo && make clean && make release && cp -rp build/. $prefix/temp/Assets/Plugins/Android/unityads ; cp -rp build/. $android_sdk_dir ; cd build/. ; zip -9 -r -y $android_sdk_zip .)
 fi
 
-echo "Building Unity plugin"
-$unity_app -quit -batchmode -projectPath $prefix/temp  -executeMethod UnityAdsPackageGenerator.CreatePackage
-mv temp/UnityAds.unitypackage $unity_sdk_dir
-
 rm -rf temp
-
-open $unity_sdk_dir
