@@ -556,6 +556,8 @@ public class UnityAdsWebData {
 		_initInProgress = false;
 
 		try {
+			UnityAdsDeviceLog.debug("Ad plan: " + json);
+
 			_campaignJson = new JSONObject(json);
 			JSONObject data = null;
 
@@ -663,7 +665,6 @@ public class UnityAdsWebData {
 		}
 
 		if(_listener != null && validData && _campaigns != null && _campaigns.size() > 0) {
-			UnityAdsDeviceLog.debug("WebDataCompleted: " + json);
 			UnityAdsDeviceLog.info("Unity Ads initialized with " + _campaigns.size() + " campaigns and " + (_zoneManager != null ? _zoneManager.zoneCount() : 0) + " zones");
 			_listener.onWebDataCompleted();
 			return;
