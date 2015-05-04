@@ -126,7 +126,11 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	if (gameId == nil || [gameId length] == 0) return false;
   if (self.initializer != nil) return false;
 
-  NSLog(@"Initializing Unity Ads with gameId %@", gameId);
+  if([[UnityAdsProperties sharedInstance] unityVersion] != nil) {
+    NSLog(@"Initializing Unity Ads version %@ (Unity %@) with gameId %@", [[UnityAdsProperties sharedInstance] adsVersion], [[UnityAdsProperties sharedInstance] unityVersion], gameId);
+  } else {
+    NSLog(@"Initializing Unity Ads version %@ with gameId %@", [[UnityAdsProperties sharedInstance] adsVersion], gameId);
+  }
 
   NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
   [notificationCenter addObserver:self selector:@selector(notificationHandler:) name:UIApplicationWillEnterForegroundNotification object:nil];

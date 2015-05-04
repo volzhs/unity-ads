@@ -678,7 +678,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 		}
 
-		UnityAdsDeviceLog.info("Initializing Unity Ads with gameId " + gameId);
+		if(UnityAdsProperties.UNITY_VERSION != null && UnityAdsProperties.UNITY_VERSION.length() > 0) {
+			UnityAdsDeviceLog.info("Initializing Unity Ads version " + UnityAdsConstants.UNITY_ADS_VERSION + " (Unity + " + UnityAdsProperties.UNITY_VERSION + ") with gameId " + gameId);
+		} else {
+			UnityAdsDeviceLog.info("Initializing Unity Ads version " + UnityAdsConstants.UNITY_ADS_VERSION + " with gameId " + gameId);
+		}
 
 		try {
 			Class<?> unityAdsWebBridge = Class.forName("com.unity3d.ads.android.webapp.UnityAdsWebBridge");
