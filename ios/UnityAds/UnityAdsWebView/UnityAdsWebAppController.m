@@ -53,6 +53,8 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
     self.webView.delegate = self;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.webView.scalesPageToFit = NO;
+    self.webView.allowsInlineMediaPlayback = YES;
+    self.webView.mediaPlaybackRequiresUserAction = NO;
     [self.webView setBackgroundColor:[UIColor blackColor]];
     UIScrollView *scrollView = nil;
     
