@@ -160,6 +160,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 - (BOOL)canShow {
 	UAAssertV([NSThread mainThread], NO);
   if (![UnityAds isSupported]) return NO;
+  if ([[UnityAdsMainViewController sharedInstance] isOpen]) return NO;
   if ([[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] count] <= 0) return NO;
 	return [self adsCanBeShown];
 }
