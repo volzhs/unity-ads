@@ -83,6 +83,7 @@
     _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [self threadBlocked:^BOOL{
       @synchronized(self) {
+        if([self isCancelled]) [_connection cancel];
         return ![self isFinished] && ![self isCancelled] && !_cancelEventSent;
       }
     }];
