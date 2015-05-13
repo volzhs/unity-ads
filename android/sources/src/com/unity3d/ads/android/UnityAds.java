@@ -275,7 +275,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	public static boolean canShow () {
-		if(_showingAds || webdata == null) return false;
+		if(webdata == null) {
+			logCanShow(1);
+			return false;
+		}
+
+		if(_showingAds) {
+			logCanShow(2);
+			return false;
+		}
 
 		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
 		if(currentActivity != null) {
@@ -285,24 +293,53 @@ public class UnityAds implements IUnityAdsCacheListener,
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 				boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
 
-				if(!isConnected) return false;
+				if(!isConnected) {
+					logCanShow(3);
+					return false;
+				}
 			}
 		}
 
 		ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
 
-		if(viewableCampaigns == null) return false;
+		if(viewableCampaigns == null) {
+			logCanShow(4);
+			return false;
+		}
 
-		if(viewableCampaigns.size() == 0) return false;
+		if(viewableCampaigns.size() == 0) {
+			logCanShow(5);
+			return false;
+		}
 
 		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
 		if(!nextCampaign.allowStreamingVideo().booleanValue()) {
 			if(!cachemanager.isCampaignCached(nextCampaign, true)) {
+				logCanShow(6);
 				return false;
 			}
 		}
 
+		logCanShow(0);
 		return true;
+	}
+
+	private static int prevCanShowLogMsg = -1;
+	private static final String[] canShowLogMsgs = {
+		"Unity Ads is ready to show ads",
+		"Unity Ads not ready to show ads: not initialized",
+		"Unity Ads not ready to show ads: already showing ads",
+		"Unity Ads not ready to show ads: no internet connection available",
+		"Unity Ads not ready to show ads: no ads are available",
+		"Unity Ads not ready to show ads: zero ads available",
+		"Unity Ads not ready to show ads: video not cached",
+	};
+
+	private static void logCanShow(int reason) {
+		if(reason != prevCanShowLogMsg) {
+			prevCanShowLogMsg = reason;
+			UnityAdsDeviceLog.info(canShowLogMsgs[reason]);
+		}
 	}
 
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
