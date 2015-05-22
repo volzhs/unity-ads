@@ -115,8 +115,6 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		
 		destroyVideoPlayerView();
 		UnityAdsProperties.SELECTED_CAMPAIGN = null;
-		webview.destroy();
-		webview = null;
 	}
 
 	public void setViewState (UnityAdsMainViewState state) {

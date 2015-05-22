@@ -79,6 +79,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private static boolean _initialized = false;
 	private static boolean _showingAds = false;
 	private static boolean _adsReadySent = false;
+	private static boolean _webAppLoaded = false;
 	private static boolean _openRequestFromDeveloper = false;
 	private static boolean _refreshAfterShowAds = false;
 	private static boolean _fixMainview = false;
@@ -171,7 +172,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 				}
 
 				if (view != null) {
-					setupViews();
 					open(view);
 				}
 
@@ -275,7 +275,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	public static boolean canShow () {
-		if(_showingAds || webdata == null) return false;
+		if(_showingAds || webdata == null || !_webAppLoaded) return false;
 
 		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
 		if(currentActivity != null) {
@@ -563,6 +563,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	@Override
 	public void onWebAppInitComplete (JSONObject data) {
 		UnityAdsDeviceLog.entered();
+		_webAppLoaded = true;
 		Boolean dataOk = true;
 
 		if(hasViewableAds()) {
@@ -786,10 +787,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 			if (mainview != null) {
 				new Thread(new Runnable() {
 					public void run() {
-						if(!mainview.webview.isWebAppLoadComplete()) {
-							mainview.webview.waitForWebAppLoadComplete();
-						}
-
 						UnityAdsUtils.runOnUiThread(new Runnable() {
 							public void run() {
 								if(mainview != null) {
@@ -817,7 +814,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	private static void setup () {
 		initCache();
-		//setupViews();
+		setupViews();
 	}
 
 	private static void initCache () {
@@ -844,15 +841,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	private static void setupViews () {
-		if (mainview != null) {
-			UnityAdsDeviceLog.debug("View was not destroyed, trying to destroy it");
-			mainview.webview.destroy();
-			mainview = null;
-		}
-
-		if (mainview == null) {
-			mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
-		}
+		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
 	}
 
 	private static void playVideo () {
@@ -1096,7 +1085,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 				if(mainview != null) {
 					mainview.closeAds(data);
-					mainview = null;
 				}
 
 				_showingAds = false;
