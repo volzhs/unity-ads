@@ -557,7 +557,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 	@Override
 	public void onWebAppLoadComplete (JSONObject data) {
 		UnityAdsDeviceLog.entered();
-		mainview.webview.setWebAppLoadComplete();
 	}
 
 	@Override
@@ -841,6 +840,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	private static void setupViews () {
+		_webAppLoaded = false;
+
+		if(mainview != null) {
+			UnityAdsDeviceLog.debug("Destroying views");
+			mainview.webview.destroy();
+			mainview = null;
+		}
+
 		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
 	}
 
