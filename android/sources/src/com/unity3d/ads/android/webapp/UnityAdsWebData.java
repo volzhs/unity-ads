@@ -158,6 +158,10 @@ public class UnityAdsWebData {
 		return viewableCampaigns;
 	}
 
+	public boolean initInProgress() {
+		return _initInProgress;
+	}
+
 	// TODO: This method always returns true regardless of success. Needs refactoring.
 	public boolean initCampaigns () {
 		if(_initInProgress) {

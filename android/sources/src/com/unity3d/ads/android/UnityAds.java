@@ -289,6 +289,8 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 		}
 
+		if(webdata.initInProgress()) return false;
+
 		ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
 
 		if(viewableCampaigns == null) return false;
