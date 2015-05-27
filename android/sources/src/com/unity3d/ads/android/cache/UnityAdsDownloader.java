@@ -231,7 +231,7 @@ public class UnityAdsDownloader {
 				if (_output == null)
 					onCancelled();
 				
-				byte data[] = new byte[1024];
+				byte data[] = new byte[65536];
 				long total = 0;
 				int count = 0;
 				
