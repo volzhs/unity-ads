@@ -229,14 +229,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 					if (viewableCampaigns.size() > 0) {
 						UnityAdsCampaign selectedCampaign = viewableCampaigns.get(0);
 						UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
-
-						if(viewableCampaigns.size() > 1) {
-							UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
-
-							if(cachemanager.isCampaignCached(selectedCampaign, true) && !cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
-								cachemanager.cacheNextVideo(nextCampaign);
-							}
-						}
 					}
 				}
 
@@ -401,6 +393,17 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case VideoStart:
 				if (_adsListener != null)
 					_adsListener.onVideoStarted();
+
+				ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
+
+				if(viewableCampaigns.size() > 1) {
+					UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
+
+					if(cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true) && !cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
+						cachemanager.cacheNextVideo(nextCampaign);
+					}
+				}
+
 				cancelPauseScreenTimer();
 				break;
 			case VideoEnd:
