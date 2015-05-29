@@ -473,13 +473,19 @@ public class UnityAdsWebData {
 
 	private void checkFailedUrls () {
 		File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
-		
+
 		if (pendingRequestFile.exists()) {
-			String contents = UnityAdsUtils.readFile(pendingRequestFile, true);
+			String contents;
+
+			synchronized(_urlLoaderLock) {
+				contents = UnityAdsUtils.readFile(pendingRequestFile, true);
+				UnityAdsUtils.removeFile(pendingRequestFile.toString());
+			}
+
 			JSONObject pendingRequestsJson = null;
 			JSONArray pendingRequestsArray = null;
 			//UnityAdsUrlLoader loader = null;
-			
+
 			try {
 				pendingRequestsJson = new JSONObject(contents);
 				pendingRequestsArray = pendingRequestsJson.getJSONArray("data");
@@ -502,8 +508,6 @@ public class UnityAdsWebData {
 			catch (Exception e) {
 				UnityAdsDeviceLog.error("Problems while sending some of the failed urls.");
 			}
-
-			UnityAdsUtils.removeFile(pendingRequestFile.toString());
 		}
 		
 		startNextLoader();
