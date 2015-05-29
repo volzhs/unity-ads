@@ -15,10 +15,14 @@
 @implementation CustomStoreProductViewController
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+  if ([UnityAdsDevice getIOSMajorVersion] >= 8 && [[UIDevice currentDevice] userInterfaceIdiom] != UIUserInterfaceIdiomPad)
+    return UIInterfaceOrientationPortrait;
   return [UIApplication sharedApplication].statusBarOrientation;
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
+  if ([UnityAdsDevice getIOSMajorVersion] >= 8 && [[UIDevice currentDevice] userInterfaceIdiom] != UIUserInterfaceIdiomPad)
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
   return UIInterfaceOrientationMaskAll;
 }
 
