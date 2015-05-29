@@ -954,44 +954,34 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// After ad unit closes, ad plan is refreshed if necessary
 	// If ad plan is not refreshed and next video is not yet cached, start caching
 	private static void refreshCampaignsOrCacheNextVideo() {
+		boolean refresh = false;
+
 		if(_refreshAfterShowAds) {
 			_refreshAfterShowAds = false;
 			UnityAdsDeviceLog.debug("Starting delayed ad plan refresh");
-			if(webdata != null) {
-				webdata.initCampaigns();
-			}
-			return;
-		}
-
-		if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
+			refresh = true;
+		} else if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
 			removeCampaignRefreshTimer();
 			UnityAdsDeviceLog.debug("Refreshing ad plan from server due to timer deadline");
-			if(webdata != null) {
-				webdata.initCampaigns();
-			}
+			refresh = true;
+		} else if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0 && UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
+			UnityAdsDeviceLog.debug("Refreshing ad plan from server due to endscreen limit");
+			refresh = true;
+		} else if(webdata != null && webdata.getVideoPlanCampaigns() != null && webdata.getViewableVideoPlanCampaigns().size() == 0) {
+			UnityAdsDeviceLog.debug("All available videos watched, refreshing ad plan from server");
+			refresh = true;
+		}
+
+		if(refresh) {
+			new Thread(new Runnable() {
+				public void run() {
+					if(webdata != null) {
+						webdata.initCampaigns();
+					}
+				}
+			}).start();
+
 			return;
-		}
-
-		if (UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0) {
-			if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
-				UnityAdsDeviceLog.debug("Refreshing ad plan from server due to endscreen limit");
-				if(webdata != null) {
-					webdata.initCampaigns();
-				}
-				return;
-			}
-		}
-
-		if (webdata != null && webdata.getVideoPlanCampaigns() != null) {
-			if(webdata.getViewableVideoPlanCampaigns().size() == 0) {
-				UnityAdsDeviceLog.debug("All available videos watched, refreshing ad plan from server");
-				if(webdata != null) {
-					webdata.initCampaigns();
-				}
-				return;
-			}
-		} else {
-			UnityAdsDeviceLog.error("Unable to read video data to determine if ad plans should be refreshed");
 		}
 
 		// Ad plan not refreshed, cache next video if necessary
