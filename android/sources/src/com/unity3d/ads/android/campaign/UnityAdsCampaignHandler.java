@@ -1,15 +1,11 @@
 package com.unity3d.ads.android.campaign;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.cache.UnityAdsDownloader;
 import com.unity3d.ads.android.cache.IUnityAdsDownloadListener;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
-import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 
 public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	
@@ -49,12 +45,6 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	public void onFileDownloadCompleted (String downloadUrl) {
 		if (finishDownload(downloadUrl)) {
 			UnityAdsDeviceLog.debug("Reporting campaign download completion: " + _campaign.getCampaignId());
-			
-			// Analytics / Instrumentation
-			Map<String, Object> values = new HashMap<String, Object>();
-			values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_COMPLETED);
-			values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CACHINGDURATION_KEY, getCachingDurationInMillis());
-			UnityAdsInstrumentation.gaInstrumentationVideoCaching(_campaign, values);		
 		}
 	}
 	
@@ -62,11 +52,6 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	public void onFileDownloadCancelled (String downloadUrl) {	
 		if (finishDownload(downloadUrl)) {
 			UnityAdsDeviceLog.debug("Download cancelled: " + _campaign.getCampaignId());
-			
-			// Analytics / Instrumentation
-			Map<String, Object> values = new HashMap<String, Object>();
-			values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_FAILED);			
-			UnityAdsInstrumentation.gaInstrumentationVideoCaching(_campaign, values);	
 		}
 	}
 	
@@ -124,12 +109,12 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 		
 		return false;
 	}
-	
+
 	private void checkFileAndDownloadIfNeeded(String fileUrl, boolean firstInAdPlan) {
 		if((_campaign.shouldCacheVideo() || (_campaign.allowCacheVideo() && firstInAdPlan)) && !UnityAdsUtils.isFileInCache(_campaign.getVideoFilename()) && UnityAdsUtils.canUseExternalStorage()) {
 			if (!hasDownloads())
 				UnityAdsDownloader.addListener(this);
-			
+
 			addCampaignToDownloads();			
 		}
 		else if (_campaign.shouldCacheVideo() && !isFileOk(fileUrl) && UnityAdsUtils.canUseExternalStorage()) {
@@ -161,15 +146,9 @@ public class UnityAdsCampaignHandler implements IUnityAdsDownloadListener {
 	private void addCampaignToDownloads () {
 		if (_campaign == null) return;
 		if (_downloadList == null) _downloadList = new ArrayList<String>();
-		
+
 		_downloadList.add(_campaign.getVideoUrl());
 		_cacheStartMillis = System.currentTimeMillis();
-		
-		// Analytics / Instrumentation
-		Map<String, Object> values = new HashMap<String, Object>();
-		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_START);			
-		UnityAdsInstrumentation.gaInstrumentationVideoCaching(_campaign, values);
-		
 		UnityAdsDownloader.addDownload(_campaign);
 	}
 
