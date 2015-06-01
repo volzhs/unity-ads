@@ -261,9 +261,6 @@
   UALOG_DEBUG(@"Notification: %@", name);
   
   if ([name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
-    [self applyOptionsToCurrentState:@{kUnityAdsNativeEventForceStopVideoPlayback:@true, @"sendAbortInstrumentation":@true, @"type":kUnityAdsGoogleAnalyticsEventVideoAbortExit}];
-    
-    
     if (self.isOpen)
       [self closeAds:NO withAnimations:NO withOptions:nil];
   }

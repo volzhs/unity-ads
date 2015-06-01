@@ -208,30 +208,6 @@ extern NSString * const kUnityAdsInitQueryParamCachingSpeedKey;
 extern NSString * const kUnityAdsInitQueryParamUnityVersionKey;
 
 
-/* Google Analytics Instrumentation */
-
-extern NSString * const kUnityAdsGoogleAnalyticsEventKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoPlay;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoError;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoAbort;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoCaching;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortBack;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortExit;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortSkip;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayStream;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayCached;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingCompleted;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingFailed;
-
-extern NSString * const kUnityAdsGoogleAnalyticsEventCampaignIdKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventConnectionTypeKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlaybackTypeKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventBufferingDurationKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventValueKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeKey;
-
 /* Zones */
 
 extern NSString * const kUnityAdsZonesRootKey;
