@@ -6,7 +6,6 @@
 #import "UnityAds.h"
 #import "UnityAdsCacheManager.h"
 #import "UnityAdsCampaign.h"
-#import "UnityAdsInstrumentation.h"
 #import "UnityAdsConstants.h"
 
 static NSString * const kUnityAdsCacheCampaignKey = @"kUnityAdsCacheCampaignKey";

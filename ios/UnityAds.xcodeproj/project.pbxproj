@@ -69,8 +69,6 @@
 		78AC202E1622EFFD007DE419 /* UnityAdsCampaignManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC20281622EFFD007DE419 /* UnityAdsCampaignManager.m */; };
 		78AC20411622F01F007DE419 /* UnityAds.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AC203B1622F01F007DE419 /* UnityAds.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		78AC20421622F01F007DE419 /* UnityAds.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC203C1622F01F007DE419 /* UnityAds.m */; };
-		78BC12F717392D0D0015A35E /* UnityAdsInstrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 78BC12F517392D0D0015A35E /* UnityAdsInstrumentation.h */; };
-		78BC12F817392D0D0015A35E /* UnityAdsInstrumentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */; };
 		78CB843A16255FAA00E94915 /* UnityAdsURLProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 78CB843816255FAA00E94915 /* UnityAdsURLProtocol.h */; };
 		78CB843B16255FAA00E94915 /* UnityAdsURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 78CB843916255FAA00E94915 /* UnityAdsURLProtocol.m */; };
 		8426634418DB0AB6004AD5B3 /* UnityAdsAppSheetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 99466CC318D1D87E00A63151 /* UnityAdsAppSheetManager.m */; };
@@ -113,7 +111,6 @@
 		C822D76D18CF4CF8007AAE44 /* UnityAds.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC203C1622F01F007DE419 /* UnityAds.m */; };
 		C822D76E18CF4CF8007AAE44 /* UnityAdsCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C822D75D18CF4A52007AAE44 /* UnityAdsCacheManager.m */; };
 		C822D76F18CF4CF8007AAE44 /* UnityAdsCacheFileOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C822D75F18CF4A52007AAE44 /* UnityAdsCacheFileOperation.m */; };
-		C822D77018CF4CF8007AAE44 /* UnityAdsInstrumentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */; };
 		C822D77118CF4CF8007AAE44 /* UnityAdsAnalyticsUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AC201E1622EFF3007DE419 /* UnityAdsAnalyticsUploader.m */; };
 		C822D77218CF4CF8007AAE44 /* UnityAdsProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 78057A0F1643CADB005EF487 /* UnityAdsProperties.m */; };
 		C822D77318CF4CF8007AAE44 /* UnityAdsConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7887E41B169EB62F00D67A2A /* UnityAdsConstants.m */; };
@@ -255,8 +252,6 @@
 		78AC20281622EFFD007DE419 /* UnityAdsCampaignManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsCampaignManager.m; sourceTree = "<group>"; };
 		78AC203B1622F01F007DE419 /* UnityAds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAds.h; sourceTree = "<group>"; };
 		78AC203C1622F01F007DE419 /* UnityAds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAds.m; sourceTree = "<group>"; };
-		78BC12F517392D0D0015A35E /* UnityAdsInstrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsInstrumentation.h; sourceTree = "<group>"; };
-		78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsInstrumentation.m; sourceTree = "<group>"; };
 		78CB843816255FAA00E94915 /* UnityAdsURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsURLProtocol.h; sourceTree = "<group>"; };
 		78CB843916255FAA00E94915 /* UnityAdsURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsURLProtocol.m; sourceTree = "<group>"; };
 		8464D4FE191127EB00B0E421 /* UnityAdsCampaignTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsCampaignTests.m; sourceTree = "<group>"; };
@@ -449,8 +444,6 @@
 			isa = PBXGroup;
 			children = (
 				C822D75B18CF4A52007AAE44 /* UnityAdsCache */,
-				78BC12F517392D0D0015A35E /* UnityAdsInstrumentation.h */,
-				78BC12F617392D0D0015A35E /* UnityAdsInstrumentation.m */,
 				78AC201D1622EFF3007DE419 /* UnityAdsAnalyticsUploader.h */,
 				78AC201E1622EFF3007DE419 /* UnityAdsAnalyticsUploader.m */,
 			);
@@ -728,7 +721,6 @@
 				99466CC418D1D87E00A63151 /* UnityAdsAppSheetManager.h in Headers */,
 				CC095C991733A30E00A0BD3C /* UnityAdsBundle.h in Headers */,
 				CC095CAE17377C2C00A0BD3C /* UnityAdsVideoMuteButton.h in Headers */,
-				78BC12F717392D0D0015A35E /* UnityAdsInstrumentation.h in Headers */,
 				99A8515D17FABF830090F8FF /* UnityAdsRewardItemManager.h in Headers */,
 				99FE3C0117E85B2200845E0B /* UnityAdsZone.h in Headers */,
 				99A78DBB17E9B81B00731814 /* UnityAdsZoneManager.h in Headers */,
@@ -941,7 +933,6 @@
 				C822D76D18CF4CF8007AAE44 /* UnityAds.m in Sources */,
 				C822D76E18CF4CF8007AAE44 /* UnityAdsCacheManager.m in Sources */,
 				C822D76F18CF4CF8007AAE44 /* UnityAdsCacheFileOperation.m in Sources */,
-				C822D77018CF4CF8007AAE44 /* UnityAdsInstrumentation.m in Sources */,
 				C822D77118CF4CF8007AAE44 /* UnityAdsAnalyticsUploader.m in Sources */,
 				C822D77218CF4CF8007AAE44 /* UnityAdsProperties.m in Sources */,
 				C86FABB618D075F7009EDE8F /* UnityAdsSBJsonStreamWriterState.m in Sources */,
@@ -1030,7 +1021,6 @@
 				C822D76318CF4A52007AAE44 /* UnityAdsCacheFileOperation.m in Sources */,
 				CC095C9A1733A30E00A0BD3C /* UnityAdsBundle.m in Sources */,
 				CC095CAF17377C2C00A0BD3C /* UnityAdsVideoMuteButton.m in Sources */,
-				78BC12F817392D0D0015A35E /* UnityAdsInstrumentation.m in Sources */,
 				99FE3C0217E85B2200845E0B /* UnityAdsZone.m in Sources */,
 				99A78DBC17E9B81B00731814 /* UnityAdsZoneManager.m in Sources */,
 				99A78DBE17E9B81B00731814 /* UnityAdsZoneParser.m in Sources */,
