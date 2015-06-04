@@ -12,7 +12,6 @@
 #import "../UnityAdsDevice/UnityAdsDevice.h"
 #import "../UnityAdsData/UnityAdsAnalyticsUploader.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
-#import "../UnityAdsData/UnityAdsInstrumentation.h"
 #import "../UnityAdsProperties/UnityAdsConstants.h"
 #import "UnityAdsCacheManager.h"
 
@@ -90,7 +89,6 @@
     [self clearTimeOutTimer];
     [self clearVideoProgressMonitor];
     [self.delegate videoPlaybackError];
-    [UnityAdsInstrumentation gaInstrumentationVideoError:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:nil];
   }
 }
 
@@ -191,7 +189,6 @@
       [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingEndTime = [[NSDate date] timeIntervalSince1970] * 1000;
       long long bufferingCompleted = [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingEndTime - [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingStartTime;
       
-      [UnityAdsInstrumentation gaInstrumentationVideoPlay:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:@{kUnityAdsGoogleAnalyticsEventBufferingDurationKey:@(bufferingCompleted)}];
     }
     else if (playerItemStatus == AVPlayerItemStatusFailed) {
       UALOG_DEBUG(@"Player failed");
@@ -199,7 +196,6 @@
         self.hasPlayed = false;
         self.isPlaying = false;
         [self.delegate videoPlaybackError];
-        [UnityAdsInstrumentation gaInstrumentationVideoError:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:nil];
         [self clearTimeOutTimer];
         [self clearVideoProgressMonitor];
       });

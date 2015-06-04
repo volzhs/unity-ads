@@ -201,32 +201,5 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_PLAYSTORE_ITUNESID_KEY = "iTunesId";
 	public static final String UNITY_ADS_PLAYSTORE_CLICKURL_KEY = "clickUrl";
 	public static final String UNITY_ADS_PLAYSTORE_BYPASSAPPSHEET_KEY = "bypassAppSheet";
-	
-	/* Google Analytics Events */
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_KEY = "googleAnalyticsEvent";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOPLAY = "videoAnalyticsEventPlay";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOERROR = "videoAnalyticsEventError";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOABORT = "videoAnalyticsEventAbort";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOCACHING = "videoAnalyticsEventCaching";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_BACK = "back";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_EXIT = "exit";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_SKIP = "skip";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_HIDDEN = "hidden";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOPLAY_HLSL = "stream";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOPLAY_CACHED = "cached";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_START = "start";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_COMPLETED = "completed";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_FAILED = "failed";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CAMPAIGNID_KEY = "campaignId";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CONNECTIONTYPE_KEY = "connectionType";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOPLAYBACKTYPE_KEY = "videoPlaybackType";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY = "bufferingDuration";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CACHINGDURATION_KEY = "cachingDuration";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY = "eventValue";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_KEY = "eventType";
+
 }

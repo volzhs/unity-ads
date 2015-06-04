@@ -1,8 +1,6 @@
 package com.unity3d.ads.android.view;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,7 +27,6 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
-import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
@@ -355,12 +352,6 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 	}
 	
 	public void onVideoSkip () {
-		Map<String, Object> values = null;
-		values = new HashMap<String, Object>();
-		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, videoplayerview.getBufferingDuration());
-		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_SKIP);
-		UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);
-				
 		afterVideoPlaybackOperations();
 		JSONObject params = new JSONObject();
 		
@@ -378,14 +369,6 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 	// Almost like onVideoSkip but this is a bit different situation
 	// This covers situations where user has e.g. pressed home button and hidden the video instead of pressing skip button
 	public void onVideoHidden() {
-		Map<String, Object> values = null;
-		values = new HashMap<String, Object>();
-		if(videoplayerview != null) {
-			values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, videoplayerview.getBufferingDuration());
-		}
-		values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_HIDDEN);
-		UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);
-
 		if (videoplayerview != null) {
 			videoplayerview.setKeepScreenOn(false);
 			videoplayerview.hideVideo();

@@ -12,7 +12,6 @@
 #import "UnityAdsZoneManager.h"
 #import "UnityAdsIncentivizedZone.h"
 #import "UnityAdsWebAppController.h"
-#import "UnityAdsInstrumentation.h"
 
 @implementation UnityAdsViewStateVideoPlayer
 
@@ -55,16 +54,6 @@
 - (void)applyOptions:(NSDictionary *)options {
   UALOG_DEBUG(@"");
   if (options != nil) {
-    if ([options objectForKey:@"sendAbortInstrumentation"] != nil && [[options objectForKey:@"sendAbortInstrumentation"] boolValue] == true) {
-      NSString *eventType = nil;
-      
-      if ([options objectForKey:@"type"] != nil) {
-        
-        eventType = [options objectForKey:@"type"];
-        [UnityAdsInstrumentation gaInstrumentationVideoAbort:[[UnityAdsCampaignManager sharedInstance] selectedCampaign] withValuesFrom:@{kUnityAdsGoogleAnalyticsEventValueKey:eventType, kUnityAdsGoogleAnalyticsEventBufferingDurationKey:@([[[UnityAdsCampaignManager sharedInstance] selectedCampaign] geBufferingDuration])}];
-      }
-    }
-    
     if ([options objectForKey:kUnityAdsNativeEventForceStopVideoPlayback] != nil) {
       [self destroyVideoController];
     }
