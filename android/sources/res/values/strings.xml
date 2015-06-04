@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lib_name">Unity Ads</string>
+    <string name="tap_to_continue">Video paused. Tap screen to continue watching.</string>
 </resources>

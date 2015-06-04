@@ -422,7 +422,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_pausedView = new UnityAdsVideoPausedView(getContext());
 				
 		if (_pausedView != null && _pausedView.getParent() == null) {
-			RelativeLayout.LayoutParams pausedViewParams = new RelativeLayout.LayoutParams(FILL_PARENT, FILL_PARENT);
+			RelativeLayout.LayoutParams pausedViewParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			pausedViewParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 			addView(_pausedView, pausedViewParams);		
 		}

@@ -726,7 +726,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
 		UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
 		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
-		UnityAdsVideoPausedView.initScreenMetrics(activity);
+		//UnityAdsVideoPausedView.initScreenMetrics(activity);
 
 		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable(activity));
 
