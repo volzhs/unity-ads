@@ -92,6 +92,10 @@
 	UAAssert(![NSThread isMainThread]);
 	UALOG_DEBUG(@"");
   [(UnityAdsCampaignManager *)[UnityAdsCampaignManager sharedInstance] setDelegate:self];
+  
+  // Hotfix: Allow time for connectionType to be determined before requesting ads.
+  [NSThread sleepForTimeInterval:3];
+  
 	[self refreshCampaignManager];
 }
 
