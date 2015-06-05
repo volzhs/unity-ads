@@ -16,7 +16,6 @@
     [self createQueue];
   if (self.backgroundThread == nil)
     [self createBackgroundThread];
-  [UnityAdsDevice launchReachabilityCheck];
 }
 
 - (void)reInitialize {
@@ -56,7 +55,6 @@
 }
 
 - (void)dealloc {
-  [UnityAdsDevice clearReachabilityCheck];
   dispatch_release(self.queue);
 }
 
@@ -88,19 +86,23 @@
   }
 }
 
+- (void)waitForReachabilityCheck {
+  NSCondition* condition = [UnityAdsDevice reachabilityCheck];
+  [condition lock];
+  [condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:5.0]];
+  [condition unlock];
+}
+
 - (void)initCampaignManager {
 	UAAssert(![NSThread isMainThread]);
 	UALOG_DEBUG(@"");
   [(UnityAdsCampaignManager *)[UnityAdsCampaignManager sharedInstance] setDelegate:self];
-  
-  // Hotfix: Allow time for connectionType to be determined before requesting ads.
-  [NSThread sleepForTimeInterval:3];
-  
 	[self refreshCampaignManager];
 }
 
 - (void)refreshCampaignManager {
 	UAAssert(![NSThread isMainThread]);
+  [self waitForReachabilityCheck];
 	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
 	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
 }

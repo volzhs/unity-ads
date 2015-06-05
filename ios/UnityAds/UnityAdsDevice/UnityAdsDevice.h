@@ -17,8 +17,7 @@
 + (NSString *)analyticsMachineName;
 
 
-+ (void)launchReachabilityCheck;
-+ (void)clearReachabilityCheck;
++ (NSCondition*)reachabilityCheck;
 + (NSString *)currentConnectionType;
 
 + (NSString *)getNetworkType;
