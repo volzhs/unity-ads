@@ -87,8 +87,9 @@
 }
 
 - (void)waitForReachabilityCheck {
-  NSCondition* condition = [UnityAdsDevice reachabilityCheck];
+  NSCondition* condition = [UnityAdsDevice reachabilityCondition];
   [condition lock];
+  [UnityAdsDevice launchReachabilityCheck];
   [condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:5.0]];
   [condition unlock];
 }

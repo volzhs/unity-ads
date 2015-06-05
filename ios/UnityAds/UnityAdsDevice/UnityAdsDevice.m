@@ -322,10 +322,16 @@ static NSString* cellularConnectionString = @"cellular";
 static NSString* noneConnectionString = @"none";
 static NSString* currentConnectionString = @"none";
 
-+ (NSCondition*)reachabilityCheck {
++ (NSCondition*)reachabilityCondition {
+  static NSCondition* reachabilityCondition = nil;
+  if(reachabilityCondition == nil) {
+    reachabilityCondition = [NSCondition new];
+  }
+  return reachabilityCondition;
+}
+
++ (void)launchReachabilityCheck {
   static SCNetworkReachabilityRef reachabilityRef = NULL;
-  
-  NSCondition* condition = [NSCondition new];
   
   void (^callbackBlock)(SCNetworkReachabilityFlags) = ^(SCNetworkReachabilityFlags flags) {    
     NSString* connectionString = noneConnectionString;
@@ -361,10 +367,10 @@ static NSString* currentConnectionString = @"none";
       connectionString = noneConnectionString;
     }
     
-    [condition lock];
+    [[self reachabilityCondition] lock];
     currentConnectionString = connectionString;
-    [condition signal];
-    [condition unlock];
+    [[self reachabilityCondition] signal];
+    [[self reachabilityCondition] unlock];
   };
 
   SCNetworkReachabilityContext context = {
@@ -379,12 +385,11 @@ static NSString* currentConnectionString = @"none";
       SCNetworkReachabilitySetCallback(reachabilityRef, NULL, NULL);
     }
   }
-  
-  return condition;
 }
 
 static void UnityAdsReachabilityCallback(SCNetworkReachabilityRef __unused ref, SCNetworkConnectionFlags flags, void* info) {
   void (^callbackBlock)(SCNetworkReachabilityFlags) = (__bridge id)info;
+  [NSThread sleepForTimeInterval:10.0];
   callbackBlock(flags);
 }
 
