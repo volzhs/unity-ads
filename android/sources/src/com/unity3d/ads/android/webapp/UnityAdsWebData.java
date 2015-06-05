@@ -707,54 +707,75 @@ public class UnityAdsWebData {
 	}
 
 	private ArrayList<UnityAdsCampaign> filterCampaigns(ArrayList<UnityAdsCampaign> campaigns) {
-		if(campaigns != null && campaigns.size() > 0) {
-			Activity activity = UnityAdsProperties.getCurrentActivity();
+		if(campaigns == null || campaigns.size() == 0) return null;
 
-			if(activity == null) return campaigns;
+		Activity activity = UnityAdsProperties.getCurrentActivity();
 
-			PackageManager pm = activity.getPackageManager();
+		if(activity == null) return campaigns;
 
-			ArrayList<UnityAdsCampaign> newCampaigns = new ArrayList<UnityAdsCampaign>();
-			ArrayList<String> oldCampaigns = null;
+		PackageManager pm = activity.getPackageManager();
 
-			for(UnityAdsCampaign campaign : campaigns) {
-				String packageName = campaign.getStoreId();
+		ArrayList<UnityAdsCampaign> newCampaigns = new ArrayList<UnityAdsCampaign>();
+		ArrayList<String> installedCampaigns = null;
 
-				// Sometimes getStoreId returns stuff like com.company.game&hl=en so strip ampersand(0x26) and everything after that
-				if(packageName.indexOf(0x26) != -1) {
-					packageName = packageName.substring(0, packageName.indexOf(0x26));
+		for(UnityAdsCampaign campaign : campaigns) {
+			String packageName = campaign.getStoreId();
+
+			// Sometimes getStoreId returns stuff like com.company.game&hl=en so strip ampersand(0x26) and everything after that
+			if(packageName.indexOf(0x26) != -1) {
+				packageName = packageName.substring(0, packageName.indexOf(0x26));
+			}
+
+			if(packageName != null) {
+				boolean installed = false;
+
+				// Check if packageName is installed
+				try {
+					PackageInfo pkgInfo = pm.getPackageInfo(packageName, 0);
+					if(pkgInfo != null && packageName.equals(pkgInfo.packageName)) {
+						installed = true;
+					}
+				} catch(NameNotFoundException e) {
+					installed = false;
 				}
 
-				if(packageName != null) {
-					try {
-						PackageInfo pkgInfo = pm.getPackageInfo(packageName, 0);
+				// Add all installed games to list for next ad request
+				if(installed) {
+					if(installedCampaigns == null) {
+						installedCampaigns = new ArrayList<String>();
+					}
 
-						if(pkgInfo != null && packageName.equals(pkgInfo.packageName)) {
-							if(oldCampaigns == null) {
-								oldCampaigns = new ArrayList<String>();
-							}
+					installedCampaigns.add(campaign.getGameId());
+				}
 
-							oldCampaigns.add(campaign.getGameId());
-							UnityAdsDeviceLog.debug("Filtered game id " + campaign.getGameId() + " from ad plan");
-						} else {
-							newCampaigns.add(campaign);
-						}
-					} catch (NameNotFoundException e) {
+				String filterMode = campaign.getFilterMode();
+
+				if(filterMode != null && filterMode.equals("whitelist")) {
+					// In whitelist mode, show ads for game only when the game is already installed
+					if(installed) {
 						newCampaigns.add(campaign);
+					} else {
+						UnityAdsDeviceLog.debug("Filtered game id " + campaign.getGameId() + " from ad plan (not installed)");
 					}
 				} else {
-					newCampaigns.add(campaign);
+					// In blacklist mode (default), show ads for game only when the game is not already installed
+					if(installed) {
+						UnityAdsDeviceLog.debug("Filtered game id " + campaign.getGameId() + " from ad plan (already installed)");
+					} else {
+						newCampaigns.add(campaign);
+					}
 				}
+			} else {
+				// If package name is not available for any reason, do no filtering
+				newCampaigns.add(campaign);
 			}
-
-			if(oldCampaigns != null) {
-				UnityAdsProperties.APPFILTER_LIST = TextUtils.join(",", oldCampaigns);
-			}
-
-			return newCampaigns;
 		}
 
-		return null;
+		if(installedCampaigns != null) {
+			UnityAdsProperties.APPFILTER_LIST = TextUtils.join(",", installedCampaigns);
+		}
+
+		return newCampaigns;
 	}
 
 	private void requestAppWhitelist(String url) {

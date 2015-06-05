@@ -99,7 +99,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_APPFILTERING_KEY = "appFiltering";
 	public static final String UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL = "installedAppsUrl";
 	public static final String UNITY_ADS_CAMPAIGN_APP_WHITELIST_URL = "appWhitelist";
-	
+	public static final String UNITY_ADS_CAMPAIGN_FILTER_MODE = "filterMode";
+
 	/* Zone JSON Properties */
 	public static final String UNITY_ADS_ZONES_KEY = "zones";
 	public static final String UNITY_ADS_ZONE_ID_KEY = "id";
