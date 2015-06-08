@@ -63,6 +63,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_VIDEOSTARTEDPLAYING = "video_started_playing";	
 	public static final String UNITY_ADS_WEBVIEW_API_ZONE_KEY = "zone";
 	public static final String UNITY_ADS_WEBVIEW_API_REWARD_ITEM_KEY = "itemKey";
+	public static final String UNITY_ADS_WEBVIEW_API_LAUNCHINTENT = "launchIntent";
 
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY = "campaignId";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY = "rewatch";	
