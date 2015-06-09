@@ -684,122 +684,126 @@ public class UnityAds implements IUnityAdsCacheListener,
 		int flags = 0;
 
 		try {
-			if(data.has("packageName")) {
-				packageName = data.getString("packageName");
-			}
-
-			if(data.has("className")) {
-				className = data.getString("className");
-			}
-
-			if(data.has("action")) {
-				action = data.getString("action");
-			}
-
-			if(data.has("uri")) {
-				uri = data.getString("uri");
-			}
-
-			if(data.has("categories")) {
-				JSONArray array = data.getJSONArray("categories");
-
-				if(array.length() > 0) {
-					categories = new String[array.length()];
-					for(int i = 0; i < array.length(); i++) {
-						categories[i] = array.getString(i);
-					}
-				}
-			}
-
-			if(data.has("mimeType")) {
-				mimeType = data.getString("mimeType");
-			}
-
-			if(data.has("flags")) {
-				flagsGiven = true;
-				flags = data.getInt("flags");
-			}
-		} catch(JSONException e) {
-			UnityAdsDeviceLog.error("JSONException while parsing intent launch data: " + e.getMessage());
-			return;
-		}
-
-		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
-		if(currentActivity == null) {
-			UnityAdsDeviceLog.error("Unable to launch intent: current activity is null");
-			return;
-		}
-
-		if(packageName != null && className == null && action == null && mimeType == null) {
-			PackageManager pm = currentActivity.getPackageManager();
-			Intent intent = pm.getLaunchIntentForPackage(packageName);
-
-			if(flagsGiven) {
-				intent.addFlags(flags);
-			}
-
-			if(intent != null) {
-				currentActivity.startActivity(intent);
-			} else {
-				UnityAdsDeviceLog.error("No launch intent found for " + packageName);
-			}
-		} else {
-			Intent intent = new Intent();
-
-			if(className != null && packageName != null) {
-				intent.setClassName(packageName, className);
-			}
-
-			if(action != null) {
-				intent.setAction(action);
-			}
-
-			if(uri != null) {
-				intent.setData(Uri.parse(uri));
-			}
-
-			if(mimeType != null) {
-				intent.setType(mimeType);
-			}
-
-			if(categories != null) {
-				for(int i = 0; i < categories.length; i++) {
-					intent.addCategory(categories[i]);
-				}
-			}
-
-			if(flagsGiven) {
-				intent.setFlags(flags);
-			}
-
 			try {
-				if(data.has("extras")) {
-					JSONArray array = data.getJSONArray("extras");
+				if(data.has("packageName")) {
+					packageName = data.getString("packageName");
+				}
 
-					for(int i = 0; i < array.length(); i++) {
-						JSONObject item = array.getJSONObject(i);
+				if(data.has("className")) {
+					className = data.getString("className");
+				}
 
-						String key = item.getString("key");
-						Object value = item.get("value");
+				if(data.has("action")) {
+					action = data.getString("action");
+				}
 
-						if(value instanceof String) {
-							intent.putExtra(key, (String)value);
-						} else if(value instanceof Integer) {
-							intent.putExtra(key, ((Integer)value).intValue());
-						} else if(value instanceof Double) {
-							intent.putExtra(key, ((Double)value).doubleValue());
-						} else if(value instanceof Boolean) {
-							intent.putExtra(key, ((Boolean)value).booleanValue());
-						} else {
-							UnityAdsDeviceLog.error("Unable to parse launch intent extra " + key);
+				if(data.has("uri")) {
+					uri = data.getString("uri");
+				}
+
+				if(data.has("categories")) {
+					JSONArray array = data.getJSONArray("categories");
+
+					if(array.length() > 0) {
+						categories = new String[array.length()];
+						for(int i = 0; i < array.length(); i++) {
+							categories[i] = array.getString(i);
 						}
 					}
 				}
+
+				if(data.has("mimeType")) {
+					mimeType = data.getString("mimeType");
+				}
+
+				if(data.has("flags")) {
+					flagsGiven = true;
+					flags = data.getInt("flags");
+				}
 			} catch(JSONException e) {
-				UnityAdsDeviceLog.error("Error while parsing intent extras: " + e.getMessage());
+				UnityAdsDeviceLog.error("JSONException while parsing intent launch data: " + e.getMessage());
+				return;
 			}
 
-			currentActivity.startActivity(intent);
+			Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+			if(currentActivity == null) {
+				UnityAdsDeviceLog.error("Unable to launch intent: current activity is null");
+				return;
+			}
+
+			if(packageName != null && className == null && action == null && mimeType == null) {
+				PackageManager pm = currentActivity.getPackageManager();
+				Intent intent = pm.getLaunchIntentForPackage(packageName);
+
+				if(flagsGiven) {
+					intent.addFlags(flags);
+				}
+
+				if(intent != null) {
+					currentActivity.startActivity(intent);
+				} else {
+					UnityAdsDeviceLog.error("No launch intent found for " + packageName);
+				}
+			} else {
+				Intent intent = new Intent();
+
+				if(className != null && packageName != null) {
+					intent.setClassName(packageName, className);
+				}
+
+				if(action != null) {
+					intent.setAction(action);
+				}
+
+				if(uri != null) {
+					intent.setData(Uri.parse(uri));
+				}
+
+				if(mimeType != null) {
+					intent.setType(mimeType);
+				}
+
+				if(categories != null) {
+					for(int i = 0; i < categories.length; i++) {
+						intent.addCategory(categories[i]);
+					}
+				}
+
+				if(flagsGiven) {
+					intent.setFlags(flags);
+				}
+
+				try {
+					if(data.has("extras")) {
+						JSONArray array = data.getJSONArray("extras");
+
+						for(int i = 0; i < array.length(); i++) {
+							JSONObject item = array.getJSONObject(i);
+
+							String key = item.getString("key");
+							Object value = item.get("value");
+
+							if(value instanceof String) {
+								intent.putExtra(key, (String)value);
+							} else if(value instanceof Integer) {
+								intent.putExtra(key, ((Integer)value).intValue());
+							} else if(value instanceof Double) {
+								intent.putExtra(key, ((Double)value).doubleValue());
+							} else if(value instanceof Boolean) {
+								intent.putExtra(key, ((Boolean)value).booleanValue());
+							} else {
+								UnityAdsDeviceLog.error("Unable to parse launch intent extra " + key);
+							}
+						}
+					}
+				} catch(JSONException e) {
+					UnityAdsDeviceLog.error("Error while parsing intent extras: " + e.getMessage());
+				}
+
+				currentActivity.startActivity(intent);
+			}
+		} catch(Exception e2) {
+			UnityAdsDeviceLog.error("Failed to launch intent: " + e2.getMessage());
 		}
 	}
 
