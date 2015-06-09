@@ -1,24 +1,21 @@
 package com.unity3d.ads.android.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.unity3d.ads.android.data.UnityAdsDevice;
-import com.unity3d.ads.android.data.UnityAdsGraphicsBundle;
+import com.unity3d.ads.android.R;
+import com.unity3d.ads.android.UnityAdsDeviceLog;
 
-public class UnityAdsMuteVideoButton extends ImageButton {
+public class UnityAdsMuteVideoButton extends RelativeLayout {
 
 	private UnityAdsMuteVideoButtonState _state = UnityAdsMuteVideoButtonState.UnMuted;
-	private UnityAdsMuteVideoButtonSize _size = UnityAdsMuteVideoButtonSize.Medium;
-	
-	public static enum UnityAdsMuteVideoButtonState { UnMuted, Muted };
-	public static enum UnityAdsMuteVideoButtonSize { Small, Medium, Large };
-	
+
+	public static enum UnityAdsMuteVideoButtonState { UnMuted, Muted }
+	private RelativeLayout _layout = null;
+
 	public UnityAdsMuteVideoButton(Context context) {
 		super(context);
 		setupView();
@@ -38,38 +35,35 @@ public class UnityAdsMuteVideoButton extends ImageButton {
 	public void setState (UnityAdsMuteVideoButtonState state) {
 		if (state != null && !state.equals(_state)) {
 			_state = state;
-			setImageBitmap(selectBitmap());
-		}
-	}
-	
-	private Bitmap selectBitmap () {
-		String bitmapString = "";
-		if (_size != null && _size.equals(UnityAdsMuteVideoButtonSize.Medium)) {
-			switch (_state) {
-				case UnMuted:
-					bitmapString = UnityAdsGraphicsBundle.ICON_AUDIO_UNMUTED_50x50;
-					if (UnityAdsDevice.getScreenDensity() == DisplayMetrics.DENSITY_LOW) {
-						bitmapString = UnityAdsGraphicsBundle.ICON_AUDIO_UNMUTED_32x32;
-					}
-					return UnityAdsGraphicsBundle.getBitmapFromString(bitmapString);
-				case Muted:
-					bitmapString = UnityAdsGraphicsBundle.ICON_AUDIO_MUTED_50x50;
-					if (UnityAdsDevice.getScreenDensity() == DisplayMetrics.DENSITY_LOW) {
-						bitmapString = UnityAdsGraphicsBundle.ICON_AUDIO_MUTED_32x32;
-					}
 
-					return UnityAdsGraphicsBundle.getBitmapFromString(bitmapString);
+			View muted = _layout.findViewById(R.id.unityAdsMuteButtonSpeakerX);
+			View unmuted = _layout.findViewById(R.id.unityAdsMuteButtonSpeakerWaves);
+
+			if (muted != null && unmuted != null) {
+				switch (_state) {
+					case Muted:
+						muted.setVisibility(View.VISIBLE);
+						unmuted.setVisibility(View.GONE);
+						break;
+					case UnMuted:
+						muted.setVisibility(View.GONE);
+						unmuted.setVisibility(View.VISIBLE);
+						break;
+					default:
+						UnityAdsDeviceLog.debug("Invalid state: " + _state);
+						break;
+				}
 			}
+
 		}
-		
-		return null;
 	}
-	
+
 	private void setupView () {
-		setAdjustViewBounds(true);
-		setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
-		setImageBitmap(selectBitmap());
-		setBackgroundResource(0);
-		setPadding(0, 0, 0, 0);
+		LayoutInflater inflater = LayoutInflater.from(getContext());
+
+		if (inflater != null) {
+			_layout = (RelativeLayout)inflater.inflate(R.layout.unityads_button_audio_toggle, null);
+			addView(_layout, new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		}
 	}
 }
