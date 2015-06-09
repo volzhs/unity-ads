@@ -2,7 +2,6 @@ package com.unity3d.ads.android.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -18,18 +17,19 @@ public class UnityAdsMuteVideoButton extends RelativeLayout {
 
 	public UnityAdsMuteVideoButton(Context context) {
 		super(context);
-		setupView();
 	}
 
 	public UnityAdsMuteVideoButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		setupView();
 	}
 
 	public UnityAdsMuteVideoButton(Context context, AttributeSet attrs,
 			int defStyle) {
 		super(context, attrs, defStyle);
-		setupView();
+	}
+
+	public void setLayout (RelativeLayout layout) {
+		_layout = layout;
 	}
 	
 	public void setState (UnityAdsMuteVideoButtonState state) {
@@ -55,15 +55,6 @@ public class UnityAdsMuteVideoButton extends RelativeLayout {
 				}
 			}
 
-		}
-	}
-
-	private void setupView () {
-		LayoutInflater inflater = LayoutInflater.from(getContext());
-
-		if (inflater != null) {
-			_layout = (RelativeLayout)inflater.inflate(R.layout.unityads_button_audio_toggle, null);
-			addView(_layout, new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		}
 	}
 }

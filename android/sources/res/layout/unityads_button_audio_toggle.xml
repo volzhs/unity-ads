@@ -3,7 +3,8 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:paddingLeft="3dp"
-                android:paddingBottom="3dp">
+                android:paddingBottom="3dp"
+                android:background="#01FFFFFF">
 
     <View
         android:layout_width="30dp"

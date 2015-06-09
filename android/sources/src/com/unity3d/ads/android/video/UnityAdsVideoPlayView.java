@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.unity3d.ads.android.R;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
@@ -145,7 +144,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		hideTimeRemainingLabel();
 		hideVideoPausedView();
 		purgeVideoPausedTimer();
-				
 		_videoView.stopPlayback();
 		_videoView.setOnCompletionListener(null);
 		_videoView.setOnPreparedListener(null);
@@ -271,7 +269,31 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_timeLeftInSecondsText.setText(R.string.default_video_length_text);
 		_skipTextView = (TextView)_layout.findViewById(R.id.unityAdsVideoSkipText);
 		_skipTextContainer = (RelativeLayout)_layout.findViewById(R.id.unityAdsSkipTextContainer);
+		_muteButton = new UnityAdsMuteVideoButton(getContext());
+		_muteButton.setLayout((RelativeLayout) _layout.findViewById(R.id.unityAdsAudioToggleView));
 
+		if (_muted) {
+			_muteButton.setState(UnityAdsMuteVideoButton.UnityAdsMuteVideoButtonState.Muted);
+		}
+
+		_layout.findViewById(R.id.unityAdsAudioToggleView).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (_videoPlayheadPrepared && _videoPlaybackStartedSent) {
+					if (_muted) {
+						_muted = false;
+						_muteButton.setState(UnityAdsMuteVideoButton.UnityAdsMuteVideoButtonState.UnMuted);
+						_mediaPlayer.setVolume(_volumeBeforeMute, _volumeBeforeMute);
+					}
+					else {
+						_muted = true;
+						_muteButton.setState(UnityAdsMuteVideoButton.UnityAdsMuteVideoButtonState.Muted);
+						storeVolume();
+						_mediaPlayer.setVolume(0f, 0f);
+					}
+				}
+			}
+		});
 
 		if(UnityAdsProperties.UNITY_DEVELOPER_INTERNAL_TEST) { 
 			_stagingLayout = new RelativeLayout(getContext());
@@ -395,17 +417,17 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		UnityAdsUtils.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				if(_bufferingText != null) {
+				if (_bufferingText != null) {
 					_bufferingText.setVisibility(visibility);
 				}
-				if(visibility == VISIBLE) {
-					if(_skipTextView == null) {
+				if (visibility == VISIBLE) {
+					if (_skipTextView == null) {
 						updateSkipText();
 					}
 					enableSkippingFromSkipText();
 				} else {
-					if(hasSkip) {
-						if(canSkip) {
+					if (hasSkip) {
+						if (canSkip) {
 							enableSkippingFromSkipText();
 						} else {
 							disableSkippingFromSkipText();
@@ -418,7 +440,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		});
 	}
 
-    @Override
+	@Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
     	long bufferingDuration = 0;
     	Map<String, Object> values = null;
@@ -446,7 +468,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		}
     	
     	return false;
-    } 
+    }
     
     @Override
     protected void onAttachedToWindow() {
