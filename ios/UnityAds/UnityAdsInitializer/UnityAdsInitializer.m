@@ -16,7 +16,6 @@
     [self createQueue];
   if (self.backgroundThread == nil)
     [self createBackgroundThread];
-  [UnityAdsDevice launchReachabilityCheck];
 }
 
 - (void)reInitialize {
@@ -56,7 +55,6 @@
 }
 
 - (void)dealloc {
-  [UnityAdsDevice clearReachabilityCheck];
   dispatch_release(self.queue);
 }
 
@@ -88,6 +86,14 @@
   }
 }
 
+- (void)waitForReachabilityCheck {
+  NSCondition* condition = [UnityAdsDevice reachabilityCondition];
+  [condition lock];
+  [UnityAdsDevice launchReachabilityCheck];
+  [condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:5.0]];
+  [condition unlock];
+}
+
 - (void)initCampaignManager {
 	UAAssert(![NSThread isMainThread]);
 	UALOG_DEBUG(@"");
@@ -97,6 +103,7 @@
 
 - (void)refreshCampaignManager {
 	UAAssert(![NSThread isMainThread]);
+  [self waitForReachabilityCheck];
 	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
 	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
 }
