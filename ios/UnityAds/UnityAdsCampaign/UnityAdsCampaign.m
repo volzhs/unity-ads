@@ -157,6 +157,12 @@
     }
   }
   
+  if([data objectForKey:kUnityAdsCampaignFilterModeKey] != nil) {
+    self.filterMode = [[data objectForKey:kUnityAdsCampaignFilterModeKey] stringValue];
+  } else {
+    self.filterMode = @"blacklist";
+  }
+  
   data = nil;
 }
 
