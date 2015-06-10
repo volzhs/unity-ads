@@ -157,8 +157,9 @@
     }
   }
   
-  if([data objectForKey:kUnityAdsCampaignFilterModeKey] != nil) {
-    self.filterMode = [[data objectForKey:kUnityAdsCampaignFilterModeKey] stringValue];
+  NSString* filterMode = [data objectForKey:kUnityAdsCampaignFilterModeKey];
+  if(filterMode != nil) {
+    self.filterMode = filterMode;
   } else {
     self.filterMode = @"blacklist";
   }
