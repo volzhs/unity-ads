@@ -161,6 +161,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (activity != null && !activity.equals(UnityAdsProperties.getCurrentActivity())) {
 			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
 
+			/*
 			// Not the most pretty way to detect when the fullscreen activity is ready
 			if (activity != null && activity instanceof UnityAdsFullscreenActivity) {
 				String view = null;
@@ -176,10 +177,10 @@ public class UnityAds implements IUnityAdsCacheListener,
 				}
 
 				_openRequestFromDeveloper = false;
-			}
-			else {
+			}*/
+			//else {
 				UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
-			}
+			//}
 		}
 	}
 
@@ -843,6 +844,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		}
 	}
 
+	/*
 	private static void setupViews () {
 		if (mainview != null) {
 			UnityAdsDeviceLog.debug("View was not destroyed, trying to destroy it");
@@ -853,7 +855,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (mainview == null) {
 			mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
 		}
-	}
+	}*/
 
 	private static void playVideo () {
 		playVideo(0);
