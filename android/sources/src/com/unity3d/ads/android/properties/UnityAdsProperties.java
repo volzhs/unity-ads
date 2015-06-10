@@ -48,6 +48,8 @@ public class UnityAdsProperties {
 
 	public static final int MAX_NUMBER_OF_ANALYTICS_RETRIES = 5;
 	public static final int MAX_BUFFERING_WAIT_SECONDS = 20;
+
+	public static Boolean UNITY_ADS_READY_SENT = false;
 	
 	private static String _campaignQueryString = null; 
 	

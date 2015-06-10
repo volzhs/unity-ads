@@ -118,11 +118,15 @@ public class UnityAdsWebData {
 			return null;
 		}
 	};
-	
+
 	public UnityAdsWebData () {
 		_urlLoaderLock = new Object();
 	}
-	
+
+	public boolean hasViewableAds() {
+		return getViewableVideoPlanCampaigns() != null && getViewableVideoPlanCampaigns().size() > 0;
+	}
+
 	public void setWebDataListener (IUnityAdsWebDataListener listener) {
 		_listener = listener;
 	}

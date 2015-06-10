@@ -85,38 +85,11 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 	public void openAds (String view, JSONObject data) {
 		if (UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
 			webview.setWebViewCurrentView(view, data);
-			/*
-			if (this.getParent() != null && (ViewGroup)this.getParent() != null)
-				((ViewGroup)this.getParent()).removeView(this);
-			
-			if (this.getParent() == null)
-				UnityAdsProperties.getCurrentActivity().addContentView(this, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
-			*/
 			setViewState(UnityAdsMainViewState.WebView);
 		}
 		else {
 			UnityAdsDeviceLog.error("Cannot open, wrong activity");
 		}
-	}
-
-	public void fixActivityAttachment() {
-		if (this.getParent() != null && (ViewGroup)this.getParent() != null)
-			((ViewGroup)this.getParent()).removeView(this);
-
-		UnityAdsProperties.getCurrentActivity().addContentView(this, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
-	}
-
-	public void closeAds (JSONObject data) {		
-		if (this.getParent() != null) {
-			ViewGroup vg = (ViewGroup)this.getParent();
-			if (vg != null)
-				vg.removeView(this);
-		}
-		
-		destroyVideoPlayerView();
-		UnityAdsProperties.SELECTED_CAMPAIGN = null;
-		webview.destroy();
-		webview = null;
 	}
 
 	public void setViewState (UnityAdsMainViewState state) {
