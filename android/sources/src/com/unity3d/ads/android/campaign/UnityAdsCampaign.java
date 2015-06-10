@@ -293,7 +293,21 @@ public class UnityAdsCampaign {
 		
 		return null;
 	}
-	
+
+	public String getFilterMode() {
+		try {
+			if(checkDataIntegrity()) {
+				if(_campaignJson.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_FILTER_MODE)) {
+					return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_FILTER_MODE);
+				}
+			}
+		} catch(Exception e) {
+			return null;
+		}
+
+		return null;
+	}
+
 	public UnityAdsCampaignStatus getCampaignStatus () {
 		return _campaignStatus;
 	}

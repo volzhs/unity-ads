@@ -63,6 +63,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_VIDEOSTARTEDPLAYING = "video_started_playing";	
 	public static final String UNITY_ADS_WEBVIEW_API_ZONE_KEY = "zone";
 	public static final String UNITY_ADS_WEBVIEW_API_REWARD_ITEM_KEY = "itemKey";
+	public static final String UNITY_ADS_WEBVIEW_API_LAUNCHINTENT = "launchIntent";
 
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY = "campaignId";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY = "rewatch";	
@@ -99,7 +100,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_APPFILTERING_KEY = "appFiltering";
 	public static final String UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL = "installedAppsUrl";
 	public static final String UNITY_ADS_CAMPAIGN_APP_WHITELIST_URL = "appWhitelist";
-	
+	public static final String UNITY_ADS_CAMPAIGN_FILTER_MODE = "filterMode";
+
 	/* Zone JSON Properties */
 	public static final String UNITY_ADS_ZONES_KEY = "zones";
 	public static final String UNITY_ADS_ZONE_ID_KEY = "id";

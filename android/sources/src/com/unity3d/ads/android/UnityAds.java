@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.TargetApi;
@@ -670,8 +672,111 @@ public class UnityAds implements IUnityAdsCacheListener,
 	    }
 	}
 
+	@Override
+	public void onLaunchIntent(JSONObject data) {
+		try {
+			Intent intent = parseLaunchIntent(data);
+
+			if(intent == null) {
+				UnityAdsDeviceLog.error("No suitable intent to launch");
+				UnityAdsDeviceLog.debug("Intent JSON: " + data.toString());
+				return;
+			}
+
+			Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+			if(currentActivity == null) {
+				UnityAdsDeviceLog.error("Unable to launch intent: current activity is null");
+				return;
+			}
+
+			currentActivity.startActivity(intent);
+		} catch(Exception e) {
+			UnityAdsDeviceLog.error("Failed to launch intent: " + e.getMessage());
+		}
+	}
 
 	/* PRIVATE METHODS */
+
+	private static Intent parseLaunchIntent(JSONObject data) {
+		try {
+			if(data.has("packageName") && !data.has("className") && !data.has("action") && !data.has("mimeType")) {
+				Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+				if(currentActivity == null) {
+					UnityAdsDeviceLog.error("Unable to parse data to generate intent: current activity is null");
+					return null;
+				}
+
+				PackageManager pm = currentActivity.getPackageManager();
+				Intent intent = pm.getLaunchIntentForPackage(data.getString("packageName"));
+
+				if(intent != null && data.has("flags")) {
+					intent.addFlags(data.getInt("flags"));
+				}
+
+				return intent;
+			}
+
+			Intent intent = new Intent();
+
+			if(data.has("className") && data.has("packageName")) {
+				intent.setClassName(data.getString("packageName"), data.getString("className"));
+			}
+
+			if(data.has("action")) {
+				intent.setAction(data.getString("action"));
+			}
+
+			if(data.has("uri")) {
+				intent.setData(Uri.parse(data.getString("uri")));
+			}
+
+			if(data.has("mimeType")) {
+				intent.setType(data.getString("mimeType"));
+			}
+
+			if(data.has("categories")) {
+				JSONArray array = data.getJSONArray("categories");
+
+				if(array.length() > 0) {
+					for(int i = 0; i < array.length(); i++) {
+						intent.addCategory(array.getString(i));
+					}
+				}
+			}
+
+			if(data.has("flags")) {
+				intent.setFlags(data.getInt("flags"));
+			}
+
+			if(data.has("extras")) {
+				JSONArray array = data.getJSONArray("extras");
+
+				for(int i = 0; i < array.length(); i++) {
+					JSONObject item = array.getJSONObject(i);
+
+					String key = item.getString("key");
+					Object value = item.get("value");
+
+					if(value instanceof String) {
+						intent.putExtra(key, (String)value);
+					} else if(value instanceof Integer) {
+						intent.putExtra(key, ((Integer)value).intValue());
+					} else if(value instanceof Double) {
+						intent.putExtra(key, ((Double)value).doubleValue());
+					} else if(value instanceof Boolean) {
+						intent.putExtra(key, ((Boolean)value).booleanValue());
+					} else {
+						UnityAdsDeviceLog.error("Unable to parse launch intent extra " + key);
+					}
+				}
+			}
+
+			return intent;
+		} catch(JSONException e) {
+			UnityAdsDeviceLog.error("Exception while parsing intent json: " + e.getMessage());
+			return null;
+		}
+	}
 
 	private static void openPlayStoreAsIntent (String playStoreId) {
 		UnityAdsDeviceLog.debug("Opening playstore activity with storeId: " + playStoreId);
