@@ -1,6 +1,7 @@
 package com.unity3d.ads.android.cache;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -184,7 +185,6 @@ public class UnityAdsDownloader {
 		private URL _downloadUrl = null;
 		private InputStream _input = null;
 		private OutputStream _output = null;
-		private int _downloadLength = 0;
 		private URLConnection _urlConnection = null;
 		private boolean _cancelled = false;
 		private UnityAdsCampaign _campaign = null;
@@ -207,6 +207,13 @@ public class UnityAdsDownloader {
 				return null;
 			}
 
+			FileOutputStream _fileStream = getOutputStreamFor(_campaign.getVideoFilename());
+			if (_fileStream == null) {
+				onCancelled();
+				return null;
+			}
+			_output = new BufferedOutputStream(_fileStream);
+
 			try {
 				_urlConnection = _downloadUrl.openConnection();
 				_urlConnection.setConnectTimeout(10000);
@@ -218,8 +225,6 @@ public class UnityAdsDownloader {
 			}
 			
 			if (_urlConnection != null) {
-				_downloadLength = _urlConnection.getContentLength();
-				
 				try {
 					_input = new BufferedInputStream(_urlConnection.getInputStream());
 				}
@@ -227,18 +232,13 @@ public class UnityAdsDownloader {
 					UnityAdsDeviceLog.error("Problems opening stream: " + e.getMessage());
 				}
 				
-				_output = getOutputStreamFor(_campaign.getVideoFilename());
-				if (_output == null)
-					onCancelled();
-				
-				byte data[] = new byte[1024];
+				byte data[] = new byte[4096];
 				long total = 0;
 				int count = 0;
 				
 				try {
 					while ((count = _input.read(data)) != -1) {
 						total += count;
-						publishProgress((int)(total * 100 / _downloadLength));
 						_output.write(data, 0, count);
 						
 						if (_cancelled) {
@@ -255,7 +255,7 @@ public class UnityAdsDownloader {
 				
 				closeAndFlushConnection();
 				duration = SystemClock.elapsedRealtime() - startTime;
-				UnityAdsDeviceLog.debug("File: " + _campaign.getVideoFilename() + " of size: " + total + " downloaded in: " + duration + "ms");
+				UnityAdsDeviceLog.debug("File: " + _campaign.getVideoFilename() + " of " + total + " bytes downloaded in " + duration + "ms");
 
 				if(duration > 0 && total > 0) {
 					// Note about units: bytes / millisecond equals to kilobytes / second so CACHING_SPEED is kb/s

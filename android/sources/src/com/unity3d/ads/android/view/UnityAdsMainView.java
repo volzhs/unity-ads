@@ -112,8 +112,6 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		
 		destroyVideoPlayerView();
 		UnityAdsProperties.SELECTED_CAMPAIGN = null;
-		webview.destroy();
-		webview = null;
 	}
 
 	public void setViewState (UnityAdsMainViewState state) {
@@ -399,22 +397,6 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 	// IUnityAdsWebViewListener
 	@Override
 	public void onWebAppLoaded () {
-		try {
-			ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
-			JSONObject initData = UnityAds.webdata.getData();
-			JSONArray campaignArray = initData.getJSONObject("data").getJSONArray("campaigns");
-			JSONArray viewableCampaignArray = new JSONArray();
-			for(int i = 0; i < campaignArray.length(); ++i) {
-				JSONObject campaign = campaignArray.getJSONObject(i);
-				String campaignId = campaign.getString("id");
-				for(UnityAdsCampaign viewableCampaign : viewableCampaigns) {
-					if(viewableCampaign.getCampaignId() == campaignId) {
-						viewableCampaignArray.put(campaign);
-					}
-				}
-			}
-			initData.getJSONObject("data").put("campaigns", viewableCampaignArray);
-			webview.initWebApp(initData);
-		} catch(Exception e) {}
+		webview.initWebApp(UnityAds.webdata.getData());
 	}
 }

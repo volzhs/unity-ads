@@ -54,7 +54,6 @@ public class UnityAdsWebData {
 	private ArrayList<UnityAdsCampaign> _campaigns = null;
 	private IUnityAdsWebDataListener _listener = null;
 	private ArrayList<UnityAdsUrlLoader> _urlLoaders = null;
-	private ArrayList<UnityAdsUrlLoader> _failedUrlLoaders = null;
 	private UnityAdsUrlLoader _currentLoader = null;
 	private Object _urlLoaderLock = null;
 	private static UnityAdsZoneManager _zoneManager = null;
@@ -156,6 +155,10 @@ public class UnityAdsWebData {
 		}
 		
 		return viewableCampaigns;
+	}
+
+	public boolean initInProgress() {
+		return _initInProgress;
 	}
 
 	// TODO: This method always returns true regardless of success. Needs refactoring.
@@ -364,12 +367,7 @@ public class UnityAdsWebData {
 				_urlLoaders.clear();
 				_urlLoaders = null;
 			}
-		
-			if (_failedUrlLoaders != null) {
-				_failedUrlLoaders.clear();
-				_failedUrlLoaders = null;
-			}
-		
+
 			if (_currentLoader != null) {
 				_currentLoader.cancel(true);
 				_currentLoader = null;
@@ -475,13 +473,19 @@ public class UnityAdsWebData {
 
 	private void checkFailedUrls () {
 		File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
-		
+
 		if (pendingRequestFile.exists()) {
-			String contents = UnityAdsUtils.readFile(pendingRequestFile, true);
+			String contents;
+
+			synchronized(_urlLoaderLock) {
+				contents = UnityAdsUtils.readFile(pendingRequestFile, true);
+				UnityAdsUtils.removeFile(pendingRequestFile.toString());
+			}
+
 			JSONObject pendingRequestsJson = null;
 			JSONArray pendingRequestsArray = null;
 			//UnityAdsUrlLoader loader = null;
-			
+
 			try {
 				pendingRequestsJson = new JSONObject(contents);
 				pendingRequestsArray = pendingRequestsJson.getJSONArray("data");
@@ -504,48 +508,58 @@ public class UnityAdsWebData {
 			catch (Exception e) {
 				UnityAdsDeviceLog.error("Problems while sending some of the failed urls.");
 			}
-
-			UnityAdsUtils.removeFile(pendingRequestFile.toString());
 		}
 		
 		startNextLoader();
 	}
 	
 	private void writeFailedUrl (UnityAdsUrlLoader loader) {
+		if(loader == null) return;
+
 		synchronized(_urlLoaderLock) {
-			if (loader == null) return;
-			if (_failedUrlLoaders == null)
-				_failedUrlLoaders = new ArrayList<UnityAdsWebData.UnityAdsUrlLoader>();
-			
-			if (!_failedUrlLoaders.contains(loader)) {
-				_failedUrlLoaders.add(loader);
-			}
-			
-			JSONObject failedUrlsJson = new JSONObject();
-			JSONArray failedUrlsArray = new JSONArray();
-			
 			try {
-				JSONObject failedUrl = null;
-				for (UnityAdsUrlLoader failedLoader : _failedUrlLoaders) {
-					failedUrl = new JSONObject();
-					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_URL_KEY, failedLoader.getBaseUrl());
-					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_REQUESTTYPE_KEY, failedLoader.getRequestType());
-					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_METHODTYPE_KEY, failedLoader.getHTTPMethod());
-					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_BODY_KEY, failedLoader.getQueryParams());				
-					failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_RETRIES_KEY, failedLoader.getRetries());
-					
-					failedUrlsArray.put(failedUrl);
-				}
-				
-				failedUrlsJson.put("data", failedUrlsArray);
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("Error collecting failed urls");
-			}
-			
-			if (_failedUrlLoaders != null && _failedUrlLoaders.size() > 0 && UnityAdsUtils.canUseExternalStorage()) {
 				File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
-				UnityAdsUtils.writeFile(pendingRequestFile, failedUrlsJson.toString());
+				
+				JSONObject pendingRequestsJson = null;
+				JSONArray pendingRequestsArray = null;
+				
+				if(pendingRequestFile.exists()) {
+					String contents = UnityAdsUtils.readFile(pendingRequestFile, true);
+
+					try {
+						pendingRequestsJson = new JSONObject(contents);
+						UnityAdsDeviceLog.debug("JNIDEBUG read json: " + pendingRequestsJson.toString());
+						pendingRequestsArray = pendingRequestsJson.getJSONArray("data");
+						UnityAdsDeviceLog.debug("JNIDEBUG read array: " + pendingRequestsArray.toString());
+					} catch(JSONException e) {
+						pendingRequestsJson = null;
+						pendingRequestsArray = null;
+					}
+				}
+
+				if(pendingRequestsArray == null) {
+					pendingRequestsArray = new JSONArray();
+				}
+
+				if(pendingRequestsJson == null) {
+					pendingRequestsJson = new JSONObject();
+				}
+
+				JSONObject failedUrl = new JSONObject();
+				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_URL_KEY, loader.getBaseUrl());
+				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_REQUESTTYPE_KEY, loader.getRequestType());
+				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_METHODTYPE_KEY, loader.getHTTPMethod());
+				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_BODY_KEY, loader.getQueryParams());				
+				failedUrl.put(UnityAdsConstants.UNITY_ADS_FAILED_URL_RETRIES_KEY, loader.getRetries());
+
+				pendingRequestsArray.put(failedUrl);
+				pendingRequestsJson.put("data", pendingRequestsArray);
+
+				if(UnityAdsUtils.canUseExternalStorage()) {
+					UnityAdsUtils.writeFile(pendingRequestFile, pendingRequestsJson.toString());
+				}
+			} catch(Exception e) {
+				UnityAdsDeviceLog.debug("Exception when writing failed url: " + e.getMessage());
 			}
 		}
 	}
