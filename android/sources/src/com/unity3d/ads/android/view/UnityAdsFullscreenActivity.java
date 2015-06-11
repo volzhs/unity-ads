@@ -2,6 +2,7 @@ package com.unity3d.ads.android.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +22,11 @@ import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMainViewListener, IUnityAdsWebBridgeListener {
 
@@ -242,6 +247,16 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 				if (UnityAds.getListener() != null)
 					UnityAds.getListener().onVideoStarted();
 
+				ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
+
+				if(viewableCampaigns.size() > 1) {
+					UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
+
+					if(UnityAds.cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true) && !UnityAds.cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
+						UnityAds.cachemanager.cacheNextVideo(nextCampaign);
+					}
+				}
+
 				// TODO: We need this?
 				//cancelPauseScreenTimer();
 				break;
@@ -330,7 +345,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 	@Override
 	public void onWebAppLoadComplete(JSONObject data) {
 		UnityAdsDeviceLog.entered();
-		UnityAds.mainview.webview.setWebAppLoadComplete();
 	}
 
 	@Override
@@ -364,6 +378,112 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 	@Override
 	public void onOrientationRequest(JSONObject data) {
 		setRequestedOrientation(data.optInt("orientation", -1));
+	}
+
+	/* LAUNCH INTENT */
+
+	@Override
+	public void onLaunchIntent(JSONObject data) {
+		try {
+			Intent intent = parseLaunchIntent(data);
+
+			if(intent == null) {
+				UnityAdsDeviceLog.error("No suitable intent to launch");
+				UnityAdsDeviceLog.debug("Intent JSON: " + data.toString());
+				return;
+			}
+
+			Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+			if(currentActivity == null) {
+				UnityAdsDeviceLog.error("Unable to launch intent: current activity is null");
+				return;
+			}
+
+			currentActivity.startActivity(intent);
+		} catch(Exception e) {
+			UnityAdsDeviceLog.error("Failed to launch intent: " + e.getMessage());
+		}
+	}
+
+	private static Intent parseLaunchIntent(JSONObject data) {
+		try {
+			if(data.has("packageName") && !data.has("className") && !data.has("action") && !data.has("mimeType")) {
+				Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+				if(currentActivity == null) {
+					UnityAdsDeviceLog.error("Unable to parse data to generate intent: current activity is null");
+					return null;
+				}
+
+				PackageManager pm = currentActivity.getPackageManager();
+				Intent intent = pm.getLaunchIntentForPackage(data.getString("packageName"));
+
+				if(intent != null && data.has("flags")) {
+					intent.addFlags(data.getInt("flags"));
+				}
+
+				return intent;
+			}
+
+			Intent intent = new Intent();
+
+			if(data.has("className") && data.has("packageName")) {
+				intent.setClassName(data.getString("packageName"), data.getString("className"));
+			}
+
+			if(data.has("action")) {
+				intent.setAction(data.getString("action"));
+			}
+
+			if(data.has("uri")) {
+				intent.setData(Uri.parse(data.getString("uri")));
+			}
+
+			if(data.has("mimeType")) {
+				intent.setType(data.getString("mimeType"));
+			}
+
+			if(data.has("categories")) {
+				JSONArray array = data.getJSONArray("categories");
+
+				if(array.length() > 0) {
+					for(int i = 0; i < array.length(); i++) {
+						intent.addCategory(array.getString(i));
+					}
+				}
+			}
+
+			if(data.has("flags")) {
+				intent.setFlags(data.getInt("flags"));
+			}
+
+			if(data.has("extras")) {
+				JSONArray array = data.getJSONArray("extras");
+
+				for(int i = 0; i < array.length(); i++) {
+					JSONObject item = array.getJSONObject(i);
+
+					String key = item.getString("key");
+					Object value = item.get("value");
+
+					if(value instanceof String) {
+						intent.putExtra(key, (String)value);
+					} else if(value instanceof Integer) {
+						intent.putExtra(key, ((Integer)value).intValue());
+					} else if(value instanceof Double) {
+						intent.putExtra(key, ((Double)value).doubleValue());
+					} else if(value instanceof Boolean) {
+						intent.putExtra(key, ((Boolean)value).booleanValue());
+					} else {
+						UnityAdsDeviceLog.error("Unable to parse launch intent extra " + key);
+					}
+				}
+			}
+
+			return intent;
+		} catch(JSONException e) {
+			UnityAdsDeviceLog.error("Exception while parsing intent json: " + e.getMessage());
+			return null;
+		}
 	}
 
 	/* PLAY STORE */
