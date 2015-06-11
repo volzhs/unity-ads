@@ -32,6 +32,11 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 
 	private String _currentView = null;
 	private Boolean _preventVideoDoubleStart = false;
+	private UnityAdsMainView _mainView = null;
+
+	private UnityAdsMainView getMainView () {
+		return _mainView;
+	}
 
 	private boolean isAdsReadySent () {
 		return UnityAdsProperties.UNITY_ADS_READY_SENT;
@@ -42,14 +47,14 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 	}
 
 	private void setupViews () {
-		if (UnityAds.mainview != null) {
+		if (getMainView() != null) {
 			UnityAdsDeviceLog.debug("View was not destroyed, trying to destroy it");
-			UnityAds.mainview.webview.destroy();
-			UnityAds.mainview = null;
+			getMainView().webview.destroy();
+			_mainView = null;
 		}
 
-		if (UnityAds.mainview == null) {
-			UnityAds.mainview = new UnityAdsMainView(this, this, this);
+		if (getMainView() == null) {
+			_mainView = new UnityAdsMainView(this, this, this);
 		}
 	}
 
@@ -87,16 +92,15 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		if (dataOk && view != null) {
 			UnityAdsDeviceLog.debug("Opening with view:" + view + " and data:" + data.toString());
 
-			if (UnityAds.mainview != null) {
+			if (getMainView() != null) {
 				// TODO: ASK WHAT IS THIS ?
 				/*
-				if(!UnityAds.mainview.webview.isWebAppLoadComplete()) {
-					UnityAds.mainview.webview.waitForWebAppLoadComplete();
+				if(!getMainView().webview.isWebAppLoadComplete()) {
+					getMainView().webview.waitForWebAppLoadComplete();
 				}*/
-				if (UnityAds.mainview != null) {
-					UnityAds.mainview.webview.setWebViewCurrentView(view, data);
-					UnityAds.mainview.setViewState(UnityAdsMainView.UnityAdsMainViewState.WebView);
-					UnityAds.mainview.openAds(view, data);
+				if (getMainView() != null) {
+					getMainView().webview.setWebViewCurrentView(view, data);
+					getMainView().setViewState(UnityAdsMainView.UnityAdsMainViewState.WebView);
 
 					UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 					if (currentZone.noOfferScreen()) {
@@ -130,7 +134,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		hideOperations();
 	}
 
-	private static void hideOperations() {
+	private void hideOperations() {
 		final JSONObject data = new JSONObject();
 
 		try  {
@@ -140,32 +144,31 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			return;
 		}
 
-		if(UnityAds.mainview != null && UnityAds.mainview.webview != null) {
-			UnityAds.mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+		if(getMainView() != null && getMainView().webview != null) {
+			getMainView().webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
 		}
 
-		if(UnityAds.mainview != null) {
+		if(getMainView() != null) {
 			// TODO: FIX DUPLICATE CODE
-			if (UnityAds.mainview.getParent() != null) {
-				ViewGroup vg = (ViewGroup)UnityAds.mainview.getParent();
+			if (getMainView().getParent() != null) {
+				ViewGroup vg = (ViewGroup)getMainView().getParent();
 				if (vg != null)
-					vg.removeView(UnityAds.mainview);
+					vg.removeView(getMainView());
 			}
 
-			if (UnityAds.mainview.videoplayerview != null)
-				UnityAds.mainview.videoplayerview.clearVideoPlayer();
+			if (getMainView().videoplayerview != null)
+				getMainView().videoplayerview.clearVideoPlayer();
 
 			// TODO: FIX DUPLICATE CODE
-			if (UnityAds.mainview != null) {
-				UnityAds.mainview.removeView(UnityAds.mainview.videoplayerview);
+			if (getMainView() != null) {
+				getMainView().removeView(getMainView().videoplayerview);
 			}
-
-			UnityAds.mainview.videoplayerview = null;
 
 			UnityAdsProperties.SELECTED_CAMPAIGN = null;
-			UnityAds.mainview.webview.destroy();
-			UnityAds.mainview.webview = null;
-			UnityAds.mainview = null;
+			getMainView().videoplayerview = null;
+			getMainView().webview.destroy();
+			getMainView().webview = null;
+			//_mainView = null;
 		}
 
 		if (UnityAds.getListener() != null)
@@ -177,8 +180,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
-		UnityAdsDeviceLog.entered();   	
+		UnityAdsDeviceLog.entered();
 		super.onCreate(savedInstanceState);
 		UnityAds.changeActivity(this);
 
@@ -188,7 +190,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			_currentView = view;
 			setupViews();
 			open(_currentView);
-			setContentView(UnityAds.mainview);
+			setContentView(getMainView());
 		}
 
 		_preventVideoDoubleStart = false;
@@ -208,10 +210,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 
 	@Override
 	public void onResume() {
-		UnityAdsDeviceLog.entered();   	
+		UnityAdsDeviceLog.entered();
 		super.onResume();
-	//	UnityAds.changeActivity(this);
-   	//	UnityAds.checkMainview();
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 
 	@Override
 	protected void onDestroy() {
-		UnityAdsDeviceLog.entered();   	
+		UnityAdsDeviceLog.entered();
 		super.onDestroy();
 	}
 
@@ -363,7 +363,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			}
 
 			if (dataOk) {
-				UnityAds.mainview.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
+				getMainView().webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
 
 				UnityAdsUtils.runOnUiThread(new Runnable() {
 					@Override
@@ -393,28 +393,16 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 				return;
 			}
 
-			Activity currentActivity = UnityAdsProperties.getCurrentActivity();
-			if(currentActivity == null) {
-				UnityAdsDeviceLog.error("Unable to launch intent: current activity is null");
-				return;
-			}
-
-			currentActivity.startActivity(intent);
+			startActivity(intent);
 		} catch(Exception e) {
 			UnityAdsDeviceLog.error("Failed to launch intent: " + e.getMessage());
 		}
 	}
 
-	private static Intent parseLaunchIntent(JSONObject data) {
+	private Intent parseLaunchIntent(JSONObject data) {
 		try {
 			if(data.has("packageName") && !data.has("className") && !data.has("action") && !data.has("mimeType")) {
-				Activity currentActivity = UnityAdsProperties.getCurrentActivity();
-				if(currentActivity == null) {
-					UnityAdsDeviceLog.error("Unable to parse data to generate intent: current activity is null");
-					return null;
-				}
-
-				PackageManager pm = currentActivity.getPackageManager();
+				PackageManager pm = getPackageManager();
 				Intent intent = pm.getLaunchIntentForPackage(data.getString("packageName"));
 
 				if(intent != null && data.has("flags")) {
@@ -580,7 +568,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		UnityAdsUtils.runOnUiThread(playVideoRunner, delay);
 	}
 
-	private static class UnityAdsPlayVideoRunner implements Runnable {
+	private class UnityAdsPlayVideoRunner implements Runnable {
 		@Override
 		public void run() {
 			UnityAdsDeviceLog.entered();
@@ -596,7 +584,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 					return;
 				}
 
-				UnityAds.mainview.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
+				getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
 
 				// TODO: WHAT?
 				//createPauseScreenTimer();
@@ -610,9 +598,9 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = true;
 				}
 
-				UnityAds.mainview.setViewState(UnityAdsMainView.UnityAdsMainViewState.VideoPlayer);
+				getMainView().setViewState(UnityAdsMainView.UnityAdsMainViewState.VideoPlayer);
 				UnityAdsDeviceLog.debug("Start videoplayback with: " + playUrl);
-				UnityAds.mainview.videoplayerview.playVideo(playUrl);
+				getMainView().videoplayerview.playVideo(playUrl);
 			}
 			else
 				UnityAdsDeviceLog.error("Campaign is null");

@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.TargetApi;
@@ -36,7 +34,6 @@ import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsFullscreenActivity;
-import com.unity3d.ads.android.view.UnityAdsMainView;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
@@ -62,7 +59,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	// Unity Ads components
 	public static UnityAdsCacheManager cachemanager = null;
 	public static UnityAdsWebData webdata = null;
-	public static UnityAdsMainView mainview = null;
 
 	// Temporary data
 	private static boolean _initialized = false;

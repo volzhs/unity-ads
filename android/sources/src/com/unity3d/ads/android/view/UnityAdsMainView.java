@@ -78,16 +78,6 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 	
 	
 	/* PUBLIC METHODS */
-	
-	public void openAds (String view, JSONObject data) {
-		if (UnityAdsProperties.getCurrentActivity() != null && UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
-			webview.setWebViewCurrentView(view, data);
-			setViewState(UnityAdsMainViewState.WebView);
-		}
-		else {
-			UnityAdsDeviceLog.error("Cannot open, wrong activity");
-		}
-	}
 
 	public void setViewState (UnityAdsMainViewState state) {
 		if (!_currentState.equals(state)) {
