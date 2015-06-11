@@ -448,7 +448,6 @@
 - (void)skipButtonPressed {
   UALOG_DEBUG(@"");
   [self videoPlaybackEnded:TRUE];
-  [[UnityAdsMainViewController sharedInstance] applyOptionsToCurrentState:@{@"sendAbortInstrumentation":@true, @"type":kUnityAdsGoogleAnalyticsEventVideoAbortSkip}];
 }
 
 #pragma mark - Video Buffering Label

@@ -13,7 +13,7 @@ public class UnityAdsConstants {
 	 */
 
 	/* Unity Ads */
-	public static final String UNITY_ADS_VERSION = "1402";
+	public static final String UNITY_ADS_VERSION = "1404";
 	public static final String UNITY_ADS_REQUEST_METHOD_POST = "POST";
 	public static final String UNITY_ADS_REQUEST_METHOD_GET = "GET";
 
@@ -63,6 +63,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_VIDEOSTARTEDPLAYING = "video_started_playing";	
 	public static final String UNITY_ADS_WEBVIEW_API_ZONE_KEY = "zone";
 	public static final String UNITY_ADS_WEBVIEW_API_REWARD_ITEM_KEY = "itemKey";
+	public static final String UNITY_ADS_WEBVIEW_API_LAUNCHINTENT = "launchIntent";
 
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CAMPAIGNID_KEY = "campaignId";	
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_REWATCH_KEY = "rewatch";	
@@ -99,7 +100,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_APPFILTERING_KEY = "appFiltering";
 	public static final String UNITY_ADS_CAMPAIGN_INSTALLED_APPS_URL = "installedAppsUrl";
 	public static final String UNITY_ADS_CAMPAIGN_APP_WHITELIST_URL = "appWhitelist";
-	
+	public static final String UNITY_ADS_CAMPAIGN_FILTER_MODE = "filterMode";
+
 	/* Zone JSON Properties */
 	public static final String UNITY_ADS_ZONES_KEY = "zones";
 	public static final String UNITY_ADS_ZONE_ID_KEY = "id";
@@ -201,32 +203,5 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_PLAYSTORE_ITUNESID_KEY = "iTunesId";
 	public static final String UNITY_ADS_PLAYSTORE_CLICKURL_KEY = "clickUrl";
 	public static final String UNITY_ADS_PLAYSTORE_BYPASSAPPSHEET_KEY = "bypassAppSheet";
-	
-	/* Google Analytics Events */
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_KEY = "googleAnalyticsEvent";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOPLAY = "videoAnalyticsEventPlay";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOERROR = "videoAnalyticsEventError";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOABORT = "videoAnalyticsEventAbort";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_VIDEOCACHING = "videoAnalyticsEventCaching";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_BACK = "back";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_EXIT = "exit";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_SKIP = "skip";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_HIDDEN = "hidden";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOPLAY_HLSL = "stream";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOPLAY_CACHED = "cached";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_START = "start";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_COMPLETED = "completed";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOCACHING_FAILED = "failed";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CAMPAIGNID_KEY = "campaignId";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CONNECTIONTYPE_KEY = "connectionType";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOPLAYBACKTYPE_KEY = "videoPlaybackType";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY = "bufferingDuration";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_CACHINGDURATION_KEY = "cachingDuration";
-	
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY = "eventValue";
-	public static final String UNITY_ADS_GOOGLE_ANALYTICS_EVENT_TYPE_KEY = "eventType";
+
 }

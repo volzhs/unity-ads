@@ -27,6 +27,7 @@ NSString * const kUnityAdsOptionVideoUsesDeviceOrientation = @"useDeviceOrientat
 @interface UnityAds () <UnityAdsInitializerDelegate, UnityAdsMainViewControllerDelegate>
   @property (nonatomic, strong) UnityAdsInitializer *initializer;
   @property (nonatomic, assign) Boolean debug;
+  @property (nonatomic, assign) int prevCanShowLogMsg;
 @end
 
 @implementation UnityAds
@@ -70,6 +71,7 @@ static UnityAds *sharedUnityAdsInstance = nil;
 		if (sharedUnityAdsInstance == nil) {
       sharedUnityAdsInstance = [[UnityAds alloc] init];
       sharedUnityAdsInstance.debug = NO;
+      sharedUnityAdsInstance.prevCanShowLogMsg = -1;
 		}
 	}
 	
@@ -159,11 +161,52 @@ static UnityAds *sharedUnityAdsInstance = nil;
 
 - (BOOL)canShow {
 	UAAssertV([NSThread mainThread], NO);
-  if (![UnityAds isSupported]) return NO;
-  if ([[UnityAdsMainViewController sharedInstance] isOpen]) return NO;
-  if ([[UnityAdsZoneManager sharedInstance] getCurrentZone] == nil) return NO;
-  if ([[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] count] <= 0) return NO;
-	return [self adsCanBeShown];
+
+  if (![UnityAds isSupported]) {
+    if(self.prevCanShowLogMsg != 1) {
+      self.prevCanShowLogMsg = 1;
+      NSLog(@"Unity Ads not ready to show ads: iOS version not supported");
+    }
+    return NO;
+  }
+  
+  if ([[UnityAdsMainViewController sharedInstance] isOpen]) {
+    if(self.prevCanShowLogMsg != 2) {
+      self.prevCanShowLogMsg = 2;
+      NSLog(@"Unity Ads not ready to show ads: already showing ads");
+    }
+    return NO;
+  }
+
+  if ([[UnityAdsZoneManager sharedInstance] getCurrentZone] == nil) {
+    if(self.prevCanShowLogMsg != 3) {
+      self.prevCanShowLogMsg = 3;
+      NSLog(@"Unity Ads not ready to show ads: current zone invalid");
+    }
+    return NO;
+  }
+
+  if ([[[UnityAdsCampaignManager sharedInstance] getViewableCampaigns] count] <= 0) {
+    if(self.prevCanShowLogMsg != 4) {
+      self.prevCanShowLogMsg = 4;
+      NSLog(@"Unity Ads not ready to show ads: no ads are available");
+    }
+    return NO;
+  }
+  
+  if([self adsCanBeShown]) {
+    if(self.prevCanShowLogMsg != 0) {
+      self.prevCanShowLogMsg = 0;
+      NSLog(@"Unity Ads is ready to show ads");
+    }
+    return YES;
+  } else {
+    if(self.prevCanShowLogMsg != 5) {
+      self.prevCanShowLogMsg = 5;
+      NSLog(@"Unity Ads not ready to show ads: not initialized");
+    }
+    return NO;
+  }
 }
 
 - (BOOL)canShowZone:(NSString *)zoneId {

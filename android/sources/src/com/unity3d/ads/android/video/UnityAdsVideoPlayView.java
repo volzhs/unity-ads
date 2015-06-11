@@ -23,10 +23,8 @@ import android.widget.TextView;
 import com.unity3d.ads.android.R;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
-import com.unity3d.ads.android.webapp.UnityAdsInstrumentation;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 import com.unity3d.ads.android.zone.UnityAdsZone;
@@ -195,8 +193,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		purgeVideoPausedTimer();
 		if (_listener != null)
 			_listener.onVideoPlaybackError();
-		
-		UnityAdsInstrumentation.gaInstrumentationVideoError(UnityAdsProperties.SELECTED_CAMPAIGN, null);		
 	}
 
 	private void startVideo() {
@@ -442,7 +438,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 
 	@Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
-    	long bufferingDuration = 0;
     	Map<String, Object> values = null;
     	
     	switch (keyCode) {
@@ -453,12 +448,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				long allowBackButtonSkip = currentZone.disableBackButtonForSeconds();
 				if (allowBackButtonSkip == 0 || (allowBackButtonSkip > 0 && getSecondsUntilBackButtonAllowed() == 0)) {
 					clearVideoPlayer();
-					
-					bufferingDuration = getBufferingDuration();
-					values = new HashMap<String, Object>();
-					values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
-					values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VALUE_KEY, UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_VIDEOABORT_BACK);
-					UnityAdsInstrumentation.gaInstrumentationVideoAbort(UnityAdsProperties.SELECTED_CAMPAIGN, values);				
 				}
 				
 				if (_listener != null)
@@ -624,10 +613,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 								_listener.onVideoPlaybackStarted();
 								_bufferingCompledtedMillis = System.currentTimeMillis();
 								_videoStartedPlayingMillis = System.currentTimeMillis();
-								long bufferingDuration = _bufferingCompledtedMillis - _bufferingStartedMillis;
-								Map<String, Object> values = new HashMap<String, Object>();
-								values.put(UnityAdsConstants.UNITY_ADS_GOOGLE_ANALYTICS_EVENT_BUFFERINGDURATION_KEY, bufferingDuration);
-								UnityAdsInstrumentation.gaInstrumentationVideoPlay(UnityAdsProperties.SELECTED_CAMPAIGN, values);
 							}
 							
 							if (!_sentPositionEvents.containsKey(UnityAdsVideoPosition.Start)) {

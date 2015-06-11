@@ -102,6 +102,7 @@ NSString * const kUnityAdsCampaignExpectedFileSize = @"trailerSize";
 NSString * const kUnityAdsCampaignAllowVideoSkipKey = @"allowSkipVideoInSeconds";
 NSString * const kUnityAdsCampaignURLSchemesKey = @"urlSchemes";
 NSString * const kUnityAdsCampaignAllowStreamingKey = @"allowStreaming";
+NSString * const kUnityAdsCampaignFilterModeKey = @"filterMode";
 
 /* Reward Item JSON Properties */
 
@@ -196,30 +197,6 @@ NSString * const kUnityAdsInitQueryParamAppFilterListKey = @"appFilterList";
 NSString * const kUnityAdsInitQueryParamCachingSpeedKey = @"cachingSpeed";
 NSString * const kUnityAdsInitQueryParamUnityVersionKey = @"unityVersion";
 
-
-/* Google Analytics Instrumentation */
-
-NSString * const kUnityAdsGoogleAnalyticsEventKey = @"googleAnalyticsEvent";
-NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoPlay = @"videoAnalyticsEventPlay";
-NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoError = @"videoAnalyticsEventError";
-NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoAbort = @"videoAnalyticsEventAbort";
-NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoCaching = @"videoAnalyticsEventCaching";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortBack = @"back";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortExit = @"exit";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortSkip = @"skip";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayStream = @"stream";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayCached = @"cached";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart = @"start";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingCompleted = @"completed";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingFailed = @"failed";
-
-NSString * const kUnityAdsGoogleAnalyticsEventCampaignIdKey = @"campaignId";
-NSString * const kUnityAdsGoogleAnalyticsEventConnectionTypeKey = @"connectionType";
-NSString * const kUnityAdsGoogleAnalyticsEventVideoPlaybackTypeKey = @"videoPlaybackType";
-NSString * const kUnityAdsGoogleAnalyticsEventBufferingDurationKey = @"bufferingDuration";
-NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey = @"cachingDuration";
-NSString * const kUnityAdsGoogleAnalyticsEventValueKey = @"eventValue";
-NSString * const kUnityAdsGoogleAnalyticsEventTypeKey = @"eventType";
 
 /* Zones */
 
