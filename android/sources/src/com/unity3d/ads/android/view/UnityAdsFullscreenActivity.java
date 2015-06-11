@@ -2,8 +2,10 @@ package com.unity3d.ads.android.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -167,6 +169,27 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		}
 	}
 
+	private void changeOrientation () {
+		// SET ORIENTATION FOR ACTIVITY
+
+		// SENSOR_LANDSCAPE
+		int targetOrientation = 6;
+
+		if (Build.VERSION.SDK_INT < 9)
+			targetOrientation = 0;
+
+		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+		if (currentZone.useDeviceOrientationForVideo()) {
+			//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+			// UNSPECIFIED
+			targetOrientation = -1;
+		}
+
+		setRequestedOrientation(targetOrientation);
+	}
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		UnityAdsDeviceLog.entered();
@@ -178,8 +201,10 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		if (view != null) {
 			_currentView = view;
 			setupViews();
-			open(_currentView);
 			setContentView(getMainView());
+			changeOrientation();
+
+			open(_currentView);
 		}
 
 		_preventVideoDoubleStart = false;
@@ -237,7 +262,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 					UnityAds.getListener().onVideoStarted();
 
 				ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
-
 				if(viewableCampaigns.size() > 1) {
 					UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
 
@@ -521,8 +545,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			UnityAdsDeviceLog.debug("Prevent double start of video playback");
 			return;
 		}
-		_preventVideoDoubleStart = true;
 
+		_preventVideoDoubleStart = true;
 		UnityAdsDeviceLog.debug("Running threaded");
 		UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
 		UnityAdsUtils.runOnUiThread(playVideoRunner, delay);
