@@ -14,6 +14,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -33,6 +35,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
@@ -64,8 +67,13 @@ public class UnityAdsWebData {
 	private boolean _isLoading = false;
 	private boolean _initInProgress = false;
 
+	private static boolean _refreshAfterShowAds = false;
 	private static boolean whitelistRequested = false;
 	private static boolean installedAppsSent = false;
+
+	private static TimerTask _campaignRefreshTimerTask = null;
+	private static Timer _campaignRefreshTimer = null;
+	private static long _campaignRefreshTimerDeadline = 0;
 
 	public static enum UnityAdsVideoPosition { Start, FirstQuartile, MidPoint, ThirdQuartile, End;
 		@SuppressLint("DefaultLocale")
@@ -356,7 +364,7 @@ public class UnityAdsWebData {
 			_campaigns.clear();
 			_campaigns = null;
 		}
-		
+
 		if (_zoneManager != null) {
 			_zoneManager.clear();
 			_zoneManager = null;
@@ -382,20 +390,76 @@ public class UnityAdsWebData {
 	public JSONObject getData () {
 		return _campaignJson;
 	}
-	
-	public String getVideoPlan () {
-		if (_campaignJson != null)
-			return _campaignJson.toString();
-		
-		return null;
-	}	
-	
+
+
+	public boolean refreshCampaignsIfNeeded() {
+		boolean refresh = false;
+
+		if(_refreshAfterShowAds) {
+			_refreshAfterShowAds = false;
+			UnityAdsDeviceLog.debug("Starting delayed ad plan refresh");
+			refresh = true;
+		} else if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
+			removeCampaignRefreshTimer();
+			UnityAdsDeviceLog.debug("Refreshing ad plan from server due to timer deadline");
+			refresh = true;
+		} else if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0 && UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
+			UnityAdsDeviceLog.debug("Refreshing ad plan from server due to endscreen limit");
+			refresh = true;
+		} else if(getVideoPlanCampaigns() != null && getViewableVideoPlanCampaigns().size() == 0) {
+			UnityAdsDeviceLog.debug("All available videos watched, refreshing ad plan from server");
+			refresh = true;
+		}
+
+		if(refresh) {
+			new Thread(new Runnable() {
+				public void run() {
+					initCampaigns();
+				}
+			}).start();
+			return true;
+		}
+
+		return false;
+	}
+
+	public void setupCampaignRefreshTimer() {
+		removeCampaignRefreshTimer();
+
+		if (UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS > 0) {
+			_campaignRefreshTimerTask = new TimerTask() {
+				@Override
+				public void run() {
+					if (!UnityAdsProperties.isShowingAds()) {
+						UnityAdsDeviceLog.debug("Refreshing ad plan to get new data");
+						initCampaigns();
+					} else {
+						UnityAdsDeviceLog.debug("Refreshing ad plan after current ad");
+						_refreshAfterShowAds = true;
+					}
+				}
+			};
+
+			_campaignRefreshTimerDeadline = SystemClock.elapsedRealtime() + UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS * 1000;
+			_campaignRefreshTimer = new Timer();
+			_campaignRefreshTimer.schedule(_campaignRefreshTimerTask, UnityAdsProperties.CAMPAIGN_REFRESH_SECONDS * 1000);
+		}
+	}
+
 	public static UnityAdsZoneManager getZoneManager() {
 		return _zoneManager;
 	}
 	
 	/* INTERNAL METHODS */
-	
+
+	private void removeCampaignRefreshTimer() {
+		_campaignRefreshTimerDeadline = 0;
+
+		if (_campaignRefreshTimer != null) {
+			_campaignRefreshTimer.cancel();
+		}
+	}
+
 	private void addLoader (UnityAdsUrlLoader loader) {
 		synchronized(_urlLoaderLock) {
 			if (_urlLoaders == null)

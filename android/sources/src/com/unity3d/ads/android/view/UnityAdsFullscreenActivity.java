@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 
@@ -38,33 +36,14 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		return _mainView;
 	}
 
-	private boolean isAdsReadySent () {
-		return UnityAdsProperties.UNITY_ADS_READY_SENT;
-	}
-
-	private void setAdsReadySent (boolean sent) {
-		UnityAdsProperties.UNITY_ADS_READY_SENT = sent;
-	}
-
 	private void setupViews () {
 		if (getMainView() != null) {
 			UnityAdsDeviceLog.debug("View was not destroyed, trying to destroy it");
-			getMainView().webview.destroy();
 			_mainView = null;
 		}
 
 		if (getMainView() == null) {
 			_mainView = new UnityAdsMainView(this, this, this);
-		}
-	}
-
-	private void sendReadyEvent () {
-		if (!isAdsReadySent() && UnityAds.getListener() != null) {
-			if (!isAdsReadySent()) {
-				UnityAdsDeviceLog.debug("Unity Ads ready.");
-				UnityAds.getListener().onFetchCompleted();
-				setAdsReadySent(true);
-			}
 		}
 	}
 
@@ -99,7 +78,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 					getMainView().webview.waitForWebAppLoadComplete();
 				}*/
 				if (getMainView() != null) {
-					getMainView().webview.setWebViewCurrentView(view, data);
+					UnityAdsMainView.webview.setWebViewCurrentView(view, data);
 					getMainView().setViewState(UnityAdsMainView.UnityAdsMainViewState.WebView);
 
 					UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
@@ -131,10 +110,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			}
 		}
 
-		hideOperations();
-	}
-
-	private void hideOperations() {
 		final JSONObject data = new JSONObject();
 
 		try  {
@@ -144,8 +119,12 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			return;
 		}
 
-		if(getMainView() != null && getMainView().webview != null) {
-			getMainView().webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+		if(getMainView() != null && UnityAdsMainView.webview != null) {
+			UnityAdsMainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
+		}
+
+		if (UnityAdsMainView.webview != null && UnityAdsMainView.webview.getParent() != null) {
+			((ViewGroup)UnityAdsMainView.webview.getParent()).removeView(UnityAdsMainView.webview);
 		}
 
 		if(getMainView() != null) {
@@ -166,16 +145,26 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 
 			UnityAdsProperties.SELECTED_CAMPAIGN = null;
 			getMainView().videoplayerview = null;
-			getMainView().webview.destroy();
-			getMainView().webview = null;
-			//_mainView = null;
 		}
 
 		if (UnityAds.getListener() != null)
 			UnityAds.getListener().onHide();
 
-		// TODO: Refresh campaigns
-		//refreshCampaignsOrCacheNextVideo();
+		// TODO: Refresh campaigns or cache next video
+		if (UnityAds.webdata.refreshCampaignsIfNeeded()) {
+		}
+		else {
+			if (UnityAds.webdata == null) return;
+
+			ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
+			if (viewableCampaigns != null && viewableCampaigns.size() > 0) {
+				UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
+
+				if (!UnityAds.cachemanager.isCampaignCached(nextCampaign, false) && nextCampaign.allowCacheVideo()) {
+					UnityAds.cachemanager.cacheNextVideo(nextCampaign);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -256,9 +245,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 						UnityAds.cachemanager.cacheNextVideo(nextCampaign);
 					}
 				}
-
-				// TODO: We need this?
-				//cancelPauseScreenTimer();
 				break;
 			case VideoEnd:
 				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
@@ -329,8 +315,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 	}
 
 	@Override
-	public void onPauseVideo(JSONObject data) {
-	}
+	public void onPauseVideo(JSONObject data) {	}
 
 	@Override
 	public void onCloseAdsView(JSONObject data) {
@@ -348,32 +333,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 	}
 
 	@Override
-	public void onWebAppInitComplete(JSONObject data) {
-		UnityAdsDeviceLog.entered();
-		Boolean dataOk = true;
-
-		if(UnityAds.webdata != null && UnityAds.webdata.hasViewableAds()) {
-			JSONObject setViewData = new JSONObject();
-
-			try {
-				setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_INITCOMPLETE);
-			}
-			catch (Exception e) {
-				dataOk = false;
-			}
-
-			if (dataOk) {
-				getMainView().webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
-
-				UnityAdsUtils.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						sendReadyEvent();
-					}
-				});
-			}
-		}
-	}
+	public void onWebAppInitComplete(JSONObject data) { }
 
 	@Override
 	public void onOrientationRequest(JSONObject data) {
@@ -584,10 +544,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 					return;
 				}
 
-				getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
-
-				// TODO: WHAT?
-				//createPauseScreenTimer();
+				UnityAdsMainView.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
 
 				String playUrl;
 				if (!UnityAds.cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true)) {

@@ -1,8 +1,5 @@
 package com.unity3d.ads.android.view;
 
-import java.util.ArrayList;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.TargetApi;
@@ -20,7 +17,7 @@ import android.widget.RelativeLayout;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
-import com.unity3d.ads.android.campaign.UnityAdsCampaign;
+import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
@@ -44,7 +41,7 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 	
 	// Views
 	public UnityAdsVideoPlayView videoplayerview = null;
-	public UnityAdsWebView webview = null;
+	public static UnityAdsWebView webview = null;
 
 	// Listener
 	private IUnityAdsMainViewListener _listener = null;
@@ -133,13 +130,106 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
     	super.onAttachedToWindow();
     	focusToView(this);
     }
+
+	public static void initWebView () {
+		if (webview != null) {
+			if (webview.getParent() != null) {
+				((ViewGroup)webview.getParent()).removeView(webview);
+			}
+
+			webview.destroy();
+			webview = null;
+		}
+
+		if (webview == null) {
+			UnityAdsDeviceLog.debug("Initing WebView");
+
+			webview = new UnityAdsWebView(UnityAdsProperties.getCurrentActivity(), new IUnityAdsWebViewListener() {
+				@Override
+				public void onWebAppLoaded() {
+					webview.initWebApp(UnityAds.webdata.getData());
+				}
+
+				@Override
+				public void onBackButtonClicked(View view) {
+				}
+			}, new UnityAdsWebBridge(new IUnityAdsWebBridgeListener() {
+				@Override
+				public void onPlayVideo(JSONObject data) { }
+
+				@Override
+				public void onPauseVideo(JSONObject data) {	}
+
+				@Override
+				public void onCloseAdsView(JSONObject data) { }
+
+				@Override
+				public void onWebAppLoadComplete(JSONObject data) {	}
+
+				@Override
+				public void onWebAppInitComplete(JSONObject data) {
+					UnityAdsDeviceLog.entered();
+					Boolean dataOk = true;
+
+					if(UnityAds.webdata != null && UnityAds.webdata.hasViewableAds()) {
+						JSONObject setViewData = new JSONObject();
+
+						try {
+							setViewData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY, UnityAdsConstants.UNITY_ADS_WEBVIEW_API_INITCOMPLETE);
+						}
+						catch (Exception e) {
+							dataOk = false;
+						}
+
+						if (dataOk) {
+							UnityAdsMainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
+
+							UnityAdsUtils.runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									sendReadyEvent();
+								}
+							});
+						}
+					}
+				}
+
+				@Override
+				public void onOrientationRequest(JSONObject data) {	}
+
+				@Override
+				public void onOpenPlayStore(JSONObject data) { }
+
+				@Override
+				public void onLaunchIntent(JSONObject data) { }
+			}));
+			webview.setId(1003);
+		}
+	}
 	
 	/* PRIVATE METHODS */
-	
+
+	private static void sendReadyEvent () {
+		if (!UnityAdsProperties.isAdsReadySent() && UnityAds.getListener() != null) {
+			UnityAdsDeviceLog.debug("Unity Ads ready.");
+			UnityAds.getListener().onFetchCompleted();
+			UnityAdsProperties.setAdsReadySent(true);
+		}
+	}
+
 	private void init () {
 		UnityAdsDeviceLog.entered();   	
 		this.setId(1001);
-		createWebView();
+
+		webview.setWebBridgeListener(_webBridgeListener);
+		webview.setWebViewListener(this);
+
+		post(new Runnable() {
+			@Override
+			public void run() {
+				placeWebView();
+			}
+		});
 	}
 	
 	private void destroyVideoPlayerView () {
@@ -159,10 +249,14 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		addView(videoplayerview);
 	}
 	
-	private void createWebView () {
-		webview = new UnityAdsWebView(UnityAdsProperties.getCurrentActivity(), this, new UnityAdsWebBridge(_webBridgeListener));
-		webview.setId(1003);
-		addView(webview, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
+	private void placeWebView() {
+		if (webview != null) {
+			if (webview.getParent() != null) {
+				((ViewGroup)webview.getParent()).removeView(webview);
+			}
+
+			addView(webview, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
+		}
 	}
 	
 	private void removeFromMainView (View view) {

@@ -11,6 +11,7 @@ import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.unity3d.ads.android.view.UnityAdsFullscreenActivity;
 
 public class UnityAdsProperties {
 	public static String CAMPAIGN_DATA_URL = "https://impact.applifier.com/mobile/campaigns";
@@ -216,5 +217,21 @@ public class UnityAdsProperties {
 		}
 
 		return isDestroyed;
+	}
+
+	public static boolean isAdsReadySent () {
+		return UNITY_ADS_READY_SENT;
+	}
+
+	public static void setAdsReadySent (boolean sent) {
+		UNITY_ADS_READY_SENT = sent;
+	}
+
+	public static boolean isShowingAds() {
+		if (getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
+			return true;
+		}
+
+		return false;
 	}
 }

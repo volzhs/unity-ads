@@ -34,6 +34,7 @@ import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsFullscreenActivity;
+import com.unity3d.ads.android.view.UnityAdsMainView;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
@@ -63,7 +64,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	// Temporary data
 	private static boolean _initialized = false;
 	private static boolean _refreshAfterShowAds = false;
-	private static boolean _webAppLoaded = false;
 	private static AlertDialog _alertDialog = null;
 
 	private static TimerTask _campaignRefreshTimerTask = null;
@@ -219,11 +219,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	}
 
 	private static boolean isShowingAds() {
-		if (UnityAdsProperties.getCurrentActivity() instanceof UnityAdsFullscreenActivity) {
-			return true;
-		}
-
-		return false;
+		return UnityAdsProperties.isShowingAds();
 	}
 
 	public static boolean canShow() {
@@ -234,11 +230,10 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 
 		// TODO: FIX Webapp NEEDS to be loaded in init
-		/*
-		if(!_webAppLoaded) {
+		if(!UnityAdsProperties.isAdsReadySent()) {
 			logCanShow(2);
 			return false;
-		}*/
+		}
 
 		if(isShowingAds()) {
 			logCanShow(3);
@@ -397,24 +392,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 
 		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
-
-		if (webdata != null && webdata.hasViewableAds())
-			sendReadyEvent();
-	}
-
-	private static void sendReadyEvent() {
-		if (!UnityAdsProperties.UNITY_ADS_READY_SENT && getListener() != null) {
-			UnityAdsUtils.runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					if (!UnityAdsProperties.UNITY_ADS_READY_SENT) {
-						UnityAdsDeviceLog.debug("Unity Ads ready.");
-						getListener().onFetchCompleted();
-						UnityAdsProperties.UNITY_ADS_READY_SENT = true;
-					}
-				}
-			});
-		}
 	}
 
 	@Override
@@ -439,7 +416,8 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 			}
 
 			if (!dataFetchFailed) {
-				setupCampaignRefreshTimer();
+				webdata.setupCampaignRefreshTimer();
+				//setupCampaignRefreshTimer();
 
 				if (jsonData.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SDK_IS_CURRENT_KEY)) {
 					try {
@@ -559,6 +537,13 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 	private static void setup() {
 		initCache();
+
+		UnityAdsUtils.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				UnityAdsMainView.initWebView();
+			}
+		});
 	}
 
 	private static void initCache() {
@@ -591,6 +576,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 	// After ad unit closes, ad plan is refreshed if necessary
 	// If ad plan is not refreshed and next video is not yet cached, start caching
+	/*
 	private static void refreshCampaignsOrCacheNextVideo() {
 		boolean refresh = false;
 
@@ -663,5 +649,5 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		if (_campaignRefreshTimer != null) {
 			_campaignRefreshTimer.cancel();
 		}
-	}
+	}*/
 }

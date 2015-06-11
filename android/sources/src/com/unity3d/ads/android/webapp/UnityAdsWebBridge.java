@@ -61,7 +61,11 @@ public class UnityAdsWebBridge {
 	public UnityAdsWebBridge (IUnityAdsWebBridgeListener listener) {
 		_listener = listener;
 	}
-	
+
+	public void setListener (IUnityAdsWebBridgeListener listener) {
+		_listener = listener;
+	}
+
 	@JavascriptInterface
 	public boolean handleWebEvent (String type, String data) {
 		UnityAdsDeviceLog.debug(type + ", " + data);

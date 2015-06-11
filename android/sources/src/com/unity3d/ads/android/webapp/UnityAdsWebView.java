@@ -64,13 +64,13 @@ public class UnityAdsWebView extends WebView {
 		super(activity);
 		init(activity, url, listener, webBridge);
 	}
-	
+	/*
 	public void clearWebView () {
 		_webAppLoaded = false;
 		_listener = null;
 		setWebViewClient(null);
 		setWebChromeClient(null);
-	}
+	}*/
 	
 	public boolean isWebAppLoaded () {
 		return _webAppLoaded;
@@ -193,6 +193,15 @@ public class UnityAdsWebView extends WebView {
 		}
 	}
 
+	public void setWebBridgeListener (IUnityAdsWebBridgeListener webBridgeListener) {
+		if (_webBridge != null) {
+			_webBridge.setListener(webBridgeListener);
+		}
+	}
+
+	public void setWebViewListener (IUnityAdsWebViewListener webViewListener) {
+		_listener = webViewListener;
+	}
 
 	/* INTERNAL METHODS */
 
