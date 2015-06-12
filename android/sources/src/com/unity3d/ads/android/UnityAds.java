@@ -63,17 +63,12 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 	// Temporary data
 	private static boolean _initialized = false;
-	private static boolean _refreshAfterShowAds = false;
 	private static AlertDialog _alertDialog = null;
-
-	private static TimerTask _campaignRefreshTimerTask = null;
-	private static Timer _campaignRefreshTimer = null;
-	private static long _campaignRefreshTimerDeadline = 0;
-
-	private static UnityAds _instance = null;
 
 	// Listeners
 	private static IUnityAdsListener _adsListener = null;
+
+	private static UnityAds _instance = null;
 
 	private UnityAds() {
 	}
