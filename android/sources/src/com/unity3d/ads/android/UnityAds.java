@@ -486,9 +486,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 
 		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
-
-		if(hasViewableAds())
-			sendReadyEvent();
 	}
 
 	@Override
