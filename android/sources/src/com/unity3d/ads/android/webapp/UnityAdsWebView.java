@@ -54,15 +54,15 @@ public class UnityAdsWebView extends WebView {
 		super(context);
 	}
 
-	public UnityAdsWebView(Activity activity, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
-		super(activity);
+	public UnityAdsWebView(Context context, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
+		super(context);
 		UnityAdsDeviceLog.debug("Loading WebView from URL: " + UnityAdsProperties.WEBVIEW_BASE_URL);
-		init(activity, UnityAdsProperties.WEBVIEW_BASE_URL, listener, webBridge);
+		init(UnityAdsProperties.WEBVIEW_BASE_URL, listener, webBridge);
 	}
 
 	public UnityAdsWebView(Activity activity, String url, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		super(activity);
-		init(activity, url, listener, webBridge);
+		init(url, listener, webBridge);
 	}
 	/*
 	public void clearWebView () {
@@ -141,7 +141,7 @@ public class UnityAdsWebView extends WebView {
 		if (isWebAppLoaded()) {
 			JSONObject initData = new JSONObject();
 
-			try {				
+			try {
 				// Basic data
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_CAMPAIGNDATA_KEY, data);
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_PLATFORM_KEY, "android");
@@ -174,16 +174,16 @@ public class UnityAdsWebView extends WebView {
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SCREENSIZE_KEY, UnityAdsDevice.getScreenSize());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_ZONES_KEY, UnityAdsWebData.getZoneManager().getZonesJson());
 
-        if(UnityAdsProperties.UNITY_VERSION != null && UnityAdsProperties.UNITY_VERSION.length() > 0) {
-          initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_UNITYVERSION_KEY, UnityAdsProperties.UNITY_VERSION);
-        }
+				if(UnityAdsProperties.UNITY_VERSION != null && UnityAdsProperties.UNITY_VERSION.length() > 0) {
+				  initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_UNITYVERSION_KEY, UnityAdsProperties.UNITY_VERSION);
+				}
 
 				// Tracking data
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY, UnityAdsDevice.getSoftwareVersion());
 				initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
 			}
 			catch (Exception e) {
-				UnityAdsDeviceLog.debug("Error creating webview init params");
+				UnityAdsDeviceLog.debug("Error creating webview init params: " + e.getMessage());
 				return;
 			}
 
@@ -205,7 +205,7 @@ public class UnityAdsWebView extends WebView {
 
 	/* INTERNAL METHODS */
 
-	private void init (Activity activity, String url, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
+	private void init (String url, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
 		_listener = listener;
 		_url = url;
 		_webBridge = webBridge;

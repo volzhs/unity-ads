@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
@@ -26,6 +27,7 @@ public class UnityAdsProperties {
 	public static Boolean TESTMODE_ENABLED = false;
 	public static Boolean SEND_INTERNAL_DETAILS = false;
 	public static WeakReference<Activity> BASE_ACTIVITY = null;
+	public static WeakReference<Context> APPLICATION_CONTEXT = null;
 	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean SELECTED_CAMPAIGN_CACHED = false;

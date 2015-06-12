@@ -144,7 +144,7 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		if (webview == null) {
 			UnityAdsDeviceLog.debug("Initing WebView");
 
-			webview = new UnityAdsWebView(UnityAdsProperties.getCurrentActivity(), new IUnityAdsWebViewListener() {
+			webview = new UnityAdsWebView(UnityAdsProperties.APPLICATION_CONTEXT.get(), new IUnityAdsWebViewListener() {
 				@Override
 				public void onWebAppLoaded() {
 					webview.initWebApp(UnityAds.webdata.getData());
