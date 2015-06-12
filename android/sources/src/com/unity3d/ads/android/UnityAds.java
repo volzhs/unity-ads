@@ -229,7 +229,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		}
 
 
-		// TODO: FIX Webapp NEEDS to be loaded in init
 		if(!UnityAdsProperties.isAdsReadySent()) {
 			logCanShow(2);
 			return false;

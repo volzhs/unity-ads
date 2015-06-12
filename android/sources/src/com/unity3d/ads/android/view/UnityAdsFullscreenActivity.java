@@ -74,11 +74,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			UnityAdsDeviceLog.debug("Opening with view:" + view + " and data:" + data.toString());
 
 			if (getMainView() != null) {
-				// TODO: ASK WHAT IS THIS ?
-				/*
-				if(!getMainView().webview.isWebAppLoadComplete()) {
-					getMainView().webview.waitForWebAppLoadComplete();
-				}*/
 				if (getMainView() != null) {
 					UnityAdsMainView.webview.setWebViewCurrentView(view, data);
 					getMainView().setViewState(UnityAdsMainView.UnityAdsMainViewState.WebView);
@@ -125,25 +120,15 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			UnityAdsMainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, data);
 		}
 
-		if (UnityAdsMainView.webview != null && UnityAdsMainView.webview.getParent() != null) {
-			((ViewGroup)UnityAdsMainView.webview.getParent()).removeView(UnityAdsMainView.webview);
-		}
+		UnityAdsViewUtils.removeViewFromParent(UnityAdsMainView.webview);
 
 		if(getMainView() != null) {
-			// TODO: FIX DUPLICATE CODE
-			if (getMainView().getParent() != null) {
-				ViewGroup vg = (ViewGroup)getMainView().getParent();
-				if (vg != null)
-					vg.removeView(getMainView());
-			}
+			UnityAdsViewUtils.removeViewFromParent(getMainView());
 
 			if (getMainView().videoplayerview != null)
 				getMainView().videoplayerview.clearVideoPlayer();
 
-			// TODO: FIX DUPLICATE CODE
-			if (getMainView() != null) {
-				getMainView().removeView(getMainView().videoplayerview);
-			}
+			UnityAdsViewUtils.removeViewFromParent(getMainView().videoplayerview);
 
 			UnityAdsProperties.SELECTED_CAMPAIGN = null;
 			getMainView().videoplayerview = null;
@@ -152,7 +137,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		if (UnityAds.getListener() != null)
 			UnityAds.getListener().onHide();
 
-		// TODO: Refresh campaigns or cache next video
+		// Refresh campaigns or cache next video
 		if (UnityAds.webdata.refreshCampaignsIfNeeded()) {
 		}
 		else {
@@ -170,8 +155,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 	}
 
 	private void changeOrientation () {
-		// SET ORIENTATION FOR ACTIVITY
-
 		// SENSOR_LANDSCAPE
 		int targetOrientation = 6;
 
@@ -180,15 +163,12 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (currentZone.useDeviceOrientationForVideo()) {
-			//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
 			// UNSPECIFIED
 			targetOrientation = -1;
 		}
 
 		setRequestedOrientation(targetOrientation);
 	}
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -203,7 +183,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 			setupViews();
 			setContentView(getMainView());
 			changeOrientation();
-
 			open(_currentView);
 		}
 
