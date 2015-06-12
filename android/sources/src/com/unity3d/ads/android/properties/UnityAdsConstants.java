@@ -30,10 +30,8 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_PLATFORM_KEY = "platform";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_ANDROIDID_KEY = "androidId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_RAWANDROIDID_KEY = "rawAndroidId";
-	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SERIALID_KEY = "serialId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_GAMEID_KEY = "gameId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_DEVICETYPE_KEY = "deviceType";
-	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY = "macAddress";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY = "sdkVersion";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SDK_IS_CURRENT_KEY = "sdkIsCurrent";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SOFTWAREVERSION_KEY = "softwareVersion";
