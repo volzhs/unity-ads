@@ -34,9 +34,7 @@ static UnityAdsProperties *sharedProperties = nil;
     [self setCampaignQueryString:[self createCampaignQueryString]];
     [self setSdkIsCurrent:true];
     [self setExpectedSdkVersion:@"0"];
-    [self setAppFiltering:@"off"];
     [self setUnityVersion:nil];
-    [self setInstalledApps:[[NSMutableSet alloc] init]];
   }
   
   return self;
@@ -47,10 +45,6 @@ static UnityAdsProperties *sharedProperties = nil;
 }
 
 - (NSString *)createCampaignQueryString {
-  return [self createCampaignQueryString:YES];
-}
-
-- (NSString *)createCampaignQueryString:(BOOL)withInstalledApps {
   NSString *queryParams = @"?";
   
   // Mandatory params
@@ -102,10 +96,6 @@ static UnityAdsProperties *sharedProperties = nil;
   }
   else {
     queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamEncryptionKey, [UnityAdsDevice isEncrypted] ? @"true" : @"false"];
-  }
-  
-  if(withInstalledApps && [[self installedApps] count] > 0) {
-    queryParams = [NSString stringWithFormat:@"%@&%@=%@", queryParams, kUnityAdsInitQueryParamAppFilterListKey, [[self installedApps].allObjects componentsJoinedByString:@","]];
   }
   
   if (self.sendInternalDetails) {

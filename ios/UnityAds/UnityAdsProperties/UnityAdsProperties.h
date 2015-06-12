@@ -24,10 +24,6 @@
   @property (nonatomic, strong) NSString *expectedSdkVersion;
   @property (nonatomic, strong) NSString *developerId;
   @property (nonatomic, strong) NSString *optionsId;
-  @property (nonatomic, strong) NSString *appFiltering;
-  @property (nonatomic, strong) NSMutableSet *installedApps;
-  @property (nonatomic, strong) NSString *urlSchemeMap;
-  @property (nonatomic, strong) NSString *installedAppsUrl;
   @property (nonatomic, assign) BOOL sdkIsCurrent;
   @property (nonatomic, assign) BOOL statusBarWasVisible;
   @property (nonatomic, assign) BOOL unityDeveloperInternalTestMode;
@@ -36,7 +32,6 @@
 
 + (UnityAdsProperties *)sharedInstance;
 - (NSString *)createCampaignQueryString;
-- (NSString *)createCampaignQueryString:(BOOL)withInstalledApps;
 - (void)refreshCampaignQueryString;
 - (void)enableUnityDeveloperInternalTestMode;
 - (NSString *)adsVersion;
