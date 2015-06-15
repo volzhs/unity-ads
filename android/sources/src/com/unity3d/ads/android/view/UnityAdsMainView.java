@@ -32,8 +32,7 @@ import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebViewListener, 
-																IUnityAdsVideoPlayerListener {
+public class UnityAdsMainView extends RelativeLayout implements IUnityAdsVideoPlayerListener {
 
 	public static enum UnityAdsMainViewState { WebView, VideoPlayer };
 	public static enum UnityAdsMainViewAction { VideoStart, VideoEnd, VideoSkipped, BackButtonPressed, RequestRetryVideoPlay };
@@ -445,11 +444,5 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 
 		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 		sendActionToListener(UnityAdsMainViewAction.VideoSkipped);
-	}
-
-	// IUnityAdsWebViewListener
-	@Override
-	public void onWebAppLoaded () {
-		webview.initWebApp(UnityAds.webdata.getData());
 	}
 }

@@ -4,8 +4,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.json.JSONObject;
 
@@ -39,9 +37,6 @@ import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
 import com.unity3d.ads.android.zone.UnityAdsZone;
-
-import android.os.SystemClock;
-
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListener {
