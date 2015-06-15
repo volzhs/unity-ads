@@ -11,9 +11,7 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.os.PowerManager;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -64,9 +62,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private TextView _bufferingText = null;
 	private TextView _stagingText = null;
 
-	public UnityAdsVideoPlayView(Context context, IUnityAdsVideoPlayerListener listener) {
+	public UnityAdsVideoPlayView(Context context) {
 		super(context);
-		_listener = listener;
 		createView();
 	}
 
@@ -79,6 +76,10 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			int defStyle) {
 		super(context, attrs, defStyle);
 		createView();
+	}
+
+	public void setListener (IUnityAdsVideoPlayerListener listener) {
+		_listener = listener;
 	}
 
 	public void playVideo (String fileName) {
@@ -440,29 +441,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			}
 		});
 	}
-
-	@Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-    	Map<String, Object> values = null;
-    	
-    	switch (keyCode) {
-			case KeyEvent.KEYCODE_BACK:
-				UnityAdsDeviceLog.entered();
-				
-				UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-				long allowBackButtonSkip = currentZone.disableBackButtonForSeconds();
-				if (allowBackButtonSkip == 0 || (allowBackButtonSkip > 0 && getSecondsUntilBackButtonAllowed() == 0)) {
-					clearVideoPlayer();
-				}
-				
-				if (_listener != null)
-					_listener.onBackButtonClicked(this);
-				
-		    	return true;
-		}
-    	
-    	return false;
-    }
 
     /* INTERNAL CLASSES */
 

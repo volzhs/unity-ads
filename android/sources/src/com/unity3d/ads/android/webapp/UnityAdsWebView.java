@@ -296,25 +296,9 @@ public class UnityAdsWebView extends WebView {
 			UnityAdsDeviceLog.error("Could not invoke setLayerType");
 		}		
 	}
-	
-	/* OVERRIDE METHODS */
-	
-	@Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-		switch (keyCode) {
-			case KeyEvent.KEYCODE_BACK:
-				UnityAdsDeviceLog.entered();
-		    	if (_listener != null)
-		    		_listener.onBackButtonClicked(this);
-		    	return true;
-		}
-    	
-    	return false;
-    }
-	
-	
+
 	/* SUBCLASSES */
-	
+
 	private class UnityAdsViewChromeClient extends WebChromeClient {
 		public void onConsoleMessage(String message, int lineNumber, String sourceID) {
 			String sourceFile = sourceID;

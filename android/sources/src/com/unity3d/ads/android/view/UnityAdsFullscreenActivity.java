@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
+import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
 import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
@@ -28,7 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMainViewListener, IUnityAdsWebBridgeListener {
+public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWebBridgeListener, IUnityAdsVideoPlayerListener {
 
 	private String _currentView = null;
 	private Boolean _preventVideoDoubleStart = false;
@@ -45,7 +47,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		}
 
 		if (getMainView() == null) {
-			_mainView = new UnityAdsMainView(this, this, this);
+			_mainView = new UnityAdsMainView(this, this);
 		}
 	}
 
@@ -232,53 +234,34 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)  {
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_BACK:
+				UnityAdsDeviceLog.entered();
+				if (getMainView().videoplayerview != null) {
+					UnityAdsDeviceLog.debug("Seconds: " + getMainView().videoplayerview.getSecondsUntilBackButtonAllowed());
+				}
+
+				if ((UnityAdsProperties.SELECTED_CAMPAIGN != null &&
+						UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) ||
+						getMainView().getViewState() != UnityAdsMainView.UnityAdsMainViewState.VideoPlayer ||
+						(getMainView().getViewState() == UnityAdsMainView.UnityAdsMainViewState.VideoPlayer &&
+								getMainView().videoplayerview != null && getMainView().videoplayerview.getSecondsUntilBackButtonAllowed() == 0) ||
+						(getMainView().getViewState() == UnityAdsMainView.UnityAdsMainViewState.VideoPlayer && UnityAdsWebData.getZoneManager().getCurrentZone().disableBackButtonForSeconds() == 0)) {
+
+					finish();
+				}
+				else {
+					UnityAdsDeviceLog.debug("Prevented back-button");
+				}
+
+				return true;
+		}
+
 		return false;
 	}
 
-	@Override
-	public void onMainViewAction(UnityAdsMainView.UnityAdsMainViewAction action) {
-		switch (action) {
-			case BackButtonPressed:
-				finish();
-				break;
-			case VideoStart:
-				if (UnityAds.getListener() != null)
-					UnityAds.getListener().onVideoStarted();
+	/* IUnityAdsWebBrigeListener */
 
-				ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
-				if(viewableCampaigns.size() > 1) {
-					UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
-
-					if(UnityAds.cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true) && !UnityAds.cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
-						UnityAds.cachemanager.cacheNextVideo(nextCampaign);
-					}
-				}
-				break;
-			case VideoEnd:
-				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
-				if (UnityAds.getListener() != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
-					UnityAdsDeviceLog.info("Unity Ads video completed");
-					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);
-					UnityAds.getListener().onVideoCompleted(UnityAds.getCurrentRewardItemKey(), false);
-				}
-				break;
-			case VideoSkipped:
-				UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
-				if (UnityAds.getListener() != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
-					UnityAdsDeviceLog.info("Unity Ads video skipped");
-					UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);
-					UnityAds.getListener().onVideoCompleted(UnityAds.getCurrentRewardItemKey(), true);
-				}
-				break;
-			case RequestRetryVideoPlay:
-				UnityAdsDeviceLog.debug("Retrying video play, because something went wrong.");
-				_preventVideoDoubleStart = false;
-				playVideo(300);
-				break;
-		}
-	}
-
-	// IUnityAdsWebBrigeListener
 	@Override
 	public void onPlayVideo(JSONObject data) {
 		UnityAdsDeviceLog.entered();
@@ -533,10 +516,17 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 		_preventVideoDoubleStart = true;
 		UnityAdsDeviceLog.debug("Running threaded");
 		UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
+		playVideoRunner.setVideoPlayerListener(this);
 		UnityAdsUtils.runOnUiThread(playVideoRunner, delay);
 	}
 
 	private class UnityAdsPlayVideoRunner implements Runnable {
+		private IUnityAdsVideoPlayerListener _listener = null;
+
+		public void setVideoPlayerListener (IUnityAdsVideoPlayerListener listener) {
+			_listener = listener;
+		}
+
 		@Override
 		public void run() {
 			UnityAdsDeviceLog.entered();
@@ -564,11 +554,145 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 				}
 
 				getMainView().setViewState(UnityAdsMainView.UnityAdsMainViewState.VideoPlayer);
+				getMainView().videoplayerview.setListener(_listener);
 				UnityAdsDeviceLog.debug("Start videoplayback with: " + playUrl);
 				getMainView().videoplayerview.playVideo(playUrl);
 			}
 			else
 				UnityAdsDeviceLog.error("Campaign is null");
+		}
+	}
+
+	public void finishPlayback () {
+		if (getMainView().videoplayerview != null) {
+			getMainView().videoplayerview.setKeepScreenOn(false);
+		}
+
+		getMainView().destroyVideoPlayerView();
+		getMainView().setViewState(UnityAdsMainView.UnityAdsMainViewState.WebView);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+	}
+
+	/* IUnityAdsVideoPlayerListener */
+
+	@Override
+	public void onVideoPlaybackStarted () {
+		UnityAdsDeviceLog.entered();
+
+		JSONObject params = new JSONObject();
+		JSONObject spinnerParams = new JSONObject();
+
+		try {
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+			spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
+		} catch (Exception e) {
+			UnityAdsDeviceLog.error("Could not create JSON");
+		}
+
+		if (UnityAds.getListener() != null)
+			UnityAds.getListener().onVideoStarted();
+
+		ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
+		if(viewableCampaigns.size() > 1) {
+			UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
+
+			if(UnityAds.cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true) && !UnityAds.cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
+				UnityAds.cachemanager.cacheNextVideo(nextCampaign);
+			}
+		}
+
+		getMainView().bringChildToFront(getMainView().videoplayerview);
+		changeOrientation();
+
+		if (getMainView().webview != null) {
+			getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
+			getMainView().webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
+		}
+	}
+
+	@Override
+	public void onEventPositionReached (UnityAdsWebData.UnityAdsVideoPosition position) {
+		if (UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignStatus().equals(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED))
+			UnityAds.webdata.sendCampaignViewProgress(UnityAdsProperties.SELECTED_CAMPAIGN, position);
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer mp) {
+		UnityAdsDeviceLog.entered();
+		finishPlayback();
+		onEventPositionReached(UnityAdsWebData.UnityAdsVideoPosition.End);
+
+		JSONObject params = new JSONObject();
+
+		try {
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+		}
+		catch (Exception e) {
+			UnityAdsDeviceLog.error("Could not create JSON");
+		}
+
+		getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
+
+		UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
+		if (UnityAds.getListener() != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
+			UnityAdsDeviceLog.info("Unity Ads video completed");
+			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);
+			UnityAds.getListener().onVideoCompleted(UnityAds.getCurrentRewardItemKey(), false);
+		}
+	}
+
+	@Override
+	public void onVideoPlaybackError () {
+		finishPlayback();
+
+		UnityAdsDeviceLog.entered();
+		UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
+
+		JSONObject errorParams = new JSONObject();
+		JSONObject spinnerParams = new JSONObject();
+		JSONObject params = new JSONObject();
+
+		try {
+			errorParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_VIDEOPLAYBACKERROR);
+			spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+		}
+		catch (Exception e) {
+			UnityAdsDeviceLog.error("Could not create JSON");
+		}
+
+		if(getMainView().webview != null) {
+			getMainView().webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
+			getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWERROR, errorParams);
+			getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
+			getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
+		}
+
+		if(UnityAdsProperties.SELECTED_CAMPAIGN != null) {
+			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);
+			UnityAdsProperties.SELECTED_CAMPAIGN = null;
+		}
+	}
+
+	@Override
+	public void onVideoSkip () {
+		finishPlayback();
+		JSONObject params = new JSONObject();
+
+		try {
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+		}
+		catch (Exception e) {
+			UnityAdsDeviceLog.error("Could not create JSON");
+		}
+
+		getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
+
+		UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
+		if (UnityAds.getListener() != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
+			UnityAdsDeviceLog.info("Unity Ads video skipped");
+			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);
+			UnityAds.getListener().onVideoCompleted(UnityAds.getCurrentRewardItemKey(), true);
 		}
 	}
 }
