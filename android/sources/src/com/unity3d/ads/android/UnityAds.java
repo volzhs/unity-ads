@@ -51,6 +51,7 @@ import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
 import com.unity3d.ads.android.zone.UnityAdsZone;
+import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 import android.os.SystemClock;
 
@@ -214,6 +215,20 @@ public class UnityAds implements IUnityAdsCacheListener,
 			}
 		}
 		return false;
+	}
+
+	public static String getZone() {
+		UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
+
+		if(zoneManager != null) {
+			UnityAdsZone currentZone = zoneManager.getCurrentZone();
+
+			if(currentZone != null) {
+				return currentZone.getZoneId();
+			}
+		}
+
+		return null;
 	}
 
 	public static boolean show (Map<String, Object> options) {
