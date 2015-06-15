@@ -35,7 +35,7 @@ public class UnityAdsProperties {
 	public static int CAMPAIGN_REFRESH_VIEWS_MAX = 0;
 	public static int CAMPAIGN_REFRESH_SECONDS = 0;
 	public static long CACHING_SPEED = 0;
-  public static String UNITY_VERSION = null;
+	public static String UNITY_VERSION = null;
 
 	public static String TEST_DATA = null;
 	public static String TEST_URL = null;
