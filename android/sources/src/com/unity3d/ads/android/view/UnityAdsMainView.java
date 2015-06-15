@@ -125,11 +125,6 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
     	
     	return false;
     }
-	
-    protected void onAttachedToWindow() {
-    	super.onAttachedToWindow();
-    	focusToView(this);
-    }
 
 	public static void initWebView () {
 		if (webview != null) {
@@ -447,8 +442,8 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsWebView
 		catch (Exception e) {
 			UnityAdsDeviceLog.error("Could not create JSON");
 		}
-		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 
+		webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
 		sendActionToListener(UnityAdsMainViewAction.VideoSkipped);
 	}
 

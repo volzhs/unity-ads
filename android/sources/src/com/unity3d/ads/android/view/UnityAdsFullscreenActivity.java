@@ -210,6 +210,11 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsMai
 	@Override
 	public void onPause() {
 		UnityAdsDeviceLog.entered();
+
+		if (_mainView != null && _mainView.videoplayerview != null && _mainView.videoplayerview.isPlaying()) {
+			_mainView.videoplayerview.pauseVideo();
+		}
+
 		super.onPause();
 	}
 

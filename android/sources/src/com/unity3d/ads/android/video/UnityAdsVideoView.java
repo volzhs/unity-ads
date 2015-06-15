@@ -6,10 +6,6 @@ import android.view.View;
 import android.widget.VideoView;
 
 public class UnityAdsVideoView extends VideoView {
-
-	private IUnityAdsVideoPlayerListener _listener;
-	private boolean _videoCompleted = false;
-
 	public UnityAdsVideoView(Context context) {
 		super(context);
 	}
@@ -20,22 +16,5 @@ public class UnityAdsVideoView extends VideoView {
 
 	public UnityAdsVideoView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-	}
-
-	@Override
-	public void onWindowVisibilityChanged(int visibility) {
-		if(visibility == View.VISIBLE) {
-			super.onWindowVisibilityChanged(visibility);
-		} else if(!_videoCompleted) {
-			_listener.onVideoHidden();
-		}
-	}
-
-	public void setListener (IUnityAdsVideoPlayerListener listener) {
-		_listener = listener;
-	}
-
-	public void setVideoCompleted (boolean completed) {
-		_videoCompleted = completed;
 	}
 }

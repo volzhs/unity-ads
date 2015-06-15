@@ -80,7 +80,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		super(context, attrs, defStyle);
 		createView();
 	}
-	
+
 	public void playVideo (String fileName) {
 		if (fileName == null) return;
 		
@@ -126,6 +126,14 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				}
 			});
 		}		
+	}
+
+	public boolean isPlaying () {
+		if (_videoView != null) {
+			return _videoView.isPlaying();
+		}
+
+		return false;
 	}
 
 	public void hideVideo() {
@@ -233,14 +241,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 
 		_videoCompleted = false;
 		_videoView = (UnityAdsVideoView)_layout.findViewById(R.id.unityAdsVideoView);
-		_videoView.setListener(_listener);
-		_videoView.setVideoCompleted(_videoCompleted);
 		_videoView.setClickable(true);
 		_videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
 				_videoCompleted = true;
-				_videoView.setVideoCompleted(_videoCompleted);
 				_listener.onCompletion(mp);
 			}
 		});
@@ -458,13 +463,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
     	
     	return false;
     }
-    
-    @Override
-    protected void onAttachedToWindow() {
-    	super.onAttachedToWindow();    	
-  		hideVideoPausedView();
-    }
-    
+
     /* INTERNAL CLASSES */
 
 	private class VideoStateChecker extends TimerTask {
@@ -480,11 +479,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			if (_videoView == null || _timeLeftInSecondsText == null) {
 				purgeVideoPausedTimer();
 				return;
-			}
-
-			PowerManager pm = (PowerManager)getContext().getSystemService(Context.POWER_SERVICE);			
-			if (!pm.isScreenOn()) {
-				pauseVideo();
 			}
 
 			_oldPos = _curPos;
