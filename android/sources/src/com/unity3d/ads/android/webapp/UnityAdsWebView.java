@@ -64,26 +64,12 @@ public class UnityAdsWebView extends WebView {
 		super(activity);
 		init(url, listener, webBridge);
 	}
-	/*
-	public void clearWebView () {
-		_webAppLoaded = false;
-		_listener = null;
-		setWebViewClient(null);
-		setWebChromeClient(null);
-	}*/
+
 	
 	public boolean isWebAppLoaded () {
 		return _webAppLoaded;
 	}
-	
-	public String getWebViewCurrentView () {
-		return _currentWebView;
-	}
-	
-	public void setWebViewCurrentView (String view) {
-		setWebViewCurrentView(view, null);
-	}
-	
+
 	public void setWebViewCurrentView (String view, JSONObject data) {		
 		if (isWebAppLoaded()) {
 			String dataString = "{}";
@@ -199,10 +185,6 @@ public class UnityAdsWebView extends WebView {
 		}
 	}
 
-	public void setWebViewListener (IUnityAdsWebViewListener webViewListener) {
-		_listener = webViewListener;
-	}
-
 	/* INTERNAL METHODS */
 
 	private void init (String url, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
@@ -282,19 +264,6 @@ public class UnityAdsWebView extends WebView {
 		
 		UnityAdsDeviceLog.debug("Adding javascript interface");
 		addJavascriptInterface(_webBridge, "unityadsnativebridge");
-	}
-	
-	public void setRenderMode (int mode) {
-		// WebView background will go white in SDK >= 11 if you don't set webview's
-		// layer-type to software.
-		try
-		{
-			Method layertype = View.class.getMethod("setLayerType", Integer.TYPE, Paint.class);
-			layertype.invoke(this, mode, null);
-		}
-		catch (Exception e) {
-			UnityAdsDeviceLog.error("Could not invoke setLayerType");
-		}		
 	}
 
 	/* SUBCLASSES */

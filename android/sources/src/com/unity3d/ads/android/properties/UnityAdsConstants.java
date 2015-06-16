@@ -46,7 +46,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_UNITYVERSION_KEY = "unityVersion";
 
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED = "completed";
-	//public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_START = "start";
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_NONE = "none";
 
 	public static final String UNITY_ADS_WEBVIEW_API_ACTION_KEY = "action";
