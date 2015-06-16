@@ -37,10 +37,8 @@ public class UnityAdsWebView extends WebView {
 	private String _url = null;
 	private IUnityAdsWebViewListener _listener = null;
 	private boolean _webAppLoaded = false;
-	
 	private UnityAdsWebBridge _webBridge = null;
-	private String _currentWebView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE;
-	
+
 	public UnityAdsWebView(Context context, AttributeSet attrs,
 			int defStyle) {
 		super(context, attrs, defStyle);
@@ -78,7 +76,6 @@ public class UnityAdsWebView extends WebView {
 				dataString = data.toString();
 			
 			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
-			_currentWebView = view;
 			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 			UnityAdsDeviceLog.debug("Send change view to WebApp: " + javascriptString);
 			
@@ -191,6 +188,7 @@ public class UnityAdsWebView extends WebView {
 		_listener = listener;
 		_url = url;
 		_webBridge = webBridge;
+		_webAppLoaded = false;
 		setupUnityAdsView();
 		loadUrl(_url);
 		
