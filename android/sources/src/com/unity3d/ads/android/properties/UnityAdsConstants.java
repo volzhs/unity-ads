@@ -2,7 +2,6 @@ package com.unity3d.ads.android.properties;
 
 public class UnityAdsConstants {
 	// Android specific
-	public static final String LOG_NAME = "UnityAds";
 	public static final String CACHE_DIR_NAME = "UnityAdsVideoCache";
 	public static final String CACHE_MANIFEST_FILENAME = "manifest.json";
 	public static final String PENDING_REQUESTS_FILENAME = "pendingrequests.dat";
@@ -31,11 +30,9 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_DEVICEID_KEY = "deviceId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_ANDROIDID_KEY = "androidId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_RAWANDROIDID_KEY = "rawAndroidId";
-	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_TELEPHONYID_KEY = "telephonyId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SERIALID_KEY = "serialId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_GAMEID_KEY = "gameId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_DEVICETYPE_KEY = "deviceType";
-	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_OPENUDID_KEY = "openUdid";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_MACADDRESS_KEY = "macAddress";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SDKVERSION_KEY = "sdkVersion";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_SDK_IS_CURRENT_KEY = "sdkIsCurrent";
@@ -46,7 +43,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_ADVERTISINGTRACKINGID_KEY = "advertisingTrackingId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_RAWADVERTISINGTRACKINGID_KEY = "rawAdvertisingTrackingId";
 	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_TRACKINGENABLED_KEY = "trackingEnabled";
-  public static final String UNITY_ADS_WEBVIEW_DATAPARAM_UNITYVERSION_KEY = "unityVersion";
+	public static final String UNITY_ADS_WEBVIEW_DATAPARAM_UNITYVERSION_KEY = "unityVersion";
 
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED = "completed";
 	public static final String UNITY_ADS_WEBVIEW_VIEWTYPE_START = "start";
@@ -60,7 +57,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_API_CLOSE = "close";
 	public static final String UNITY_ADS_WEBVIEW_API_OPEN = "open";
 	public static final String UNITY_ADS_WEBVIEW_API_PLAYSTORE = "appStore";
-	public static final String UNITY_ADS_WEBVIEW_API_ACTION_VIDEOSTARTEDPLAYING = "video_started_playing";	
 	public static final String UNITY_ADS_WEBVIEW_API_ZONE_KEY = "zone";
 	public static final String UNITY_ADS_WEBVIEW_API_REWARD_ITEM_KEY = "itemKey";
 	public static final String UNITY_ADS_WEBVIEW_API_LAUNCHINTENT = "launchIntent";
@@ -70,8 +66,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY = "clickUrl";	
 
 	public static final String UNITY_ADS_NATIVEEVENT_SHOWERROR = "showError";
-	public static final String UNITY_ADS_NATIVEEVENT_HIDESPINNER = "hideSpinner";
-	public static final String UNITY_ADS_NATIVEEVENT_SHOWSPINNER = "showSpinner";	
 	public static final String UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED = "videoCompleted";
 	public static final String UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY = "campaignId";
 
@@ -93,8 +87,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_ALLOW_CACHE_KEY = "allowCache";
 	public static final String UNITY_ADS_CAMPAIGN_ALLOW_STREAMING_KEY = "allowStreaming";
 	public static final String UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY = "bypassAppSheet";
-	public static final String UNITY_ADS_CAMPAIGN_ALLOWVIDEOSKIP_KEY = "allowSkipVideoInSeconds";
-	public static final String UNITY_ADS_CAMPAIGN_DISABLEBACKBUTTON_KEY = "disableBackButtonForSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY = "refreshCampaignsAfterViewed";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY = "refreshCampaignsAfterSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_APPFILTERING_KEY = "appFiltering";
@@ -122,15 +114,10 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_REWARD_ITEMKEY_KEY = "key";
 	public static final String UNITY_ADS_REWARD_NAME_KEY = "name";
 	public static final String UNITY_ADS_REWARD_PICTURE_KEY = "picture";
-	public static final String UNITY_ADS_REWARD_ITEM_KEY = "item";
-	public static final String UNITY_ADS_REWARD_ITEMS_KEY = "items";
 
 	/* Gamer JSON Properties */
 	public static final String UNITY_ADS_GAMER_ID_KEY = "gamerId";
 
-	/* SDK Sanity check properties */	
-	public static final String UNITY_ADS_NATIVESDKVERSION_KEY = "nativeSdkVersion";
-	
 	/* Unity Ads Base JSON Properties */
 	public static final String UNITY_ADS_URL_KEY = "impactUrl";
 	public static final String UNITY_ADS_WEBVIEW_URL_KEY = "webViewUrl";	
@@ -140,13 +127,9 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_DEVICEID_KEY = "deviceId";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_ANDROIDID_KEY = "androidId";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_RAWANDROIDID_KEY = "rawAndroidId";
-	public static final String UNITY_ADS_INIT_QUERYPARAM_ODIN1ID_KEY = "odin1Id";
-	public static final String UNITY_ADS_INIT_QUERYPARAM_TELEPHONYID_KEY = "telephonyId";
-	public static final String UNITY_ADS_INIT_QUERYPARAM_SERIALID_KEY = "serialId";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_DEVICETYPE_KEY = "deviceType";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_PLATFORM_KEY = "platform";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_GAMEID_KEY = "gameId";
-	public static final String UNITY_ADS_INIT_QUERYPARAM_OPENUDID_KEY = "openUdid";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_MACADDRESS_KEY = "macAddress";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY = "advertisingTrackingId";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY = "rawAdvertisingTrackingId";
@@ -164,15 +147,14 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_INIT_QUERYPARAM_APPFILTER_KEY = "appFilterList";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CACHEDPLAYBACK_KEY = "cachedPlayback";
 	public static final String UNITY_ADS_INIT_QUERYPARAM_CACHINGSPEED_KEY = "cachingSpeed";
-  public static final String UNITY_ADS_INIT_QUERYPARAM_UNITYVERSION_KEY = "unityVersion";
+	public static final String UNITY_ADS_INIT_QUERYPARAM_UNITYVERSION_KEY = "unityVersion";
 
 	/* Device types */
 	public static final String UNITY_ADS_DEVICEID_UNKNOWN = "unknown";
 	
 	/* Analytics */
 	public static final String UNITY_ADS_ANALYTICS_TRACKING_PATH = "gamers/";
-	public static final String UNITY_ADS_ANALYTICS_INSTALLTRACKING_PATH = "games/";
-	
+
 	/* Analytics Query Params */
 	public static final String UNITY_ADS_ANALYTICS_QUERYPARAM_GAMEID_KEY = "gameId";
 	public static final String UNITY_ADS_ANALYTICS_QUERYPARAM_EVENTTYPE_KEY = "type";
@@ -191,14 +173,10 @@ public class UnityAdsConstants {
 	
 	public static final String UNITY_ADS_TEXTKEY_KEY = "textKey";
 	public static final String UNITY_ADS_TEXTKEY_BUFFERING = "buffering";
-	public static final String UNITY_ADS_TEXTKEY_LOADING = "loading";
 	public static final String UNITY_ADS_TEXTKEY_VIDEOPLAYBACKERROR = "videoPlaybackError";
-	public static final String UNITY_ADS_ITEMKEY_KEY = "itemKey";
-	
-	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_OPENAPPSTORE = "openAppStore";
+
 	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR = "videoError";
-	public static final String UNITY_ADS_ANALYTICS_EVENTTYPE_SKIPVIDEO = "skipVideo";
-	
+
 	/* PlayStore Open */
 	public static final String UNITY_ADS_PLAYSTORE_ITUNESID_KEY = "iTunesId";
 	public static final String UNITY_ADS_PLAYSTORE_CLICKURL_KEY = "clickUrl";

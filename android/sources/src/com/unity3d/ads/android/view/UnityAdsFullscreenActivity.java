@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.ViewGroup;
 
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
@@ -51,7 +50,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		}
 	}
 
-	private void open (final String view) {
+	private void start (final String view) {
 		Boolean dataOk = true;
 		final JSONObject data = new JSONObject();
 
@@ -70,10 +69,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 			dataOk = false;
 		}
 
-		UnityAdsDeviceLog.debug("DataOk: " + dataOk);
-
 		if (dataOk && view != null) {
-			UnityAdsDeviceLog.debug("Opening with view:" + view + " and data:" + data.toString());
+			UnityAdsDeviceLog.debug("Setting up WebView with view:" + view + " and data:" + data.toString());
 
 			if (getMainView() != null) {
 				if (getMainView() != null) {
@@ -82,7 +79,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 					UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 					if (currentZone.noOfferScreen()) {
-						UnityAdsDeviceLog.debug("SHOULD PLAY VIDEO");
 						playVideo();
 					}
 
@@ -131,7 +127,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 				getMainView().videoplayerview.clearVideoPlayer();
 
 			UnityAdsViewUtils.removeViewFromParent(getMainView().videoplayerview);
-
 			UnityAdsProperties.SELECTED_CAMPAIGN = null;
 			getMainView().videoplayerview = null;
 		}
@@ -176,18 +171,13 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	public void onCreate(Bundle savedInstanceState) {
 		UnityAdsDeviceLog.entered();
 		super.onCreate(savedInstanceState);
+
 		UnityAds.changeActivity(this);
-
-		String view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
-
-		if (view != null) {
-			_currentView = view;
-			setupViews();
-			setContentView(getMainView());
-			changeOrientation();
-			open(_currentView);
-		}
-
+		_currentView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;;
+		setupViews();
+		setContentView(getMainView());
+		changeOrientation();
+		start(_currentView);
 		_preventVideoDoubleStart = false;
 	}
 
@@ -241,13 +231,18 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 					UnityAdsDeviceLog.debug("Seconds: " + getMainView().videoplayerview.getSecondsUntilBackButtonAllowed());
 				}
 
-				if ((UnityAdsProperties.SELECTED_CAMPAIGN != null &&
-						UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) ||
-						getMainView().getViewState() != UnityAdsMainView.UnityAdsMainViewState.VideoPlayer ||
-						(getMainView().getViewState() == UnityAdsMainView.UnityAdsMainViewState.VideoPlayer &&
-								getMainView().videoplayerview != null && getMainView().videoplayerview.getSecondsUntilBackButtonAllowed() == 0) ||
-						(getMainView().getViewState() == UnityAdsMainView.UnityAdsMainViewState.VideoPlayer && UnityAdsWebData.getZoneManager().getCurrentZone().disableBackButtonForSeconds() == 0)) {
-
+				if ((UnityAdsProperties.SELECTED_CAMPAIGN != null && UnityAdsProperties.SELECTED_CAMPAIGN.isViewed())) {
+					finish();
+				}
+				else if (getMainView().getViewState() != UnityAdsMainView.UnityAdsMainViewState.VideoPlayer) {
+					finish();
+				}
+				else if ((getMainView().getViewState() == UnityAdsMainView.UnityAdsMainViewState.VideoPlayer &&
+					 getMainView().videoplayerview != null && getMainView().videoplayerview.getSecondsUntilBackButtonAllowed() == 0)) {
+					finish();
+				}
+				else if ((getMainView().getViewState() == UnityAdsMainView.UnityAdsMainViewState.VideoPlayer &&
+					 UnityAdsWebData.getZoneManager().getCurrentZone().disableBackButtonForSeconds() == 0)) {
 					finish();
 				}
 				else {
@@ -432,9 +427,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		UnityAdsDeviceLog.entered();
 
 		if (data != null) {
-
 			UnityAdsDeviceLog.debug(data.toString());
-
 			String playStoreId = null;
 			String clickUrl = null;
 			Boolean bypassAppSheet = false;
@@ -542,8 +535,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 					return;
 				}
 
-				UnityAdsMainView.webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWSPINNER, data);
-
 				String playUrl;
 				if (!UnityAds.cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true)) {
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl();
@@ -605,7 +596,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		changeOrientation();
 
 		if (getMainView().webview != null) {
-			getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
 			getMainView().webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
 		}
 	}
@@ -665,7 +655,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 			getMainView().webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);
 			getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_SHOWERROR, errorParams);
 			getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
-			getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_HIDESPINNER, spinnerParams);
 		}
 
 		if(UnityAdsProperties.SELECTED_CAMPAIGN != null) {
@@ -687,8 +676,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		}
 
 		getMainView().webview.sendNativeEventToWebApp(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_VIDEOCOMPLETED, params);
-
 		UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT++;
+
 		if (UnityAds.getListener() != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 			UnityAdsDeviceLog.info("Unity Ads video skipped");
 			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);

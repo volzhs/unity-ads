@@ -88,10 +88,7 @@ public class UnityAdsMainView extends RelativeLayout {
 
 	public static void initWebView () {
 		if (webview != null) {
-			if (webview.getParent() != null) {
-				((ViewGroup)webview.getParent()).removeView(webview);
-			}
-
+			UnityAdsViewUtils.removeViewFromParent(webview);
 			webview.destroy();
 			webview = null;
 		}
@@ -197,10 +194,7 @@ public class UnityAdsMainView extends RelativeLayout {
 	
 	private void placeWebView() {
 		if (webview != null) {
-			if (webview.getParent() != null) {
-				((ViewGroup)webview.getParent()).removeView(webview);
-			}
-
+			UnityAdsViewUtils.removeViewFromParent(webview);
 			addView(webview, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 		}
 	}

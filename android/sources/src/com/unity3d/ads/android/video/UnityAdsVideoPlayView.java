@@ -23,6 +23,7 @@ import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
+import com.unity3d.ads.android.view.UnityAdsViewUtils;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 import com.unity3d.ads.android.zone.UnityAdsZone;
@@ -397,10 +398,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 
 	private void hideTimeRemainingLabel () {
-		if (_countDownText != null && _countDownText.getParent() != null) {
-			_countDownText.removeAllViews();
-			removeView(_countDownText);			
-		}
+		UnityAdsViewUtils.removeViewFromParent(_countDownText);
 	}
 
 	private void hideVideoPausedView () {
@@ -527,6 +525,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 						public void run() {
 							if (_skipTextView != null && !_videoHasStalled) {
 								_skipTextView.setVisibility(VISIBLE);
+								// TODO: FIX use localized text
 								_skipTextView.setText("You can skip this video in " + Math.round(Math.ceil(((_skipTimeInSeconds * 1000) - _curPos) / 1000)) + " seconds");
 							}
 						}
