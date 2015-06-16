@@ -173,7 +173,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		super.onCreate(savedInstanceState);
 
 		UnityAds.changeActivity(this);
-		_currentView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;;
+		_currentView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE;
 		setupViews();
 		setContentView(getMainView());
 		changeOrientation();

@@ -39,7 +39,7 @@ public class UnityAdsWebView extends WebView {
 	private boolean _webAppLoaded = false;
 	
 	private UnityAdsWebBridge _webBridge = null;
-	private String _currentWebView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START;
+	private String _currentWebView = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE;
 	
 	public UnityAdsWebView(Context context, AttributeSet attrs,
 			int defStyle) {

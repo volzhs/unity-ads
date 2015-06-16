@@ -130,7 +130,7 @@ public class UnityAdsMainView extends RelativeLayout {
 						}
 
 						if (dataOk) {
-							UnityAdsMainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_START, setViewData);
+							UnityAdsMainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE, setViewData);
 
 							UnityAdsUtils.runOnUiThread(new Runnable() {
 								@Override
