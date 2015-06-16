@@ -33,9 +33,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 
 	private TextView _timeLeftInSecondsText = null;
 
-	private long _skipTimeInSeconds = 0;
 	private long _bufferingStartedMillis = 0;
-	private long _bufferingCompledtedMillis = 0;
 	private long _videoStartedPlayingMillis = 0;
 	private float _volumeBeforeMute = 0.5f;
 
@@ -46,22 +44,18 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 
 	private IUnityAdsVideoPlayerListener _listener;
 	private Timer _videoPausedTimer = null;
-	private String _videoFileName = null;
 	private MediaPlayer _mediaPlayer = null;
 
-	private boolean _videoCompleted = false;
 	private boolean _videoPlaybackErrors = false;
 	private boolean _muted = false;
 	private boolean _videoPlaybackStartedSent = false;
 	private boolean _videoPlayheadPrepared = false;
 
-	private RelativeLayout _stagingLayout = null;
 	private RelativeLayout _layout = null;
 	private RelativeLayout _skipTextContainer = null;
 	private UnityAdsVideoView _videoView = null;
 	private TextView _skipTextView = null;
 	private TextView _bufferingText = null;
-	private TextView _stagingText = null;
 
 	public UnityAdsVideoPlayView(Context context) {
 		super(context);
@@ -87,29 +81,28 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		if (fileName == null) return;
 		
 		_videoPlayheadPrepared = false;
-		_videoFileName = fileName;
-		UnityAdsDeviceLog.debug("Playing video from: " + _videoFileName);
+		UnityAdsDeviceLog.debug("Playing video from: " + fileName);
 
 		_videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
 			@Override
 			public boolean onError(MediaPlayer mp, int what, int extra) {
 				UnityAdsDeviceLog.error("For some reason the device failed to play the video (error: " + what + ", " + extra + "), a crash was prevented.");
-				videoErrorOperations();
+				videoPlaybackFailed();
 				return true;
 			}
 		});
 
 		try {
-			_videoView.setVideoPath(_videoFileName);
+			_videoView.setVideoPath(fileName);
 		}
 		catch (Exception e) {
 			UnityAdsDeviceLog.error("For some reason the device failed to play the video, a crash was prevented.");
-			videoErrorOperations();
+			videoPlaybackFailed();
 			return;
 		}
 
 		if (!_videoPlaybackErrors) {
-			_timeLeftInSecondsText.setText("" + Math.round(Math.ceil(_videoView.getDuration() / 1000)));
+			updateTimeLeftText();
 			_bufferingStartedMillis = System.currentTimeMillis();
 			startVideo();
 		}
@@ -131,15 +124,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 
 	public boolean isPlaying () {
-		if (_videoView != null) {
-			return _videoView.isPlaying();
-		}
-
-		return false;
-	}
-
-	public void hideVideo() {
-		purgeVideoPausedTimer();
+		return _videoView != null && _videoView.isPlaying();
 	}
 
 	public void clearVideoPlayer  () {
@@ -160,14 +145,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		removeAllViews();
 	}
 
-	public long getBufferingDuration () {
-		if (_bufferingCompledtedMillis == 0) {
-			_bufferingCompledtedMillis = System.currentTimeMillis();
-		}
-		
-		return _bufferingCompledtedMillis - _bufferingStartedMillis;
-	}
-
 	public int getSecondsUntilBackButtonAllowed () {
 		int timeUntilBackButton = 0;
 		
@@ -186,8 +163,8 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 
 	private void storeVolume () {
 		AudioManager am = ((AudioManager)(UnityAdsProperties.getCurrentActivity()).getSystemService(Context.AUDIO_SERVICE));
-		int curVol = 0;
-		int maxVol = 0;
+		int curVol;
+		int maxVol;
 		
 		if (am != null) {
 			curVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -198,7 +175,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		}
 	}
 
-	private void videoErrorOperations () {
+	private void videoPlaybackFailed() {
 		_videoPlaybackErrors = true;
 		purgeVideoPausedTimer();
 		if (_listener != null)
@@ -213,7 +190,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				setKeepScreenOn(true);
 			}
 		});
-		
 		if (_videoPausedTimer == null) {
 			_videoPausedTimer = new Timer();
 			_videoPausedTimer.scheduleAtFixedRate(new VideoStateChecker(), 500, 500);
@@ -230,24 +206,18 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 
 	private void createView () {
 		LayoutInflater inflater = LayoutInflater.from(getContext());
-
-		if (inflater != null) {
-			_layout = (RelativeLayout)inflater.inflate(R.layout.unityads_view_video_play, null);
-			addView(_layout, new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		}
+		_layout = (RelativeLayout)inflater.inflate(R.layout.unityads_view_video_play, this);
 
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (currentZone.muteVideoSounds()) {
 			_muted = true;
 		}
 
-		_videoCompleted = false;
 		_videoView = (UnityAdsVideoView)_layout.findViewById(R.id.unityAdsVideoView);
 		_videoView.setClickable(true);
 		_videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
-				_videoCompleted = true;
 				_listener.onCompletion(mp);
 			}
 		});
@@ -298,25 +268,24 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			}
 		});
 
-		if(UnityAdsProperties.UNITY_DEVELOPER_INTERNAL_TEST) { 
-			_stagingLayout = new RelativeLayout(getContext());
+		if(UnityAdsProperties.UNITY_DEVELOPER_INTERNAL_TEST) {
+			RelativeLayout stagingLayout = new RelativeLayout(getContext());
 			RelativeLayout.LayoutParams stagingParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			stagingParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 			stagingParams.addRule(RelativeLayout.CENTER_VERTICAL);
-			_stagingLayout.setLayoutParams(stagingParams);
+			stagingLayout.setLayoutParams(stagingParams);
 
-			_stagingText = new TextView(getContext());
-			_stagingText.setTextColor(Color.RED);
-			_stagingText.setBackgroundColor(Color.BLACK);
-			_stagingText.setText("INTERNAL UNITY TEST BUILD\nDO NOT USE IN PRODUCTION");
+			TextView stagingText = new TextView(getContext());
+			stagingText.setTextColor(Color.RED);
+			stagingText.setBackgroundColor(Color.BLACK);
+			stagingText.setText("INTERNAL UNITY TEST BUILD\nDO NOT USE IN PRODUCTION");
 
-			_stagingLayout.addView(_stagingText);
-			addView(_stagingLayout);
+			stagingLayout.addView(stagingText);
+			addView(stagingLayout);
 		}
 
 		if (hasSkipDuration()) {
-			_skipTimeInSeconds = getSkipDuration();
-			updateSkipText();
+			updateSkipText(getSkipDuration());
 		}
 			
 		setOnClickListener(new View.OnClickListener() {			
@@ -325,14 +294,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				if (!_videoView.isPlaying()) {
 					hideVideoPausedView();
 					startVideo();
-				}
-			}
-		});
-		setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (!hasFocus) {
-					pauseVideo();
 				}
 			}
 		});
@@ -358,19 +319,27 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		}
 	}
 
-	private void updateSkipText () {
+	private void updateSkipText (long skipTimeSeconds) {
 		if (_skipTextView == null) {
 			_skipTextView = (TextView) _layout.findViewById(R.id.unityAdsVideoSkipText);
 		}
 
-		_skipTextView.setText(getResources().getString(R.string.skip_video_prefix) + _skipTimeInSeconds + getResources().getString(R.string.skip_video_suffix));
+		_skipTextView.setText(getResources().getString(R.string.skip_video_prefix) + " " + skipTimeSeconds + " " + getResources().getString(R.string.skip_video_suffix));
+	}
+
+	private void updateTimeLeftText () {
+		if (_timeLeftInSecondsText == null) {
+			_timeLeftInSecondsText = (TextView)_layout.findViewById(R.id.unityAdsVideoTimeLeftText);
+		}
+
+		_timeLeftInSecondsText.setText("" + Math.round(Math.ceil((_videoView.getDuration() - _videoView.getCurrentPosition()) / 1000)));
 	}
 
 	private void createAndAddPausedView () {
 		if (_pausedView == null)
 			_pausedView = new UnityAdsVideoPausedView(getContext());
 				
-		if (_pausedView != null && _pausedView.getParent() == null) {
+		if (_pausedView.getParent() == null) {
 			RelativeLayout.LayoutParams pausedViewParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			pausedViewParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 			addView(_pausedView, pausedViewParams);		
@@ -422,7 +391,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				}
 				if (visibility == VISIBLE) {
 					if (_skipTextView == null) {
-						updateSkipText();
+						updateSkipText(getSkipDuration());
 					}
 					enableSkippingFromSkipText();
 				} else {
@@ -460,7 +429,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_oldPos = _curPos;
 
 			try {
-				_curPos = Float.valueOf(_videoView.getCurrentPosition());
+				_curPos = (float)_videoView.getCurrentPosition();
 			}
 			catch (Exception e) {
 				UnityAdsDeviceLog.error("Could not get videoView currentPosition");
@@ -470,7 +439,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 					_curPos = 0.01f;
 			}
 			
-			Float position = 0f;
+			Float position;
 			int duration = 1;
 			Boolean durationSuccess = true;
 			
@@ -499,14 +468,12 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			UnityAdsUtils.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					if (_timeLeftInSecondsText != null) {
-						_timeLeftInSecondsText.setText("" + Math.round(Math.ceil((_duration - _curPos) / 1000)));
-					}
+					updateTimeLeftText();
 				}
 			});
 			
-			if (hasSkipDuration() && _skipTimeInSeconds > 0 && _skipTimeLeft > 0f && (_duration / 1000) > _skipTimeInSeconds) {
-				_skipTimeLeft = (_skipTimeInSeconds * 1000) - _curPos;
+			if (hasSkipDuration() && getSkipDuration() > 0 && _skipTimeLeft > 0f && (_duration / 1000) > getSkipDuration()) {
+				_skipTimeLeft = (getSkipDuration() * 1000) - _curPos;
 				
 				if (_skipTimeLeft < 0)
 					_skipTimeLeft = 0f;
@@ -525,14 +492,13 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 						public void run() {
 							if (_skipTextView != null && !_videoHasStalled) {
 								_skipTextView.setVisibility(VISIBLE);
-								// TODO: FIX use localized text
-								_skipTextView.setText("You can skip this video in " + Math.round(Math.ceil(((_skipTimeInSeconds * 1000) - _curPos) / 1000)) + " seconds");
+								updateSkipText(Math.round(Math.ceil(((getSkipDuration() * 1000) - _curPos) / 1000)));
 							}
 						}
 					});
 				}
 			}
-			else if (_playHeadHasMoved && (_duration / 1000) <= _skipTimeInSeconds) {
+			else if (_playHeadHasMoved && (_duration / 1000) <= getSkipDuration()) {
 				UnityAdsUtils.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
@@ -554,14 +520,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				_sentPositionEvents.put(UnityAdsVideoPosition.ThirdQuartile, true);
 			}
 			
-			int bufferPercentage = 0;
-			try {
-				bufferPercentage = _videoView.getBufferPercentage();
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("Could not get videoView buffering percentage");
-			}
-			
 			if (!_playHeadHasMoved && _bufferingStartedMillis > 0 &&
 				(System.currentTimeMillis() - _bufferingStartedMillis) > (UnityAdsProperties.MAX_BUFFERING_WAIT_SECONDS * 1000)) {
 				this.cancel();
@@ -569,7 +527,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 					@Override
 					public void run() {
 						UnityAdsDeviceLog.error("Buffering taking too long.. cancelling video play");
-						videoErrorOperations();
+						videoPlaybackFailed();
 					}
 				});
 			}
@@ -582,7 +540,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 							if (_listener != null) {
 								_videoPlaybackStartedSent = true;
 								_listener.onVideoPlaybackStarted();
-								_bufferingCompledtedMillis = System.currentTimeMillis();
 								_videoStartedPlayingMillis = System.currentTimeMillis();
 							}
 							

@@ -26,10 +26,6 @@ public class UnityAdsVideoPausedView extends RelativeLayout {
 
 	private void createView () {
 		LayoutInflater inflater = LayoutInflater.from(getContext());
-
-		if (inflater != null) {
-			RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.unityads_view_video_paused, null);
-			addView(layout, new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		}
+		inflater.inflate(R.layout.unityads_view_video_paused, this);
 	}
 }
