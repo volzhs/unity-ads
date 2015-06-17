@@ -18,7 +18,7 @@
         
         <activity
             android:name="com.unity3d.ads.android.example.UnityAdsTestStartActivity"
-            android:configChanges="keyboardHidden|orientation|screenLayout">
+            android:configChanges="keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize">
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -46,7 +46,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		//UnityAds.setTestMode(true);
 
 		_optionsView = ((RelativeLayout)findViewById(R.id.unityads_example_optionsview));
-		
+		_statusImage = ((ImageView)findViewById(R.id.unityads_status));
+
 		_settingsButton = ((ImageButton)findViewById(R.id.unityads_settings));
 		_settingsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -66,14 +67,16 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		_startButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-		    	_statusImage = ((ImageView)findViewById(R.id.unityads_status));
-		    	_statusImage.setVisibility(View.VISIBLE);
-		    	UnityAds.setTestDeveloperId(((EditText)findViewById(R.id.unityads_example_developer_id_data)).getText().toString());
-		    	UnityAds.setTestOptionsId(((EditText)findViewById(R.id.options_id_data)).getText().toString());
-				UnityAds.init(_self, "16", _self);
+				UnityAds.setTestDeveloperId(((EditText) findViewById(R.id.unityads_example_developer_id_data)).getText().toString());
+				UnityAds.setTestOptionsId(((EditText) findViewById(R.id.options_id_data)).getText().toString());
+				UnityAds.init(_self, "14851", _self);
 				UnityAds.setListener(_self);
 			}
 		});
+
+		if (UnityAds.canShow()) {
+			onFetchCompleted();
+		}
     }
     
     @Override
@@ -122,7 +125,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	
 	// Unity Ads video events
     @Override
-	public void onVideoStarted () {   	
+	public void onVideoStarted () {
+		Log.d(_exampleAppLogTag, "Video Started!");
     }
     
     @Override
@@ -130,13 +134,17 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     	if(skipped) {
     		Log.d(_exampleAppLogTag, "Video was skipped!");
     	}
+		else {
+			Log.d(_exampleAppLogTag, "Video Completed!");
+		}
     }
 	
 	// Unity Ads campaign events
     @Override
 	public void onFetchCompleted () {
     	Log.d(_exampleAppLogTag, "UnityAdsTestStartActivity->onFetchCompleted()");
-    	
+
+		_statusImage.setVisibility(View.VISIBLE);
     	_statusImage.setImageResource(R.drawable.unityads_loaded);
     	
     	_instructions = ((TextView)findViewById(R.id.unityads_example_instructions));
