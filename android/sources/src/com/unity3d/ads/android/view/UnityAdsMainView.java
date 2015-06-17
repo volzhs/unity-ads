@@ -17,6 +17,7 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
 import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
+import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebView;
 import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 
@@ -97,7 +98,7 @@ public class UnityAdsMainView extends RelativeLayout {
 		webview = new UnityAdsWebView(UnityAdsProperties.APPLICATION_CONTEXT.get(), new IUnityAdsWebViewListener() {
 			@Override
 			public void onWebAppLoaded() {
-				webview.initWebApp(UnityAds.webdata.getData());
+				webview.initWebApp(UnityAdsWebData.getData());
 			}
 		}, new UnityAdsWebBridge(new IUnityAdsWebBridgeListener() {
 			@Override
@@ -117,7 +118,7 @@ public class UnityAdsMainView extends RelativeLayout {
 				UnityAdsDeviceLog.entered();
 				Boolean dataOk = true;
 
-				if(UnityAds.webdata != null && UnityAds.webdata.hasViewableAds()) {
+				if(UnityAdsWebData.hasViewableAds()) {
 					JSONObject setViewData = new JSONObject();
 
 					try {

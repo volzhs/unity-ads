@@ -135,12 +135,10 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 			UnityAds.getListener().onHide();
 
 		// Refresh campaigns or cache next video
-		if (UnityAds.webdata.refreshCampaignsIfNeeded()) {
+		if (UnityAdsWebData.refreshCampaignsIfNeeded()) {
 		}
 		else {
-			if (UnityAds.webdata == null) return;
-
-			ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
+			ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAdsWebData.getViewableVideoPlanCampaigns();
 			if (viewableCampaigns != null && viewableCampaigns.size() > 0) {
 				UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
 
@@ -271,8 +269,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 			}
 
 			if (campaignId != null) {
-				if (UnityAds.webdata != null && UnityAds.webdata.getCampaignById(campaignId) != null) {
-					UnityAdsProperties.SELECTED_CAMPAIGN = UnityAds.webdata.getCampaignById(campaignId);
+				if (UnityAdsWebData.getCampaignById(campaignId) != null) {
+					UnityAdsProperties.SELECTED_CAMPAIGN = UnityAdsWebData.getCampaignById(campaignId);
 				}
 
 				if (UnityAdsProperties.SELECTED_CAMPAIGN != null &&
@@ -583,7 +581,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		if (UnityAds.getListener() != null)
 			UnityAds.getListener().onVideoStarted();
 
-		ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAds.webdata.getViewableVideoPlanCampaigns();
+		ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAdsWebData.getViewableVideoPlanCampaigns();
 		if(viewableCampaigns.size() > 1) {
 			UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
 
@@ -603,7 +601,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	@Override
 	public void onEventPositionReached (UnityAdsWebData.UnityAdsVideoPosition position) {
 		if (UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignStatus().equals(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED))
-			UnityAds.webdata.sendCampaignViewProgress(UnityAdsProperties.SELECTED_CAMPAIGN, position);
+			UnityAdsWebData.sendCampaignViewProgress(UnityAdsProperties.SELECTED_CAMPAIGN, position);
 	}
 
 	@Override
@@ -636,7 +634,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		finishPlayback();
 
 		UnityAdsDeviceLog.entered();
-		UnityAds.webdata.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
+		UnityAdsWebData.sendAnalyticsRequest(UnityAdsConstants.UNITY_ADS_ANALYTICS_EVENTTYPE_VIDEOERROR, UnityAdsProperties.SELECTED_CAMPAIGN);
 
 		JSONObject errorParams = new JSONObject();
 		JSONObject spinnerParams = new JSONObject();
