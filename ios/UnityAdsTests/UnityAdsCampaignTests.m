@@ -7,7 +7,6 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "NSObject+UnityAdsSBJson.h"
 #import "UnityAdsCampaign.h"
 #import "UnityAdsConstants.h"
 #import "UnityAds.h"
@@ -32,15 +31,17 @@
 }
 
 - (void)testCampaignInit {
-  NSError * error = nil;
+  NSError *error = nil;
   NSStringEncoding encoding = NSStringEncodingConversionAllowLossy;
-  NSString * pathToResource = [[NSBundle bundleForClass:[self class]] pathForResource:@"jsonData.txt" ofType:nil];
-  NSString * jsonString = [[NSString alloc] initWithContentsOfFile:pathToResource
+  NSString *pathToResource = [[NSBundle bundleForClass:[self class]] pathForResource:@"jsonData.txt" ofType:nil];
+  NSString *jsonString = [[NSString alloc] initWithContentsOfFile:pathToResource
                                                       usedEncoding:&encoding
                                                              error:&error];
-  NSDictionary * jsonDataDictionary = [jsonString JSONValue];
-  NSDictionary * jsonDictionary = [jsonDataDictionary objectForKey:kUnityAdsJsonDataRootKey];
-  NSArray  * campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
+
+  NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+  NSDictionary *jsonDataDictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+  NSDictionary *jsonDictionary = [jsonDataDictionary objectForKey:kUnityAdsJsonDataRootKey];
+  NSArray *campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
   NSMutableArray *campaigns = [NSMutableArray array];
 	
 	for (id campaignDictionary in campaignsDataArray) {

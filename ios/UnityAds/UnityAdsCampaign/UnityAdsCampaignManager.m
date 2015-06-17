@@ -7,9 +7,7 @@
 #import "UnityAdsCampaign.h"
 #import "UnityAdsRewardItem.h"
 #import "UnityAds.h"
-#import "UnityAdsSBJsonParser.h"
 #import "UnityAdsCacheManager.h"
-#import "NSObject+UnityAdsSBJson.h"
 #import "UnityAdsProperties.h"
 #import "UnityAdsConstants.h"
 #import "UnityAdsZoneParser.h"
@@ -74,8 +72,13 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     return;
   }
   
-  NSString *jsonString = [[NSString alloc] initWithData:self.campaignDownloadData encoding:NSUTF8StringEncoding];
-  _campaignData = [jsonString JSONValue];
+  NSError *jsonError;
+  _campaignData = [NSJSONSerialization JSONObjectWithData:self.campaignDownloadData options:NSJSONReadingMutableContainers error:&jsonError];
+  
+  if (!_campaignData) {
+    UALOG_DEBUG(@"ERROR PARSING JSON: %@", jsonError);
+    return;
+  }
   
   if (_campaignData == nil) {
     dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -85,8 +88,17 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
     return;
   }
   
-  UALOG_DEBUG(@"%@", [_campaignData JSONRepresentation]);
-	UAAssert([_campaignData isKindOfClass:[NSDictionary class]]);
+  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_campaignData options:0 error:&jsonError];
+  
+  if (!jsonData) {
+    UALOG_DEBUG(@"ERROR PARSING JSON: %@", jsonError);
+    return;
+  }
+  
+  NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+  UALOG_DEBUG(@"%@", jsonString);
+  UAAssert([_campaignData isKindOfClass:[NSDictionary class]]);
 	
   if (_campaignData != nil && [_campaignData isKindOfClass:[NSDictionary class]]) {
     NSDictionary *jsonDictionary = [(NSDictionary *)_campaignData objectForKey:kUnityAdsJsonDataRootKey];
