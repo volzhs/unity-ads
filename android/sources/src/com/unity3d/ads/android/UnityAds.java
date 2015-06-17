@@ -212,13 +212,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	}
 
 	public static boolean canShow() {
-		/*
-		if(webdata == null) {
-			logCanShow(1);
-			return false;
-		}*/
-
-
 		if(!UnityAdsProperties.isAdsReadySent()) {
 			logCanShow(2);
 			return false;
