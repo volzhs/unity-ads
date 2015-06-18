@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.TargetApi;
@@ -49,6 +51,7 @@ import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
 import com.unity3d.ads.android.zone.UnityAdsZone;
+import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 import android.os.SystemClock;
 
@@ -79,6 +82,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 	private static boolean _initialized = false;
 	private static boolean _showingAds = false;
 	private static boolean _adsReadySent = false;
+	private static boolean _webAppLoaded = false;
 	private static boolean _openRequestFromDeveloper = false;
 	private static boolean _refreshAfterShowAds = false;
 	private static boolean _fixMainview = false;
@@ -171,7 +175,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 				}
 
 				if (view != null) {
-					setupViews();
 					open(view);
 				}
 
@@ -214,6 +217,20 @@ public class UnityAds implements IUnityAdsCacheListener,
 		return false;
 	}
 
+	public static String getZone() {
+		UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
+
+		if(zoneManager != null) {
+			UnityAdsZone currentZone = zoneManager.getCurrentZone();
+
+			if(currentZone != null) {
+				return currentZone.getZoneId();
+			}
+		}
+
+		return null;
+	}
+
 	public static boolean show (Map<String, Object> options) {
 		if (canShow()) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
@@ -229,14 +246,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 					if (viewableCampaigns.size() > 0) {
 						UnityAdsCampaign selectedCampaign = viewableCampaigns.get(0);
 						UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
-
-						if(viewableCampaigns.size() > 1) {
-							UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
-
-							if(cachemanager.isCampaignCached(selectedCampaign, true) && !cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
-								cachemanager.cacheNextVideo(nextCampaign);
-							}
-						}
 					}
 				}
 
@@ -275,7 +284,20 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	public static boolean canShow () {
-		if(_showingAds || webdata == null) return false;
+		if(webdata == null) {
+			logCanShow(1);
+			return false;
+		}
+
+		if(!_webAppLoaded) {
+			logCanShow(2);
+			return false;
+		}
+
+		if(_showingAds) {
+			logCanShow(3);
+			return false;
+		}
 
 		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
 		if(currentActivity != null) {
@@ -285,24 +307,56 @@ public class UnityAds implements IUnityAdsCacheListener,
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 				boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
 
-				if(!isConnected) return false;
+				if(!isConnected) {
+					logCanShow(4);
+					return false;
+				}
 			}
 		}
 
+		if(webdata.initInProgress()) return false;
+
 		ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
 
-		if(viewableCampaigns == null) return false;
+		if(viewableCampaigns == null) {
+			logCanShow(5);
+			return false;
+		}
 
-		if(viewableCampaigns.size() == 0) return false;
+		if(viewableCampaigns.size() == 0) {
+			logCanShow(6);
+			return false;
+		}
 
 		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
 		if(!nextCampaign.allowStreamingVideo().booleanValue()) {
 			if(!cachemanager.isCampaignCached(nextCampaign, true)) {
+				logCanShow(7);
 				return false;
 			}
 		}
 
+		logCanShow(0);
 		return true;
+	}
+
+	private static int prevCanShowLogMsg = -1;
+	private static final String[] canShowLogMsgs = {
+		"Unity Ads is ready to show ads",
+		"Unity Ads not ready to show ads: not initialized",
+		"Unity Ads not ready to show ads: webapp not initialized",
+		"Unity Ads not ready to show ads: already showing ads",
+		"Unity Ads not ready to show ads: no internet connection available",
+		"Unity Ads not ready to show ads: no ads are available",
+		"Unity Ads not ready to show ads: zero ads available",
+		"Unity Ads not ready to show ads: video not cached",
+	};
+
+	private static void logCanShow(int reason) {
+		if(reason != prevCanShowLogMsg) {
+			prevCanShowLogMsg = reason;
+			UnityAdsDeviceLog.info(canShowLogMsgs[reason]);
+		}
 	}
 
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
@@ -399,6 +453,17 @@ public class UnityAds implements IUnityAdsCacheListener,
 			case VideoStart:
 				if (_adsListener != null)
 					_adsListener.onVideoStarted();
+
+				ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
+
+				if(viewableCampaigns.size() > 1) {
+					UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
+
+					if(cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true) && !cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
+						cachemanager.cacheNextVideo(nextCampaign);
+					}
+				}
+
 				cancelPauseScreenTimer();
 				break;
 			case VideoEnd:
@@ -436,9 +501,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
 
 		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
-
-		if(hasViewableAds())
-			sendReadyEvent();
 	}
 
 	@Override
@@ -557,12 +619,12 @@ public class UnityAds implements IUnityAdsCacheListener,
 	@Override
 	public void onWebAppLoadComplete (JSONObject data) {
 		UnityAdsDeviceLog.entered();
-		mainview.webview.setWebAppLoadComplete();
 	}
 
 	@Override
 	public void onWebAppInitComplete (JSONObject data) {
 		UnityAdsDeviceLog.entered();
+		_webAppLoaded = true;
 		Boolean dataOk = true;
 
 		if(hasViewableAds()) {
@@ -633,8 +695,111 @@ public class UnityAds implements IUnityAdsCacheListener,
 	    }
 	}
 
+	@Override
+	public void onLaunchIntent(JSONObject data) {
+		try {
+			Intent intent = parseLaunchIntent(data);
+
+			if(intent == null) {
+				UnityAdsDeviceLog.error("No suitable intent to launch");
+				UnityAdsDeviceLog.debug("Intent JSON: " + data.toString());
+				return;
+			}
+
+			Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+			if(currentActivity == null) {
+				UnityAdsDeviceLog.error("Unable to launch intent: current activity is null");
+				return;
+			}
+
+			currentActivity.startActivity(intent);
+		} catch(Exception e) {
+			UnityAdsDeviceLog.error("Failed to launch intent: " + e.getMessage());
+		}
+	}
 
 	/* PRIVATE METHODS */
+
+	private static Intent parseLaunchIntent(JSONObject data) {
+		try {
+			if(data.has("packageName") && !data.has("className") && !data.has("action") && !data.has("mimeType")) {
+				Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+				if(currentActivity == null) {
+					UnityAdsDeviceLog.error("Unable to parse data to generate intent: current activity is null");
+					return null;
+				}
+
+				PackageManager pm = currentActivity.getPackageManager();
+				Intent intent = pm.getLaunchIntentForPackage(data.getString("packageName"));
+
+				if(intent != null && data.has("flags")) {
+					intent.addFlags(data.getInt("flags"));
+				}
+
+				return intent;
+			}
+
+			Intent intent = new Intent();
+
+			if(data.has("className") && data.has("packageName")) {
+				intent.setClassName(data.getString("packageName"), data.getString("className"));
+			}
+
+			if(data.has("action")) {
+				intent.setAction(data.getString("action"));
+			}
+
+			if(data.has("uri")) {
+				intent.setData(Uri.parse(data.getString("uri")));
+			}
+
+			if(data.has("mimeType")) {
+				intent.setType(data.getString("mimeType"));
+			}
+
+			if(data.has("categories")) {
+				JSONArray array = data.getJSONArray("categories");
+
+				if(array.length() > 0) {
+					for(int i = 0; i < array.length(); i++) {
+						intent.addCategory(array.getString(i));
+					}
+				}
+			}
+
+			if(data.has("flags")) {
+				intent.setFlags(data.getInt("flags"));
+			}
+
+			if(data.has("extras")) {
+				JSONArray array = data.getJSONArray("extras");
+
+				for(int i = 0; i < array.length(); i++) {
+					JSONObject item = array.getJSONObject(i);
+
+					String key = item.getString("key");
+					Object value = item.get("value");
+
+					if(value instanceof String) {
+						intent.putExtra(key, (String)value);
+					} else if(value instanceof Integer) {
+						intent.putExtra(key, ((Integer)value).intValue());
+					} else if(value instanceof Double) {
+						intent.putExtra(key, ((Double)value).doubleValue());
+					} else if(value instanceof Boolean) {
+						intent.putExtra(key, ((Boolean)value).booleanValue());
+					} else {
+						UnityAdsDeviceLog.error("Unable to parse launch intent extra " + key);
+					}
+				}
+			}
+
+			return intent;
+		} catch(JSONException e) {
+			UnityAdsDeviceLog.error("Exception while parsing intent json: " + e.getMessage());
+			return null;
+		}
+	}
 
 	private static void openPlayStoreAsIntent (String playStoreId) {
 		UnityAdsDeviceLog.debug("Opening playstore activity with storeId: " + playStoreId);
@@ -786,10 +951,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 			if (mainview != null) {
 				new Thread(new Runnable() {
 					public void run() {
-						if(!mainview.webview.isWebAppLoadComplete()) {
-							mainview.webview.waitForWebAppLoadComplete();
-						}
-
 						UnityAdsUtils.runOnUiThread(new Runnable() {
 							public void run() {
 								if(mainview != null) {
@@ -817,7 +978,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	private static void setup () {
 		initCache();
-		//setupViews();
+		setupViews();
 	}
 
 	private static void initCache () {
@@ -844,15 +1005,15 @@ public class UnityAds implements IUnityAdsCacheListener,
 	}
 
 	private static void setupViews () {
-		if (mainview != null) {
-			UnityAdsDeviceLog.debug("View was not destroyed, trying to destroy it");
+		_webAppLoaded = false;
+
+		if(mainview != null) {
+			UnityAdsDeviceLog.debug("Destroying views");
 			mainview.webview.destroy();
 			mainview = null;
 		}
 
-		if (mainview == null) {
-			mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
-		}
+		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
 	}
 
 	private static void playVideo () {
@@ -953,44 +1114,34 @@ public class UnityAds implements IUnityAdsCacheListener,
 	// After ad unit closes, ad plan is refreshed if necessary
 	// If ad plan is not refreshed and next video is not yet cached, start caching
 	private static void refreshCampaignsOrCacheNextVideo() {
+		boolean refresh = false;
+
 		if(_refreshAfterShowAds) {
 			_refreshAfterShowAds = false;
 			UnityAdsDeviceLog.debug("Starting delayed ad plan refresh");
-			if(webdata != null) {
-				webdata.initCampaigns();
-			}
-			return;
-		}
-
-		if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
+			refresh = true;
+		} else if(_campaignRefreshTimerDeadline > 0 && SystemClock.elapsedRealtime() > _campaignRefreshTimerDeadline) {
 			removeCampaignRefreshTimer();
 			UnityAdsDeviceLog.debug("Refreshing ad plan from server due to timer deadline");
-			if(webdata != null) {
-				webdata.initCampaigns();
-			}
+			refresh = true;
+		} else if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0 && UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
+			UnityAdsDeviceLog.debug("Refreshing ad plan from server due to endscreen limit");
+			refresh = true;
+		} else if(webdata != null && webdata.getVideoPlanCampaigns() != null && webdata.getViewableVideoPlanCampaigns().size() == 0) {
+			UnityAdsDeviceLog.debug("All available videos watched, refreshing ad plan from server");
+			refresh = true;
+		}
+
+		if(refresh) {
+			new Thread(new Runnable() {
+				public void run() {
+					if(webdata != null) {
+						webdata.initCampaigns();
+					}
+				}
+			}).start();
+
 			return;
-		}
-
-		if (UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX > 0) {
-			if(UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_COUNT >= UnityAdsProperties.CAMPAIGN_REFRESH_VIEWS_MAX) {
-				UnityAdsDeviceLog.debug("Refreshing ad plan from server due to endscreen limit");
-				if(webdata != null) {
-					webdata.initCampaigns();
-				}
-				return;
-			}
-		}
-
-		if (webdata != null && webdata.getVideoPlanCampaigns() != null) {
-			if(webdata.getViewableVideoPlanCampaigns().size() == 0) {
-				UnityAdsDeviceLog.debug("All available videos watched, refreshing ad plan from server");
-				if(webdata != null) {
-					webdata.initCampaigns();
-				}
-				return;
-			}
-		} else {
-			UnityAdsDeviceLog.error("Unable to read video data to determine if ad plans should be refreshed");
 		}
 
 		// Ad plan not refreshed, cache next video if necessary
@@ -1096,7 +1247,6 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 				if(mainview != null) {
 					mainview.closeAds(data);
-					mainview = null;
 				}
 
 				_showingAds = false;

@@ -146,10 +146,6 @@
     UALOG_DEBUG(@"Not a valid URL: %@", customClickURLString);
   }
   
-  if (data[kUnityAdsCampaignURLSchemesKey] != nil) {
-    self.urlSchemes = data[kUnityAdsCampaignURLSchemesKey];
-  }
-  
   self.allowStreaming = YES;
   if ([data objectForKey:kUnityAdsCampaignAllowStreamingKey] != nil) {
     if ([[data valueForKey:kUnityAdsCampaignAllowStreamingKey] boolValue] == 0) {

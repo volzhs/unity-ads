@@ -50,7 +50,6 @@ extern NSString * const kUnityAdsWebViewDataParamPlatformKey;
 extern NSString * const kUnityAdsWebViewDataParamDeviceIdKey;
 extern NSString * const kUnityAdsWebViewDataParamGameIdKey;
 extern NSString * const kUnityAdsWebViewDataParamDeviceTypeKey;
-extern NSString * const kUnityAdsWebViewDataParamIdentifierForVendorKey;
 extern NSString * const kUnityAdsWebViewDataParamOpenUdidIdKey;
 extern NSString * const kUnityAdsWebViewDataParamMacAddressKey;
 extern NSString * const kUnityAdsWebViewDataParamSdkVersionKey;
@@ -114,7 +113,6 @@ extern NSString * const kUnityAdsCampaignBypassAppSheet;
 extern NSString * const kUnityAdsCampaignExpectedFileSize;
 extern NSString * const kUnityAdsCampaignGameIconKey;
 extern NSString * const kUnityAdsCampaignAllowVideoSkipKey;
-extern NSString * const kUnityAdsCampaignURLSchemesKey;
 extern NSString * const kUnityAdsCampaignAllowStreamingKey;
 
 /* Reward Item JSON Properties */
@@ -136,9 +134,6 @@ extern NSString * const kUnityAdsUrlKey;
 extern NSString * const kUnityAdsWebViewUrlKey;
 extern NSString * const kUnityAdsAnalyticsUrlKey;
 extern NSString * const kUnityAdsSdkVersionKey;
-extern NSString * const kUnityAdsAppFilteringKey;
-extern NSString * const kUnityAdsUrlSchemeMapKey;
-extern NSString * const kUnityAdsInstalledAppsUrlKey;
 
 /* Analytics Uploader */
 
@@ -193,7 +188,6 @@ extern NSString * const kUnityAdsInitQueryParamOpenUdidKey;
 extern NSString * const kUnityAdsInitQueryParamMacAddressKey;
 extern NSString * const kUnityAdsInitQueryParamRawAdvertisingTrackingIdKey;
 extern NSString * const kUnityAdsInitQueryParamAdvertisingTrackingIdKey;
-extern NSString * const kUnityAdsInitQueryParamIdentifierForVendor;
 extern NSString * const kUnityAdsInitQueryParamNetworkTypeKey;
 extern NSString * const kUnityAdsInitQueryParamTrackingEnabledKey;
 extern NSString * const kUnityAdsInitQueryParamSoftwareVersionKey;
@@ -202,35 +196,10 @@ extern NSString * const kUnityAdsInitQueryParamSdkVersionKey;
 extern NSString * const kUnityAdsInitQueryParamConnectionTypeKey;
 extern NSString * const kUnityAdsInitQueryParamTestKey;
 extern NSString * const kUnityAdsInitQueryParamEncryptionKey;
-extern NSString * const kUnityAdsInitQueryParamAppFilterListKey;
 extern NSString * const kUnityAdsInitQueryParamSendInternalDetailsKey;
 extern NSString * const kUnityAdsInitQueryParamCachingSpeedKey;
 extern NSString * const kUnityAdsInitQueryParamUnityVersionKey;
 
-
-/* Google Analytics Instrumentation */
-
-extern NSString * const kUnityAdsGoogleAnalyticsEventKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoPlay;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoError;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoAbort;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeVideoCaching;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortBack;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortExit;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoAbortSkip;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayStream;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlayCached;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingStart;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingCompleted;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoCachingFailed;
-
-extern NSString * const kUnityAdsGoogleAnalyticsEventCampaignIdKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventConnectionTypeKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventVideoPlaybackTypeKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventBufferingDurationKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventCachingDurationKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventValueKey;
-extern NSString * const kUnityAdsGoogleAnalyticsEventTypeKey;
 
 /* Zones */
 
