@@ -426,8 +426,4 @@ static void UnityAdsReachabilityCallback(SCNetworkReachabilityRef __unused ref, 
   return [[[self softwareVersion] substringToIndex:1] intValue];
 }
 
-+ (NSString *)identifierForVendor {
-  return [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-}
-
 @end
