@@ -31,7 +31,7 @@ import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.view.UnityAdsFullscreenActivity;
+import com.unity3d.ads.android.view.UnityAdsActivity;
 import com.unity3d.ads.android.view.UnityAdsMainView;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
@@ -131,14 +131,14 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 		if (activity != null && !activity.equals(UnityAdsProperties.getCurrentActivity())) {
 			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
-			if (!(activity instanceof UnityAdsFullscreenActivity)) {
+			if (!(activity instanceof UnityAdsActivity)) {
 				UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
 			}
 		}
 	}
 
 	public static boolean hide() {
-		if (UnityAdsProperties.CURRENT_ACTIVITY.get() instanceof UnityAdsFullscreenActivity) {
+		if (UnityAdsProperties.CURRENT_ACTIVITY.get() instanceof UnityAdsActivity) {
 			UnityAdsProperties.CURRENT_ACTIVITY.get().finish();
 			return true;
 		}
@@ -494,8 +494,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 				for (int i = 0; i < pkgInfo.activities.length; i++) {
 					if (pkgInfo.activities[i].launchMode == ActivityInfo.LAUNCH_SINGLE_TASK) {
-						// TODO: Do we still need this?
-						//_singleTaskApplication = true;
 						UnityAdsDeviceLog.debug("Running in singleTask application mode");
 					}
 				}
@@ -519,7 +517,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 		cachemanager = new UnityAdsCacheManager(activity);
 		cachemanager.setDownloadListener(_instance);
-		//webdata = new UnityAdsWebData();
 		UnityAdsWebData.setWebDataListener(_instance);
 
 		new Thread(new Runnable() {
@@ -552,7 +549,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	}
 
 	private static void startFullscreenActivity () {
-		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), com.unity3d.ads.android.view.UnityAdsFullscreenActivity.class);
+		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), UnityAdsActivity.class);
 		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
 
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
