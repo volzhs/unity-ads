@@ -1,10 +1,5 @@
 package com.unity3d.ads.android.video;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
@@ -28,6 +23,11 @@ import com.unity3d.ads.android.view.UnityAdsMuteVideoButton;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 import com.unity3d.ads.android.zone.UnityAdsZone;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsVideoPlayView extends RelativeLayout {
