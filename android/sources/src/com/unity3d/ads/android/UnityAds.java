@@ -37,6 +37,7 @@ import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
 import com.unity3d.ads.android.zone.UnityAdsIncentivizedZone;
 import com.unity3d.ads.android.zone.UnityAdsZone;
+import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListener {
@@ -168,7 +169,21 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		return false;
 	}
 
-	public static boolean show(Map<String, Object> options) {
+	public static String getZone() {
+		UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
+
+		if(zoneManager != null) {
+			UnityAdsZone currentZone = zoneManager.getCurrentZone();
+
+			if(currentZone != null) {
+				return currentZone.getZoneId();
+			}
+		}
+
+		return null;
+	}
+
+	public static boolean show (Map<String, Object> options) {
 		if (canShow()) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 

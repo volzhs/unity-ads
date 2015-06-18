@@ -9,8 +9,6 @@
 #import "UnityAdsWebAppController.h"
 #import "../UnityAds.h"
 #import "../UnityAdsURLProtocol/UnityAdsURLProtocol.h"
-#import "../UnityAdsSBJSON/UnityAdsSBJsonWriter.h"
-#import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 #import "../UnityAdsCampaign/UnityAdsCampaign.h"
 #import "../UnityAdsCampaign/UnityAdsCampaignManager.h"
 #import "../UnityAdsDevice/UnityAdsDevice.h"
@@ -75,14 +73,32 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 }
 
 - (void)setWebViewCurrentView:(NSString *)view data:(NSDictionary *)data {
-	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSChangeView, view, [data JSONRepresentation]];
+  NSError *jsonError;
+  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:0 error:&jsonError];
+
+  if (!jsonData) {
+    UALOG_DEBUG(@"ERROR PARSING JSON: %@", jsonError);
+    return;
+  }
+
+  NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSChangeView, view, jsonString];
   
   UALOG_DEBUG(@"");
   [self runJavascriptDependingOnPlatform:js];
 }
 
 - (void)sendNativeEventToWebApp:(NSString *)eventType data:(NSDictionary *)data {
- 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, [data JSONRepresentation]];
+  NSError *jsonError;
+  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:0 error:&jsonError];
+
+  if (!jsonData) {
+    UALOG_DEBUG(@"ERROR PARSING JSON: %@", jsonError);
+    return;
+  }
+
+  NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+ 	NSString *js = [NSString stringWithFormat:@"%@%@(\"%@\", %@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSHandleNativeEvent, eventType, jsonString];
   
   UALOG_DEBUG(@"");
   [self runJavascriptDependingOnPlatform:js];
@@ -205,7 +221,6 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   [webAppValues setValue: [[UnityAdsProperties sharedInstance] adsGameId]         forKey:kUnityAdsWebViewDataParamGameIdKey];
   [webAppValues setValue: [UnityAdsDevice softwareVersion]                        forKey:kUnityAdsWebViewDataParamIosVersionKey];
   [webAppValues setValue: [UnityAdsDevice analyticsMachineName]                   forKey:kUnityAdsWebViewDataParamDeviceTypeKey];
-  [webAppValues setValue: [UnityAdsDevice identifierForVendor]                    forKey:kUnityAdsWebViewDataParamIdentifierForVendorKey];
   
   id unityVersion = [[UnityAdsProperties sharedInstance] unityVersion];
   if(unityVersion != nil && [unityVersion length] > 0) {
@@ -219,9 +234,18 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
 #pragma mark - WebView
 
 - (void)initWebAppWithValues:(NSDictionary *)values {
-	NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSInit, [values JSONRepresentation]];
-  UALOG_DEBUG(@"");
-  [self runJavascript:js];
+    NSError *jsonError;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:values options:0 error:&jsonError];
+    
+    if (!jsonData) {
+        UALOG_DEBUG(@"ERROR PARSING JSON: %@", jsonError);
+        return;
+    }
+
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *js = [NSString stringWithFormat:@"%@%@(%@);", kUnityAdsWebViewJSPrefix, kUnityAdsWebViewJSInit, jsonString];
+    UALOG_DEBUG(@"");
+    [self runJavascript:js];
 }
 
 
