@@ -1,7 +1,5 @@
 package com.unity3d.ads.android.view;
 
-import org.json.JSONObject;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -21,15 +19,17 @@ import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.video.IUnityAdsVideoPlayerListener;
+import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
+import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 import com.unity3d.ads.android.webapp.UnityAdsWebView;
-import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 import com.unity3d.ads.android.zone.UnityAdsZone;
+
+import org.json.JSONObject;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsMainView extends RelativeLayout implements IUnityAdsVideoPlayerListener {
@@ -216,7 +216,6 @@ public class UnityAdsMainView extends RelativeLayout implements IUnityAdsVideoPl
 		this.setId(1001);
 
 		webview.setWebBridgeListener(_webBridgeListener);
-		webview.setWebViewListener(this);
 
 		post(new Runnable() {
 			@Override
