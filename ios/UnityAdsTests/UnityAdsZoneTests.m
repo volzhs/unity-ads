@@ -10,8 +10,6 @@
 
 extern void __gcov_flush();
 
-#import "UnityAdsSBJsonParser.h"
-
 #import "UnityAdsZone.h"
 #import "UnityAdsZoneManager.h"
 #import "UnityAdsZoneParser.h"

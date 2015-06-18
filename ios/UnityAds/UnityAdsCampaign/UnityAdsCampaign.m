@@ -146,22 +146,11 @@
     UALOG_DEBUG(@"Not a valid URL: %@", customClickURLString);
   }
   
-  if (data[kUnityAdsCampaignURLSchemesKey] != nil) {
-    self.urlSchemes = data[kUnityAdsCampaignURLSchemesKey];
-  }
-  
   self.allowStreaming = YES;
   if ([data objectForKey:kUnityAdsCampaignAllowStreamingKey] != nil) {
     if ([[data valueForKey:kUnityAdsCampaignAllowStreamingKey] boolValue] == 0) {
       self.allowStreaming = NO;
     }
-  }
-  
-  NSString* filterMode = [data objectForKey:kUnityAdsCampaignFilterModeKey];
-  if(filterMode != nil) {
-    self.filterMode = filterMode;
-  } else {
-    self.filterMode = @"blacklist";
   }
   
   data = nil;

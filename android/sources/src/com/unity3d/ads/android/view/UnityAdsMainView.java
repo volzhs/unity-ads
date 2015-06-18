@@ -1,7 +1,5 @@
 package com.unity3d.ads.android.view;
 
-import org.json.JSONObject;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -16,9 +14,11 @@ import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.video.UnityAdsVideoPlayView;
 import com.unity3d.ads.android.webapp.IUnityAdsWebBridgeListener;
+import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
 import com.unity3d.ads.android.webapp.UnityAdsWebBridge;
 import com.unity3d.ads.android.webapp.UnityAdsWebView;
-import com.unity3d.ads.android.webapp.IUnityAdsWebViewListener;
+
+import org.json.JSONObject;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsMainView extends RelativeLayout {
