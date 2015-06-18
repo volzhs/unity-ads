@@ -8,7 +8,6 @@
 
 #import "UnityAdsURLProtocol.h"
 #import "../UnityAdsWebView/UnityAdsWebAppController.h"
-#import "../UnityAdsSBJSON/NSObject+UnityAdsSBJson.h"
 
 static const NSString *kUnityAdsURLProtocolHostname = @"nativebridge.unityads.unity3d.com";
 
@@ -70,12 +69,20 @@ static const NSString *kUnityAdsURLProtocolHostname = @"nativebridge.unityads.un
 }
 
 - (void)actOnJSONResults:(NSData *)jsonData {
-  if (![[jsonData JSONValue] isKindOfClass:[NSDictionary class]]) {
+  NSError* jsonError;
+  NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&jsonError];
+  
+  if (!jsonDict) {
+    UALOG_DEBUG(@"ERROR PARSING JSON: %@", jsonError);
+    return;
+  }
+  
+  if (![jsonDict isKindOfClass:[NSDictionary class]]) {
     UALOG_DEBUG(@"Wrong type of return value");
     return;
   }
   
-  NSDictionary *results = [jsonData JSONValue];
+  NSDictionary *results = jsonDict;
   
   if (results != nil) {
     __block NSString *type = [results objectForKey:@"type"];

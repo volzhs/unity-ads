@@ -9,8 +9,6 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "UnityAdsCampaign.h"
 #import "UnityAdsCacheManager.h"
-#import "UnityAdsSBJsonParser.h"
-#import "NSObject+UnityAdsSBJson.h"
 #import "UnityAdsCampaignManager.h"
 #import "UnityAdsConstants.h"
 
@@ -137,7 +135,9 @@ extern void __gcov_flush();
   NSString * jsonString = [[NSString alloc] initWithContentsOfFile:pathToResource
                                                       usedEncoding:&encoding
                                                              error:&error];
-  NSDictionary * jsonDataDictionary = [jsonString JSONValue];
+  
+  NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+  NSDictionary *jsonDataDictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
   NSDictionary *jsonDictionary = [jsonDataDictionary objectForKey:kUnityAdsJsonDataRootKey];
   NSArray  * campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
   NSArray * campaigns = [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(deserializeCampaigns:) withObject:campaignsDataArray];
@@ -170,20 +170,21 @@ extern void __gcov_flush();
 }
 
 - (void)testCacheAllCampaigns {
-  NSError * error = nil;
+  NSError *error = nil;
   NSStringEncoding encoding = NSStringEncodingConversionAllowLossy;
-  NSString * pathToResource = [[NSBundle bundleForClass:[self class]] pathForResource:@"jsonData.txt" ofType:nil];
-  NSString * jsonString = [[NSString alloc] initWithContentsOfFile:pathToResource
+  NSString *pathToResource = [[NSBundle bundleForClass:[self class]] pathForResource:@"jsonData.txt" ofType:nil];
+  NSString *jsonString = [[NSString alloc] initWithContentsOfFile:pathToResource
                                                       usedEncoding:&encoding
                                                              error:&error];
   
   STAssertTrue(jsonString != nil, @"empty json string");
   
-  NSDictionary * jsonDataDictionary = [jsonString JSONValue];
+  NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+  NSDictionary *jsonDataDictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
   NSDictionary *jsonDictionary = [jsonDataDictionary objectForKey:kUnityAdsJsonDataRootKey];
-  NSArray  * campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
-  NSArray * campaigns = [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(deserializeCampaigns:) withObject:campaignsDataArray];
-  
+  NSArray *campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
+  NSArray *campaigns = [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(deserializeCampaigns:) withObject:campaignsDataArray];
+
   [campaigns  enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
     [_cacheManager cache:ResourceTypeTrailerVideo forCampaign:campaign];
     if (idx > 2) {
@@ -215,7 +216,8 @@ extern void __gcov_flush();
   NSString * jsonString = [[NSString alloc] initWithContentsOfFile:pathToResource
                                                       usedEncoding:&encoding
                                                              error:&error];
-  NSDictionary * jsonDataDictionary = [jsonString JSONValue];
+  NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+  NSDictionary *jsonDataDictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
   NSDictionary *jsonDictionary = [jsonDataDictionary objectForKey:kUnityAdsJsonDataRootKey];
   NSArray  * campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
   NSArray * campaigns = [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(deserializeCampaigns:) withObject:campaignsDataArray];
@@ -261,7 +263,8 @@ extern void __gcov_flush();
   NSString * jsonString = [[NSString alloc] initWithContentsOfFile:pathToResource
                                                       usedEncoding:&encoding
                                                              error:&error];
-  NSDictionary * jsonDataDictionary = [jsonString JSONValue];
+  NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+  NSDictionary *jsonDataDictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
   NSDictionary *jsonDictionary = [jsonDataDictionary objectForKey:kUnityAdsJsonDataRootKey];
   NSArray  * campaignsDataArray = [jsonDictionary objectForKey:kUnityAdsCampaignsKey];
   NSArray * campaigns = [[UnityAdsCampaignManager sharedInstance] performSelector:@selector(deserializeCampaigns:) withObject:campaignsDataArray];

@@ -235,6 +235,10 @@ static UnityAds *sharedUnityAdsInstance = nil;
   return FALSE;
 }
 
+- (NSString *)getZone {
+  return [[[UnityAdsZoneManager sharedInstance] getCurrentZone] getZoneId];
+}
+
 - (BOOL)show:(NSDictionary *)options {
   UAAssertV([NSThread mainThread], false);
   if (![UnityAds isSupported]) return false;
