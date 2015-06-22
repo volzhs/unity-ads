@@ -12,7 +12,7 @@ void RegisterMethods()
 {
 	JAVA_ATTACH_CURRENT_THREAD();
 
-	init = jni_env->GetMethodID(adsWrapperClass, "init", "(Landroid/app/Activity;Ljava/lang/String;ZI)V");
+	init = jni_env->GetMethodID(adsWrapperClass, "init", "(Landroid/app/Activity;Ljava/lang/String;ZILjava/lang/String;)V");
 	PRINT_CLEAR_EXCEPTION
 	if (init == 0)
 		UNITYADS_DEBUG("Couldn't find function:init");
@@ -34,16 +34,18 @@ void RegisterMethods()
 		UNITYADS_DEBUG("Couldn't find function:setCampaignDataURL");
 }
 
-void UnityAdsAndroidBridge::Init(jobject activity, const char* gameId, bool testMode, int logLevel)
+void UnityAdsAndroidBridge::Init(jobject activity, const char* gameId, bool testMode, int logLevel, const char* unityVersion)
 {
 	JAVA_ATTACH_CURRENT_THREAD();
 	jstring j_gameId = jni_env->NewStringUTF(gameId);
-	jni_env->CallVoidMethod(adsWrapperObject, init, activity, j_gameId, testMode, logLevel);
+	jstring j_unityVersion = jni_env->NewStringUTF(unityVersion);
+	jni_env->CallVoidMethod(adsWrapperObject, init, activity, j_gameId, testMode, logLevel, j_unityVersion);
 	if (jni_env->ExceptionOccurred())
 	{
 		jni_env->ExceptionClear();
 	}
 	jni_env->DeleteLocalRef(j_gameId);
+	jni_env->DeleteLocalRef(j_unityVersion);
 }
 
 bool UnityAdsAndroidBridge::Show(const char* zoneId, const char* rewardItemKey, const char* optionsString)
