@@ -2,7 +2,6 @@ package com.unity3d.ads.android.data;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -27,19 +26,19 @@ public class UnityAdsDevice {
 	public static String getSoftwareVersion () {
 		return "" + Build.VERSION.SDK_INT;
 	}
-	
+
 	public static String getHardwareVersion () {
 		return Build.MANUFACTURER + " " + Build.MODEL;
 	}
-	
+
 	public static int getDeviceType () {
 		return UnityAdsProperties.APPLICATION_CONTEXT.get().getResources().getConfiguration().screenLayout;
 	}
 
 	@SuppressLint("DefaultLocale")
 	public static String getAndroidId (boolean md5hashed) {
-		String androidID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
-		
+		String androidID;
+
 		try {
 			androidID = Secure.getString(UnityAdsProperties.APPLICATION_CONTEXT.get().getContentResolver(), Secure.ANDROID_ID);
 
@@ -50,20 +49,20 @@ public class UnityAdsDevice {
 		}
 		catch (Exception e) {
 			UnityAdsDeviceLog.error("Problems fetching androidId: " + e.getMessage());
-			return UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
+			androidID = UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN;
 		}
-		
+
 		return androidID;
 	}
-        
+
     public static String getAdvertisingTrackingId() {
     	return UnityAdsAdvertisingId.getAdvertisingTrackingId();
     }
-    
+
     public static boolean isLimitAdTrackingEnabled() {
     	return UnityAdsAdvertisingId.getLimitedAdTracking();
     }
-	
+
 	public static String getConnectionType () {
 		if (isUsingWifi()) {
 			return "wifi";
@@ -71,37 +70,28 @@ public class UnityAdsDevice {
 		
 		return "cellular";
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static boolean isUsingWifi () {
-		ConnectivityManager mConnectivity = null;
+		ConnectivityManager mConnectivity;
 		Context context = UnityAdsProperties.APPLICATION_CONTEXT.get();
 
 		if (context == null) return false;
-		
-		mConnectivity = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (mConnectivity == null)
-			return false;
 
-		TelephonyManager mTelephony = null;
-		
-		if (context != null) {
-			mTelephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-		}
-			 
+		mConnectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (mConnectivity == null) return false;
+
+		TelephonyManager mTelephony;
+		mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
 		// Skip if no connection, or background data disabled
 		NetworkInfo info = mConnectivity.getActiveNetworkInfo();
 		if (info == null || !mConnectivity.getBackgroundDataSetting() || !mConnectivity.getActiveNetworkInfo().isConnected() || mTelephony == null) {
-		    return false;
+			return false;
 		}
 
 		int netType = info.getType();
-		if (netType == ConnectivityManager.TYPE_WIFI) {
-		    return info.isConnected();
-		}
-		else {
-			return false;
-		}
+		return netType == ConnectivityManager.TYPE_WIFI && info.isConnected();
 	}
 
 	public static int getNetworkType() {
