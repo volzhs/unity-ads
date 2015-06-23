@@ -37,7 +37,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private long _videoStartedPlayingMillis = 0;
 	private float _volumeBeforeMute = 0.5f;
 
-	private Map<UnityAdsVideoPosition, Boolean> _sentPositionEvents = new HashMap<UnityAdsVideoPosition, Boolean>();
+	private Map<UnityAdsVideoPosition, Boolean> _sentPositionEvents = new HashMap<>();
 	private UnityAdsVideoPausedView _pausedView = null;
 	private UnityAdsMuteVideoButton _muteButton = null;
 	private LinearLayout _countDownText = null;
