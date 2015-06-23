@@ -42,14 +42,14 @@ static UnityAdsCacheManager * _inst = nil;
 
 #pragma mark - Private
 
-- (NSString *)_cachePath {
+- (NSString *)getCachePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	UAAssertV(paths != nil && [paths count] > 0, nil);
 	
 	return [[paths objectAtIndex:0] stringByAppendingPathComponent:@"unityads"];
 }
 
-- (NSString *)_videoFilenameForCampaign:(UnityAdsCampaign *)campaign {
+- (NSString *)videoFilenameForCampaign:(UnityAdsCampaign *)campaign {
   if ([campaign.trailerDownloadableURL lastPathComponent] == nil || [campaign.trailerDownloadableURL lastPathComponent].length < 3) {
     return [NSString stringWithFormat:@"%@-%@", campaign.id, @"failed.mp4"];
   }
@@ -58,7 +58,7 @@ static UnityAdsCacheManager * _inst = nil;
 }
 
 - (NSString *)_videoPathForCampaign:(UnityAdsCampaign *)campaign {
-	return [[self _cachePath] stringByAppendingPathComponent:[self _videoFilenameForCampaign:campaign]];
+	return [[self getCachePath] stringByAppendingPathComponent:[self videoFilenameForCampaign:campaign]];
 }
 
 - (long long)_cachedFilesizeForVideoFilename:(NSString *)filename {
@@ -157,7 +157,7 @@ static UnityAdsCacheManager * _inst = nil;
     
     if (resourceType == ResourceTypeTrailerVideo) {
       UnityAdsCacheFileOperation  * tmp = [UnityAdsCacheFileOperation new];
-      tmp.directoryPath = [self _cachePath];
+      tmp.directoryPath = [self getCachePath];
       tmp.downloadURL = [self _downloadURLFor:resourceType of:campaign];
       tmp.filePath = [[self localURLFor:resourceType ofCampaign:campaign] relativePath];
       tmp.expectedFileSize = campaign.expectedTrailerSize;
