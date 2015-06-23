@@ -19,7 +19,6 @@ public class UnityAdsProperties {
 	public static String WEBVIEW_BASE_URL = null;
 	public static String ANALYTICS_BASE_URL = null;
 	public static String UNITY_ADS_BASE_URL = null;
-	public static String CAMPAIGN_QUERY_STRING = null;
 	public static String UNITY_ADS_GAME_ID = null;
 	public static String UNITY_ADS_GAMER_ID = null;
 	public static String APPFILTER_LIST = null;
@@ -42,10 +41,10 @@ public class UnityAdsProperties {
 	public static String TEST_JAVASCRIPT = null;
 	public static Boolean RUN_WEBVIEW_TESTS = false;
 	public static Boolean UNITY_DEVELOPER_INTERNAL_TEST = false;
-	
+
 	public static String TEST_DEVELOPER_ID = null;
 	public static String TEST_OPTIONS_ID = null;
-	
+
 	@SuppressWarnings("unused")
 	private static Map<String, String> TEST_EXTRA_PARAMS = null; 
 
@@ -53,16 +52,16 @@ public class UnityAdsProperties {
 	public static final int MAX_BUFFERING_WAIT_SECONDS = 20;
 
 	public static Boolean UNITY_ADS_READY_SENT = false;
-	
+
 	private static String _campaignQueryString = null; 
-	
+
 	private static void createCampaignQueryString () {
 		String queryString = "?";
-		
+
 		//Mandatory params
 		try {
 			queryString = String.format("%s%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_PLATFORM_KEY, "android");
-			
+
 			String advertisingId = UnityAdsDevice.getAdvertisingTrackingId();
 			if(advertisingId != null) {
 				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY, UnityAdsDevice.isLimitAdTrackingEnabled() ? 0 : 1);
@@ -70,7 +69,8 @@ public class UnityAdsProperties {
 				String advertisingIdMd5 = UnityAdsUtils.Md5(advertisingId).toLowerCase();
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY, URLEncoder.encode(advertisingIdMd5, "UTF-8"));
 				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY, URLEncoder.encode(advertisingId, "UTF-8"));					
-			} else {
+			}
+			else {
 				if (!UnityAdsDevice.getAndroidId(false).equals(UnityAdsConstants.UNITY_ADS_DEVICEID_UNKNOWN)) {
 					queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDID_KEY, URLEncoder.encode(UnityAdsDevice.getAndroidId(true), "UTF-8"));
 					queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWANDROIDID_KEY, URLEncoder.encode(UnityAdsDevice.getAndroidId(false), "UTF-8"));
@@ -84,12 +84,12 @@ public class UnityAdsProperties {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_DEVICETYPE_KEY, UnityAdsDevice.getDeviceType());
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_CONNECTIONTYPE_KEY, URLEncoder.encode(UnityAdsDevice.getConnectionType(), "UTF-8"));
 
-      if(UNITY_VERSION != null && UNITY_VERSION.length() > 0) {
-        queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_UNITYVERSION_KEY, URLEncoder.encode(UNITY_VERSION, "UTF-8"));
-      }
+			if(UNITY_VERSION != null && UNITY_VERSION.length() > 0) {
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_UNITYVERSION_KEY, URLEncoder.encode(UNITY_VERSION, "UTF-8"));
+			}
 
 			if(!UnityAdsDevice.isUsingWifi()) {
-				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY, UnityAdsDevice.getNetworkType(), "UTF-8");
+				queryString = String.format("%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ANDROIDNETWORKTYPE_KEY, UnityAdsDevice.getNetworkType());
 			}
 
 			if(CACHING_SPEED > 0) {
@@ -105,16 +105,16 @@ public class UnityAdsProperties {
 			}
 		}
 		catch (Exception e) {
-			UnityAdsDeviceLog.error("Problems creating campaigns query: " + e.getMessage() + e.getStackTrace().toString());
+			UnityAdsDeviceLog.error("Problems creating campaigns query: " + e.getMessage());
 		}
-		
+
 		if (TESTMODE_ENABLED) {
 			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TEST_KEY, "true");
-			
+
 			if (TEST_OPTIONS_ID != null && TEST_OPTIONS_ID.length() > 0) {
 				queryString = String.format("%s&%s=%s", queryString, "optionsId", TEST_OPTIONS_ID);
 			}
-			
+
 			if (TEST_DEVELOPER_ID != null && TEST_DEVELOPER_ID.length() > 0) {
 				queryString = String.format("%s&%s=%s", queryString, "developerId", TEST_DEVELOPER_ID);
 			}
@@ -132,7 +132,7 @@ public class UnityAdsProperties {
 
 		_campaignQueryString = queryString;
 	}
-	
+
 	public static String getCampaignQueryUrl () {
 		createCampaignQueryString();
 		String url = CAMPAIGN_DATA_URL;
@@ -160,7 +160,7 @@ public class UnityAdsProperties {
 		}
 		return null;
 	}
-	
+
 	public static Activity getCurrentActivity() {
 		if (CURRENT_ACTIVITY != null &&
 			CURRENT_ACTIVITY.get() != null &&
@@ -169,20 +169,6 @@ public class UnityAdsProperties {
 			return CURRENT_ACTIVITY.get();
 		} else {
 			return getBaseActivity();
-		}
-	}
-	
-	public static void setExtraParams (Map<String, String> params) {
-		if (params.containsKey("testData")) {
-			TEST_DATA = params.get("testData");
-		}
-		
-		if (params.containsKey("testUrl")) {
-			TEST_URL = params.get("testUrl");
-		}
-		
-		if (params.containsKey("testJavaScript")) {
-			TEST_JAVASCRIPT = params.get("testJavaScript");
 		}
 	}
 
@@ -195,7 +181,7 @@ public class UnityAdsProperties {
 			isDestroyedMethod = Activity.class.getMethod("isDestroyed");
 		}
 		catch (Exception e) {
-			if (_seenIsDestroyed == false) {
+			if (!_seenIsDestroyed) {
 				_seenIsDestroyed = true;
 				UnityAdsDeviceLog.error("Couldn't get isDestroyed -method");
 			}
@@ -224,10 +210,6 @@ public class UnityAdsProperties {
 	}
 
 	public static boolean isShowingAds() {
-		if (getCurrentActivity() instanceof UnityAdsActivity) {
-			return true;
-		}
-
-		return false;
+		return getCurrentActivity() instanceof UnityAdsActivity;
 	}
 }
