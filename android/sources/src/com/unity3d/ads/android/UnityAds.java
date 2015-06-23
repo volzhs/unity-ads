@@ -209,6 +209,27 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		return false;
 	}
 
+	private static void startFullscreenActivity () {
+		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), UnityAdsActivity.class);
+		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
+
+		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+		if (currentZone.openAnimated()) {
+			flags = Intent.FLAG_ACTIVITY_NEW_TASK;
+		}
+
+		newIntent.addFlags(flags);
+		Activity baseActivity = UnityAdsProperties.getBaseActivity();
+
+		try {
+			if (baseActivity != null) baseActivity.startActivity(newIntent);
+		} catch (ActivityNotFoundException e) {
+			UnityAdsDeviceLog.error("Could not find UnityAdsFullScreenActivity (failed Android manifest merging?): " + e.getMessage());
+		} catch (Exception e) {
+			UnityAdsDeviceLog.error("Weird error: " + e.getMessage());
+		}
+	}
+
 	public static boolean show() {
 		return show(null);
 	}
@@ -540,27 +561,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		if (_initialized) {
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
 			cachemanager.updateCache(UnityAdsWebData.getVideoPlanCampaigns());
-		}
-	}
-
-	private static void startFullscreenActivity () {
-		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), UnityAdsActivity.class);
-		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
-
-		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
-		if (currentZone.openAnimated()) {
-			flags = Intent.FLAG_ACTIVITY_NEW_TASK;
-		}
-
-		newIntent.addFlags(flags);
-		Activity baseActivity = UnityAdsProperties.getBaseActivity();
-
-		try {
-			if (baseActivity != null) baseActivity.startActivity(newIntent);
-		} catch (ActivityNotFoundException e) {
-			UnityAdsDeviceLog.error("Could not find UnityAdsFullScreenActivity (failed Android manifest merging?): " + e.getMessage());
-		} catch (Exception e) {
-			UnityAdsDeviceLog.error("Weird error: " + e.getMessage());
 		}
 	}
 }
