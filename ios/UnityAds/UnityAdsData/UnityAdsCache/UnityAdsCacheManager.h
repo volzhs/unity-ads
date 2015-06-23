@@ -27,12 +27,14 @@
 
 - (BOOL)cache:(ResourceType)resourceType forCampaign:(UnityAdsCampaign *)campaign;
 - (BOOL)campaignExistsInQueue:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;
+- (NSString *)videoFilenameForCampaign:(UnityAdsCampaign *)campaign;
 
 - (NSURL *)localURLFor:(ResourceType)resourceType ofCampaign:(UnityAdsCampaign *)campaign;
 - (BOOL)is:(ResourceType)resourceType cachedForCampaign:(UnityAdsCampaign *)campaign;
 
 - (void)cancelCacheForCampaign:(UnityAdsCampaign *)campaign withResourceType:(ResourceType)resourceType;
 - (void)cancelAllDownloads;
+- (NSString *)getCachePath;
 
 + sharedInstance;
 

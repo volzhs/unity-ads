@@ -137,6 +137,28 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       NSString *gamerId = [jsonDictionary objectForKey:kUnityAdsGamerIDKey];
       
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
+
+      NSError *error;
+      NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[[UnityAdsCacheManager sharedInstance] getCachePath] error:&error];
+      UALOG_DEBUG(@"Contents of path: %@", files);
+
+      [files enumerateObjectsUsingBlock:^(NSString *file, NSUInteger idx, BOOL *stop) {
+        UALOG_DEBUG(@"Current file: %@", file);
+        if ([self getCampaignWithVideoFile:file] == nil) {
+          UALOG_DEBUG(@"Should delete this file, not in campaigns: %@", [[[UnityAdsCacheManager sharedInstance] getCachePath] stringByAppendingPathComponent:file]);
+          NSError *error;
+          BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[[[UnityAdsCacheManager sharedInstance] getCachePath] stringByAppendingPathComponent:file] error:&error];
+          if (!success) {
+            UALOG_DEBUG(@"Could not remove item at path: %@", [[[UnityAdsCacheManager sharedInstance] getCachePath] stringByAppendingPathComponent:file]);
+          }
+          else {
+            UALOG_DEBUG(@"Success removing item at path: %@", [[[UnityAdsCacheManager sharedInstance] getCachePath] stringByAppendingPathComponent:file]);
+          }
+        }
+        else {
+          UALOG_DEBUG(@"Video exists in current plan: %@", file);
+        }
+      }];
       
       [self.campaigns enumerateObjectsUsingBlock:^(UnityAdsCampaign *campaign, NSUInteger idx, BOOL *stop) {
         if ((campaign.shouldCacheVideo && campaign.allowedToCacheVideo) || (campaign.allowedToCacheVideo && idx == 0)) {
@@ -261,6 +283,16 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
 	}
 	
 	return foundCampaign;
+}
+
+- (UnityAdsCampaign *)getCampaignWithVideoFile:(NSString *)videoFile {
+  for (UnityAdsCampaign *campaign in self.campaigns) {
+    if ([[[UnityAdsCacheManager sharedInstance] videoFilenameForCampaign:campaign] isEqualToString:videoFile]) {
+      return campaign;
+    }
+  }
+
+  return nil;
 }
 
 - (NSArray *)getViewableCampaigns {
