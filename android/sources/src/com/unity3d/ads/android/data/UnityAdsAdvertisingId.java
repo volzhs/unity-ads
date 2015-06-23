@@ -6,6 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 
 public class UnityAdsAdvertisingId {
 	private static UnityAdsAdvertisingId impl = null;
@@ -75,27 +77,29 @@ public class UnityAdsAdvertisingId {
 
     // Fallback implementation
 
+	@TargetApi(4)
 	private void fetchAdvertisingIdFallback(Context context) {
 		GoogleAdvertisingServiceConnection connection = new GoogleAdvertisingServiceConnection();
     	Intent localIntent = new Intent("com.google.android.gms.ads.identifier.service.START");
     	localIntent.setPackage("com.google.android.gms");
-    	if(context.bindService(localIntent, connection, 1)) {
+    	if(context.bindService(localIntent, connection, Context.BIND_AUTO_CREATE)) {
     		try {
     	    	GoogleAdvertisingInfo advertisingInfo = GoogleAdvertisingInfo.GoogleAdvertisingInfoBinder.Create(connection.getBinder());
     			advertisingIdentifier = advertisingInfo.getId();
     			limitedAdvertisingTracking = advertisingInfo.getEnabled(true);
     		} catch(Exception e) {
+				UnityAdsDeviceLog.debug("Couldn't get advertising info");
     		} finally {
     			context.unbindService(connection);
     		}
     	}
 	}
 
-	private abstract interface GoogleAdvertisingInfo extends IInterface {
-		public abstract String getId() throws RemoteException;
-		public abstract boolean getEnabled(boolean paramBoolean) throws RemoteException;
+	private interface GoogleAdvertisingInfo extends IInterface {
+		String getId() throws RemoteException;
+		boolean getEnabled(boolean paramBoolean) throws RemoteException;
 
-		public static abstract class GoogleAdvertisingInfoBinder extends Binder implements GoogleAdvertisingInfo {
+		abstract class GoogleAdvertisingInfoBinder extends Binder implements GoogleAdvertisingInfo {
 			public static GoogleAdvertisingInfo Create(IBinder binder) {
 				if(binder == null) return null;
 				IInterface localIInterface = binder.queryLocalInterface("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
@@ -105,7 +109,7 @@ public class UnityAdsAdvertisingId {
 				return new GoogleAdvertisingInfoImplementation(binder);
 			}
 
-			public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+			public boolean onTransact(int code, @NonNull Parcel data,@NonNull Parcel reply, int flags) throws RemoteException {
 				switch (code) {
 					case 1:
 						data.enforceInterface("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
@@ -173,11 +177,15 @@ public class UnityAdsAdvertisingId {
 
 	private class GoogleAdvertisingServiceConnection implements ServiceConnection {
 		boolean _consumed = false;
-		private final BlockingQueue<IBinder> _binderQueue = new LinkedBlockingQueue<IBinder>();
+		private final BlockingQueue<IBinder> _binderQueue = new LinkedBlockingQueue<>();
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			try { _binderQueue.put(service); } catch (InterruptedException localInterruptedException) {}
+			try {
+				_binderQueue.put(service);
+			} catch (InterruptedException localInterruptedException) {
+				UnityAdsDeviceLog.debug("Couldn't put service to binder que");
+			}
 		}
 
 		@Override
@@ -186,8 +194,7 @@ public class UnityAdsAdvertisingId {
 		public IBinder getBinder() throws InterruptedException {
 			if (_consumed) throw new IllegalStateException();
 			_consumed = true;
-			return (IBinder)_binderQueue.take();
+			return _binderQueue.take();
 		}
-
 	}
 }
