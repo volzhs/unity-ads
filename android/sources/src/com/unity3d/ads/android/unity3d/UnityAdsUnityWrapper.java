@@ -1,6 +1,7 @@
 package com.unity3d.ads.android.unity3d;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Activity;
@@ -42,10 +43,12 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 
 	// Public methods
 
+	@SuppressWarnings("unused")
 	public boolean isSupported () {
 		return UnityAds.isSupported();
 	}
 
+	@SuppressWarnings("unused")
 	public String getSDKVersion () {
 		return UnityAds.getSDKVersion();
 	}
@@ -86,7 +89,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 			HashMap<String, Object> options = null;
 
 			if(optionsString.length() > 0) {
-				options = new HashMap<String, Object>();
+				options = new HashMap<>();
 				for(String rawOptionPair : optionsString.split(",")) {
 					String[] optionPair = rawOptionPair.split(":");
 					options.put(optionPair[0], optionPair[1]);
@@ -109,10 +112,12 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public void hide () {
 		UnityAds.hide();
 	}
 
+	@SuppressWarnings("unused")
 	public boolean canShow () {
 		return UnityAds.canShow();
 	}
@@ -120,30 +125,26 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	public boolean canShowZone(String zone) {
 		if(zone != null && zone.length() > 0) {
 			UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
-			if(zoneManager != null) {
-				if(zoneManager.getZone(zone) != null) {
-					return UnityAds.canShow();
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
+			return zoneManager != null && zoneManager.getZone(zone) != null && UnityAds.canShow();
 		}
 
 		return UnityAds.canShow();
 	}
 
+	@SuppressWarnings("unused")
 	public boolean hasMultipleRewardItems () {
 		return UnityAds.hasMultipleRewardItems();
 	}
 
+	@SuppressWarnings("unused")
 	public String getRewardItemKeys () {
-		if (UnityAds.getRewardItemKeys() == null) return null;
-		if (UnityAds.getRewardItemKeys().size() > 0) {
+
+		ArrayList<String> rewardItemKeys = UnityAds.getRewardItemKeys();
+		if (rewardItemKeys == null) return null;
+		if (rewardItemKeys.size() > 0) {
 			String keys = "";
-			for (String key : UnityAds.getRewardItemKeys()) {
-				if (UnityAds.getRewardItemKeys().indexOf(key) > 0) {
+			for (String key : rewardItemKeys) {
+				if (rewardItemKeys.indexOf(key) > 0) {
 					keys += ";";
 				}
 				keys += key;
@@ -155,24 +156,29 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public String getDefaultRewardItemKey () {
 		return UnityAds.getDefaultRewardItemKey();
 	}
 
+	@SuppressWarnings("unused")
 	public String getCurrentRewardItemKey () {
 		return UnityAds.getCurrentRewardItemKey();
 	}
 
+	@SuppressWarnings("unused")
 	public boolean setRewardItemKey (String rewardItemKey) {
 		return UnityAds.setRewardItemKey(rewardItemKey);
 	}
 
+	@SuppressWarnings("unused")
 	public void setDefaultRewardItemAsRewardItem () {
 		UnityAds.setDefaultRewardItemAsRewardItem();
 	}
 
+	@SuppressWarnings("unused")
 	public String getRewardItemDetailsWithKey (String rewardItemKey) {
-		String retString = "";
+		String retString;
 
 		if (UnityAds.getRewardItemDetailsWithKey(rewardItemKey) != null) {
 			UnityAdsDeviceLog.debug("Fetching reward data");
@@ -195,18 +201,22 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return "";
 	}
 
+	@SuppressWarnings("unused")
     public String getRewardItemDetailsKeys () {
     	return String.format("%s;%s", UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY, UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY);
     }
 
+	@SuppressWarnings("unused")
 	public void setLogLevel(int logLevel) {
 		UnityAdsDeviceLog.setLogLevel(logLevel);
 	}
 
+	@SuppressWarnings("unused")
 	public void enableUnityDeveloperInternalTestMode() {
 		UnityAds.enableUnityDeveloperInternalTestMode();
 	}
 
+	@SuppressWarnings("unused")
 	public void setCampaignDataURL(String campaignDataURL) {
 		UnityAds.setCampaignDataURL(campaignDataURL);
 	}
