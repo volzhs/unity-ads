@@ -11,25 +11,24 @@ import org.json.JSONObject;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 
 public class UnityAdsRewardItemManager {
-
 	private Map<String, UnityAdsRewardItem> _rewardItems = null;
 	private UnityAdsRewardItem _currentItem = null;
 	private UnityAdsRewardItem _defaultItem = null;
-	
+
 	public UnityAdsRewardItemManager(JSONArray rewardItemArray, String defaultItem) {
-		_rewardItems = new HashMap<String, UnityAdsRewardItem>();
-		
+		_rewardItems = new HashMap<>();
+
 		for(int i = 0; i < rewardItemArray.length(); ++i) {
 			try {
 				JSONObject rewardItemObject = rewardItemArray.getJSONObject(i);
 				UnityAdsRewardItem rewardItem = new UnityAdsRewardItem(rewardItemObject);
-				
+
 				if(rewardItem.hasValidData()) {
 					if(rewardItem.getKey().equals(defaultItem)) {
 						_currentItem = rewardItem;
 						_defaultItem = rewardItem;
 					}
-					
+
 					_rewardItems.put(rewardItem.getKey(), rewardItem);
 				}
 			} catch(JSONException e) {
@@ -37,22 +36,22 @@ public class UnityAdsRewardItemManager {
 			}
 		}
 	}
-	
+
 	public UnityAdsRewardItem getItem(String rewardItemKey) {
 		if(_rewardItems.containsKey(rewardItemKey)) {
 			return _rewardItems.get(rewardItemKey);
 		}
 		return null;
 	}
-	
+
 	public UnityAdsRewardItem getCurrentItem() {
 		return _currentItem;
 	}
-	
+
 	public UnityAdsRewardItem getDefaultItem() {
 		return _defaultItem;
 	}
-	
+
 	public boolean setCurrentItem(String rewardItemKey) {
 		if(_rewardItems.containsKey(rewardItemKey)) {
 			_currentItem = _rewardItems.get(rewardItemKey);
@@ -60,17 +59,16 @@ public class UnityAdsRewardItemManager {
 		}
 		return false;
 	}
-	
+
 	public ArrayList<UnityAdsRewardItem> allItems() {
-		ArrayList<UnityAdsRewardItem> itemArray = new ArrayList<UnityAdsRewardItem>();
+		ArrayList<UnityAdsRewardItem> itemArray = new ArrayList<>();
 		for(UnityAdsRewardItem rewardItem : _rewardItems.values()) {
 			itemArray.add(rewardItem);
 		}
 		return itemArray;
 	}
-	
+
 	public int itemCount() {
 		return _rewardItems.size();
 	}
-	
 }
