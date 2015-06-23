@@ -53,7 +53,7 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
       HashMap<String, Object> options = null;
 
       if(optionsString.length() > 0) {
-        options = new HashMap<String, Object>();
+        options = new HashMap<>();
         for(String rawOptionPair : optionsString.split(",")) {
           String[] optionPair = rawOptionPair.split(":");
           options.put(optionPair[0], optionPair[1]);
@@ -80,25 +80,18 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
 
   public boolean canShowAds(String zone) {
     if(zone != null && zone.length() > 0) {
-      UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
-      if(zoneManager != null) {
-        if(zoneManager.getZone(zone) != null) {
-          return UnityAds.canShow();
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
+		UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
+		return zoneManager != null && zoneManager.getZone(zone) != null && UnityAds.canShow();
+	}
 
     return UnityAds.canShow();
   }
 
+  @SuppressWarnings("unused")
   public void setLogLevel(int logLevel) {
     UnityAdsDeviceLog.setLogLevel(logLevel);
   }
-
+  @SuppressWarnings("unused")
   public void setCampaignDataURL(String url) { UnityAds.setCampaignDataURL(url); }
 
   // IUnityAdsListener
