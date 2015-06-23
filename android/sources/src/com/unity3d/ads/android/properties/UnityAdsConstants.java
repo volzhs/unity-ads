@@ -82,7 +82,6 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY = "cacheVideo";
 	public static final String UNITY_ADS_CAMPAIGN_ALLOW_CACHE_KEY = "allowCache";
 	public static final String UNITY_ADS_CAMPAIGN_ALLOW_STREAMING_KEY = "allowStreaming";
-	public static final String UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY = "bypassAppSheet";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_VIEWS_KEY = "refreshCampaignsAfterViewed";
 	public static final String UNITY_ADS_CAMPAIGN_REFRESH_SECONDS_KEY = "refreshCampaignsAfterSeconds";
 	public static final String UNITY_ADS_CAMPAIGN_APPFILTERING_KEY = "appFiltering";
@@ -145,7 +144,7 @@ public class UnityAdsConstants {
 
 	/* Device types */
 	public static final String UNITY_ADS_DEVICEID_UNKNOWN = "unknown";
-	
+
 	/* Analytics */
 	public static final String UNITY_ADS_ANALYTICS_TRACKING_PATH = "gamers/";
 
@@ -157,7 +156,7 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_ANALYTICS_QUERYPARAM_ZONE_KEY = "zone";
 	public static final String UNITY_ADS_ANALYTICS_QUERYPARAM_REWARDITEM_KEY = "rewardItem";
 	public static final String UNITY_ADS_ANALYTICS_QUERYPARAM_GAMERSID_KEY = "sid";
-	
+
 	/* Failed URL keys */
 	public static final String UNITY_ADS_FAILED_URL_URL_KEY = "url";
 	public static final String UNITY_ADS_FAILED_URL_REQUESTTYPE_KEY = "requestType";
@@ -175,5 +174,4 @@ public class UnityAdsConstants {
 	public static final String UNITY_ADS_PLAYSTORE_ITUNESID_KEY = "iTunesId";
 	public static final String UNITY_ADS_PLAYSTORE_CLICKURL_KEY = "clickUrl";
 	public static final String UNITY_ADS_PLAYSTORE_BYPASSAPPSHEET_KEY = "bypassAppSheet";
-
 }
