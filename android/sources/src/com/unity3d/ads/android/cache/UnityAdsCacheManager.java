@@ -13,7 +13,7 @@ import com.unity3d.ads.android.campaign.IUnityAdsCampaignHandlerListener;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
-	
+
 	private IUnityAdsCacheListener _downloadListener = null;	
 	private ArrayList<UnityAdsCampaignHandler> _downloadingHandlers = null;
 	private ArrayList<UnityAdsCampaignHandler> _handlers = null;	
@@ -31,19 +31,11 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 			UnityAdsDeviceLog.info("Could not create cache, no external memory present");
 		}
 	}
-	
+
 	public void setDownloadListener (IUnityAdsCacheListener listener) {
 		_downloadListener = listener;
 	}
-	
-	public boolean hasDownloadingHandlers () {
-		return (_downloadingHandlers != null && _downloadingHandlers.size() > 0);
-	}
-	
-	public void initCache (ArrayList<UnityAdsCampaign> activeList) {
-		updateCache(activeList);
-	}
-		
+
 	public void updateCache (ArrayList<UnityAdsCampaign> activeList) {
 		if (_downloadListener != null)
 			_downloadListener.onCampaignUpdateStarted();
@@ -57,7 +49,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		if (UnityAdsUtils.getCacheDirectory() != null) {
 			File dir = new File(UnityAdsUtils.getCacheDirectory());
 			File[] fileList = dir.listFiles();
-			
+
 			if (fileList != null) {
 				for (File currentFile : fileList) {
 					UnityAdsDeviceLog.debug("Checking file: " + currentFile.getName());
@@ -82,38 +74,11 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 				campaignHandler.setListener(this);
 				campaignHandler.initCampaign(firstInAdPlan);
 				firstInAdPlan = false;
-				
+
 				if (campaignHandler.hasDownloads()) {
 					addToDownloadingHandlers(campaignHandler);
 				}					
 			}
-		}
-	}
-	
-	public void clearData () {
-		if (_downloadListener != null)
-			_downloadListener = null;
-		
-		if (_downloadingHandlers != null) {
-			for (UnityAdsCampaignHandler ch : _downloadingHandlers) {
-				ch.setListener(null);
-				ch.clearData();
-				ch = null;	
-			}
-			
-			_downloadingHandlers.clear();
-			_downloadingHandlers = null;
-		}
-		
-		if (_handlers != null) {
-			for (UnityAdsCampaignHandler ch : _handlers) {
-				ch.setListener(null);
-				ch.clearData();
-				ch = null;
-			}
-			
-			_handlers.clear();
-			_handlers = null;
 		}
 	}
 
@@ -140,7 +105,7 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 	}
 
 	// EVENT METHDOS
-	
+
 	@Override
 	public void onCampaignHandled(UnityAdsCampaignHandler campaignHandler) {
 		_amountPrepared++;
@@ -151,31 +116,30 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		if (_amountPrepared == _totalCampaigns)
 			_downloadListener.onAllCampaignsReady();
 	}	
-	
-	
+
 	// INTERNAL METHODS
-	
+
 	private void removeFromUpdatingHandlers (UnityAdsCampaignHandler campaignHandler) {
 		if (_handlers != null)
 			_handlers.remove(campaignHandler);
 	}
-	
+
 	private void addToUpdatingHandlers (UnityAdsCampaignHandler campaignHandler) {
 		if (_handlers == null)
-			_handlers = new ArrayList<UnityAdsCampaignHandler>();
-		
+			_handlers = new ArrayList<>();
+
 		_handlers.add(campaignHandler);
 	}
-	
+
 	private void removeFromDownloadingHandlers (UnityAdsCampaignHandler campaignHandler) {
 		if (_downloadingHandlers != null)
 			_downloadingHandlers.remove(campaignHandler);
 	}
-	
+
 	private void addToDownloadingHandlers (UnityAdsCampaignHandler campaignHandler) {
 		if (_downloadingHandlers == null)
-			_downloadingHandlers = new ArrayList<UnityAdsCampaignHandler>();
-		
+			_downloadingHandlers = new ArrayList<>();
+
 		_downloadingHandlers.add(campaignHandler);
 	}
 }
