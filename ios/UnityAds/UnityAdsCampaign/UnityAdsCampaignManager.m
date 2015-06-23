@@ -139,20 +139,22 @@ static UnityAdsCampaignManager *sharedUnityAdsInstanceCampaignManager = nil;
       [[UnityAdsProperties sharedInstance] setGamerId:gamerId];
 
       NSError *error;
-      NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[[UnityAdsCacheManager sharedInstance] getCachePath] error:&error];
+      NSString *cachePath = [[UnityAdsCacheManager sharedInstance] getCachePath];
+      NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:cachePath error:&error];
       UALOG_DEBUG(@"Contents of path: %@", files);
 
       [files enumerateObjectsUsingBlock:^(NSString *file, NSUInteger idx, BOOL *stop) {
         UALOG_DEBUG(@"Current file: %@", file);
         if ([self getCampaignWithVideoFile:file] == nil) {
-          UALOG_DEBUG(@"Should delete this file, not in campaigns: %@", [[[UnityAdsCacheManager sharedInstance] getCachePath] stringByAppendingPathComponent:file]);
+          NSString *cacheFile = [cachePath stringByAppendingPathComponent:file];
+          UALOG_DEBUG(@"Should delete this file, not in campaigns: %@", cacheFile);
           NSError *error;
-          BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[[[UnityAdsCacheManager sharedInstance] getCachePath] stringByAppendingPathComponent:file] error:&error];
+          BOOL success = [[NSFileManager defaultManager] removeItemAtPath:cacheFile error:&error];
           if (!success) {
-            UALOG_DEBUG(@"Could not remove item at path: %@", [[[UnityAdsCacheManager sharedInstance] getCachePath] stringByAppendingPathComponent:file]);
+            UALOG_DEBUG(@"Could not remove item at path: %@", cacheFile);
           }
           else {
-            UALOG_DEBUG(@"Success removing item at path: %@", [[[UnityAdsCacheManager sharedInstance] getCachePath] stringByAppendingPathComponent:file]);
+            UALOG_DEBUG(@"Success removing item at path: %@", cacheFile);
           }
         }
         else {
