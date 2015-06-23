@@ -71,11 +71,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	/* PUBLIC STATIC METHODS */
 
 	public static boolean isSupported() {
-		if (Build.VERSION.SDK_INT < 9) {
-			return false;
-		}
-
-		return true;
+		return Build.VERSION.SDK_INT >= 9;
 	}
 
 	public static void setDebugMode(boolean debugModeEnabled) {
@@ -129,10 +125,10 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 		UnityAdsDeviceLog.debug("changeActivity: " + activity.getClass().getName());
 
-		if (activity != null && !activity.equals(UnityAdsProperties.getCurrentActivity())) {
-			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
+		if (!activity.equals(UnityAdsProperties.getCurrentActivity())) {
+			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<>(activity);
 			if (!(activity instanceof UnityAdsActivity)) {
-				UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
+				UnityAdsProperties.BASE_ACTIVITY = new WeakReference<>(activity);
 			}
 		}
 	}
@@ -195,8 +191,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 					ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAdsWebData.getViewableVideoPlanCampaigns();
 
 					if (viewableCampaigns.size() > 0) {
-						UnityAdsCampaign selectedCampaign = viewableCampaigns.get(0);
-						UnityAdsProperties.SELECTED_CAMPAIGN = selectedCampaign;
+						UnityAdsProperties.SELECTED_CAMPAIGN = viewableCampaigns.get(0);
 					}
 				}
 
@@ -267,7 +262,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		}
 
 		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
-		if(!nextCampaign.allowStreamingVideo().booleanValue()) {
+		if(!nextCampaign.allowStreamingVideo()) {
 			if(!cachemanager.isCampaignCached(nextCampaign, true)) {
 				logCanShow(7);
 				return false;
@@ -313,7 +308,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		if (zone != null && zone.isIncentivized()) {
 			UnityAdsRewardItemManager itemManager = ((UnityAdsIncentivizedZone) zone).itemManager();
 			ArrayList<UnityAdsRewardItem> rewardItems = itemManager.allItems();
-			ArrayList<String> rewardItemKeys = new ArrayList<String>();
+			ArrayList<String> rewardItemKeys = new ArrayList<>();
 			for (UnityAdsRewardItem rewardItem : rewardItems) {
 				rewardItemKeys.add(rewardItem.getKey());
 			}
@@ -509,9 +504,9 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		setListener(listener);
 
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
-		UnityAdsProperties.BASE_ACTIVITY = new WeakReference<Activity>(activity);
-		UnityAdsProperties.APPLICATION_CONTEXT = new WeakReference<Context>(activity.getApplicationContext());
-		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<Activity>(activity);
+		UnityAdsProperties.BASE_ACTIVITY = new WeakReference<>(activity);
+		UnityAdsProperties.APPLICATION_CONTEXT = new WeakReference<>(activity.getApplicationContext());
+		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<>(activity);
 
 		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable(activity));
 
@@ -558,13 +553,14 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		}
 
 		newIntent.addFlags(flags);
+		Activity baseActivity = UnityAdsProperties.getBaseActivity();
 
 		try {
-			UnityAdsProperties.getBaseActivity().startActivity(newIntent);
+			if (baseActivity != null) baseActivity.startActivity(newIntent);
 		} catch (ActivityNotFoundException e) {
-			UnityAdsDeviceLog.error("Could not find UnityAdsFullScreenActivity (failed Android manifest merging?): " + e.getStackTrace());
+			UnityAdsDeviceLog.error("Could not find UnityAdsFullScreenActivity (failed Android manifest merging?): " + e.getMessage());
 		} catch (Exception e) {
-			UnityAdsDeviceLog.error("Weird error: " + e.getStackTrace());
+			UnityAdsDeviceLog.error("Weird error: " + e.getMessage());
 		}
 	}
 }
