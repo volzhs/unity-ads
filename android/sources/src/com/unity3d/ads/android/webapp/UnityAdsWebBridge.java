@@ -66,6 +66,7 @@ public class UnityAdsWebBridge {
 		_listener = listener;
 	}
 
+	@SuppressWarnings("unused")
 	@JavascriptInterface
 	public boolean handleWebEvent (String type, String data) {
 		UnityAdsDeviceLog.debug(type + ", " + data);
@@ -74,8 +75,7 @@ public class UnityAdsWebBridge {
 		
 		JSONObject jsonData = null;
 		JSONObject parameters = null;
-		String event = type;
-		
+
 		try {
 			jsonData = new JSONObject(data);
 			parameters = jsonData.getJSONObject("data");
@@ -84,9 +84,9 @@ public class UnityAdsWebBridge {
 			UnityAdsDeviceLog.error("Error while parsing parameters: " + e.getMessage());
 		}
 		
-		if (jsonData == null || event == null) return false;
+		if (jsonData == null || type == null) return false;
 		
-		UnityAdsWebEvent eventType = getEventType(event);
+		UnityAdsWebEvent eventType = getEventType(type);
 		
 		if (eventType == null) return false;
 		
@@ -113,8 +113,8 @@ public class UnityAdsWebBridge {
 				_listener.onOpenPlayStore(parameters);
 				break;
 			case NavigateTo:
-				if (parameters.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY)) {
-					String clickUrl = null;
+				if (parameters != null && parameters.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY)) {
+					String clickUrl;
 					
 					try {
 						clickUrl = parameters.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_EVENTDATA_CLICKURL_KEY);
