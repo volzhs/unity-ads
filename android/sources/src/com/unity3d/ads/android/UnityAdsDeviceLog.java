@@ -2,18 +2,15 @@ package com.unity3d.ads.android;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-
 import android.util.Log;
 
 public class UnityAdsDeviceLog {
 
-	private static boolean LOGGING = true;
 	private static boolean LOG_ERROR = true;
 	private static boolean LOG_WARNING = true;
 	private static boolean LOG_DEBUG = false;
 	private static boolean LOG_INFO = true;
 
-	public static int LOGLEVEL_NONE = 0;
 	public static int LOGLEVEL_ERROR = 1;
 	public static int LOGLEVEL_WARNING = 2;
 	public static int LOGLEVEL_INFO = 4;
@@ -21,13 +18,13 @@ public class UnityAdsDeviceLog {
 
 	public enum UnityAdsLogLevel {
 		INFO, DEBUG, WARNING, ERROR
-	};
+	}
 
 	private static HashMap<UnityAdsLogLevel, UnityAdsDeviceLogLevel> _deviceLogLevel = null;
 
 	static {
 		if (_deviceLogLevel == null) {
-			_deviceLogLevel = new HashMap<UnityAdsDeviceLog.UnityAdsLogLevel, UnityAdsDeviceLogLevel>();
+			_deviceLogLevel = new HashMap<>();
 			_deviceLogLevel.put(UnityAdsLogLevel.INFO, new UnityAdsDeviceLogLevel(UnityAdsLogLevel.INFO, "UnityAds", "i"));
 			_deviceLogLevel.put(UnityAdsLogLevel.DEBUG, new UnityAdsDeviceLogLevel(UnityAdsLogLevel.DEBUG, "UnityAds", "d"));
 			_deviceLogLevel.put(UnityAdsLogLevel.WARNING, new UnityAdsDeviceLogLevel(UnityAdsLogLevel.WARNING, "UnityAds", "w"));
@@ -103,6 +100,7 @@ public class UnityAdsDeviceLog {
 		write(UnityAdsLogLevel.WARNING, checkMessage(message));
 	}
 
+	@SuppressWarnings({"unused"})
 	public static void warning(String format, Object... args) {
 		warning(String.format(format, args));
 	}
@@ -116,28 +114,26 @@ public class UnityAdsDeviceLog {
 	}
 
 	private static void write(UnityAdsLogLevel level, String message) {
-		boolean canLog = LOGGING;
+		boolean LOG_THIS_MSG = true;
 
-		if (canLog) {
-			switch (level) {
-				case INFO:
-					canLog = LOG_INFO;
-					break;
-				case DEBUG:
-					canLog = LOG_DEBUG;
-					break;
-				case WARNING:
-					canLog = LOG_WARNING;
-					break;
-				case ERROR:
-					canLog = LOG_ERROR;
-					break;
-				default:
-					break;
-			}
+		switch (level) {
+			case INFO:
+				LOG_THIS_MSG = LOG_INFO;
+				break;
+			case DEBUG:
+				LOG_THIS_MSG = LOG_DEBUG;
+				break;
+			case WARNING:
+				LOG_THIS_MSG = LOG_WARNING;
+				break;
+			case ERROR:
+				LOG_THIS_MSG = LOG_ERROR;
+				break;
+			default:
+				break;
 		}
 
-		if (canLog) {
+		if (LOG_THIS_MSG) {
 			UnityAdsDeviceLogEntry logEntry = createLogEntry(level, message);
 			writeToLog(logEntry);
 		}
@@ -157,12 +153,12 @@ public class UnityAdsDeviceLog {
 
 	private static UnityAdsDeviceLogEntry createLogEntry(UnityAdsLogLevel level, String message) {
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-		StackTraceElement e = null;
+		StackTraceElement e;
 		UnityAdsDeviceLogLevel logLevel = getLogLevel(level);
 		UnityAdsDeviceLogEntry logEntry = null;
 
 		if (logLevel != null) {
-			int callerIndex = 0;
+			int callerIndex;
 			boolean markedIndex = false;
 
 			for (callerIndex = 0; callerIndex < stack.length; callerIndex++) {
@@ -184,10 +180,6 @@ public class UnityAdsDeviceLog {
 			if (e != null) {
 				logEntry = new UnityAdsDeviceLogEntry(logLevel, message, e);
 			}
-			else {
-			}
-		}
-		else {
 		}
 
 		return logEntry;
@@ -201,6 +193,7 @@ public class UnityAdsDeviceLog {
 				receivingMethod = Log.class.getMethod(logEntry.getLogLevel().getReceivingMethodName(), String.class, String.class);
 			}
 			catch (Exception e) {
+				Log.e("UnityAds", "Writing to log failed!");
 			}
 
 			if (receivingMethod != null) {
@@ -208,6 +201,7 @@ public class UnityAdsDeviceLog {
 					receivingMethod.invoke(null, logEntry.getLogLevel().getLogTag(), logEntry.getParsedMessage());
 				}
 				catch (Exception e) {
+					Log.e("UnityAds", "Writing to log failed!");
 				}
 			}
 		}
