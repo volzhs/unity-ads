@@ -8,24 +8,15 @@ import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsCampaign {
-	
+
 	public enum UnityAdsCampaignStatus { READY, VIEWED, PANIC;
 		@Override
 		public String toString () {
-			String output = name().toString().toLowerCase();
-			return output;
+			return name();
 		}
-		
-		public static UnityAdsCampaignStatus getValueOf (String status) {
-			if (UnityAdsCampaignStatus.READY.toString().equals(status.toLowerCase()))
-				return UnityAdsCampaignStatus.READY;
-			else if (UnityAdsCampaignStatus.VIEWED.toString().equals(status.toLowerCase()))
-				return UnityAdsCampaignStatus.VIEWED;
-			else
-				return UnityAdsCampaignStatus.PANIC;
-		}
-	};
-	
+
+	}
+
 	private JSONObject _campaignJson = null;
 	private String[] _requiredKeys = new String[] {
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_ENDSCREEN_KEY, 
@@ -37,37 +28,21 @@ public class UnityAdsCampaign {
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_NAME_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_ID_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TAGLINE_KEY};
-	
-	//bypassAppSheet
-	
+
 	private UnityAdsCampaignStatus _campaignStatus = UnityAdsCampaignStatus.READY;
-	
+
 	public UnityAdsCampaign () {		
 	}
-	
+
 	public UnityAdsCampaign (JSONObject fromJSON) {
 		_campaignJson = fromJSON;
 	}
-	
+
 	@Override
 	public String toString () {
-		return "<ID: " + getCampaignId() + ", STATUS: " + getCampaignStatus().toString() + ", URL: " + getVideoUrl() + ">"; 
+		return "ID: " + getCampaignId() + ", STATUS: " + getCampaignStatus().toString() + ", URL: " + getVideoUrl() + "";
 	}
-	
-	public JSONObject toJson () {
-		JSONObject retObject = _campaignJson;
-		
-		try {
-			retObject.put("status", getCampaignStatus().toString());
-		}
-		catch (Exception e) {
-			UnityAdsDeviceLog.error("Error creating campaign JSON");
-			return null;
-		}
-		
-		return retObject;
-	}
-	
+
 	public Boolean shouldCacheVideo () {
 		if (checkDataIntegrity()) {
 			try {
@@ -89,6 +64,7 @@ public class UnityAdsCampaign {
 				UnityAdsDeviceLog.warning("Key not found for campaign: " + getCampaignId());
 			}			
 		}
+
 		return false;
 	}
 
@@ -96,53 +72,14 @@ public class UnityAdsCampaign {
 		if(checkDataIntegrity()) {
 			try {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ALLOW_STREAMING_KEY);
-			} catch(Exception e) { }
+			} catch(Exception e) {
+				UnityAdsDeviceLog.debug("Could not get streaming video status");
+			}
 		}
 
 		return true;
 	}
 
-	public Boolean shouldBypassAppSheet () {
-		if (checkDataIntegrity()) {
-			try {
-				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY);
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.warning("Key not found for campaign: " + getCampaignId());
-			}			
-		}
-		
-		return false;
-	}
-	
-	//UNITY_ADS_CAMPAIGN_BYPASSAPPSHEET_KEY
-
-	public String getEndScreenUrl () {
-		if (checkDataIntegrity()) {
-			try {
-				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_ENDSCREEN_KEY);
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("This should not happen!");
-			}
-		}
-		
-		return null;		
-	}
-	
-	public String getPicture () {
-		if (checkDataIntegrity()) {
-			try {
-				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_PICTURE_KEY);
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("This should not happen!");
-			}
-		}
-		
-		return null;		
-	}
-	
 	public String getCampaignId () {
 		if (checkDataIntegrity()) {
 			try {
@@ -152,10 +89,10 @@ public class UnityAdsCampaign {
 				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public String getGameId () {
 		if (checkDataIntegrity()) {
 			try {
@@ -165,23 +102,10 @@ public class UnityAdsCampaign {
 				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
-		
+
 		return null;
 	}
-	
-	public String getGameName () {
-		if (checkDataIntegrity()) {
-			try {
-				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_NAME_KEY);
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("This should not happen!");
-			}
-		}
-		
-		return null;
-	}
-	
+
 	public String getVideoUrl () {
 		if (checkDataIntegrity()) {
 			try {
@@ -191,10 +115,10 @@ public class UnityAdsCampaign {
 				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public String getVideoStreamUrl () {
 		if (checkDataIntegrity()) {
 			try {
@@ -204,23 +128,10 @@ public class UnityAdsCampaign {
 				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
-		
+
 		return null;
 	}
-	
-	public String getClickUrl () {
-		if (checkDataIntegrity()) {
-			try {
-				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CLICKURL_KEY);
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("This should not happen!");
-			}
-		}
-		
-		return null;
-	}
-	
+
 	public String getVideoFilename () {
 		if (checkDataIntegrity()) {
 			try {
@@ -231,16 +142,16 @@ public class UnityAdsCampaign {
 				UnityAdsDeviceLog.error("This should not happen!");
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public long getVideoFileExpectedSize () {
 		long size = -1;
 		if (checkDataIntegrity()) {
 			try {
 				String fileSize = _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_SIZE_KEY);
-				
+
 				try {
 					size = Long.parseLong(fileSize);
 				}
@@ -248,7 +159,7 @@ public class UnityAdsCampaign {
 					UnityAdsDeviceLog.error("Could not parse size: " + e.getMessage());
 					return size;
 				}
-				
+
 				return size;
 			}
 			catch (Exception e) {
@@ -256,23 +167,10 @@ public class UnityAdsCampaign {
 				return size;
 			}
 		}
-		
+
 		return size;
 	}
-	
-	public String getTagLine () {
-		if (checkDataIntegrity()) {
-			try {
-				return _campaignJson.getString(UnityAdsConstants.UNITY_ADS_CAMPAIGN_TAGLINE_KEY);
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("This should not happen!");
-			}
-		}
-		
-		return null;
-	}
-	
+
 	public String getStoreId () {
 		if (_campaignJson.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_STOREID_KEY)) {
 			try {
@@ -290,7 +188,7 @@ public class UnityAdsCampaign {
 				UnityAdsDeviceLog.error("Was supposed to use UnityAdsConstants.UNITY_ADS_CAMPAIGN_ITUNESID_KEY but " + e.getMessage() + " occured");
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -311,28 +209,25 @@ public class UnityAdsCampaign {
 	public UnityAdsCampaignStatus getCampaignStatus () {
 		return _campaignStatus;
 	}
-	
+
 	public void setCampaignStatus (UnityAdsCampaignStatus status) {
 		_campaignStatus = status;
 	}
-	
+
 	public Boolean isViewed () {
-		if (_campaignStatus == UnityAdsCampaignStatus.VIEWED)
-			return true;
-		
-		return false;
+		return _campaignStatus == UnityAdsCampaignStatus.VIEWED;
 	}
-	
+
 	public boolean hasValidData () {
 		return checkDataIntegrity();
 	}
-	
+
 	public void clearData () {
 		_campaignJson = null;
 	}
-	
+
 	/* INTERNAL METHODS */
-	
+
 	private boolean checkDataIntegrity () {
 		if (_campaignJson != null) {
 			for (String key : _requiredKeys) {
@@ -340,7 +235,7 @@ public class UnityAdsCampaign {
 					return false;
 				}
 			}
-			
+
 			return true;
 		}
 		return false;
