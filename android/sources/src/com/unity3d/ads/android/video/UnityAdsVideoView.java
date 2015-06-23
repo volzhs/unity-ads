@@ -2,7 +2,6 @@ package com.unity3d.ads.android.video;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.VideoView;
 
 public class UnityAdsVideoView extends VideoView {
