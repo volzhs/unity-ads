@@ -16,11 +16,9 @@ static const NSString *kUnityAdsURLProtocolHostname = @"nativebridge.unityads.un
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
   NSURL *url = [request URL];
   
-  if ([[url scheme] isEqualToString:@"http"]) {
-    if ([[request HTTPMethod] isEqualToString:@"POST"] || [[request HTTPMethod] isEqualToString:@"OPTIONS"]) {
-      if ([[url host] isEqualToString:(NSString *)kUnityAdsURLProtocolHostname]) {
-        return TRUE;
-      }
+  if ([[request HTTPMethod] isEqualToString:@"POST"] || [[request HTTPMethod] isEqualToString:@"OPTIONS"]) {
+    if ([[url host] isEqualToString:(NSString *)kUnityAdsURLProtocolHostname]) {
+      return TRUE;
     }
   }
   

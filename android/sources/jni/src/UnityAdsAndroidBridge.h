@@ -79,7 +79,7 @@ public:
 	static void InitJNI(JavaVM* vm, UnityAdsCallback onCampaignsAvailable, UnityAdsCallback onCampaignsFetchFailed, UnityAdsCallback onShow, UnityAdsCallback onHide, UnityAdsCallback onVideoStarted, UnityAdsCallbackStringBool onVideoCompleted);
 	static void ReleaseJNI();
 /* API */
-	static void Init(jobject activity, const char* gameId, bool testMode, int logLevel);
+	static void Init(jobject activity, const char* gameId, bool testMode, int logLevel, const char* unityVersion);
 	static bool Show(const char* zoneId, const char* rewardItemKey, const char* optionsString);
 	static bool CanShowAds(const char* zone);
 	static void SetLogLevel(int logLevel);
