@@ -12,7 +12,7 @@ public class UnityAdsMuteVideoButton extends RelativeLayout {
 
 	private UnityAdsMuteVideoButtonState _state = UnityAdsMuteVideoButtonState.UnMuted;
 
-	public static enum UnityAdsMuteVideoButtonState { UnMuted, Muted }
+	public enum UnityAdsMuteVideoButtonState { UnMuted, Muted }
 	private RelativeLayout _layout = null;
 
 	public UnityAdsMuteVideoButton(Context context) {
