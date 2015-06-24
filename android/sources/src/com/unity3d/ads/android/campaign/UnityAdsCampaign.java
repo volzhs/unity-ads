@@ -9,7 +9,7 @@ import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsCampaign {
 
-	public enum UnityAdsCampaignStatus { READY, VIEWED, PANIC;
+	public enum UnityAdsCampaignStatus { READY, VIEWED;
 		@Override
 		public String toString () {
 			return name();
@@ -18,7 +18,7 @@ public class UnityAdsCampaign {
 	}
 
 	private JSONObject _campaignJson = null;
-	private String[] _requiredKeys = new String[] {
+	private final String[] _requiredKeys = new String[] {
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_ENDSCREEN_KEY, 
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_CLICKURL_KEY, 
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_PICTURE_KEY, 
@@ -220,10 +220,6 @@ public class UnityAdsCampaign {
 
 	public boolean hasValidData () {
 		return checkDataIntegrity();
-	}
-
-	public void clearData () {
-		_campaignJson = null;
 	}
 
 	/* INTERNAL METHODS */
