@@ -15,7 +15,7 @@ public class UnityAdsRewardItem {
 	private String _pictureURL = null;
 	private JSONObject _rewardItemJSON = null;
 
-	private String[] _requiredKeys = new String[] {
+	private final String[] _requiredKeys = new String[] {
 			UnityAdsConstants.UNITY_ADS_REWARD_ITEMKEY_KEY,
 			UnityAdsConstants.UNITY_ADS_REWARD_NAME_KEY,
 			UnityAdsConstants.UNITY_ADS_REWARD_PICTURE_KEY};
