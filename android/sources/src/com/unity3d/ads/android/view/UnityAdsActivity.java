@@ -542,7 +542,7 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 		}
 	}
 
-	public void finishPlayback () {
+	private void finishPlayback () {
 		if (getMainView().videoplayerview != null) {
 			getMainView().videoplayerview.setKeepScreenOn(false);
 		}
