@@ -48,7 +48,7 @@ public class UnityAdsAdvertisingId {
 
 	// Primary implementation
 
-    public boolean fetchAdvertisingId(final Activity context) {
+    private boolean fetchAdvertisingId(final Activity context) {
     	try {
     		Class<?> GooglePlayServicesUtil = Class.forName("com.google.android.gms.common.GooglePlayServicesUtil");
     		Method isGooglePlayServicesAvailable = GooglePlayServicesUtil.getMethod("isGooglePlayServicesAvailable", Context.class);
