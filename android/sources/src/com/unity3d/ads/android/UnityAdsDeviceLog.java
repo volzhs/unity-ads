@@ -11,8 +11,8 @@ public class UnityAdsDeviceLog {
 	private static boolean LOG_DEBUG = false;
 	private static boolean LOG_INFO = true;
 
-	public static final int LOGLEVEL_ERROR = 1;
-	public static final int LOGLEVEL_WARNING = 2;
+	private static final int LOGLEVEL_ERROR = 1;
+	private static final int LOGLEVEL_WARNING = 2;
 	public static final int LOGLEVEL_INFO = 4;
 	public static final int LOGLEVEL_DEBUG = 8;
 
@@ -20,19 +20,15 @@ public class UnityAdsDeviceLog {
 		INFO, DEBUG, WARNING, ERROR
 	}
 
-	private static HashMap<UnityAdsLogLevel, UnityAdsDeviceLogLevel> _deviceLogLevel = null;
+	private static final HashMap<UnityAdsLogLevel, UnityAdsDeviceLogLevel> _deviceLogLevel = new HashMap<>();
 
 	static {
-		if (_deviceLogLevel == null) {
-			_deviceLogLevel = new HashMap<>();
+		if (_deviceLogLevel.size() == 0) {
 			_deviceLogLevel.put(UnityAdsLogLevel.INFO, new UnityAdsDeviceLogLevel("UnityAds", "i"));
 			_deviceLogLevel.put(UnityAdsLogLevel.DEBUG, new UnityAdsDeviceLogLevel("UnityAds", "d"));
 			_deviceLogLevel.put(UnityAdsLogLevel.WARNING, new UnityAdsDeviceLogLevel("UnityAds", "w"));
 			_deviceLogLevel.put(UnityAdsLogLevel.ERROR, new UnityAdsDeviceLogLevel("UnityAds", "e"));
 		}
-	}
-
-	public UnityAdsDeviceLog() {
 	}
 
 	public static void setLogLevel(int newLevel) {
