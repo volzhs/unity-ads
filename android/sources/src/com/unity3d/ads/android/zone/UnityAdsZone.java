@@ -18,7 +18,7 @@ public class UnityAdsZone {
 	private String _zoneName = null;
 	private boolean _default = false;
 	private String _gamerSid = null;
-	private ArrayList<String> _allowClientOverrides = new ArrayList<>();
+	private final ArrayList<String> _allowClientOverrides = new ArrayList<>();
 
 	public UnityAdsZone(JSONObject zoneObject) throws JSONException {
 		_initialOptions = new JSONObject(zoneObject.toString());
