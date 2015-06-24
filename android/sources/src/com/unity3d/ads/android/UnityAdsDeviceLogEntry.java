@@ -1,6 +1,6 @@
 package com.unity3d.ads.android;
 
-public class UnityAdsDeviceLogEntry {
+class UnityAdsDeviceLogEntry {
 
 	private UnityAdsDeviceLogLevel _logLevel = null;
 	private String _originalMessage = null;
