@@ -273,11 +273,6 @@ public class UnityAdsDownloader {
         	}
 		}
 
-		@Override
-	    protected void onPreExecute() {
-	        super.onPreExecute();
-	    }
-
 	    @Override
 	    protected void onProgressUpdate(Integer... progress) {
 	        super.onProgressUpdate(progress);
