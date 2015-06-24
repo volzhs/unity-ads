@@ -114,7 +114,7 @@ public class UnityAdsDevice {
 		return getDeviceType();
 	}
 
-	public static JSONArray getPackageJsonArray(Map<String,String> whitelist) {
+	private static JSONArray getPackageJsonArray(Map<String,String> whitelist) {
 		if(whitelist == null || whitelist.size() == 0) return null;
 
 		Context context = UnityAdsProperties.APPLICATION_CONTEXT.get();
