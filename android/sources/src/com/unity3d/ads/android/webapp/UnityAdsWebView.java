@@ -59,7 +59,7 @@ public class UnityAdsWebView extends WebView {
 		init(url, listener, webBridge);
 	}
 
-	public boolean isWebAppLoaded () {
+	private boolean isWebAppLoaded () {
 		return _webAppLoaded;
 	}
 
