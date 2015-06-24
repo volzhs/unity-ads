@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.unity3d.ads.android.example.R;
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.IUnityAdsListener;
 
@@ -26,9 +25,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	private UnityAdsTestStartActivity _self = null;
 	private ImageButton _settingsButton = null;
 	private Button _startButton = null;
-	private Button _openButton = null;
 	private RelativeLayout _optionsView = null;
-	private TextView _instructions = null;
 	private ImageView _statusImage = null;
 	private String _exampleAppLogTag = "UnityAdsExample";
 	
@@ -87,28 +84,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
    		UnityAds.changeActivity(this);
    		UnityAds.setListener(this);
     }
-    
-	@Override
-	public boolean onCreateOptionsMenu (Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.layout.menu, menu);
-		return true;
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected (MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.unityads_example_kill:
-		    	System.runFinalizersOnExit(true);		
-				finish();
-		    	Log.d(_exampleAppLogTag, "Quitting");
 
-		    	break;
-		}
-		
-		return true;
-	}
-	
     @Override
 	protected void onDestroy() {
     	Log.d(_exampleAppLogTag, "UnityAdsTestStartActivity->onDestroy()");
@@ -147,8 +123,8 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		_statusImage.setVisibility(View.VISIBLE);
     	_statusImage.setImageResource(R.drawable.unityads_loaded);
     	
-    	_instructions = ((TextView)findViewById(R.id.unityads_example_instructions));
-    	_instructions.setText(R.string.unityads_example_helptextloaded);
+    	TextView instructions = ((TextView)findViewById(R.id.unityads_example_instructions));
+		instructions.setText(R.string.unityads_example_helptextloaded);
     	
     	_settingsButton.setEnabled(false);
     	_settingsButton.setVisibility(View.INVISIBLE);
@@ -156,12 +132,12 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
     	_startButton.setVisibility(View.INVISIBLE);
     	_optionsView.setVisibility(View.INVISIBLE);
     	
-    	_openButton = ((Button)findViewById(R.id.unityads_example_openbutton));
-    	_openButton.setOnClickListener(new View.OnClickListener() {
+    	Button openButton = ((Button)findViewById(R.id.unityads_example_openbutton));
+		openButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// Open with options test
-				Map<String, Object> optionsMap = new HashMap<String, Object>();
+				Map<String, Object> optionsMap = new HashMap<>();
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_NOOFFERSCREEN_KEY, true);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_OPENANIMATED_KEY, false);
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_GAMERSID_KEY, "gom");
@@ -174,7 +150,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 				//UnityAds.show();
 			}
 		});
-    	_openButton.setVisibility(View.VISIBLE);
+		openButton.setVisibility(View.VISIBLE);
 	}
     
     @Override
