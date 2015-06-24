@@ -24,7 +24,6 @@ public class UnityAdsProperties {
 	public static String APPFILTER_LIST = null;
 	public static String INSTALLED_APPS_URL = null;
 	public static Boolean TESTMODE_ENABLED = false;
-	public static Boolean SEND_INTERNAL_DETAILS = false;
 	public static WeakReference<Activity> BASE_ACTIVITY = null;
 	public static WeakReference<Context> APPLICATION_CONTEXT = null;
 	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
@@ -37,7 +36,6 @@ public class UnityAdsProperties {
 	public static String UNITY_VERSION = null;
 
 	public static String TEST_DATA = null;
-	public static String TEST_URL = null;
 	public static String TEST_JAVASCRIPT = null;
 	public static Boolean RUN_WEBVIEW_TESTS = false;
 	public static Boolean UNITY_DEVELOPER_INTERNAL_TEST = false;
@@ -53,7 +51,8 @@ public class UnityAdsProperties {
 
 	public static Boolean UNITY_ADS_READY_SENT = false;
 
-	private static String _campaignQueryString = null; 
+	private static Boolean SEND_INTERNAL_DETAILS = false;
+	private static String _campaignQueryString = null;
 
 	private static void createCampaignQueryString () {
 		String queryString = "?";
@@ -136,10 +135,7 @@ public class UnityAdsProperties {
 	public static String getCampaignQueryUrl () {
 		createCampaignQueryString();
 		String url = CAMPAIGN_DATA_URL;
-		
-		if (getBaseActivity() != null && UnityAdsUtils.isDebuggable(getBaseActivity()) && TEST_URL != null)
-			url = TEST_URL;
-			
+
 		return String.format("%s%s", url, _campaignQueryString);
 	}
 
@@ -173,7 +169,7 @@ public class UnityAdsProperties {
 	}
 
 	private static boolean _seenIsDestroyed = false;
-	public static boolean isActivityDestroyed(Activity activity) {
+	private static boolean isActivityDestroyed(Activity activity) {
 		boolean isDestroyed = false;
 		Method isDestroyedMethod = null;
 
