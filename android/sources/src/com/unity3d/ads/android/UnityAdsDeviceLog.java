@@ -11,10 +11,10 @@ public class UnityAdsDeviceLog {
 	private static boolean LOG_DEBUG = false;
 	private static boolean LOG_INFO = true;
 
-	public static int LOGLEVEL_ERROR = 1;
-	public static int LOGLEVEL_WARNING = 2;
-	public static int LOGLEVEL_INFO = 4;
-	public static int LOGLEVEL_DEBUG = 8;
+	public static final int LOGLEVEL_ERROR = 1;
+	public static final int LOGLEVEL_WARNING = 2;
+	public static final int LOGLEVEL_INFO = 4;
+	public static final int LOGLEVEL_DEBUG = 8;
 
 	public enum UnityAdsLogLevel {
 		INFO, DEBUG, WARNING, ERROR
