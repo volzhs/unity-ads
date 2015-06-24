@@ -25,10 +25,10 @@ public class UnityAdsDeviceLog {
 	static {
 		if (_deviceLogLevel == null) {
 			_deviceLogLevel = new HashMap<>();
-			_deviceLogLevel.put(UnityAdsLogLevel.INFO, new UnityAdsDeviceLogLevel(UnityAdsLogLevel.INFO, "UnityAds", "i"));
-			_deviceLogLevel.put(UnityAdsLogLevel.DEBUG, new UnityAdsDeviceLogLevel(UnityAdsLogLevel.DEBUG, "UnityAds", "d"));
-			_deviceLogLevel.put(UnityAdsLogLevel.WARNING, new UnityAdsDeviceLogLevel(UnityAdsLogLevel.WARNING, "UnityAds", "w"));
-			_deviceLogLevel.put(UnityAdsLogLevel.ERROR, new UnityAdsDeviceLogLevel(UnityAdsLogLevel.ERROR, "UnityAds", "e"));
+			_deviceLogLevel.put(UnityAdsLogLevel.INFO, new UnityAdsDeviceLogLevel("UnityAds", "i"));
+			_deviceLogLevel.put(UnityAdsLogLevel.DEBUG, new UnityAdsDeviceLogLevel("UnityAds", "d"));
+			_deviceLogLevel.put(UnityAdsLogLevel.WARNING, new UnityAdsDeviceLogLevel("UnityAds", "w"));
+			_deviceLogLevel.put(UnityAdsLogLevel.ERROR, new UnityAdsDeviceLogLevel("UnityAds", "e"));
 		}
 	}
 
