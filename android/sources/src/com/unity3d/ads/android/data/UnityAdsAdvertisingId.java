@@ -129,7 +129,7 @@ public class UnityAdsAdvertisingId {
 			}
 
 			private static class GoogleAdvertisingInfoImplementation implements GoogleAdvertisingInfo {
-				private IBinder _binder;
+				private final IBinder _binder;
 
 				GoogleAdvertisingInfoImplementation(IBinder binder) {
 					_binder = binder;
