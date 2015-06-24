@@ -24,7 +24,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	private Button _startButton = null;
 	private RelativeLayout _optionsView = null;
 	private ImageView _statusImage = null;
-	private String _exampleAppLogTag = "UnityAdsExample";
+	private final String _exampleAppLogTag = "UnityAdsExample";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
