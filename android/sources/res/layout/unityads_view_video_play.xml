@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="#FF000000"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FF000000">
+                android:layout_height="match_parent">
 
     <view android:layout_width="match_parent"
           android:layout_height="match_parent"
@@ -13,41 +13,41 @@
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_alignParentRight="true"
+              android:layout_alignParentEnd="true"
               android:layout_alignParentTop="true"
               android:id="@+id/unityAdsVideoBufferingText"
               android:text="@string/buffering_text"
               android:textColor="@android:color/white"
               android:padding="0dp"
-              android:layout_marginRight="3dp"
-              android:layout_marginTop="3dp"/>
+              android:layout_marginEnd="3dp"
+              android:layout_marginTop="3dp" />
 
     <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/unityAdsSkipTextContainer"
-                    android:background="#01FFFFFF"
                     android:paddingBottom="3dp"
-                    android:paddingRight="3dp">
+                    android:paddingEnd="3dp"
+                    android:paddingStart="3dp">
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_alignParentLeft="true"
+                  android:layout_alignParentStart="true"
                   android:layout_alignParentTop="true"
                   android:id="@+id/unityAdsVideoSkipText"
                   android:textColor="@android:color/white"
                   android:padding="0dp"
-                  android:layout_marginLeft="4dp"
+                  android:layout_marginStart="4dp"
                   android:layout_marginTop="3dp"/>
     </RelativeLayout>
 
     <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_alignParentRight="true"
+                  android:layout_alignParentEnd="true"
                   android:layout_alignParentBottom="true"
                   android:id="@+id/unityAdsVideoCountDown"
                   android:padding="0dp"
                   android:layout_marginBottom="3dp"
-                  android:layout_marginRight="3dp">
+                  android:layout_marginEnd="3dp">
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
     <include layout="@layout/unityads_button_audio_toggle"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_alignParentLeft="true"
+             android:layout_alignParentStart="true"
              android:layout_alignParentBottom="true"
              android:id="@+id/unityAdsAudioToggleView"/>
 
