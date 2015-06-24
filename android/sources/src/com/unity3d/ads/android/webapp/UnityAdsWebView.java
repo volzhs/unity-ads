@@ -297,11 +297,6 @@ public class UnityAdsWebView extends WebView {
 			UnityAdsDeviceLog.error(errorCode + " (" + failingUrl + ") " + description);
 			super.onReceivedError(view, errorCode, description, failingUrl);
 		}
-
-		@Override
-		public void onLoadResource(WebView view, String url) {
-			super.onLoadResource(view, url);
-		}	
 	}
 
 	/* PRIVATE CLASSES */
