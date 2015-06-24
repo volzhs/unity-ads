@@ -253,7 +253,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		sendMessageToUnity3D("onFetchFailed", null);
 	}
 
-    public void sendMessageToUnity3D(String methodName, String parameter) {
+    private void sendMessageToUnity3D(String methodName, String parameter) {
         // Unity Development build crashes if parameter is NULL
         if (parameter == null)
                 parameter = "";
