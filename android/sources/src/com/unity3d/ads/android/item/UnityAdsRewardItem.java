@@ -29,11 +29,11 @@ public class UnityAdsRewardItem {
 		return _key;
 	}
 
-	public String getName () {
+	private String getName () {
 		return _name;
 	}
 
-	public String getPictureUrl () {
+	private String getPictureUrl () {
 		return _pictureURL;
 	}
 
