@@ -25,7 +25,6 @@ import org.json.JSONObject;
 public class UnityAdsMainView extends RelativeLayout {
 
 	public enum UnityAdsMainViewState { WebView, VideoPlayer }
-	public enum UnityAdsMainViewAction { VideoStart, VideoEnd, VideoSkipped, BackButtonPressed }
 	private static final int FILL_PARENT = -1;
 	
 	// Views
