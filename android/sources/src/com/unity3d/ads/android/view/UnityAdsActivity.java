@@ -286,7 +286,9 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 
 	@Override
 	public void onPauseVideo(JSONObject data) {
-		UnityAdsDeviceLog.debug("WebView requested Video pause.");
+		String msg = "WebView requested PauseVideo";
+		if (data != null) msg += " " + data.toString();
+		UnityAdsDeviceLog.debug(msg);
 		pauseVideo();
 	}
 
@@ -298,6 +300,9 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 
 	@Override
 	public void onCloseAdsView(JSONObject data) {
+		String msg = "WebView requested CloseAdsView";
+		if (data != null) msg += " " + data.toString();
+		UnityAdsDeviceLog.debug(msg);
 		UnityAdsUtils.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -308,6 +313,9 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 
 	@Override
 	public void onWebAppLoadComplete(JSONObject data) {
+		String msg = "WebView reported WebAppLoadComplete";
+		if (data != null) msg += " " + data.toString();
+		UnityAdsDeviceLog.debug(msg);
 		UnityAdsDeviceLog.entered();
 	}
 

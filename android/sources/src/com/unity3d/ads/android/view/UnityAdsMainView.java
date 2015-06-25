@@ -114,7 +114,9 @@ public class UnityAdsMainView extends RelativeLayout {
 
 			@Override
 			public void onWebAppInitComplete(JSONObject data) {
-				UnityAdsDeviceLog.entered();
+				String msg = "WebView reported WebAppInitComplete";
+				if (data != null) msg += " " + data.toString();
+				UnityAdsDeviceLog.debug(msg);
 				Boolean dataOk = true;
 
 				if(UnityAdsWebData.hasViewableAds()) {
