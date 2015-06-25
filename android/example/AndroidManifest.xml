@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.unity3d.ads.android.example"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.unity3d.ads.android.example"
     android:versionCode="2"
     android:versionName="1.0"
     >
@@ -16,7 +17,8 @@
         android:label="@string/unityads_example_app_name" 
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:allowBackup="false"
-        android:supportsRtl="false">
+        android:supportsRtl="false"
+        tools:ignore="UnusedAttribute">
         
         <activity
             android:name="com.unity3d.ads.android.example.UnityAdsTestStartActivity"
