@@ -114,7 +114,8 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 
 	@SuppressWarnings("unused")
 	public void hide () {
-		UnityAds.hide();
+		boolean success = UnityAds.hide();
+		if (!success) UnityAdsDeviceLog.debug("Problems hiding UnityAds");
 	}
 
 	@SuppressWarnings("unused")
