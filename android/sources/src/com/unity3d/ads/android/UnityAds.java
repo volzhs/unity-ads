@@ -94,6 +94,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		UnityAdsProperties.TEST_OPTIONS_ID = testOptionsId;
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	public static String getSDKVersion() {
 		return UnityAdsConstants.UNITY_ADS_VERSION;
 	}
@@ -488,7 +489,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 		try {
 			Class<?> unityAdsWebBridge = Class.forName("com.unity3d.ads.android.webapp.UnityAdsWebBridge");
-			@SuppressWarnings("unused")
+			@SuppressWarnings({"unused", "UnusedAssignment"})
 			Method handleWebEvent = unityAdsWebBridge.getMethod("handleWebEvent", String.class, String.class);
 			UnityAdsDeviceLog.debug("UnityAds ProGuard check OK");
 		} catch (ClassNotFoundException e) {
