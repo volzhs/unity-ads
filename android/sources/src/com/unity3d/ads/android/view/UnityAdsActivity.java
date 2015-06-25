@@ -124,13 +124,14 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 		setupViews();
 		setContentView(getMainView());
 		changeOrientation();
-		create(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE);
+		create();
 		_preventVideoDoubleStart = false;
 	}
 
-	private void create(final String view) {
+	private void create() {
 		Boolean dataOk = true;
 		final JSONObject data = new JSONObject();
+		final String view = UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_NONE;
 
 		try  {
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
@@ -147,7 +148,7 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 			dataOk = false;
 		}
 
-		if (dataOk && view != null) {
+		if (dataOk) {
 			UnityAdsDeviceLog.debug("Setting up WebView with view:" + view + " and data:" + data.toString());
 
 			if (getMainView() != null) {
@@ -190,11 +191,7 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 	@Override
 	public void onPause() {
 		UnityAdsDeviceLog.entered();
-
-		if (_mainView != null && _mainView.videoplayerview != null && _mainView.videoplayerview.isPlaying()) {
-			_mainView.videoplayerview.pauseVideo();
-		}
-
+		pauseVideo();
 		super.onPause();
 	}
 
@@ -288,7 +285,16 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 	}
 
 	@Override
-	public void onPauseVideo(JSONObject data) {	}
+	public void onPauseVideo(JSONObject data) {
+		UnityAdsDeviceLog.debug("WebView requested Video pause.");
+		pauseVideo();
+	}
+
+	private void pauseVideo () {
+		if (_mainView != null && _mainView.videoplayerview != null && _mainView.videoplayerview.isPlaying()) {
+			_mainView.videoplayerview.pauseVideo();
+		}
+	}
 
 	@Override
 	public void onCloseAdsView(JSONObject data) {
@@ -590,8 +596,10 @@ public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeList
 
 	@Override
 	public void onEventPositionReached (UnityAdsWebData.UnityAdsVideoPosition position) {
-		if (UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignStatus().equals(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED))
-			UnityAdsWebData.sendCampaignViewProgress(UnityAdsProperties.SELECTED_CAMPAIGN, position);
+		if (UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignStatus().equals(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED)) {
+			boolean success = UnityAdsWebData.sendCampaignViewProgress(UnityAdsProperties.SELECTED_CAMPAIGN, position);
+			if (!success) UnityAdsDeviceLog.debug("Sending campaign view progress failed!");
+		}
 	}
 
 	@Override
