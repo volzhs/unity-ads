@@ -8,13 +8,11 @@ import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 
 public class UnityAdsCampaign {
-
 	public enum UnityAdsCampaignStatus { READY, VIEWED;
 		@Override
 		public String toString () {
 			return name();
 		}
-
 	}
 
 	private JSONObject _campaignJson = null;
@@ -30,9 +28,6 @@ public class UnityAdsCampaign {
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TAGLINE_KEY};
 
 	private UnityAdsCampaignStatus _campaignStatus = UnityAdsCampaignStatus.READY;
-
-	public UnityAdsCampaign () {		
-	}
 
 	public UnityAdsCampaign (JSONObject fromJSON) {
 		_campaignJson = fromJSON;
