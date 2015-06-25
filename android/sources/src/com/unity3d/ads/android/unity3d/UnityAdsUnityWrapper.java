@@ -14,6 +14,7 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
+@SuppressWarnings("unused")
 public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	private Activity _startupActivity = null;
 	private String _gameObject = null;
@@ -43,12 +44,10 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 
 	// Public methods
 
-	@SuppressWarnings("unused")
 	public boolean isSupported () {
 		return UnityAds.isSupported();
 	}
 
-	@SuppressWarnings("unused")
 	public String getSDKVersion () {
 		return UnityAds.getSDKVersion();
 	}
@@ -112,13 +111,11 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	public void hide () {
 		boolean success = UnityAds.hide();
 		if (!success) UnityAdsDeviceLog.debug("Problems hiding UnityAds");
 	}
 
-	@SuppressWarnings("unused")
 	public boolean canShow () {
 		return UnityAds.canShow();
 	}
@@ -132,12 +129,10 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return UnityAds.canShow();
 	}
 
-	@SuppressWarnings("unused")
 	public boolean hasMultipleRewardItems () {
 		return UnityAds.hasMultipleRewardItems();
 	}
 
-	@SuppressWarnings("unused")
 	public String getRewardItemKeys () {
 
 		ArrayList<String> rewardItemKeys = UnityAds.getRewardItemKeys();
@@ -157,27 +152,22 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return null;
 	}
 
-	@SuppressWarnings("unused")
 	public String getDefaultRewardItemKey () {
 		return UnityAds.getDefaultRewardItemKey();
 	}
 
-	@SuppressWarnings("unused")
 	public String getCurrentRewardItemKey () {
 		return UnityAds.getCurrentRewardItemKey();
 	}
 
-	@SuppressWarnings("unused")
 	public boolean setRewardItemKey (String rewardItemKey) {
 		return UnityAds.setRewardItemKey(rewardItemKey);
 	}
 
-	@SuppressWarnings("unused")
 	public void setDefaultRewardItemAsRewardItem () {
 		UnityAds.setDefaultRewardItemAsRewardItem();
 	}
 
-	@SuppressWarnings("unused")
 	public String getRewardItemDetailsWithKey (String rewardItemKey) {
 		String retString;
 
@@ -202,22 +192,18 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 		return "";
 	}
 
-	@SuppressWarnings("unused")
     public String getRewardItemDetailsKeys () {
     	return String.format("%s;%s", UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY, UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY);
     }
 
-	@SuppressWarnings("unused")
 	public void setLogLevel(int logLevel) {
 		UnityAdsDeviceLog.setLogLevel(logLevel);
 	}
 
-	@SuppressWarnings("unused")
 	public void enableUnityDeveloperInternalTestMode() {
 		UnityAds.enableUnityDeveloperInternalTestMode();
 	}
 
-	@SuppressWarnings("unused")
 	public void setCampaignDataURL(String campaignDataURL) {
 		UnityAds.setCampaignDataURL(campaignDataURL);
 	}
