@@ -158,7 +158,6 @@ public class UnityAdsWebData {
 		return _initInProgress;
 	}
 
-	// TODO: This method always returns true regardless of success. Needs refactoring.
 	public static boolean initCampaigns () {
 		if(_initInProgress) {
 			return true;
@@ -181,7 +180,7 @@ public class UnityAdsWebData {
 						campaignDataFailed();
 					}
 				});
-				return true;
+				return false;
 			}
 			
 			boolean isConnected = false;
@@ -200,7 +199,7 @@ public class UnityAdsWebData {
 						campaignDataFailed();
 					}
 				});
-				return true;
+				return false;
 			}
 
 			InetAddress adServer = InetAddress.getByName("impact.applifier.com");
@@ -214,7 +213,7 @@ public class UnityAdsWebData {
 						campaignDataFailed();
 					}
 				});
-				return true;
+				return false;
 			}
 		}
 		catch(UnknownHostException e) {
@@ -225,7 +224,7 @@ public class UnityAdsWebData {
 					campaignDataFailed();
 				}
 			});
-			return true;
+			return false;
 		}
 		catch(Exception e) {
 			UnityAdsDeviceLog.debug("Unknown exception during DNS test: " + e);
