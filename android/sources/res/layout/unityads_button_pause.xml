@@ -9,6 +9,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@drawable/unityads_icon_play"
+        android:layout_marginLeft="48dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="25dp"/>
 
