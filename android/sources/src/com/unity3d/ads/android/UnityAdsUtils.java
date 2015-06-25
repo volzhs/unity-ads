@@ -215,7 +215,8 @@ public class UnityAdsUtils {
 	public static File createCacheDir () {
 		File tdir = new File (getCacheDirectory());
 		if (tdir.mkdirs()) {
-			UnityAdsUtils.writeFile(new File(getCacheDirectory() + "/.nomedia"), "");
+			boolean success = UnityAdsUtils.writeFile(new File(getCacheDirectory() + "/.nomedia"), "");
+			if (!success) UnityAdsDeviceLog.debug("Could not write .nomedia file");
 		}
 
 		return tdir;
