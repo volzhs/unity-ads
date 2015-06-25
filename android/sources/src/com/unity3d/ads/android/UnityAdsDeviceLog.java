@@ -24,10 +24,10 @@ public class UnityAdsDeviceLog {
 
 	static {
 		if (_deviceLogLevel.size() == 0) {
-			_deviceLogLevel.put(UnityAdsLogLevel.INFO, new UnityAdsDeviceLogLevel("UnityAds", "i"));
-			_deviceLogLevel.put(UnityAdsLogLevel.DEBUG, new UnityAdsDeviceLogLevel("UnityAds", "d"));
-			_deviceLogLevel.put(UnityAdsLogLevel.WARNING, new UnityAdsDeviceLogLevel("UnityAds", "w"));
-			_deviceLogLevel.put(UnityAdsLogLevel.ERROR, new UnityAdsDeviceLogLevel("UnityAds", "e"));
+			_deviceLogLevel.put(UnityAdsLogLevel.INFO, new UnityAdsDeviceLogLevel("i"));
+			_deviceLogLevel.put(UnityAdsLogLevel.DEBUG, new UnityAdsDeviceLogLevel("d"));
+			_deviceLogLevel.put(UnityAdsLogLevel.WARNING, new UnityAdsDeviceLogLevel("w"));
+			_deviceLogLevel.put(UnityAdsLogLevel.ERROR, new UnityAdsDeviceLogLevel("e"));
 		}
 	}
 
