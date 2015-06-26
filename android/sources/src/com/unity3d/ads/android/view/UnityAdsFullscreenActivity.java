@@ -206,6 +206,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		super.onDestroy();
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)  {
 		switch (keyCode) {

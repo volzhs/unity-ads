@@ -190,7 +190,7 @@ public class UnityAdsWebView extends WebView {
 	}
 
 	@SuppressWarnings({"deprecation"})
-	@SuppressLint("SetJavaScriptEnabled")
+	@SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
 	private void setupUnityAdsView ()  {
 		getSettings().setJavaScriptEnabled(true);
 
@@ -269,6 +269,7 @@ public class UnityAdsWebView extends WebView {
 			UnityAdsDeviceLog.debug("JavaScript (sourceId=" + sourceFile + ", line=" + lineNumber + "): " + message);
 		}
 
+		@SuppressWarnings("NullableProblems")
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
 			quotaUpdater.updateQuota(spaceNeeded * 2);
 		}

@@ -109,6 +109,7 @@ public class UnityAdsAdvertisingId {
 				return new GoogleAdvertisingInfoImplementation(binder);
 			}
 
+			@SuppressWarnings("NullableProblems")
 			public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
 				switch (code) {
 					case 1:
