@@ -527,7 +527,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 		UnityAdsProperties.UNITY_ADS_GAME_ID = gameId;
 		UnityAdsProperties.BASE_ACTIVITY = new WeakReference<>(activity);
-		UnityAdsProperties.APPLICATION_CONTEXT = new WeakReference<>(activity.getApplicationContext());
+		UnityAdsProperties.APPLICATION_CONTEXT = activity.getApplicationContext();
 		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<>(activity);
 
 		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable(activity));

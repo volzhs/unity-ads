@@ -161,7 +161,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	}
 
 	private void storeVolume () {
-		AudioManager am = ((AudioManager)(UnityAdsProperties.getCurrentActivity()).getSystemService(Context.AUDIO_SERVICE));
+		AudioManager am = ((AudioManager)UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.AUDIO_SERVICE));
 		int curVol;
 		int maxVol;
 		
