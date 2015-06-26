@@ -206,6 +206,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		super.onDestroy();
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)  {
 		switch (keyCode) {
@@ -321,6 +322,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	@Override
 	public void onWebAppInitComplete(JSONObject data) { }
 
+	@SuppressWarnings("ResourceType")
 	@Override
 	public void onOrientationRequest(JSONObject data) {
 		setRequestedOrientation(data.optInt("orientation", ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED));

@@ -37,6 +37,7 @@ public class UnityAdsUtils {
 	private static final X500Principal DEBUG_DN = new X500Principal("CN=Android Debug,O=Android,C=US");
 	private static String _cacheDirectory = null;
 
+	@SuppressLint("PackageManagerGetSignatures")
 	public static boolean isDebuggable(Context ctx) {
 	    boolean debuggable = false;
 	    boolean problemsWithData = false;
