@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,7 +22,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	private ImageButton _settingsButton = null;
 	private Button _startButton = null;
 	private RelativeLayout _optionsView = null;
-	private ImageView _statusImage = null;
+	private TextView _statusText = null;
 	private final String _exampleAppLogTag = "UnityAdsExample";
 	
     @Override
@@ -40,7 +39,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		//UnityAds.setTestMode(true);
 
 		_optionsView = ((RelativeLayout)findViewById(R.id.unityads_example_optionsview));
-		_statusImage = ((ImageView)findViewById(R.id.unityads_status));
+		_statusText = ((TextView)findViewById(R.id.unityads_status));
 
 		_settingsButton = ((ImageButton)findViewById(R.id.unityads_settings));
 		_settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -49,8 +48,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 				if (_optionsView != null) {
 					if (_optionsView.getVisibility() == View.INVISIBLE) {
 						_optionsView.setVisibility(View.VISIBLE);
-					}
-					else {
+					} else {
 						_optionsView.setVisibility(View.INVISIBLE);
 					}
 				}
@@ -61,6 +59,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		_startButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				_statusText.setVisibility(View.VISIBLE);
 				UnityAds.setTestDeveloperId(((EditText) findViewById(R.id.unityads_example_developer_id_data)).getText().toString());
 				UnityAds.setTestOptionsId(((EditText) findViewById(R.id.options_id_data)).getText().toString());
 				UnityAds.init(_self, "14851", _self);
@@ -117,8 +116,9 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 	public void onFetchCompleted () {
     	Log.d(_exampleAppLogTag, "UnityAdsTestStartActivity->onFetchCompleted()");
 
-		_statusImage.setVisibility(View.VISIBLE);
-    	_statusImage.setImageResource(R.drawable.unityads_loaded);
+		_statusText.setVisibility(View.VISIBLE);
+		_statusText.setText(getResources().getString(R.string.unityads_example_loaded));
+    	//_statusImage.setImageResource(R.drawable.unityads_loaded);
     	
     	TextView instructions = ((TextView)findViewById(R.id.unityads_example_instructions));
 		instructions.setText(R.string.unityads_example_helptextloaded);
