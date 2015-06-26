@@ -30,7 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class UnityAdsActivity extends Activity implements IUnityAdsWebBridgeListener, IUnityAdsVideoPlayerListener {
+public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWebBridgeListener, IUnityAdsVideoPlayerListener {
 
 	private Boolean _preventVideoDoubleStart = false;
 	private UnityAdsMainView _mainView = null;

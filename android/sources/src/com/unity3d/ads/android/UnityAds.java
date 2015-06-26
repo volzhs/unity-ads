@@ -31,7 +31,7 @@ import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
-import com.unity3d.ads.android.view.UnityAdsActivity;
+import com.unity3d.ads.android.view.UnityAdsFullscreenActivity;
 import com.unity3d.ads.android.view.UnityAdsMainView;
 import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.IUnityAdsWebDataListener;
@@ -128,14 +128,14 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 		if (!activity.equals(UnityAdsProperties.getCurrentActivity())) {
 			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<>(activity);
-			if (!(activity instanceof UnityAdsActivity)) {
+			if (!(activity instanceof UnityAdsFullscreenActivity)) {
 				UnityAdsProperties.BASE_ACTIVITY = new WeakReference<>(activity);
 			}
 		}
 	}
 
 	public static boolean hide() {
-		if (UnityAdsProperties.CURRENT_ACTIVITY.get() instanceof UnityAdsActivity) {
+		if (UnityAdsProperties.CURRENT_ACTIVITY.get() instanceof UnityAdsFullscreenActivity) {
 			UnityAdsProperties.CURRENT_ACTIVITY.get().finish();
 			return true;
 		}
@@ -211,7 +211,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	}
 
 	private static void startFullscreenActivity () {
-		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), UnityAdsActivity.class);
+		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), UnityAdsFullscreenActivity.class);
 		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
 
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
