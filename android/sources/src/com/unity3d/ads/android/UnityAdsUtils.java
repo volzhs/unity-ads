@@ -30,6 +30,7 @@ import android.os.Looper;
 
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsUtils {
@@ -38,15 +39,14 @@ public class UnityAdsUtils {
 	private static String _cacheDirectory = null;
 
 	@SuppressLint("PackageManagerGetSignatures")
-	public static boolean isDebuggable(Context ctx) {
+	public static boolean isDebuggable() {
 	    boolean debuggable = false;
 	    boolean problemsWithData = false;
 
-	    if (ctx == null) return false;
-
-	    PackageManager pm = ctx.getPackageManager();
+	    PackageManager pm = UnityAdsProperties.APPLICATION_CONTEXT.getPackageManager();
+	    String pkgName = UnityAdsProperties.APPLICATION_CONTEXT.getPackageName();
 	    try {
-	        ApplicationInfo appinfo = pm.getApplicationInfo(ctx.getPackageName(), 0);
+	        ApplicationInfo appinfo = pm.getApplicationInfo(pkgName, 0);
 	        debuggable = (0 != (appinfo.flags &= ApplicationInfo.FLAG_DEBUGGABLE));
 	    }
 	    catch (NameNotFoundException e) {
@@ -56,7 +56,7 @@ public class UnityAdsUtils {
 
 	    if (problemsWithData) {
 		    try {
-		        PackageInfo pinfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), PackageManager.GET_SIGNATURES);
+		        PackageInfo pinfo = pm.getPackageInfo(pkgName, PackageManager.GET_SIGNATURES);
 		        Signature signatures[] = pinfo.signatures;
 
 				for (Signature signature : signatures) {

@@ -73,7 +73,7 @@ public class UnityAdsWebView extends WebView {
 			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 			UnityAdsDeviceLog.debug("Send change view to WebApp: " + javascriptString);
 
-			if (data != null && UnityAdsProperties.getBaseActivity() != null) {
+			if (data != null) {
 				String action = "test";
 				try {
 					action = data.getString(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY);
@@ -84,13 +84,13 @@ public class UnityAdsWebView extends WebView {
 
 				UnityAdsDeviceLog.debug("dataHasApiActionKey=" + data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY));
 				UnityAdsDeviceLog.debug("actionEqualsWebViewApiOpen=" + action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN));
-				UnityAdsDeviceLog.debug("isDebuggable=" + UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()));
+				UnityAdsDeviceLog.debug("isDebuggable=" + UnityAdsUtils.isDebuggable());
 				UnityAdsDeviceLog.debug("runWebViewTests=" + UnityAdsProperties.RUN_WEBVIEW_TESTS);
 				UnityAdsDeviceLog.debug("testJavaScriptContents=" + UnityAdsProperties.TEST_JAVASCRIPT);
 
 				if (data.has(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_ACTION_KEY) &&
 					action.equals(UnityAdsConstants.UNITY_ADS_WEBVIEW_API_OPEN) &&
-					UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) &&
+					UnityAdsUtils.isDebuggable() &&
 					UnityAdsProperties.RUN_WEBVIEW_TESTS &&
 					UnityAdsProperties.TEST_JAVASCRIPT != null) {
 					UnityAdsDeviceLog.debug("Running test-javascript: " + UnityAdsProperties.TEST_JAVASCRIPT);
