@@ -254,18 +254,15 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 			return false;
 		}
 
-		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
-		if (currentActivity != null) {
-			ConnectivityManager cm = (ConnectivityManager) currentActivity.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-			if (cm != null) {
-				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-				boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
+		if (cm != null) {
+			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+			boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
 
-				if(!isConnected) {
-					logCanShow(4);
-					return false;
-				}
+			if(!isConnected) {
+				logCanShow(4);
+				return false;
 			}
 		}
 
@@ -442,7 +439,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 			}
 		}
 
-		if (!dataFetchFailed && !sdkIsCurrent && UnityAdsProperties.getCurrentActivity() != null && UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity())) {
+		if (!dataFetchFailed && !sdkIsCurrent && UnityAdsProperties.getCurrentActivity() != null && UnityAdsUtils.isDebuggable()) {
 			_alertDialog = new AlertDialog.Builder(UnityAdsProperties.getCurrentActivity()).create();
 			_alertDialog.setTitle("Unity Ads");
 			_alertDialog.setMessage("You are not running the latest version of Unity Ads android. Please update your version (this dialog won't appear in release builds).");
@@ -530,7 +527,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		UnityAdsProperties.APPLICATION_CONTEXT = activity.getApplicationContext();
 		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<>(activity);
 
-		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable(activity));
+		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable());
 
 		cachemanager = new UnityAdsCacheManager(activity);
 		cachemanager.setDownloadListener(_instance);

@@ -120,7 +120,7 @@ public class UnityAdsProperties {
 		}
 		else {
 			if (UnityAdsProperties.getCurrentActivity() != null) {
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable(UnityAdsProperties.getCurrentActivity()) ? "false" : "true");
+				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable() ? "false" : "true");
 			}
 		}
 

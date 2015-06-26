@@ -163,28 +163,16 @@ public class UnityAdsWebData {
 			return true;
 		}
 
-		if (UnityAdsProperties.getBaseActivity() != null && UnityAdsUtils.isDebuggable(UnityAdsProperties.getBaseActivity()) && UnityAdsProperties.TEST_DATA != null) {
+		if (UnityAdsProperties.getBaseActivity() != null && UnityAdsUtils.isDebuggable() && UnityAdsProperties.TEST_DATA != null) {
 			campaignDataReceived(UnityAdsProperties.TEST_DATA);
 			return true;
 		}
 
 		_initInProgress = true;
 
-		try {
-			Activity currentActivity = UnityAdsProperties.getCurrentActivity();
-			if(currentActivity == null) {
-				UnityAdsDeviceLog.error("initCampaigns failed due to currentActivity null");
-				UnityAdsUtils.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						campaignDataFailed();
-					}
-				});
-				return false;
-			}
-			
+		try {		
 			boolean isConnected = false;
-			ConnectivityManager cm = (ConnectivityManager)currentActivity.getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+			ConnectivityManager cm = (ConnectivityManager) UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 			if(cm != null) {
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -730,10 +718,8 @@ public class UnityAdsWebData {
 
 	private static ArrayList<UnityAdsCampaign> filterCampaigns(ArrayList<UnityAdsCampaign> campaigns) {
 		if(campaigns == null || campaigns.size() == 0) return null;
-		Activity activity = UnityAdsProperties.getCurrentActivity();
-		if(activity == null) return campaigns;
 
-		PackageManager pm = activity.getPackageManager();
+		PackageManager pm = UnityAdsProperties.APPLICATION_CONTEXT.getPackageManager();
 		ArrayList<UnityAdsCampaign> newCampaigns = new ArrayList<>();
 		ArrayList<String> installedCampaigns = null;
 
