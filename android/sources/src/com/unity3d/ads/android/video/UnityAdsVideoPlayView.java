@@ -52,7 +52,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 	private boolean _videoPlayheadPrepared = false;
 
 	private RelativeLayout _layout = null;
-	private RelativeLayout _skipTextContainer = null;
 	private UnityAdsVideoView _videoView = null;
 	private TextView _skipTextView = null;
 	private TextView _bufferingText = null;
@@ -241,7 +240,6 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_timeLeftInSecondsText = (TextView)_layout.findViewById(R.id.unityAdsVideoTimeLeftText);
 		_timeLeftInSecondsText.setText(R.string.default_video_length_text);
 		_skipTextView = (TextView)_layout.findViewById(R.id.unityAdsVideoSkipText);
-		_skipTextContainer = (RelativeLayout)_layout.findViewById(R.id.unityAdsSkipTextContainer);
 		_muteButton = new UnityAdsMuteVideoButton(getContext());
 		_muteButton.setLayout((RelativeLayout) _layout.findViewById(R.id.unityAdsAudioToggleView));
 
@@ -308,9 +306,9 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_skipTextView.setText(R.string.skip_video_text);
 		}
 
-		if (_skipTextContainer != null) {
-			_skipTextContainer.setClickable(true);
-			_skipTextContainer.setOnClickListener(new View.OnClickListener() {
+		if (_skipTextView != null) {
+			_skipTextView.setClickable(true);
+			_skipTextView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					_listener.onVideoSkip();
