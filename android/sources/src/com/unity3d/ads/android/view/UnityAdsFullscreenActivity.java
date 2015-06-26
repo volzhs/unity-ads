@@ -322,6 +322,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	@Override
 	public void onWebAppInitComplete(JSONObject data) { }
 
+	@SuppressWarnings("ResourceType")
 	@Override
 	public void onOrientationRequest(JSONObject data) {
 		setRequestedOrientation(data.optInt("orientation", ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED));
