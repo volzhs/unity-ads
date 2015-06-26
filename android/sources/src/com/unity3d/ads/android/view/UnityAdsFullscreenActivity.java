@@ -119,6 +119,9 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		UnityAdsDeviceLog.entered();
 		super.onCreate(savedInstanceState);
 
+		// If application context is null, restore application context. Fix for Android 5.0 on Samsung Galaxy S4.
+		UnityAdsProperties.APPLICATION_CONTEXT = getApplicationContext();
+
 		UnityAds.changeActivity(this);
 		if (UnityAdsMainView.webview == null) UnityAdsMainView.initWebView();
 		setupViews();
