@@ -120,7 +120,9 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		super.onCreate(savedInstanceState);
 
 		UnityAds.changeActivity(this);
+		if (UnityAdsMainView.webview == null) UnityAdsMainView.initWebView();
 		setupViews();
+
 		setContentView(getMainView());
 		changeOrientation();
 		create();
@@ -320,7 +322,9 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	}
 
 	@Override
-	public void onWebAppInitComplete(JSONObject data) { }
+	public void onWebAppInitComplete(JSONObject data) {
+		UnityAdsDeviceLog.entered();
+	}
 
 	@SuppressWarnings("ResourceType")
 	@Override
@@ -571,13 +575,10 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	@Override
 	public void onVideoPlaybackStarted () {
 		UnityAdsDeviceLog.entered();
-
 		JSONObject params = new JSONObject();
-		JSONObject spinnerParams = new JSONObject();
 
 		try {
 			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
-			spinnerParams.put(UnityAdsConstants.UNITY_ADS_TEXTKEY_KEY, UnityAdsConstants.UNITY_ADS_TEXTKEY_BUFFERING);
 		} catch (Exception e) {
 			UnityAdsDeviceLog.error("Could not create JSON");
 		}
@@ -596,6 +597,13 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 		getMainView().bringChildToFront(getMainView().videoplayerview);
 		changeOrientation();
+
+		try {
+			params.put(UnityAdsConstants.UNITY_ADS_NATIVEEVENT_CAMPAIGNID_KEY, UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId());
+		}
+		catch (Exception e) {
+			UnityAdsDeviceLog.debug("Could not set campaign");
+		}
 
 		if (UnityAdsMainView.webview != null) {
 			UnityAdsMainView.webview.setWebViewCurrentView(UnityAdsConstants.UNITY_ADS_WEBVIEW_VIEWTYPE_COMPLETED, params);

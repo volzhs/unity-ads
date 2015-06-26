@@ -160,9 +160,8 @@ public class UnityAdsMainView extends RelativeLayout {
 	/* PRIVATE METHODS */
 
 	private void init () {
-		UnityAdsDeviceLog.entered();   	
+		UnityAdsDeviceLog.entered();
 		webview.setWebBridgeListener(_webBridgeListener);
-
 		post(new Runnable() {
 			@Override
 			public void run() {
@@ -189,7 +188,7 @@ public class UnityAdsMainView extends RelativeLayout {
 	
 	private void placeWebView() {
 		if (webview != null) {
-			UnityAdsViewUtils.removeViewFromParent(webview);
+			if (webview.getParent() != null) UnityAdsViewUtils.removeViewFromParent(webview);
 			addView(webview, new FrameLayout.LayoutParams(FILL_PARENT, FILL_PARENT));
 		}
 	}
