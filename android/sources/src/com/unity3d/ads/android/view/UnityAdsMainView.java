@@ -94,7 +94,7 @@ public class UnityAdsMainView extends RelativeLayout {
 
 		UnityAdsDeviceLog.debug("Initing WebView");
 
-		webview = new UnityAdsWebView(UnityAdsProperties.APPLICATION_CONTEXT.get(), new IUnityAdsWebViewListener() {
+		webview = new UnityAdsWebView(UnityAdsProperties.APPLICATION_CONTEXT, new IUnityAdsWebViewListener() {
 			@Override
 			public void onWebAppLoaded() {
 				webview.initWebApp(UnityAdsWebData.getData());

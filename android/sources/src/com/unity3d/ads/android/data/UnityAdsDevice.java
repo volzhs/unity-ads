@@ -32,7 +32,7 @@ public class UnityAdsDevice {
 	}
 
 	public static int getDeviceType () {
-		return UnityAdsProperties.APPLICATION_CONTEXT.get().getResources().getConfiguration().screenLayout;
+		return UnityAdsProperties.APPLICATION_CONTEXT.getResources().getConfiguration().screenLayout;
 	}
 
 	@SuppressLint("DefaultLocale")
@@ -40,7 +40,7 @@ public class UnityAdsDevice {
 		String androidID;
 
 		try {
-			androidID = Secure.getString(UnityAdsProperties.APPLICATION_CONTEXT.get().getContentResolver(), Secure.ANDROID_ID);
+			androidID = Secure.getString(UnityAdsProperties.APPLICATION_CONTEXT.getContentResolver(), Secure.ANDROID_ID);
 
 			if(md5hashed) {
 				androidID = UnityAdsUtils.Md5(androidID);
@@ -74,15 +74,12 @@ public class UnityAdsDevice {
 	@SuppressWarnings("deprecation")
 	public static boolean isUsingWifi () {
 		ConnectivityManager mConnectivity;
-		Context context = UnityAdsProperties.APPLICATION_CONTEXT.get();
 
-		if (context == null) return false;
-
-		mConnectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		mConnectivity = (ConnectivityManager) UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (mConnectivity == null) return false;
 
 		TelephonyManager mTelephony;
-		mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		mTelephony = (TelephonyManager) UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.TELEPHONY_SERVICE);
 
 		// Skip if no connection, or background data disabled
 		NetworkInfo info = mConnectivity.getActiveNetworkInfo();
@@ -95,19 +92,13 @@ public class UnityAdsDevice {
 	}
 
 	public static int getNetworkType() {
-		Context context = UnityAdsProperties.APPLICATION_CONTEXT.get();
+		TelephonyManager tm = (TelephonyManager)UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.TELEPHONY_SERVICE);
 
-		if(context != null) {
-			TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-
-			return tm.getNetworkType();
-		}
-
-		return TelephonyManager.NETWORK_TYPE_UNKNOWN;
+		return tm.getNetworkType();
 	}
 
 	public static int getScreenDensity() {
-		return UnityAdsProperties.APPLICATION_CONTEXT.get().getResources().getDisplayMetrics().densityDpi;
+		return UnityAdsProperties.APPLICATION_CONTEXT.getResources().getDisplayMetrics().densityDpi;
 	}
 
 	public static int getScreenSize() {
@@ -117,11 +108,7 @@ public class UnityAdsDevice {
 	private static JSONArray getPackageJsonArray(Map<String,String> whitelist) {
 		if(whitelist == null || whitelist.size() == 0) return null;
 
-		Context context = UnityAdsProperties.APPLICATION_CONTEXT.get();
-
-		if(context == null) return null;
-
-		PackageManager pm = context.getPackageManager();
+		PackageManager pm = UnityAdsProperties.APPLICATION_CONTEXT.getPackageManager();
 		JSONArray pkgList = null;
 
 		for(PackageInfo pkg : pm.getInstalledPackages(0)) {

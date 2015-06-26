@@ -25,7 +25,7 @@ public class UnityAdsProperties {
 	public static String INSTALLED_APPS_URL = null;
 	public static Boolean TESTMODE_ENABLED = false;
 	public static WeakReference<Activity> BASE_ACTIVITY = null;
-	public static WeakReference<Context> APPLICATION_CONTEXT = null;
+	public static Context APPLICATION_CONTEXT = null;
 	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean SELECTED_CAMPAIGN_CACHED = false;
