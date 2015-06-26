@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWebBridgeListener, IUnityAdsVideoPlayerListener {
 
 	private Boolean _preventVideoDoubleStart = false;
@@ -49,7 +51,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	}
 
 	/* CLOSING */
-	@TargetApi(5)
 	@Override
 	public void finish () {
 		super.finish();
@@ -102,7 +103,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		}
 	}
 
-	@TargetApi(9)
 	private void changeOrientation () {
 		int targetOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
 
@@ -345,7 +345,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		}
 	}
 
-	@TargetApi(3)
 	private Intent parseLaunchIntent(JSONObject data) {
 		try {
 			if(data.has("packageName") && !data.has("className") && !data.has("action") && !data.has("mimeType")) {

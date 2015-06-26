@@ -13,11 +13,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsAdvertisingId {
 	private static UnityAdsAdvertisingId impl = null;
 	private String advertisingIdentifier = null;
@@ -76,7 +78,6 @@ public class UnityAdsAdvertisingId {
 
     // Fallback implementation
 
-	@TargetApi(4)
 	private void fetchAdvertisingIdFallback(Context context) {
 		GoogleAdvertisingServiceConnection connection = new GoogleAdvertisingServiceConnection();
     	Intent localIntent = new Intent("com.google.android.gms.ads.identifier.service.START");
