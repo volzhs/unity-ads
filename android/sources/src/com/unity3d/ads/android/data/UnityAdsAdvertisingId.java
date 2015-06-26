@@ -17,7 +17,6 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 
 public class UnityAdsAdvertisingId {
 	private static UnityAdsAdvertisingId impl = null;
@@ -109,7 +108,7 @@ public class UnityAdsAdvertisingId {
 				return new GoogleAdvertisingInfoImplementation(binder);
 			}
 
-			public boolean onTransact(int code, @NonNull Parcel data,@NonNull Parcel reply, int flags) throws RemoteException {
+			public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
 				switch (code) {
 					case 1:
 						data.enforceInterface("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");

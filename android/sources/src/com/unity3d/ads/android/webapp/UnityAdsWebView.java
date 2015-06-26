@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.webkit.ValueCallback;
@@ -270,7 +269,7 @@ public class UnityAdsWebView extends WebView {
 			UnityAdsDeviceLog.debug("JavaScript (sourceId=" + sourceFile + ", line=" + lineNumber + "): " + message);
 		}
 
-		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, @NonNull WebStorage.QuotaUpdater quotaUpdater) {
+		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
 			quotaUpdater.updateQuota(spaceNeeded * 2);
 		}
 	}
