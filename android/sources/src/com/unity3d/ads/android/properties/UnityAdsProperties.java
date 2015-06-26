@@ -35,8 +35,12 @@ public class UnityAdsProperties {
 	public static long CACHING_SPEED = 0;
 	public static String UNITY_VERSION = null;
 
+	// Cannot be final since in test cases values are put into these properties
+	@SuppressWarnings("CanBeFinal")
 	public static String TEST_DATA = null;
+	@SuppressWarnings("CanBeFinal")
 	public static String TEST_JAVASCRIPT = null;
+
 	public static Boolean RUN_WEBVIEW_TESTS = false;
 	public static Boolean UNITY_DEVELOPER_INTERNAL_TEST = false;
 
