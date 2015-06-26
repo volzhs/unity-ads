@@ -123,7 +123,10 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		UnityAdsProperties.APPLICATION_CONTEXT = getApplicationContext();
 
 		UnityAds.changeActivity(this);
+
+		// If WebView is gone for some reason (seen also on Android 5.0 Samsung Galaxy S4), reinitialize WebView
 		if (UnityAdsMainView.webview == null) UnityAdsMainView.initWebView();
+
 		setupViews();
 
 		setContentView(getMainView());
