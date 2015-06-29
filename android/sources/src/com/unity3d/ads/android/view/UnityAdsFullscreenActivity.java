@@ -192,6 +192,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 	@Override
 	public void onResume() {
+		super.onResume();
 		UnityAdsDeviceLog.entered();
 
 		if (_pausedPosition > 0) {
@@ -204,8 +205,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 			_pausedPosition = 0;
 		}
-
-		super.onResume();
 	}
 
 	@Override
