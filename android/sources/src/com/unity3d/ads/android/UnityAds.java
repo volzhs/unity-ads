@@ -558,10 +558,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	@Override
 	public void onWebDataFailed () {
-		if (_adsListener != null && !_adsReadySent)
+		if (_adsListener != null && !_adsReadySent) {
 			_adsListener.onFetchFailed();
+			_adsReadySent = true;
+		}
 	}
-
 
 	// IUnityAdsWebBrigeListener
 	@Override
@@ -1013,7 +1014,14 @@ public class UnityAds implements IUnityAdsCacheListener,
 			mainview = null;
 		}
 
-		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
+		try {
+			mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
+		} catch(OutOfMemoryError oome) {
+			UnityAdsDeviceLog.error("Out of memory error when allocating Unity Ads views, halting Unity Ads init: " + oome.getMessage());
+			oome.printStackTrace();
+
+			_instance.onWebDataFailed();
+		}
 	}
 
 	private static void playVideo () {
