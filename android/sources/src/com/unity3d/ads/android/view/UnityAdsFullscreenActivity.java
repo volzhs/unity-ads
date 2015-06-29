@@ -35,6 +35,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 	private Boolean _preventVideoDoubleStart = false;
 	private UnityAdsMainView _mainView = null;
+	private int _pausedPosition = 0;
+
 	private UnityAdsMainView getMainView () {
 		return _mainView;
 	}
@@ -128,7 +130,6 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		if (UnityAdsMainView.webview == null) UnityAdsMainView.initWebView();
 
 		setupViews();
-
 		setContentView(getMainView());
 		changeOrientation();
 		create();
@@ -192,6 +193,18 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	@Override
 	public void onResume() {
 		UnityAdsDeviceLog.entered();
+
+		if (_pausedPosition > 0) {
+			try {
+				getMainView().videoplayerview.seekTo(_pausedPosition);
+			}
+			catch (Exception e) {
+				UnityAdsDeviceLog.debug("Unexpected error while seeking video");
+			}
+
+			_pausedPosition = 0;
+		}
+
 		super.onResume();
 	}
 
@@ -301,8 +314,9 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	}
 
 	private void pauseVideo () {
-		if (_mainView != null && _mainView.videoplayerview != null && _mainView.videoplayerview.isPlaying()) {
-			_mainView.videoplayerview.pauseVideo();
+		if (getMainView() != null && getMainView().videoplayerview != null && getMainView().videoplayerview.isPlaying()) {
+			_pausedPosition = getMainView().videoplayerview.getCurrentPosition();
+			getMainView().videoplayerview.pauseVideo();
 		}
 	}
 

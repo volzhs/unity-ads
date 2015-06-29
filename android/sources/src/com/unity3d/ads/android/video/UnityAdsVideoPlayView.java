@@ -107,6 +107,15 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		}
 	}
 
+	public int getCurrentPosition () {
+		if (_videoView != null) return _videoView.getCurrentPosition();
+		else return 0;
+	}
+
+	public void seekTo (int time) {
+		if (_videoView != null) _videoView.seekTo(time);
+	}
+
 	public void pauseVideo () {
 		purgeVideoPausedTimer();
 		
