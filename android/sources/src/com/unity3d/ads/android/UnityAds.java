@@ -456,7 +456,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 				ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
 
-				if(viewableCampaigns.size() > 1) {
+				if(UnityAdsProperties.SELECTED_CAMPAIGN != null && viewableCampaigns.size() > 1) {
 					UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
 
 					if(cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true) && !cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
@@ -1012,6 +1012,13 @@ public class UnityAds implements IUnityAdsCacheListener,
 			UnityAdsDeviceLog.debug("Destroying views");
 			mainview.webview.destroy();
 			mainview = null;
+		}
+
+		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+		if(currentActivity == null) {
+			UnityAdsDeviceLog.error("Current activity is null when initializing mainview, halting Unity Ads init");
+			_instance.onWebDataFailed();
+			return;
 		}
 
 		try {
