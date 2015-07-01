@@ -456,7 +456,7 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 				ArrayList<UnityAdsCampaign> viewableCampaigns = webdata.getViewableVideoPlanCampaigns();
 
-				if(viewableCampaigns.size() > 1) {
+				if(UnityAdsProperties.SELECTED_CAMPAIGN != null && viewableCampaigns.size() > 1) {
 					UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
 
 					if(cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true) && !cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
@@ -558,10 +558,11 @@ public class UnityAds implements IUnityAdsCacheListener,
 
 	@Override
 	public void onWebDataFailed () {
-		if (_adsListener != null && !_adsReadySent)
+		if (_adsListener != null && !_adsReadySent) {
 			_adsListener.onFetchFailed();
+			_adsReadySent = true;
+		}
 	}
-
 
 	// IUnityAdsWebBrigeListener
 	@Override
@@ -1013,7 +1014,21 @@ public class UnityAds implements IUnityAdsCacheListener,
 			mainview = null;
 		}
 
-		mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
+		Activity currentActivity = UnityAdsProperties.getCurrentActivity();
+		if(currentActivity == null) {
+			UnityAdsDeviceLog.error("Current activity is null when initializing mainview, halting Unity Ads init");
+			_instance.onWebDataFailed();
+			return;
+		}
+
+		try {
+			mainview = new UnityAdsMainView(UnityAdsProperties.getCurrentActivity(), _instance, _instance);
+		} catch(OutOfMemoryError oome) {
+			UnityAdsDeviceLog.error("Out of memory error when allocating Unity Ads views, halting Unity Ads init: " + oome.getMessage());
+			oome.printStackTrace();
+
+			_instance.onWebDataFailed();
+		}
 	}
 
 	private static void playVideo () {
