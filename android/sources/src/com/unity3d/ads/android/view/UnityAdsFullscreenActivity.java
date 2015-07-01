@@ -194,7 +194,10 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	public void onResume() {
 		super.onResume();
 		UnityAdsDeviceLog.entered();
+		resumeVideo();
+	}
 
+	private void resumeVideo () {
 		if (_pausedPosition > 0) {
 			try {
 				getMainView().videoplayerview.seekTo(_pausedPosition);
@@ -203,7 +206,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 				UnityAdsDeviceLog.debug("Unexpected error while seeking video");
 			}
 
-			_pausedPosition = 0;
+			resetPausedPosition();
 		}
 	}
 
@@ -291,6 +294,10 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 						UnityAdsDeviceLog.debug("Couldn't get rewatch property");
 					}
 
+					if (rewatch) {
+						resetPausedPosition();
+					}
+
 					UnityAdsDeviceLog.debug("Selected campaign=" + UnityAdsProperties.SELECTED_CAMPAIGN.getCampaignId() + " isViewed: " + UnityAdsProperties.SELECTED_CAMPAIGN.isViewed());
 					if (UnityAdsProperties.SELECTED_CAMPAIGN != null && (rewatch || !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed())) {
 						if(rewatch) {
@@ -314,9 +321,15 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 	private void pauseVideo () {
 		if (getMainView() != null && getMainView().videoplayerview != null && getMainView().videoplayerview.isPlaying()) {
-			_pausedPosition = getMainView().videoplayerview.getCurrentPosition();
+			int videoRewindTime = 200;
+			_pausedPosition = getMainView().videoplayerview.getCurrentPosition() - videoRewindTime;
+			if (_pausedPosition < 0) resetPausedPosition();
 			getMainView().videoplayerview.pauseVideo();
 		}
+	}
+
+	private void resetPausedPosition () {
+		_pausedPosition = 0;
 	}
 
 	@Override
@@ -584,6 +597,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 			getMainView().videoplayerview.setKeepScreenOn(false);
 		}
 
+		resetPausedPosition();
 		getMainView().destroyVideoPlayerView();
 		getMainView().setViewState(UnityAdsMainView.UnityAdsMainViewState.WebView);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
