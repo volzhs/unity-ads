@@ -321,7 +321,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 	private void pauseVideo () {
 		if (getMainView() != null && getMainView().videoplayerview != null && getMainView().videoplayerview.isPlaying()) {
-			int videoRewindTime = 200;
+			int videoRewindTime = 500;
 			_pausedPosition = getMainView().videoplayerview.getCurrentPosition() - videoRewindTime;
 			if (_pausedPosition < 0) resetPausedPosition();
 			getMainView().videoplayerview.pauseVideo();
