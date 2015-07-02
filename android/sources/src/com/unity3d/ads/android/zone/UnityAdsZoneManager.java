@@ -52,6 +52,12 @@ public class UnityAdsZoneManager {
 		return _currentZone;
 	}
 
+	@SuppressWarnings("unused")
+	public Map<String,UnityAdsZone> getZonesMap() {
+		// Used by internal test apps
+		return _zones;
+	}
+
 	public boolean setCurrentZone(String zoneId) {
 		if(_zones.containsKey(zoneId)) {
 			_currentZone = _zones.get(zoneId);
