@@ -41,9 +41,15 @@ public class UnityAdsUtils {
 	public static boolean isDebuggable() {
 	    boolean debuggable = false;
 	    boolean problemsWithData = false;
+		PackageManager pm;
+		String pkgName;
 
-	    PackageManager pm = UnityAdsProperties.APPLICATION_CONTEXT.getPackageManager();
-	    String pkgName = UnityAdsProperties.APPLICATION_CONTEXT.getPackageName();
+		if (UnityAdsProperties.APPLICATION_CONTEXT != null) {
+			pm = UnityAdsProperties.APPLICATION_CONTEXT.getPackageManager();
+			pkgName = UnityAdsProperties.APPLICATION_CONTEXT.getPackageName();
+		}
+		else return false;
+
 	    try {
 	        ApplicationInfo appinfo = pm.getApplicationInfo(pkgName, 0);
 	        debuggable = (0 != (appinfo.flags &= ApplicationInfo.FLAG_DEBUGGABLE));
