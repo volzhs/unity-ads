@@ -2,8 +2,6 @@
 <resources>
     <string name="unityads_example_app_name">UnityAds example</string>
 	<string name="unityads_example_product_name">UnityAds</string>
-    <string name="unityads_example_settings_image_description">Settings</string>
-    <string name="unityads_example_bacgkroundimage">Background</string>
 	<string name="unityads_example_developer_id">Developer ID</string>
 	<string name="unityads_example_options_id">Options ID</string>	
 	<string name="unityads_example_opentext">Open</string>
