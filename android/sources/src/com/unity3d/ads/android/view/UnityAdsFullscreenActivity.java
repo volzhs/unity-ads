@@ -36,6 +36,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	private Boolean _preventVideoDoubleStart = false;
 	private UnityAdsMainView _mainView = null;
 	private int _pausedPosition = 0;
+	private boolean _rewatch = false;
 
 	private UnityAdsMainView getMainView () {
 		return _mainView;
@@ -165,7 +166,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 				UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 				if (currentZone.noOfferScreen()) {
-					playVideo();
+					playVideo(false);
 				}
 
 				if (UnityAds.getListener() != null)
@@ -304,7 +305,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 							_preventVideoDoubleStart = false;
 						}
 
-						playVideo();
+						playVideo(rewatch);
 					}
 				}
 			}
@@ -534,22 +535,19 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 	/* VIDEO PLAYBACK */
 
-	private void playVideo () {
-		playVideo(0);
-	}
-
 	@SuppressWarnings("SameParameterValue")
-	private void playVideo (long delay) {
+	private void playVideo(boolean rewatch) {
 		if(_preventVideoDoubleStart) {
 			UnityAdsDeviceLog.debug("Prevent double create of video playback");
 			return;
 		}
 
 		_preventVideoDoubleStart = true;
+		_rewatch = rewatch;
 		UnityAdsDeviceLog.debug("Running threaded");
 		UnityAdsPlayVideoRunner playVideoRunner = new UnityAdsPlayVideoRunner();
 		playVideoRunner.setVideoPlayerListener(this);
-		UnityAdsUtils.runOnUiThread(playVideoRunner, delay);
+		UnityAdsUtils.runOnUiThread(playVideoRunner);
 	}
 
 	private class UnityAdsPlayVideoRunner implements Runnable {
@@ -617,7 +615,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 			UnityAdsDeviceLog.error("Could not create JSON");
 		}
 
-		if (UnityAds.getListener() != null)
+		if (UnityAds.getListener() != null && !_rewatch)
 			UnityAds.getListener().onVideoStarted();
 
 		ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAdsWebData.getViewableVideoPlanCampaigns();
