@@ -205,6 +205,7 @@ public class UnityAdsCampaign {
 		return _campaignStatus;
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	public void setCampaignStatus (UnityAdsCampaignStatus status) {
 		_campaignStatus = status;
 	}

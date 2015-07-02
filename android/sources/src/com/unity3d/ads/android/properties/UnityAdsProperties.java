@@ -205,6 +205,7 @@ public class UnityAdsProperties {
 		return UNITY_ADS_READY_SENT;
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	public static void setAdsReadySent (boolean sent) {
 		UNITY_ADS_READY_SENT = sent;
 	}

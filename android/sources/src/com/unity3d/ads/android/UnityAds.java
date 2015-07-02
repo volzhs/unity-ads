@@ -74,6 +74,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		return Build.VERSION.SDK_INT >= 9;
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	public static void setDebugMode(boolean debugModeEnabled) {
 		if (debugModeEnabled) {
 			UnityAdsDeviceLog.setLogLevel(UnityAdsDeviceLog.LOGLEVEL_DEBUG);

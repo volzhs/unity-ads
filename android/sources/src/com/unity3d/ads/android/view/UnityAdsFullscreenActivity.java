@@ -538,6 +538,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		playVideo(0);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void playVideo (long delay) {
 		if(_preventVideoDoubleStart) {
 			UnityAdsDeviceLog.debug("Prevent double create of video playback");

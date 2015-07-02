@@ -298,6 +298,7 @@ public class UnityAdsWebData {
 		return progressSent;
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	public static void sendAnalyticsRequest (String eventType, UnityAdsCampaign campaign) {
 		if (campaign != null) {
 			String viewUrl = String.format("%s",  UnityAdsProperties.ANALYTICS_BASE_URL);

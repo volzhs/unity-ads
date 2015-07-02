@@ -114,6 +114,7 @@ public class UnityAdsUtils {
 		return mOutput.toUpperCase();
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	public static String readFile (File fileToRead, boolean addLineBreaks) {
 		String fileContent = "";
 		BufferedReader br;
