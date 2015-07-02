@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,7 +18,7 @@ import com.unity3d.ads.android.IUnityAdsListener;
 
 public class UnityAdsTestStartActivity extends Activity implements IUnityAdsListener {
 	private UnityAdsTestStartActivity _self = null;
-	private ImageButton _settingsButton = null;
+	private Button _settingsButton = null;
 	private Button _startButton = null;
 	private RelativeLayout _optionsView = null;
 	private TextView _statusText = null;
@@ -41,7 +40,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 		_optionsView = ((RelativeLayout)findViewById(R.id.unityads_example_optionsview));
 		_statusText = ((TextView)findViewById(R.id.unityads_status));
 
-		_settingsButton = ((ImageButton)findViewById(R.id.unityads_settings));
+		_settingsButton = ((Button)findViewById(R.id.unityads_settings));
 		_settingsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
