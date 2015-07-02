@@ -117,8 +117,7 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 
 		_statusText.setVisibility(View.VISIBLE);
 		_statusText.setText(getResources().getString(R.string.unityads_example_loaded));
-    	//_statusImage.setImageResource(R.drawable.unityads_loaded);
-    	
+
     	TextView instructions = ((TextView)findViewById(R.id.unityads_example_instructions));
 		instructions.setText(R.string.unityads_example_helptextloaded);
     	
@@ -141,9 +140,6 @@ public class UnityAdsTestStartActivity extends Activity implements IUnityAdsList
 				optionsMap.put(UnityAds.UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION, false);
 				
 				UnityAds.show(optionsMap);
-				
-				// Open without options (defaults)
-				//UnityAds.show();
 			}
 		});
 		openButton.setVisibility(View.VISIBLE);
