@@ -54,9 +54,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	}
 
 	/* CLOSING */
-	@Override
-	public void finish () {
-		super.finish();
+	public void finishOperations () {
 		if (UnityAdsWebData.getZoneManager() != null) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 			if (!currentZone.openAnimated()) {
@@ -215,6 +213,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	public void onPause() {
 		UnityAdsDeviceLog.entered();
 		pauseVideo();
+		if(isFinishing()) finishOperations();
 		super.onPause();
 	}
 
