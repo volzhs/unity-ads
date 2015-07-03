@@ -213,7 +213,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	public void onPause() {
 		UnityAdsDeviceLog.entered();
 		pauseVideo();
-		if(isFinishing()) finishOperations();
+		if (isFinishing()) finishOperations();
 		super.onPause();
 	}
 
