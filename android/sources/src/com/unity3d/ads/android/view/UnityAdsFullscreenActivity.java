@@ -109,7 +109,11 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		int targetOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
 
 		// With Samsung Galaxy S4 "Do not keep activities" option statics might get nulled and all state is wrong
-		if(UnityAdsWebData.getZoneManager() == null) finish();
+		if(UnityAdsWebData.getZoneManager() == null) {
+			UnityAdsDeviceLog.error("Static state lost, finishing activity");
+			finish();
+			return;
+		}
 
 		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (currentZone.useDeviceOrientationForVideo()) {
