@@ -37,6 +37,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	private UnityAdsMainView _mainView = null;
 	private int _pausedPosition = 0;
 	private boolean _rewatch = false;
+	private boolean _finishOperationsDone = false;
 
 	private UnityAdsMainView getMainView () {
 		return _mainView;
@@ -55,6 +56,10 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 	/* CLOSING */
 	public void finishOperations () {
+		if (_finishOperationsDone) return;
+
+		_finishOperationsDone = true;
+
 		UnityAdsDeviceLog.debug("Running finish operations on Unity Ads activity");
 		if (UnityAdsWebData.getZoneManager() != null) {
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
@@ -234,6 +239,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	@Override
 	protected void onDestroy() {
 		UnityAdsDeviceLog.entered();
+		if (isFinishing()) finishOperations();
 		super.onDestroy();
 	}
 

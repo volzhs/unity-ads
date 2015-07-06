@@ -500,23 +500,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 			UnityAdsDeviceLog.debug("UnityAds ProGuard check: Unknown exception: " + e);
 		}
 
-		String pkgName = activity.getPackageName();
-		PackageManager pm = activity.getPackageManager();
-
-		if (pkgName != null && pm != null) {
-			try {
-				PackageInfo pkgInfo = pm.getPackageInfo(pkgName, PackageManager.GET_ACTIVITIES);
-
-				for (int i = 0; i < pkgInfo.activities.length; i++) {
-					if (pkgInfo.activities[i].launchMode == ActivityInfo.LAUNCH_SINGLE_TASK) {
-						UnityAdsDeviceLog.debug("Running in singleTask application mode");
-					}
-				}
-			} catch (Exception e) {
-				UnityAdsDeviceLog.debug("Error while checking singleTask activities");
-			}
-		}
-
 		if (_instance == null) {
 			_instance = new UnityAds();
 		}
