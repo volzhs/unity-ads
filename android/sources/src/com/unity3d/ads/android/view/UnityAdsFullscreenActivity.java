@@ -108,7 +108,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	private void changeOrientation () {
 		int targetOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
 
-		// With Samsung Galaxy S4 "Do not keep activities" option statics might get nulled and all state is wrong
+		// With Samsung Galaxy S4 Android 5.0 "Do not keep activities" -option statics might get nulled and all state is wrong
 		if(UnityAdsWebData.getZoneManager() == null) {
 			UnityAdsDeviceLog.error("Static state lost, finishing activity");
 			finish();
@@ -128,12 +128,12 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		UnityAdsDeviceLog.entered();
 		super.onCreate(savedInstanceState);
 
-		// If application context is null, restore application context. Fix for Android 5.0 on Samsung Galaxy S4.
+		// Restore application context always on activity create. Fix for Android 5.0 on Samsung Galaxy S4.
 		UnityAdsProperties.APPLICATION_CONTEXT = getApplicationContext();
 
 		UnityAds.changeActivity(this);
 
-		// If WebView is gone for some reason (seen also on Android 5.0 Samsung Galaxy S4), reinitialize WebView
+		// If WebView is gone for some reason (seen on Android 5.0 Samsung Galaxy S4), reinitialize WebView
 		if (UnityAdsMainView.webview == null) UnityAdsMainView.initWebView();
 
 		setupViews();
