@@ -68,6 +68,7 @@ public class UnityAdsDeviceLog {
 		write(UnityAdsLogLevel.INFO, checkMessage(message));
 	}
 
+	@SuppressWarnings({"unused"})
 	public static void info(String format, Object... args) {
 		info(String.format(format, args));
 	}
@@ -200,6 +201,39 @@ public class UnityAdsDeviceLog {
 					Log.e("UnityAds", "Writing to log failed!");
 				}
 			}
+		}
+	}
+
+	/* Special logging for canShow -method, so that it doesn't keep repeating same messages */
+
+	private static void buildShowStatusMessages() {
+		if (_showStatusMessages == null || _showStatusMessages.size() == 0) {
+			_showStatusMessages = new HashMap<>();
+			_showStatusMessages.put(UnityAdsShowMsg.READY, "Unity Ads is ready to show ads");
+			_showStatusMessages.put(UnityAdsShowMsg.NOT_INITIALIZED, "not initialized");
+			_showStatusMessages.put(UnityAdsShowMsg.WEBAPP_NOT_INITIALIZED, "webapp not initialized");
+			_showStatusMessages.put(UnityAdsShowMsg.SHOWING_ADS, "already showing ads");
+			_showStatusMessages.put(UnityAdsShowMsg.NO_INTERNET, "no internet connection available");
+			_showStatusMessages.put(UnityAdsShowMsg.NO_ADS, "no ads are available");
+			_showStatusMessages.put(UnityAdsShowMsg.ZERO_ADS, "zero ads available");
+			_showStatusMessages.put(UnityAdsShowMsg.VIDEO_NOT_CACHED, "video not cached");
+		}
+	}
+
+	public enum UnityAdsShowMsg {
+		READY, NOT_INITIALIZED, WEBAPP_NOT_INITIALIZED, SHOWING_ADS, NO_INTERNET, NO_ADS, ZERO_ADS, VIDEO_NOT_CACHED
+	}
+
+	private static HashMap<UnityAdsShowMsg, String> _showStatusMessages;
+	private static UnityAdsShowMsg _previousMsg;
+
+	public static void logShowStatus (UnityAdsShowMsg reason) {
+		if (reason != _previousMsg) {
+			buildShowStatusMessages();
+			_previousMsg = reason;
+			String msg = _showStatusMessages.get(reason);
+			if (reason != UnityAdsShowMsg.READY) msg = "Unity Ads cannot show ads: " + msg;
+			UnityAdsDeviceLog.info(msg);
 		}
 	}
 }

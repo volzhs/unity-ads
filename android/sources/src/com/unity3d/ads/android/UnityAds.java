@@ -14,9 +14,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -246,12 +243,12 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 	public static boolean canShow() {
 		if(!UnityAdsProperties.isAdsReadySent()) {
-			logCanShow(2);
+			UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.WEBAPP_NOT_INITIALIZED);
 			return false;
 		}
 
 		if(isShowingAds()) {
-			logCanShow(3);
+			UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.SHOWING_ADS);
 			return false;
 		}
 
@@ -262,7 +259,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 			boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
 
 			if(!isConnected) {
-				logCanShow(4);
+				UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.NO_INTERNET);
 				return false;
 			}
 		}
@@ -272,44 +269,25 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		ArrayList<UnityAdsCampaign> viewableCampaigns = UnityAdsWebData.getViewableVideoPlanCampaigns();
 
 		if(viewableCampaigns == null) {
-			logCanShow(5);
+			UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.NO_ADS);
 			return false;
 		}
 
 		if(viewableCampaigns.size() == 0) {
-			logCanShow(6);
+			UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.ZERO_ADS);
 			return false;
 		}
 
 		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
 		if(!nextCampaign.allowStreamingVideo()) {
 			if(!cachemanager.isCampaignCached(nextCampaign, true)) {
-				logCanShow(7);
+				UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.VIDEO_NOT_CACHED);
 				return false;
 			}
 		}
 
-		logCanShow(0);
+		UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.READY);
 		return true;
-	}
-
-	private static int prevCanShowLogMsg = -1;
-	private static final String[] canShowLogMsgs = {
-		"Unity Ads is ready to show ads",
-		"Unity Ads not ready to show ads: not initialized",
-		"Unity Ads not ready to show ads: webapp not initialized",
-		"Unity Ads not ready to show ads: already showing ads",
-		"Unity Ads not ready to show ads: no internet connection available",
-		"Unity Ads not ready to show ads: no ads are available",
-		"Unity Ads not ready to show ads: zero ads available",
-		"Unity Ads not ready to show ads: video not cached",
-	};
-
-	private static void logCanShow(int reason) {
-		if(reason != prevCanShowLogMsg) {
-			prevCanShowLogMsg = reason;
-			UnityAdsDeviceLog.info(canShowLogMsgs[reason]);
-		}
 	}
 
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
