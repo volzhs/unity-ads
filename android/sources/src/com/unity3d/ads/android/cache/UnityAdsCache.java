@@ -1,6 +1,7 @@
 package com.unity3d.ads.android.cache;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,11 +82,27 @@ public class UnityAdsCache {
 			return;
 		}
 
-		// Don't delete pending events or .nomedia file
-		files.put(".nomedia", Long.valueOf(-1));
+		// Don't delete pending events
 		files.put(UnityAdsConstants.PENDING_REQUESTS_FILENAME, Long.valueOf(-1));
 
-		for(File cacheFile : cacheDir.listFiles()) {
+		File[] fileList;
+
+		if(cacheDir.getAbsolutePath().endsWith(UnityAdsConstants.CACHE_DIR_NAME)) {
+			fileList = cacheDir.listFiles();
+		} else {
+			FilenameFilter filter = new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String filename) {
+					boolean filter = filename.startsWith(UnityAdsConstants.UNITY_ADS_LOCALFILE_PREFIX);
+					UnityAdsDeviceLog.debug("Filtering result for file: " + filename + ", " + filter);
+					return filter;
+				}
+			};
+
+			fileList = cacheDir.listFiles(filter);
+		}
+
+		for(File cacheFile : fileList) {
 			String name = cacheFile.getName();
 
 			if(!files.containsKey(name)) {
