@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import com.unity3d.ads.android.UnityAds;
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.cache.UnityAdsCache;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
@@ -103,8 +104,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 			if (viewableCampaigns != null && viewableCampaigns.size() > 0) {
 				UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
 
-				if (!UnityAds.cachemanager.isCampaignCached(nextCampaign, false) && nextCampaign.allowCacheVideo()) {
-					UnityAds.cachemanager.cacheNextVideo(nextCampaign);
+				if (!UnityAdsCache.isCampaignCached(nextCampaign) && nextCampaign.allowCacheVideo()) {
+					UnityAdsCache.cacheCampaign(nextCampaign);
 				}
 			}
 		}
@@ -586,7 +587,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 				}
 
 				String playUrl;
-				if (!UnityAds.cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true)) {
+				if (!UnityAdsCache.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN)) {
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl();
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
 				} else {
@@ -635,8 +636,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		if(viewableCampaigns.size() > 1) {
 			UnityAdsCampaign nextCampaign = viewableCampaigns.get(1);
 
-			if(UnityAds.cachemanager.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN, true) && !UnityAds.cachemanager.isCampaignCached(nextCampaign, true) && nextCampaign.allowCacheVideo()) {
-				UnityAds.cachemanager.cacheNextVideo(nextCampaign);
+			if(UnityAdsCache.isCampaignCached(UnityAdsProperties.SELECTED_CAMPAIGN) && !UnityAdsCache.isCampaignCached(nextCampaign) && nextCampaign.allowCacheVideo()) {
+				UnityAdsCache.cacheCampaign(nextCampaign);
 			}
 		}
 

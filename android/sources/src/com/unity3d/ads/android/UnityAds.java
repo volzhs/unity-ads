@@ -18,11 +18,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 
-import com.unity3d.ads.android.cache.UnityAdsCacheManager;
-import com.unity3d.ads.android.cache.UnityAdsDownloader;
-import com.unity3d.ads.android.cache.IUnityAdsCacheListener;
+import com.unity3d.ads.android.cache.UnityAdsCache;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
-import com.unity3d.ads.android.campaign.UnityAdsCampaignHandler;
 import com.unity3d.ads.android.data.UnityAdsAdvertisingId;
 import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
@@ -37,7 +34,7 @@ import com.unity3d.ads.android.zone.UnityAdsZone;
 import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListener {
+public class UnityAds implements IUnityAdsWebDataListener {
 
 	// Reward item HashMap keys
 	public static final String UNITY_ADS_REWARDITEM_PICTURE_KEY = "picture";
@@ -49,9 +46,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	public static final String UNITY_ADS_OPTION_GAMERSID_KEY = "sid";
 	public static final String UNITY_ADS_OPTION_MUTE_VIDEO_SOUNDS = "muteVideoSounds";
 	public static final String UNITY_ADS_OPTION_VIDEO_USES_DEVICE_ORIENTATION = "useDeviceOrientationForVideo";
-
-	// Unity Ads components
-	public static UnityAdsCacheManager cachemanager = null;
 
 	// Temporary data
 	private static boolean _initialized = false;
@@ -182,7 +176,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 			UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
 
 			if (currentZone != null) {
-				UnityAdsDownloader.stopAllDownloads();
+				UnityAdsCache.stopAllDownloads();
 
 				currentZone.mergeOptions(options);
 
@@ -280,7 +274,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
 		if(!nextCampaign.allowStreamingVideo()) {
-			if(!cachemanager.isCampaignCached(nextCampaign, true)) {
+			if(!UnityAdsCache.isCampaignCached(nextCampaign)) {
 				UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.VIDEO_NOT_CACHED);
 				return false;
 			}
@@ -370,24 +364,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 	}
 
 	/* LISTENER METHODS */
-
-	// IUnityAdsCacheListener
-	@Override
-	public void onCampaignUpdateStarted() {
-		UnityAdsDeviceLog.debug("Campaign updates started.");
-	}
-
-	@Override
-	public void onCampaignReady(UnityAdsCampaignHandler campaignHandler) {
-		if (campaignHandler == null || campaignHandler.getCampaign() == null) return;
-
-		UnityAdsDeviceLog.debug(campaignHandler.getCampaign().toString());
-	}
-
-	@Override
-	public void onAllCampaignsReady() {
-		UnityAdsDeviceLog.entered();
-	}
 
 	// IUnityAdsWebDataListener
 	@SuppressWarnings("deprecation")
@@ -493,8 +469,6 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 		UnityAdsDeviceLog.debug("Is debuggable=" + UnityAdsUtils.isDebuggable());
 
-		cachemanager = new UnityAdsCacheManager(activity);
-		cachemanager.setDownloadListener(_instance);
 		UnityAdsWebData.setWebDataListener(_instance);
 
 		new Thread(new Runnable() {
@@ -522,7 +496,7 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 		UnityAdsDeviceLog.entered();
 		if (_initialized) {
 			// Update cache WILL START DOWNLOADS if needed, after this method you can check getDownloadingCampaigns which ones started downloading.
-			cachemanager.updateCache(UnityAdsWebData.getVideoPlanCampaigns());
+			UnityAdsCache.initialize(UnityAdsWebData.getVideoPlanCampaigns());
 		}
 	}
 }

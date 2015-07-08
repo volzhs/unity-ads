@@ -51,7 +51,7 @@ public class UnityAdsCache {
 		long size = campaign.getVideoFileExpectedSize();
 
 		// Check if video is already in cache
-		if(isFileCached(filename,size)) return;
+		if(isFileCached(filename, size)) return;
 
 		String currentDownload = UnityAdsCacheThread.getCurrentDownload();
 
@@ -65,7 +65,7 @@ public class UnityAdsCache {
 		String filename = campaign.getVideoFilename();
 		long size = campaign.getVideoFileExpectedSize();
 
-		return isFileCached(filename,size);
+		return isFileCached(filename, size);
 	}
 
 	public static void stopAllDownloads() {
@@ -136,7 +136,7 @@ public class UnityAdsCache {
 		File cacheFile = new File(getCacheDirectory() + "/" + file);
 
 		if(cacheFile.exists()) {
-			if(cacheFile.length() == size) {
+			if(size == -1 || cacheFile.length() == size) {
 				return true;
 			}
 		}
