@@ -3,7 +3,6 @@ package com.unity3d.ads.android.properties;
 public class UnityAdsConstants {
 	// Android specific
 	public static final String CACHE_DIR_NAME = "UnityAdsVideoCache";
-	public static final String CACHE_MANIFEST_FILENAME = UnityAdsConstants.UNITY_ADS_LOCALFILE_PREFIX + "manifest.json";
 	public static final String PENDING_REQUESTS_FILENAME = UnityAdsConstants.UNITY_ADS_LOCALFILE_PREFIX + "pendingrequests.dat";
 	public static final String UNITY_ADS_LOCALFILE_PREFIX = "UnityAds-";
 

@@ -64,7 +64,6 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 				for (File currentFile : fileList) {
 					UnityAdsDeviceLog.debug("Checking file: " + currentFile.getName());
 					if (!currentFile.getName().equals(UnityAdsConstants.PENDING_REQUESTS_FILENAME) && 
-						!currentFile.getName().equals(UnityAdsConstants.CACHE_MANIFEST_FILENAME) && 
 						!UnityAdsUtils.isFileRequiredByCampaigns(currentFile.getName(), activeList)) {
 						if (UnityAdsUtils.removeFile(currentFile.getName()))
 							UnityAdsDeviceLog.debug("Removed file: " + currentFile.getName());
