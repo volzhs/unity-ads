@@ -23,6 +23,7 @@ import com.unity3d.ads.android.webapp.UnityAdsWebData;
 import com.unity3d.ads.android.webapp.UnityAdsWebData.UnityAdsVideoPosition;
 import com.unity3d.ads.android.zone.UnityAdsZone;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -90,6 +91,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 				return true;
 			}
 		});
+
+		// Set the video file to readable, in some caching cases the MediaPlayer cannot play the file unless it's set to readable for all
+		File f = new File(fileName);
+		boolean result = f.setReadable(true, false);
+		if (!result) UnityAdsDeviceLog.debug("COULD NOT SET FILE READABLE");
 
 		try {
 			_videoView.setVideoPath(fileName);

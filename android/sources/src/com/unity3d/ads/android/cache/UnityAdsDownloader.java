@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.SystemClock;
