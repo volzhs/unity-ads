@@ -9,6 +9,7 @@ import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsCache {
 	public static void initialize(ArrayList<UnityAdsCampaign> campaigns) {
@@ -72,7 +73,7 @@ public class UnityAdsCache {
 
 	private static void initializeCacheDirectory(HashMap<String,Long> files) {
 		// TODO: Remove references to UnityAdsUtils
-		UnityAdsUtils.chooseCacheDirectory();
+		UnityAdsUtils.chooseCacheDirectory(UnityAdsProperties.APPLICATION_CONTEXT);
 		File cacheDir = UnityAdsUtils.createCacheDir();
 
 		if(cacheDir == null || !cacheDir.isDirectory()) {
