@@ -3,8 +3,8 @@ package com.unity3d.ads.android.properties;
 public class UnityAdsConstants {
 	// Android specific
 	public static final String CACHE_DIR_NAME = "UnityAdsVideoCache";
-	public static final String CACHE_MANIFEST_FILENAME = "manifest.json";
-	public static final String PENDING_REQUESTS_FILENAME = "pendingrequests.dat";
+	public static final String PENDING_REQUESTS_FILENAME = UnityAdsConstants.UNITY_ADS_LOCALFILE_PREFIX + "pendingrequests.dat";
+	public static final String UNITY_ADS_LOCALFILE_PREFIX = "UnityAds-";
 
 	/*
 	 * UNITY_ADS_VERSION is an integer composed of SDK major (X), minor (Y) and fix (Z) versions with format XYZZ

@@ -16,7 +16,7 @@ import javax.security.auth.x500.X500Principal;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -170,21 +170,28 @@ public class UnityAdsUtils {
 		return true;
 	}
 
-	public static void removeFile (String fileName) {
+	public static boolean removeFile (String fileName) {
 		if(fileName != null) {
 			File removeFile = new File (fileName);
 			File cachedVideoFile = new File (UnityAdsUtils.getCacheDirectory() + "/" + removeFile.getName());
 
 			if (cachedVideoFile.exists()) {
-				if (!cachedVideoFile.delete())
+				if (!cachedVideoFile.delete()) {
 					UnityAdsDeviceLog.error("Could not delete: " + cachedVideoFile.getAbsolutePath());
-				else
+					return false;
+				}
+				else {
 					UnityAdsDeviceLog.debug("Deleted: " + cachedVideoFile.getAbsolutePath());
+					return true;
+				}
 			}
 			else {
 				UnityAdsDeviceLog.debug("File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.");
+				return false;
 			}
 		}
+
+		return false;
 	}
 
 	public static long getSizeForLocalFile (String fileName) {
@@ -199,14 +206,15 @@ public class UnityAdsUtils {
 		return size;
 	}
 
-	public static void chooseCacheDirectory(Activity activity) {
-		File externalCacheDirectory = activity.getExternalCacheDir();
+	public static void chooseCacheDirectory (Context activity) {
+		File cacheDirectory = new File(activity.getApplicationContext().getFilesDir().getPath());
+		_cacheDirectory = cacheDirectory.getAbsolutePath();
 
-		// If possible, use app private external cache directory. It requires no external storage permission for api level 19+ devices.
-		if(externalCacheDirectory != null) {
-			_cacheDirectory = externalCacheDirectory.getAbsolutePath() + "/" + UnityAdsConstants.CACHE_DIR_NAME;
-		} else {
-			_cacheDirectory = Environment.getExternalStorageDirectory() + "/" + UnityAdsConstants.CACHE_DIR_NAME;
+		if (Build.VERSION.SDK_INT > 18) {
+			cacheDirectory = activity.getExternalCacheDir();
+			if (cacheDirectory != null) {
+				_cacheDirectory = cacheDirectory.getAbsolutePath() + "/" + UnityAdsConstants.CACHE_DIR_NAME;
+			}
 		}
 	}
 
@@ -222,8 +230,7 @@ public class UnityAdsUtils {
 	public static File createCacheDir () {
 		File tdir = new File (getCacheDirectory());
 		if (tdir.mkdirs()) {
-			boolean success = UnityAdsUtils.writeFile(new File(getCacheDirectory() + "/.nomedia"), "");
-			if (!success) UnityAdsDeviceLog.debug("Could not write .nomedia file");
+			UnityAdsDeviceLog.debug("Succesfully created cache dir at: " + getCacheDirectory());
 		}
 
 		return tdir;

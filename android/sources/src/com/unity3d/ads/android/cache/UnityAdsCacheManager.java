@@ -1,6 +1,7 @@
 package com.unity3d.ads.android.cache;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -48,15 +49,26 @@ public class UnityAdsCacheManager implements IUnityAdsCampaignHandlerListener {
 		// Check cache directory and delete all files that don't match the current files in campaigns
 		if (UnityAdsUtils.getCacheDirectory() != null) {
 			File dir = new File(UnityAdsUtils.getCacheDirectory());
-			File[] fileList = dir.listFiles();
+			FilenameFilter filter = new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String filename) {
+					boolean filter = filename.startsWith(UnityAdsConstants.UNITY_ADS_LOCALFILE_PREFIX);
+					UnityAdsDeviceLog.debug("Filtering result for file: " + filename + ", " + filter);
+					return filter;
+				}
+			};
+
+			File[] fileList = dir.listFiles(filter);
 
 			if (fileList != null) {
 				for (File currentFile : fileList) {
 					UnityAdsDeviceLog.debug("Checking file: " + currentFile.getName());
 					if (!currentFile.getName().equals(UnityAdsConstants.PENDING_REQUESTS_FILENAME) && 
-						!currentFile.getName().equals(UnityAdsConstants.CACHE_MANIFEST_FILENAME) && 
 						!UnityAdsUtils.isFileRequiredByCampaigns(currentFile.getName(), activeList)) {
-						UnityAdsUtils.removeFile(currentFile.getName());
+						if (UnityAdsUtils.removeFile(currentFile.getName()))
+							UnityAdsDeviceLog.debug("Removed file: " + currentFile.getName());
+						else
+							UnityAdsDeviceLog.debug("Should have removed file: " + currentFile.getName() + " but couldn't");
 					}
 				}
 			}
