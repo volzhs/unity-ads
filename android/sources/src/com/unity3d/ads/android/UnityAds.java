@@ -437,8 +437,10 @@ public class UnityAds implements IUnityAdsCacheListener, IUnityAdsWebDataListene
 
 	@Override
 	public void onWebDataFailed() {
-		if (getListener() != null && !UnityAdsProperties.UNITY_ADS_READY_SENT)
+		if (getListener() != null && !UnityAdsProperties.UNITY_ADS_READY_SENT) {
 			getListener().onFetchFailed();
+			UnityAdsProperties.UNITY_ADS_READY_SENT = true;
+		}
 	}
 
 	public static void init (final Activity activity, String gameId, IUnityAdsListener listener) {
