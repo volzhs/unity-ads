@@ -40,6 +40,7 @@ import android.text.TextUtils;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
 import com.unity3d.ads.android.UnityAdsUtils;
+import com.unity3d.ads.android.cache.UnityAdsCache;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign.UnityAdsCampaignStatus;
 import com.unity3d.ads.android.data.UnityAdsDevice;
@@ -472,14 +473,15 @@ public class UnityAdsWebData {
 	}
 
 	private static void checkFailedUrls () {
-		File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
+		File pendingRequestFile = new File(UnityAdsCache.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
 
 		if (pendingRequestFile.exists()) {
 			String contents;
 
 			synchronized(_urlLoaderLock) {
 				contents = UnityAdsUtils.readFile(pendingRequestFile, true);
-				UnityAdsUtils.removeFile(pendingRequestFile.toString());
+				boolean success = pendingRequestFile.delete();
+				if (!success) UnityAdsDeviceLog.debug("Could not remove pending requests file");
 			}
 
 			JSONObject pendingRequestsJson;
@@ -516,7 +518,7 @@ public class UnityAdsWebData {
 
 		synchronized(_urlLoaderLock) {
 			try {
-				File pendingRequestFile = new File(UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
+				File pendingRequestFile = new File(UnityAdsCache.getCacheDirectory() + "/" + UnityAdsConstants.PENDING_REQUESTS_FILENAME);
 
 				JSONObject pendingRequestsJson = null;
 				JSONArray pendingRequestsArray = null;

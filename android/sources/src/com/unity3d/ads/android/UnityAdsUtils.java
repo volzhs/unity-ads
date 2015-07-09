@@ -10,13 +10,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-
 import javax.security.auth.x500.X500Principal;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -27,15 +24,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.unity3d.ads.android.campaign.UnityAdsCampaign;
-import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsUtils {
 
 	private static final X500Principal DEBUG_DN = new X500Principal("CN=Android Debug,O=Android,C=US");
-	private static String _cacheDirectory = null;
 
 	@SuppressLint("PackageManagerGetSignatures")
 	public static boolean isDebuggable() {
@@ -170,93 +164,9 @@ public class UnityAdsUtils {
 		return true;
 	}
 
-	public static boolean removeFile (String fileName) {
-		if(fileName != null) {
-			File removeFile = new File (fileName);
-			File cachedVideoFile = new File (UnityAdsUtils.getCacheDirectory() + "/" + removeFile.getName());
-
-			if (cachedVideoFile.exists()) {
-				if (!cachedVideoFile.delete()) {
-					UnityAdsDeviceLog.error("Could not delete: " + cachedVideoFile.getAbsolutePath());
-					return false;
-				}
-				else {
-					UnityAdsDeviceLog.debug("Deleted: " + cachedVideoFile.getAbsolutePath());
-					return true;
-				}
-			}
-			else {
-				UnityAdsDeviceLog.debug("File: " + cachedVideoFile.getAbsolutePath() + " doesn't exist.");
-				return false;
-			}
-		}
-
-		return false;
-	}
-
-	public static long getSizeForLocalFile (String fileName) {
-		File removeFile = new File (fileName);
-		File cachedVideoFile = new File (UnityAdsUtils.getCacheDirectory() + "/" + removeFile.getName());
-		long size = -1;
-
-		if (cachedVideoFile.exists()) {
-			size = cachedVideoFile.length();
-		}
-
-		return size;
-	}
-
-	public static void chooseCacheDirectory (Context activity) {
-		File cacheDirectory = new File(activity.getApplicationContext().getFilesDir().getPath());
-		_cacheDirectory = cacheDirectory.getAbsolutePath();
-
-		if (Build.VERSION.SDK_INT > 18) {
-			cacheDirectory = activity.getExternalCacheDir();
-			if (cacheDirectory != null) {
-				_cacheDirectory = cacheDirectory.getAbsolutePath() + "/" + UnityAdsConstants.CACHE_DIR_NAME;
-			}
-		}
-	}
-
-	public static String getCacheDirectory () {
-		return _cacheDirectory;
-	}
-
 	public static boolean canUseExternalStorage () {
 		String state = Environment.getExternalStorageState();
 		return state.equals(Environment.MEDIA_MOUNTED);
-	}
-
-	public static File createCacheDir () {
-		File tdir = new File (getCacheDirectory());
-		if (tdir.mkdirs()) {
-			UnityAdsDeviceLog.debug("Succesfully created cache dir at: " + getCacheDirectory());
-		}
-
-		return tdir;
-	}
-
-	public static boolean isFileRequiredByCampaigns (String fileName, ArrayList<UnityAdsCampaign> campaigns) {
-		if (fileName == null || campaigns == null) return false;
-
-		File seekFile = new File(fileName);
-
-		if (seekFile.getName().equals(".nomedia"))
-			return true;
-
-		for (UnityAdsCampaign campaign : campaigns) {
-			File matchFile = new File(campaign.getVideoFilename());
-			if (seekFile.getName().equals(matchFile.getName()))
-				return true;
-		}
-
-		return false;
-	}
-
-	public static boolean isFileInCache (String fileName) {
-		File targetFile = new File (fileName);
-		File testFile = new File(getCacheDirectory() + "/" + targetFile.getName());
-		return testFile.exists();
 	}
 
 	public static void runOnUiThread (Runnable runnable) {

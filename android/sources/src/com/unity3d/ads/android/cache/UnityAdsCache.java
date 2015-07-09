@@ -1,5 +1,7 @@
 package com.unity3d.ads.android.cache;
 
+import android.os.Build;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -7,12 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
-import com.unity3d.ads.android.UnityAdsUtils;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 public class UnityAdsCache {
+	private static File _cacheDirectory = null;
+
 	public static void initialize(ArrayList<UnityAdsCampaign> campaigns) {
 		if(campaigns == null || campaigns.size() == 0) return;
 
@@ -20,8 +23,8 @@ public class UnityAdsCache {
 
 		stopAllDownloads();
 
-		HashMap<String,String> downloadFiles = new HashMap<String,String>();
-		HashMap<String,Long> allFiles = new HashMap<String,Long>();
+		HashMap<String,String> downloadFiles = new HashMap<>();
+		HashMap<String,Long> allFiles = new HashMap<>();
 
 		boolean first = true;
 		for(UnityAdsCampaign campaign : campaigns) {
@@ -75,35 +78,41 @@ public class UnityAdsCache {
 	}
 
 	private static void initializeCacheDirectory(HashMap<String,Long> files) {
-		// TODO: Remove references to UnityAdsUtils
-		UnityAdsUtils.chooseCacheDirectory(UnityAdsProperties.APPLICATION_CONTEXT);
-		File cacheDir = UnityAdsUtils.createCacheDir();
+		_cacheDirectory = new File(UnityAdsProperties.APPLICATION_CONTEXT.getFilesDir().getPath());
 
-		if(cacheDir == null || !cacheDir.isDirectory()) {
+		if (Build.VERSION.SDK_INT > 18) {
+			if (UnityAdsProperties.APPLICATION_CONTEXT.getExternalCacheDir() != null) {
+				_cacheDirectory = new File(UnityAdsProperties.APPLICATION_CONTEXT.getExternalCacheDir(), UnityAdsConstants.CACHE_DIR_NAME);
+			}
+		}
+
+		UnityAdsDeviceLog.debug("Unity Ads cache: using " + _cacheDirectory.getAbsolutePath() + " as cache");
+
+		if(!_cacheDirectory.isDirectory()) {
 			UnityAdsDeviceLog.error("Unity Ads cache: Creating cache dir failed");
 			return;
 		}
 
 		// Don't delete pending events
-		files.put(UnityAdsConstants.PENDING_REQUESTS_FILENAME, Long.valueOf(-1));
+		files.put(UnityAdsConstants.PENDING_REQUESTS_FILENAME, (long)-1);
 
 		File[] fileList;
 
-		if(cacheDir.getAbsolutePath().endsWith(UnityAdsConstants.CACHE_DIR_NAME)) {
-			UnityAdsDeviceLog.debug("Unity Ads cache: checking cache directory " + cacheDir.getAbsolutePath());
-			fileList = cacheDir.listFiles();
+		if(_cacheDirectory.getAbsolutePath().endsWith(UnityAdsConstants.CACHE_DIR_NAME)) {
+			UnityAdsDeviceLog.debug("Unity Ads cache: checking cache directory " + _cacheDirectory.getAbsolutePath());
+			fileList = _cacheDirectory.listFiles();
 		} else {
 			UnityAdsDeviceLog.debug("Unity Ads cache: checking app directory for Unity Ads cached files");
 			FilenameFilter filter = new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String filename) {
 					boolean filter = filename.startsWith(UnityAdsConstants.UNITY_ADS_LOCALFILE_PREFIX);
-					UnityAdsDeviceLog.debug("Filtering result for file: " + filename + ", " + filter);
+					UnityAdsDeviceLog.debug("Unity Ads cache: Filtering result for file: " + filename + ", " + filter);
 					return filter;
 				}
 			};
 
-			fileList = cacheDir.listFiles(filter);
+			fileList = _cacheDirectory.listFiles(filter);
 		}
 
 		for(File cacheFile : fileList) {
@@ -111,16 +120,18 @@ public class UnityAdsCache {
 
 			if(!files.containsKey(name)) {
 				UnityAdsDeviceLog.debug("Unity Ads cache: " + name + " not found in ad plan, deleting from cache");
-				cacheFile.delete();
+				boolean success = cacheFile.delete();
+				if (!success) UnityAdsDeviceLog.debug("Unity Ads cache: Couldn't delete file: " + cacheFile.getAbsolutePath());
 			} else {
 				long expectedSize = files.get(name);
 
 				if(expectedSize != -1) {
 					long size = cacheFile.length();
 
-					if(size != expectedSize && expectedSize != -1) {
+					if(size != expectedSize) {
 						UnityAdsDeviceLog.debug("Unity Ads cache: " + name + " file size mismatch, deleting from cache");
-						cacheFile.delete();
+						boolean success = cacheFile.delete();
+						if (!success) UnityAdsDeviceLog.debug("Unity Ads cache: Couldn't delete file: " + cacheFile.getAbsolutePath());
 					} else {
 						UnityAdsDeviceLog.debug("Unity Ads cache: " + name + " found, keeping");
 					}
@@ -130,8 +141,7 @@ public class UnityAdsCache {
 	}
 
 	public static String getCacheDirectory() {
-		// TODO: Remove references to UnityAdsUtils
-		return UnityAdsUtils.getCacheDirectory();
+		return _cacheDirectory != null ? _cacheDirectory.getAbsolutePath() : null;
 	}
 
 	private static String getFullFilename(String filename) {

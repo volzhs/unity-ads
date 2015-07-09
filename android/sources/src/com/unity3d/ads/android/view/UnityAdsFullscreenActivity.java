@@ -591,7 +591,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 					playUrl = UnityAdsProperties.SELECTED_CAMPAIGN.getVideoStreamUrl();
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
 				} else {
-					playUrl = UnityAdsUtils.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
+					playUrl = UnityAdsCache.getCacheDirectory() + "/" + UnityAdsProperties.SELECTED_CAMPAIGN.getVideoFilename();
 					UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = true;
 				}
 
