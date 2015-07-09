@@ -31,6 +31,8 @@ public class UnityAdsCache {
 				if(!isFileCached(filename, campaign.getVideoFileExpectedSize())) {
 					UnityAdsDeviceLog.debug("Unity Ads cache: queuing " + filename + " for download");
 					downloadFiles.put(campaign.getVideoUrl(), filename);
+				} else {
+					UnityAdsDeviceLog.debug("Unity Ads cache: not downloading " + filename + ", already in cache");
 				}
 			}
 
