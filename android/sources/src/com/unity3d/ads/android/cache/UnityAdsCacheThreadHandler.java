@@ -54,7 +54,10 @@ public class UnityAdsCacheThreadHandler extends Handler {
 
 			if(cm != null) {
 				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-				if(activeNetwork == null || !activeNetwork.isConnected()) return; // TODO log msg
+				if(activeNetwork == null || !activeNetwork.isConnected()) {
+					UnityAdsDeviceLog.debug("Unity Ads cache: download cancelled, no internet connection available");
+					return;
+				}
 			}
 
 			File targetFile = new File(target);
