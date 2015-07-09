@@ -107,7 +107,7 @@ public class UnityAdsCache {
 				@Override
 				public boolean accept(File dir, String filename) {
 					boolean filter = filename.startsWith(UnityAdsConstants.UNITY_ADS_LOCALFILE_PREFIX);
-					UnityAdsDeviceLog.debug("Unity Ads cache: Filtering result for file: " + filename + ", " + filter);
+					UnityAdsDeviceLog.debug("Unity Ads cache: filtering result for file: " + filename + ", " + filter);
 					return filter;
 				}
 			};
