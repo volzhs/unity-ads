@@ -11,21 +11,21 @@ public class UnityAdsCacheThread extends Thread {
 
 	private static UnityAdsCacheThread _thread = null;
 	private static UnityAdsCacheThreadHandler _handler = null;
-	private static boolean ready = false;
+	private static boolean _ready = false;
+	private static Object _readyLock = new Object();
 
 	private static void init() {
+		_readyLock = new Object();
 		_thread = new UnityAdsCacheThread();
 		_thread.setName("UnityAdsCacheThread");
 		_thread.start();
 
-		// TODO: Fix this with proper locking
-		while(!ready) {
+		while(!_ready) {
 			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				synchronized(_readyLock) {
+					_readyLock.wait();
+				}
+			} catch (InterruptedException e) { }
 		}
 	}
 
@@ -33,12 +33,15 @@ public class UnityAdsCacheThread extends Thread {
 	public void run() {
 		Looper.prepare();
 		_handler = new UnityAdsCacheThreadHandler();
-		ready = true;
+		_ready = true;
+		synchronized(_readyLock) {
+			_readyLock.notify();
+		}
 		Looper.loop();
 	}
 
-	public static void download(String source, String target) {
-		if(_thread == null) init();
+	public static synchronized void download(String source, String target) {
+		if(!_ready) init();
 
 		Bundle params = new Bundle();
 		params.putString("source", source);
@@ -53,17 +56,15 @@ public class UnityAdsCacheThread extends Thread {
 	}
 
 	public static String getCurrentDownload() {
-		if(_handler == null) return null;
+		if(!_ready) return null;
 
 		return _handler.getCurrentDownload();
 	}
 
 	public static void stopAllDownloads() {
-		if(_thread == null) {
-			init();
-		} else {
-			_handler.removeMessages(MSG_DOWNLOAD);
-			_handler.setStoppedStatus(true);
-		}
+		if(!_ready) return;
+
+		_handler.removeMessages(MSG_DOWNLOAD);
+		_handler.setStoppedStatus(true);
 	}
 }

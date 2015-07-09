@@ -1,5 +1,6 @@
 package com.unity3d.ads.android.cache;
 
+import android.annotation.TargetApi;
 import android.os.Build;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsCache {
 	private static File _cacheDirectory = null;
 
