@@ -88,8 +88,10 @@ public class UnityAdsCache {
 		File[] fileList;
 
 		if(cacheDir.getAbsolutePath().endsWith(UnityAdsConstants.CACHE_DIR_NAME)) {
+			UnityAdsDeviceLog.debug("Unity Ads cache: checking cache directory " + cacheDir.getAbsolutePath());
 			fileList = cacheDir.listFiles();
 		} else {
+			UnityAdsDeviceLog.debug("Unity Ads cache: checking app directory for Unity Ads cached files");
 			FilenameFilter filter = new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String filename) {
@@ -117,6 +119,8 @@ public class UnityAdsCache {
 					if(size != expectedSize && expectedSize != -1) {
 						UnityAdsDeviceLog.debug("Unity Ads cache: " + name + " file size mismatch, deleting from cache");
 						cacheFile.delete();
+					} else {
+						UnityAdsDeviceLog.debug("Unity Ads cache: " + name + " found, keeping");
 					}
 				}
 			}
