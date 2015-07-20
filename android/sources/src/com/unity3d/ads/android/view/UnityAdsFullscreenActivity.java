@@ -521,29 +521,25 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		}
 	}
 
-	private static void openPlayStoreAsIntent (String playStoreId) {
+	private void openPlayStoreAsIntent (String playStoreId) {
 		UnityAdsDeviceLog.debug("Opening playstore activity with storeId: " + playStoreId);
 
-		if (UnityAdsProperties.getCurrentActivity() != null) {
-			try {
-				UnityAdsProperties.getCurrentActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + playStoreId)));
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("Couldn't create PlayStore intent!");
-			}
+		try {
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + playStoreId)));
+		}
+		catch (Exception e) {
+			UnityAdsDeviceLog.error("Couldn't create PlayStore intent!");
 		}
 	}
 
-	private static void openPlayStoreInBrowser (String url) {
+	private void openPlayStoreInBrowser (String url) {
 		UnityAdsDeviceLog.debug("Opening playStore in browser: " + url);
 
-		if (UnityAdsProperties.getCurrentActivity() != null) {
-			try {
-				UnityAdsProperties.getCurrentActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-			}
-			catch (Exception e) {
-				UnityAdsDeviceLog.error("Couldn't create browser intent!");
-			}
+		try {
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+		}
+		catch (Exception e) {
+			UnityAdsDeviceLog.error("Couldn't create browser intent!");
 		}
 	}
 

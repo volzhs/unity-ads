@@ -123,9 +123,7 @@ public class UnityAdsProperties {
 			}
 		}
 		else {
-			if (UnityAdsProperties.getCurrentActivity() != null) {
-				queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable() ? "false" : "true");
-			}
+			queryString = String.format("%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ENCRYPTED_KEY, UnityAdsUtils.isDebuggable() ? "false" : "true");
 		}
 
 		if(SEND_INTERNAL_DETAILS) {
@@ -172,7 +170,6 @@ public class UnityAdsProperties {
 		}
 	}
 
-	private static boolean _seenIsDestroyed = false;
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private static boolean isActivityDestroyed(Activity activity) {
 		boolean isDestroyed = false;
@@ -182,10 +179,7 @@ public class UnityAdsProperties {
 			isDestroyedMethod = Activity.class.getMethod("isDestroyed");
 		}
 		catch (Exception e) {
-			if (!_seenIsDestroyed) {
-				_seenIsDestroyed = true;
-				UnityAdsDeviceLog.error("Couldn't get isDestroyed -method");
-			}
+			UnityAdsDeviceLog.error("Couldn't get isDestroyed -method");
 		}
 
 		if (isDestroyedMethod != null) {

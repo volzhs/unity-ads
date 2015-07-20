@@ -117,12 +117,9 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		}
 
 		UnityAdsDeviceLog.debug("changeActivity: " + activity.getClass().getName());
-
-		if (!activity.equals(UnityAdsProperties.getCurrentActivity())) {
-			UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<>(activity);
-			if (!(activity instanceof UnityAdsFullscreenActivity)) {
-				UnityAdsProperties.BASE_ACTIVITY = new WeakReference<>(activity);
-			}
+		UnityAdsProperties.CURRENT_ACTIVITY = new WeakReference<>(activity);
+		if (!(activity instanceof UnityAdsFullscreenActivity)) {
+			UnityAdsProperties.BASE_ACTIVITY = new WeakReference<>(activity);
 		}
 	}
 
