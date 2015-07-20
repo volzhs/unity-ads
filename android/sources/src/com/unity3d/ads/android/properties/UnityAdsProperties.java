@@ -173,6 +173,7 @@ public class UnityAdsProperties {
 	}
 
 	private static boolean _seenIsDestroyed = false;
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private static boolean isActivityDestroyed(Activity activity) {
 		boolean isDestroyed = false;
 		Method isDestroyedMethod = null;
@@ -201,6 +202,7 @@ public class UnityAdsProperties {
 		return isDestroyed;
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isAdsReadySent () {
 		return UNITY_ADS_READY_SENT;
 	}

@@ -556,7 +556,8 @@ public class UnityAdsWebData {
 				pendingRequestsJson.put("data", pendingRequestsArray);
 
 				if(UnityAdsUtils.canUseExternalStorage()) {
-					UnityAdsUtils.writeFile(pendingRequestFile, pendingRequestsJson.toString());
+					boolean success = UnityAdsUtils.writeFile(pendingRequestFile, pendingRequestsJson.toString());
+					if (!success) UnityAdsDeviceLog.debug("Error while writing: " + pendingRequestFile.getName());
 				}
 			} catch(Exception e) {
 				UnityAdsDeviceLog.debug("Exception when writing failed url: " + e.getMessage());

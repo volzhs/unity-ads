@@ -18,7 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 
-public class UnityAdsCacheThreadHandler extends Handler {
+class UnityAdsCacheThreadHandler extends Handler {
 	private String _currentDownload = null;
 	private boolean _stopped = false;
 
@@ -42,6 +42,7 @@ public class UnityAdsCacheThreadHandler extends Handler {
 	private void downloadFile(String source, String target) {
 		if(_stopped || source == null || target == null) return;
 
+		// TODO: Fix this try / catch block, it is WAY too long
 		try {
 			UnityAdsDeviceLog.debug("Unity Ads cache: start downloading " + source + " to " + target);
 			_currentDownload = target;
@@ -74,7 +75,7 @@ public class UnityAdsCacheThreadHandler extends Handler {
 
 			byte data[] = new byte[4096];
 			long total = 0;
-			int count = 0;
+			int count;
 
 			while(!_stopped && (count = bufferedInput.read(data)) != -1) {
 				total += count;
@@ -97,7 +98,8 @@ public class UnityAdsCacheThreadHandler extends Handler {
 				}
 			} else {
 				UnityAdsDeviceLog.debug("Unity Ads cache: downloading of " + source + " stopped");
-				targetFile.delete();
+				boolean success = targetFile.delete();
+				if (!success) UnityAdsDeviceLog.debug("Couldn't delete file: " + targetFile.getName());
 			}
 		} catch (Exception e) {
 			_currentDownload = null;

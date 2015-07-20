@@ -157,6 +157,7 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public static String getZone() {
 		UnityAdsZoneManager zoneManager = UnityAdsWebData.getZoneManager();
 
@@ -202,6 +203,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
+	public static boolean show() {
+		return show(null);
+	}
+
 	private static void startFullscreenActivity () {
 		Intent newIntent = new Intent(UnityAdsProperties.getCurrentActivity(), UnityAdsFullscreenActivity.class);
 		int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -221,10 +227,6 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		} catch (Exception e) {
 			UnityAdsDeviceLog.error("Weird error: " + e.getMessage());
 		}
-	}
-
-	public static boolean show() {
-		return show(null);
 	}
 
 	public static boolean canShowAds() {

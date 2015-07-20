@@ -56,7 +56,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	}
 
 	/* CLOSING */
-	public void finishOperations () {
+	private void finishOperations () {
 		if (_finishOperationsDone) return;
 
 		_finishOperationsDone = true;

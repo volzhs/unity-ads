@@ -83,6 +83,7 @@ public class UnityAdsZone {
 		return _gamerSid;
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	public void setGamerSid(String gamerSid) {
 		_gamerSid = gamerSid;
 	}
@@ -113,7 +114,7 @@ public class UnityAdsZone {
 		}
 	}
 
-	public boolean allowsOverride(String option) {
+	private boolean allowsOverride(String option) {
 		return _allowClientOverrides.contains(option);
 	}
 }

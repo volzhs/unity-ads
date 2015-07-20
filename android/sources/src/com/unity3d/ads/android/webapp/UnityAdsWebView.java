@@ -2,7 +2,6 @@ package com.unity3d.ads.android.webapp;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -51,11 +50,6 @@ public class UnityAdsWebView extends WebView {
 		super(context);
 		UnityAdsDeviceLog.debug("Loading WebView from URL: " + UnityAdsProperties.WEBVIEW_BASE_URL);
 		init(UnityAdsProperties.WEBVIEW_BASE_URL, listener, webBridge);
-	}
-
-	public UnityAdsWebView(Activity activity, String url, IUnityAdsWebViewListener listener, UnityAdsWebBridge webBridge) {
-		super(activity);
-		init(url, listener, webBridge);
 	}
 
 	private boolean isWebAppLoaded () {

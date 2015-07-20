@@ -173,7 +173,8 @@ public class UnityAdsUtils {
 		runOnUiThread(runnable, 0);
 	}
 
-	public static void runOnUiThread (Runnable runnable, long delay) {
+	@SuppressWarnings("SameParameterValue")
+	private static void runOnUiThread (Runnable runnable, long delay) {
 		Handler handler = new Handler(Looper.getMainLooper());
 
 		if (delay  > 0) {

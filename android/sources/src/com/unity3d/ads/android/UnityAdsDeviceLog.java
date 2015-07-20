@@ -89,6 +89,7 @@ public class UnityAdsDeviceLog {
 		write(UnityAdsLogLevel.DEBUG, checkMessage(message));
 	}
 
+	@SuppressWarnings("unused")
 	public static void debug(String format, Object... args) {
 		debug(String.format(format, args));
 	}
@@ -106,6 +107,7 @@ public class UnityAdsDeviceLog {
 		write(UnityAdsLogLevel.ERROR, checkMessage(message));
 	}
 
+	@SuppressWarnings("unused")
 	public static void error(String format, Object... args) {
 		error(String.format(format, args));
 	}

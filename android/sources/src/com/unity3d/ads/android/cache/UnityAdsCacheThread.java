@@ -6,26 +6,25 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
 
-public class UnityAdsCacheThread extends Thread {
-	private static int MSG_DOWNLOAD = 1;
-
-	private static UnityAdsCacheThread _thread = null;
+class UnityAdsCacheThread extends Thread {
+	private static final int MSG_DOWNLOAD = 1;
 	private static UnityAdsCacheThreadHandler _handler = null;
 	private static boolean _ready = false;
-	private static Object _readyLock = new Object();
+	private static final Object _readyLock = new Object();
 
 	private static void init() {
-		_readyLock = new Object();
-		_thread = new UnityAdsCacheThread();
-		_thread.setName("UnityAdsCacheThread");
-		_thread.start();
+		UnityAdsCacheThread thread = new UnityAdsCacheThread();
+		thread.setName("UnityAdsCacheThread");
+		thread.start();
 
 		while(!_ready) {
 			try {
 				synchronized(_readyLock) {
 					_readyLock.wait();
 				}
-			} catch (InterruptedException e) { }
+			} catch (InterruptedException e) {
+				UnityAdsDeviceLog.debug("Couldn't synchronize thread");
+			}
 		}
 	}
 
