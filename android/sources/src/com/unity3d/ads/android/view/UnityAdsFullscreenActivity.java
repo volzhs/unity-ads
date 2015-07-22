@@ -56,9 +56,8 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	}
 
 	/* CLOSING */
-	private void finishOperations () {
+	private void finishActivity() {
 		if (_finishOperationsDone) return;
-
 		_finishOperationsDone = true;
 
 		UnityAdsDeviceLog.debug("Running finish operations on Unity Ads activity");
@@ -227,7 +226,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	public void onPause() {
 		UnityAdsDeviceLog.entered();
 		pauseVideo();
-		if (isFinishing()) finishOperations();
+		if (isFinishing()) finishActivity();
 		super.onPause();
 	}
 
@@ -240,7 +239,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 	@Override
 	protected void onDestroy() {
 		UnityAdsDeviceLog.entered();
-		if (isFinishing()) finishOperations();
+		if (isFinishing()) finishActivity();
 		super.onDestroy();
 	}
 
