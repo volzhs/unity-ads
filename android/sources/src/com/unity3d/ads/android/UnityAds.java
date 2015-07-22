@@ -21,6 +21,7 @@ import android.os.Build;
 import com.unity3d.ads.android.cache.UnityAdsCache;
 import com.unity3d.ads.android.campaign.UnityAdsCampaign;
 import com.unity3d.ads.android.data.UnityAdsAdvertisingId;
+import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.item.UnityAdsRewardItem;
 import com.unity3d.ads.android.item.UnityAdsRewardItemManager;
 import com.unity3d.ads.android.properties.UnityAdsConstants;
@@ -245,16 +246,9 @@ public class UnityAds implements IUnityAdsWebDataListener {
 			return false;
 		}
 
-		ConnectivityManager cm = (ConnectivityManager) UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-		if (cm != null) {
-			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-			boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
-
-			if(!isConnected) {
-				UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.NO_INTERNET);
-				return false;
-			}
+		if(!UnityAdsDevice.isActiveNetworkConnected()) {
+			UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.NO_INTERNET);
+			return false;
 		}
 
 		if(UnityAdsWebData.initInProgress()) return false;
@@ -271,12 +265,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 			return false;
 		}
 
+		// TODO: if for some reason the streaming video won't be allowed and the campaign is not cached by then, UnityAds will stay like that and is unable to view any ads.
 		UnityAdsCampaign nextCampaign = viewableCampaigns.get(0);
-		if(!nextCampaign.allowStreamingVideo()) {
-			if(!UnityAdsCache.isCampaignCached(nextCampaign)) {
-				UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.VIDEO_NOT_CACHED);
-				return false;
-			}
+		if(!nextCampaign.allowStreamingVideo() && !UnityAdsCache.isCampaignCached(nextCampaign)) {
+			UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.VIDEO_NOT_CACHED);
+			return false;
 		}
 
 		UnityAdsDeviceLog.logShowStatus(UnityAdsDeviceLog.UnityAdsShowMsg.READY);

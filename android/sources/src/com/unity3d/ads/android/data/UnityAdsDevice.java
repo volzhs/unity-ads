@@ -150,4 +150,15 @@ public class UnityAdsDevice {
 			return null;
 		}
 	}
+
+	public static boolean isActiveNetworkConnected () {
+		ConnectivityManager cm = (ConnectivityManager)UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		if(cm != null) {
+			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+			return activeNetwork != null && activeNetwork.isConnected();
+		}
+
+		return false;
+	}
 }

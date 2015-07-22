@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import com.unity3d.ads.android.UnityAdsDeviceLog;
+import com.unity3d.ads.android.data.UnityAdsDevice;
 import com.unity3d.ads.android.properties.UnityAdsProperties;
 
 import android.content.Context;
@@ -51,14 +52,9 @@ class UnityAdsCacheThreadHandler extends Handler {
 
 			URL url = new URL(source);
 
-			ConnectivityManager cm = (ConnectivityManager)UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-			if(cm != null) {
-				NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-				if(activeNetwork == null || !activeNetwork.isConnected()) {
-					UnityAdsDeviceLog.debug("Unity Ads cache: download cancelled, no internet connection available");
-					return;
-				}
+			if (!UnityAdsDevice.isActiveNetworkConnected()) {
+				UnityAdsDeviceLog.debug("Unity Ads cache: download cancelled, no internet connection available");
+				return;
 			}
 
 			File targetFile = new File(target);
