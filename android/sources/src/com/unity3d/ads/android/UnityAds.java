@@ -11,11 +11,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 
 import com.unity3d.ads.android.cache.UnityAdsCache;
@@ -50,7 +47,6 @@ public class UnityAds implements IUnityAdsWebDataListener {
 
 	// Temporary data
 	private static boolean _initialized = false;
-	private static AlertDialog _alertDialog = null;
 
 	// Listeners
 	private static IUnityAdsListener _adsListener = null;
@@ -387,17 +383,17 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		}
 
 		if (!dataFetchFailed && !sdkIsCurrent && UnityAdsProperties.getCurrentActivity() != null && UnityAdsUtils.isDebuggable()) {
-			_alertDialog = new AlertDialog.Builder(UnityAdsProperties.getCurrentActivity()).create();
-			_alertDialog.setTitle("Unity Ads");
-			_alertDialog.setMessage("You are not running the latest version of Unity Ads android. Please update your version (this dialog won't appear in release builds).");
-			_alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			final AlertDialog alertDialog = new AlertDialog.Builder(UnityAdsProperties.getCurrentActivity()).create();
+			alertDialog.setTitle("Unity Ads");
+			alertDialog.setMessage("You are not running the latest version of Unity Ads android. Please update your version (this dialog won't appear in release builds).");
+			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					_alertDialog.dismiss();
+					alertDialog.dismiss();
 				}
 			});
 
-			_alertDialog.show();
+			alertDialog.show();
 		}
 
 		setup();
