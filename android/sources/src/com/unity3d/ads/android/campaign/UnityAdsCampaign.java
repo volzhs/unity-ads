@@ -17,10 +17,10 @@ public class UnityAdsCampaign {
 
 	private JSONObject _campaignJson = null;
 	private final String[] _requiredKeys = new String[] {
-			UnityAdsConstants.UNITY_ADS_CAMPAIGN_ENDSCREEN_KEY, 
-			UnityAdsConstants.UNITY_ADS_CAMPAIGN_CLICKURL_KEY, 
-			UnityAdsConstants.UNITY_ADS_CAMPAIGN_PICTURE_KEY, 
-			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_DOWNLOADABLE_KEY, 
+			UnityAdsConstants.UNITY_ADS_CAMPAIGN_ENDSCREEN_KEY,
+			UnityAdsConstants.UNITY_ADS_CAMPAIGN_CLICKURL_KEY,
+			UnityAdsConstants.UNITY_ADS_CAMPAIGN_PICTURE_KEY,
+			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_DOWNLOADABLE_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_TRAILER_STREAMING_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_ID_KEY,
 			UnityAdsConstants.UNITY_ADS_CAMPAIGN_GAME_NAME_KEY,
@@ -37,6 +37,7 @@ public class UnityAdsCampaign {
 	public String toString () {
 		return "ID: " + getCampaignId() + ", STATUS: " + getCampaignStatus().toString() + ", URL: " + getVideoUrl() + "";
 	}
+
 
 	public Boolean shouldCacheVideo () {
 		if (checkDataIntegrity()) {
