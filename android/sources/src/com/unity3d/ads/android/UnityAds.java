@@ -223,6 +223,12 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		}
 	}
 
+	/**
+	 * Returns if ads can be shown or not.
+	 * @deprecated use always {@link #canShow()} instead.
+	 */
+	@Deprecated
+	@SuppressWarnings("unused")
 	public static boolean canShowAds() {
 		return canShow();
 	}
@@ -274,6 +280,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 
 	/* PUBLIC MULTIPLE REWARD ITEM SUPPORT */
 
+	/**
+	 * Check if adplan has multiple reward items
+	 * @deprecated use {@link com.unity3d.ads.android.webapp.UnityAdsWebData#getZoneManager().getCurrentZone().itemManager().allItems().count()}
+	 */
+	@Deprecated
 	public static boolean hasMultipleRewardItems() {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (zone != null && zone.isIncentivized()) {
@@ -283,6 +294,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		return false;
 	}
 
+	/**
+	 * Get a list of all the reward items
+	 * @deprecated use {@link com.unity3d.ads.android.webapp.UnityAdsWebData#getZoneManager().getCurrentZone().itemManager().allItems()}
+	 */
+	@Deprecated
 	public static ArrayList<String> getRewardItemKeys() {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (zone != null && zone.isIncentivized()) {
@@ -298,6 +314,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		return null;
 	}
 
+	/**
+	 * Get the default reward item key
+	 * @deprecated use {@link com.unity3d.ads.android.webapp.UnityAdsWebData#getZoneManager().getCurrentZone().itemManager().getDefaultItem().getKey()}
+	 */
+	@Deprecated
 	public static String getDefaultRewardItemKey() {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (zone != null && zone.isIncentivized()) {
@@ -307,6 +328,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		return null;
 	}
 
+	/**
+	 * Get the current reward item key
+	 * @deprecated use {@link com.unity3d.ads.android.webapp.UnityAdsWebData#getZoneManager().getCurrentZone().itemManager().getCurrentItem().getKey()}
+	 */
+	@Deprecated
 	public static String getCurrentRewardItemKey() {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (zone != null && zone.isIncentivized()) {
@@ -316,6 +342,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		return null;
 	}
 
+	/**
+	 * Set the current reward item key
+	 * @deprecated use {@link com.unity3d.ads.android.webapp.UnityAdsWebData#getZoneManager().getCurrentZone().itemManager().setCurrentItem()}
+	 */
+	@Deprecated
 	public static boolean setRewardItemKey(String rewardItemKey) {
 		if (canShow()) {
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
@@ -327,6 +358,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		return false;
 	}
 
+	/**
+	 * Sets the default reward item as current reward item
+	 * @deprecated use {@link com.unity3d.ads.android.webapp.UnityAdsWebData#getZoneManager().getCurrentZone().itemManager().setCurrentItem()} with {@link com.unity3d.ads.android.webapp.UnityAdsWebData#getZoneManager().getCurrentZone().itemManager().getDefaultItem()}
+	 */
+	@Deprecated
 	public static void setDefaultRewardItemAsRewardItem() {
 		if (canShow()) {
 			UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
@@ -337,6 +373,11 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		}
 	}
 
+	/**
+	 * Get details for the specified reward item
+	 * @deprecated use {@link com.unity3d.ads.android.webapp.UnityAdsWebData#getZoneManager().getCurrentZone().itemManager().getItem()}
+	 */
+	@Deprecated
 	public static Map<String, String> getRewardItemDetailsWithKey(String rewardItemKey) {
 		UnityAdsZone zone = UnityAdsWebData.getZoneManager().getCurrentZone();
 		if (zone != null && zone.isIncentivized()) {
