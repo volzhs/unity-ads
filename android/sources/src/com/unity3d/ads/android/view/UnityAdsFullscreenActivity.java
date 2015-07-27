@@ -680,7 +680,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		if (UnityAds.getListener() != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 			UnityAdsDeviceLog.info("Unity Ads video completed");
 			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);
-			UnityAds.getListener().onVideoCompleted(UnityAds.getCurrentRewardItemKey(), false);
+			UnityAds.getListener().onVideoCompleted(getRewardItemKey(), false);
 		}
 	}
 
@@ -734,7 +734,17 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		if (UnityAds.getListener() != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 			UnityAdsDeviceLog.info("Unity Ads video skipped");
 			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);
-			UnityAds.getListener().onVideoCompleted(UnityAds.getCurrentRewardItemKey(), true);
+			UnityAds.getListener().onVideoCompleted(getRewardItemKey(), true);
 		}
+	}
+
+	private static String getRewardItemKey() {
+		UnityAdsZone currentZone = UnityAdsWebData.getZoneManager().getCurrentZone();
+		String rewardItemKey = null;
+		if (currentZone != null && currentZone.isIncentivized()) {
+			rewardItemKey = ((UnityAdsIncentivizedZone)currentZone).itemManager().getCurrentItem().getKey();
+		}
+
+		return rewardItemKey == null ? "" : rewardItemKey;
 	}
 }

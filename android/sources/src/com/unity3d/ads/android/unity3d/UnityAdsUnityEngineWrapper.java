@@ -50,7 +50,7 @@ public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
   }
 
   public boolean show (final String zoneId, final String rewardItemKey, final String optionsString) {
-    if (UnityAds.canShowAds()) {
+    if (UnityAds.canShow()) {
       HashMap<String, Object> options = null;
 
       if(optionsString.length() > 0) {
