@@ -30,7 +30,7 @@ public class UnityAdsCache {
 
 		boolean first = true;
 		for(UnityAdsCampaign campaign : campaigns) {
-			if(campaign.shouldCacheVideo() || (campaign.allowCacheVideo() && first)) {
+			if(campaign.forceCacheVideo()) {
 				String filename = campaign.getVideoFilename();
 
 				if(!isFileCached(filename, campaign.getVideoFileExpectedSize())) {

@@ -39,7 +39,12 @@ public class UnityAdsCampaign {
 	}
 
 
-	public Boolean shouldCacheVideo () {
+	/**
+	 * Check if caching of this video is forced by the backend. If set to true
+	 * SDK should cache this campaign right at the initialization of the cache.
+	 * @return True if caching of this campaign is forced by the backend
+	 */
+	public Boolean forceCacheVideo() {
 		if (checkDataIntegrity()) {
 			try {
 				return _campaignJson.getBoolean(UnityAdsConstants.UNITY_ADS_CAMPAIGN_CACHE_VIDEO_KEY);
@@ -51,6 +56,10 @@ public class UnityAdsCampaign {
 		return false;
 	}
 
+	/**
+	 * Check if the video of this campaign can be cached now or later
+	 * @return True if caching of this video is allowed
+	 */
 	public Boolean allowCacheVideo () {
 		if (checkDataIntegrity()) {
 			try {
