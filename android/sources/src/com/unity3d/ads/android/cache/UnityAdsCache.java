@@ -28,7 +28,6 @@ public class UnityAdsCache {
 		HashMap<String,String> downloadFiles = new HashMap<>();
 		HashMap<String,Long> allFiles = new HashMap<>();
 
-		boolean first = true;
 		for(UnityAdsCampaign campaign : campaigns) {
 			if(campaign.forceCacheVideo()) {
 				String filename = campaign.getVideoFilename();
@@ -42,8 +41,6 @@ public class UnityAdsCache {
 			}
 
 			allFiles.put(campaign.getVideoFilename(), campaign.getVideoFileExpectedSize());
-
-			first = false;
 		}
 
 		initializeCacheDirectory(allFiles);
