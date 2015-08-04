@@ -225,7 +225,7 @@ public class UnityAds implements IUnityAdsWebDataListener {
 
 	/**
 	 * Returns if ads can be shown or not.
-	 * @deprecated use always {@link #canShow()} instead.
+	 * @deprecated use {@link #canShow()} instead.
 	 */
 	@Deprecated
 	@SuppressWarnings("unused")
