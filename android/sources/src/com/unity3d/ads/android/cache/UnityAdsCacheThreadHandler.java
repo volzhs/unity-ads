@@ -1,23 +1,20 @@
 package com.unity3d.ads.android.cache;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
+
+import com.unity3d.ads.android.UnityAdsDeviceLog;
+import com.unity3d.ads.android.data.UnityAdsDevice;
+import com.unity3d.ads.android.properties.UnityAdsProperties;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-
-import com.unity3d.ads.android.UnityAdsDeviceLog;
-import com.unity3d.ads.android.data.UnityAdsDevice;
-import com.unity3d.ads.android.properties.UnityAdsProperties;
-
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
 
 class UnityAdsCacheThreadHandler extends Handler {
 	private String _currentDownload = null;

@@ -151,6 +151,7 @@ public class UnityAdsDevice {
 		}
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isActiveNetworkConnected () {
 		ConnectivityManager cm = (ConnectivityManager)UnityAdsProperties.APPLICATION_CONTEXT.getSystemService(Context.CONNECTIVITY_SERVICE);
 

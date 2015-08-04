@@ -29,11 +29,13 @@ public class UnityAdsRewardItem {
 		return _key;
 	}
 
-	private String getName () {
+	@SuppressWarnings("WeakerAccess")
+	public String getName () {
 		return _name;
 	}
 
-	private String getPictureUrl () {
+	@SuppressWarnings("WeakerAccess")
+	public String getPictureUrl () {
 		return _pictureURL;
 	}
 
