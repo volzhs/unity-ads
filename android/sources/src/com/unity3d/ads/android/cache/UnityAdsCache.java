@@ -28,8 +28,12 @@ public class UnityAdsCache {
 		HashMap<String,String> downloadFiles = new HashMap<>();
 		HashMap<String,Long> allFiles = new HashMap<>();
 
+		boolean first = true;
 		for(UnityAdsCampaign campaign : campaigns) {
-			if(campaign.forceCacheVideo()) {
+			// Note: Always cache first video in ad plan if allowCache flag is true for that video.
+			// Usually server forces first video to be cached but if ads are filtered due to app install check,
+			// server has no idea what is actually the first video after filtering
+			if(campaign.forceCacheVideo() || (campaign.allowCacheVideo() && first)) {
 				String filename = campaign.getVideoFilename();
 
 				if(!isFileCached(filename, campaign.getVideoFileExpectedSize())) {
@@ -41,6 +45,8 @@ public class UnityAdsCache {
 			}
 
 			allFiles.put(campaign.getVideoFilename(), campaign.getVideoFileExpectedSize());
+
+			first = false;
 		}
 
 		initializeCacheDirectory(allFiles);
