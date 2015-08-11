@@ -20,17 +20,26 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/unityAdsVideoSkipText"
-                  android:textColor="@android:color/white"
-                  android:padding="0dp"
-                  android:layout_marginLeft="4dp"
-                  android:layout_marginStart="4dp"
-                  android:layout_marginTop="3dp"
-                  android:gravity="left"
-                  android:layout_weight="0.5"
-                  android:clickable="true"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_weight="0.5">
+
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/unityAdsVideoSkipText"
+                      android:textColor="@android:color/white"
+                      android:paddingBottom="11dp"
+                      android:paddingRight="15dp"
+                      android:paddingLeft="0dp"
+                      android:paddingTop="0dp"
+                      android:layout_marginLeft="4dp"
+                      android:layout_marginStart="4dp"
+                      android:layout_marginTop="3dp"
+                      android:clickable="true"/>
+        </RelativeLayout>
+
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
