@@ -77,7 +77,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_listener = listener;
 	}
 
-	public void playVideo (String fileName) {
+	public void playVideo (String fileName, boolean cached) {
 		if (fileName == null) return;
 		
 		_videoPlayheadPrepared = false;
@@ -93,9 +93,11 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		});
 
 		// Set the video file to readable, in some caching cases the MediaPlayer cannot play the file unless it's set to readable for all
-		File f = new File(fileName);
-		boolean result = f.setReadable(true, false);
-		if (!result) UnityAdsDeviceLog.debug("COULD NOT SET FILE READABLE");
+		if(cached) {
+			File f = new File(fileName);
+			boolean result = f.setReadable(true, false);
+			if (!result) UnityAdsDeviceLog.debug("COULD NOT SET FILE READABLE");
+		}
 
 		try {
 			_videoView.setVideoPath(fileName);

@@ -593,7 +593,7 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 				getMainView().setViewState(UnityAdsMainView.UnityAdsMainViewState.VideoPlayer);
 				getMainView().videoplayerview.setListener(_listener);
 				UnityAdsDeviceLog.debug("Start videoplayback with: " + playUrl);
-				getMainView().videoplayerview.playVideo(playUrl);
+				getMainView().videoplayerview.playVideo(playUrl, UnityAdsProperties.SELECTED_CAMPAIGN_CACHED);
 			}
 			else
 				UnityAdsDeviceLog.error("Campaign is null");
