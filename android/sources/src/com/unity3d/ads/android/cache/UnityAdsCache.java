@@ -86,8 +86,15 @@ public class UnityAdsCache {
 		_cacheDirectory = new File(UnityAdsProperties.APPLICATION_CONTEXT.getFilesDir().getPath());
 
 		if (Build.VERSION.SDK_INT > 18) {
-			if (UnityAdsProperties.APPLICATION_CONTEXT.getExternalCacheDir() != null) {
-				_cacheDirectory = new File(UnityAdsProperties.APPLICATION_CONTEXT.getExternalCacheDir(), UnityAdsConstants.CACHE_DIR_NAME);
+			File externalCacheFile = UnityAdsProperties.APPLICATION_CONTEXT.getExternalCacheDir();
+			if (externalCacheFile != null) {
+
+				String absoluteCachePath;
+				absoluteCachePath = externalCacheFile.getAbsolutePath();
+				_cacheDirectory = new File(absoluteCachePath, UnityAdsConstants.CACHE_DIR_NAME);
+				if (_cacheDirectory.mkdirs()) {
+					UnityAdsDeviceLog.debug("Successfully created cache");
+				}
 			}
 		}
 
