@@ -9,14 +9,14 @@ build: generate
 	ndk-build clean
 	ndk-build
 	find ../obj -type d -name objs | xargs rm -rf
-	cp src/UnityAdsAndroidBridge.h ../obj/local
+	cp gen/UnityAdsAndroidBridge.h ../obj/local
 
 release: clean build
 	cd ../.. && ./gradlew assembleRelease
 	cp ../build/outputs/aar/sources-release.aar ../obj/local/unityads-release.aar
-	cd ../obj/local/ && zip -r ../../jni/builds.zip *
+	cd ../obj/local/ && zip -r ../../jni/gen/builds.zip *
 
 clean:
+	rm -rf gen
 	rm -f *.class
 	rm -rf ../obj
-	rm -f builds.zip

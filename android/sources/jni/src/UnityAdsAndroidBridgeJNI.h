@@ -1,6 +1,10 @@
 #pragma once
+
+#include <stddef.h>
 #include <android/log.h>
+
 #include "UnityAdsAndroidBridge.h"
+#include "UnityAdsDalvikAttachThreadScoped.h"
 
 void RegisterMethods();
 
