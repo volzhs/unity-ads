@@ -101,6 +101,7 @@
   [self destroyProgressLabel];
   [self destroyBufferingLabel];
   [self destroyVideoSkipLabel];
+  [self destroyMuteButton];
   if([[UnityAdsProperties sharedInstance] unityDeveloperInternalTestMode] == TRUE) {
     [self destroyStagingLabel];
   }
@@ -303,7 +304,6 @@
   self.isPlaying = YES;
   self.bufferingLabel.hidden = YES;
   [self.delegate videoPlayerStartedPlaying];
-  [self showMuteButton];
 }
 
 - (void)videoPlaybackEnded:(BOOL)skipped {
@@ -408,6 +408,8 @@
     self.isMuted = true;
     self.muteButton.selected = self.isMuted;
   }
+  
+  [self showMuteButton];
 }
 
 - (void)showMuteButton {
@@ -434,6 +436,13 @@
   [item setAudioMix:audioZeroMix];
   self.isMuted = !self.isMuted;
   self.muteButton.selected = self.isMuted;
+}
+
+- (void)destroyMuteButton {
+  if(self.muteButton != nil) {
+    [self.muteButton removeFromSuperview];
+    self.muteButton = nil;
+  }
 }
 
 - (void)destroyVideoSkipLabel {
