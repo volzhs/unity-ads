@@ -101,6 +101,7 @@
   [self destroyProgressLabel];
   [self destroyBufferingLabel];
   [self destroyVideoSkipLabel];
+  [self destroyMuteButton];
   if([[UnityAdsProperties sharedInstance] unityDeveloperInternalTestMode] == TRUE) {
     [self destroyStagingLabel];
   }
@@ -158,6 +159,10 @@
     return YES;
   }
   return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+  [self showMuteButton];
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
@@ -303,7 +308,6 @@
   self.isPlaying = YES;
   self.bufferingLabel.hidden = YES;
   [self.delegate videoPlayerStartedPlaying];
-  [self showMuteButton];
 }
 
 - (void)videoPlaybackEnded:(BOOL)skipped {
@@ -408,12 +412,15 @@
     self.isMuted = true;
     self.muteButton.selected = self.isMuted;
   }
+  
+  [self.videoOverlayView addSubview:self.muteButton];
+  [self.videoOverlayView bringSubviewToFront:self.muteButton];
+  
+  [self showMuteButton];
 }
 
 - (void)showMuteButton {
   [self.muteButton setFrame:CGRectMake(0.0f, self.view.bounds.size.height - self.muteButton.bounds.size.height + 16, self.muteButton.frame.size.width, self.muteButton.frame.size.height)];
-  [self.videoOverlayView addSubview:self.muteButton];
-  [self.videoOverlayView bringSubviewToFront:self.muteButton];
 }
 
 - (void)muteVideoButtonPressed:(id)sender {
@@ -434,6 +441,13 @@
   [item setAudioMix:audioZeroMix];
   self.isMuted = !self.isMuted;
   self.muteButton.selected = self.isMuted;
+}
+
+- (void)destroyMuteButton {
+  if(self.muteButton != nil) {
+    [self.muteButton removeFromSuperview];
+    self.muteButton = nil;
+  }
 }
 
 - (void)destroyVideoSkipLabel {
