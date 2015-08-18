@@ -187,8 +187,6 @@
       [self play];
       
       [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingEndTime = [[NSDate date] timeIntervalSince1970] * 1000;
-      long long bufferingCompleted = [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingEndTime - [[UnityAdsCampaignManager sharedInstance] selectedCampaign].videoBufferingStartTime;
-      
     }
     else if (playerItemStatus == AVPlayerItemStatusFailed) {
       UALOG_DEBUG(@"Player failed");
