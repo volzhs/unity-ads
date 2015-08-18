@@ -11,8 +11,6 @@
 		78057A131643CADB005EF487 /* UnityAdsProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 78057A0F1643CADB005EF487 /* UnityAdsProperties.m */; };
 		7835377B166365BB00D46B7C /* UnityAdsVideoViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78353779166365BB00D46B7C /* UnityAdsVideoViewController.h */; };
 		7835377C166365BB00D46B7C /* UnityAdsVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7835377A166365BB00D46B7C /* UnityAdsVideoViewController.m */; };
-		784574B3193DC2B500B42748 /* ApplifierImpact.h in Headers */ = {isa = PBXBuildFile; fileRef = 784574B1193DC2B500B42748 /* ApplifierImpact.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		784574B4193DC2B500B42748 /* ApplifierImpact.m in Sources */ = {isa = PBXBuildFile; fileRef = 784574B2193DC2B500B42748 /* ApplifierImpact.m */; };
 		786F5D64163142BB00FD34C4 /* UnityAdsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 786F5D62163142BB00FD34C4 /* UnityAdsDevice.h */; };
 		786F5D65163142BB00FD34C4 /* UnityAdsDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 786F5D63163142BB00FD34C4 /* UnityAdsDevice.m */; };
 		786F5D6F1635359500FD34C4 /* UnityAdsVideoPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 786F5D6B1635359400FD34C4 /* UnityAdsVideoPlayer.h */; };
@@ -158,8 +156,6 @@
 		78057A0F1643CADB005EF487 /* UnityAdsProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsProperties.m; sourceTree = "<group>"; };
 		78353779166365BB00D46B7C /* UnityAdsVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsVideoViewController.h; sourceTree = "<group>"; };
 		7835377A166365BB00D46B7C /* UnityAdsVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsVideoViewController.m; sourceTree = "<group>"; };
-		784574B1193DC2B500B42748 /* ApplifierImpact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplifierImpact.h; sourceTree = "<group>"; };
-		784574B2193DC2B500B42748 /* ApplifierImpact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplifierImpact.m; sourceTree = "<group>"; };
 		786F5D62163142BB00FD34C4 /* UnityAdsDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsDevice.h; sourceTree = "<group>"; };
 		786F5D63163142BB00FD34C4 /* UnityAdsDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnityAdsDevice.m; sourceTree = "<group>"; };
 		786F5D6B1635359400FD34C4 /* UnityAdsVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityAdsVideoPlayer.h; sourceTree = "<group>"; };
@@ -509,8 +505,6 @@
 		CC15890C150789ED00B3D188 /* UnityAds */ = {
 			isa = PBXGroup;
 			children = (
-				784574B1193DC2B500B42748 /* ApplifierImpact.h */,
-				784574B2193DC2B500B42748 /* ApplifierImpact.m */,
 				78AC203B1622F01F007DE419 /* UnityAds.h */,
 				78AC203C1622F01F007DE419 /* UnityAds.m */,
 				99466CC118D1D85000A63151 /* UnityAdsAppSheet */,
@@ -594,7 +588,6 @@
 				78AC202D1622EFFD007DE419 /* UnityAdsCampaignManager.h in Headers */,
 				78AC20411622F01F007DE419 /* UnityAds.h in Headers */,
 				78CB843A16255FAA00E94915 /* UnityAdsURLProtocol.h in Headers */,
-				784574B3193DC2B500B42748 /* ApplifierImpact.h in Headers */,
 				786F5D64163142BB00FD34C4 /* UnityAdsDevice.h in Headers */,
 				C822D76218CF4A52007AAE44 /* UnityAdsCacheFileOperation.h in Headers */,
 				786F5D6F1635359500FD34C4 /* UnityAdsVideoPlayer.h in Headers */,
@@ -888,7 +881,6 @@
 				7894D8DD170EF726000CFC99 /* UnityAdsInitializer.m in Sources */,
 				7894D8E1170EF73D000CFC99 /* UnityAdsDefaultInitializer.m in Sources */,
 				7894D8ED1716AA44000CFC99 /* UnityAdsViewStateVideoPlayer.m in Sources */,
-				784574B4193DC2B500B42748 /* ApplifierImpact.m in Sources */,
 				C822D76118CF4A52007AAE44 /* UnityAdsCacheManager.m in Sources */,
 				C822D76318CF4A52007AAE44 /* UnityAdsCacheFileOperation.m in Sources */,
 				CC095C9A1733A30E00A0BD3C /* UnityAdsBundle.m in Sources */,
