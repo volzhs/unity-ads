@@ -27,7 +27,7 @@
 }
 
 - (BOOL)shouldAutorotate {
-  return YES;
+  return [UnityAdsDevice getIOSMajorVersion] < 8 || [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
