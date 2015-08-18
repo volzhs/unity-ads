@@ -1,9 +1,12 @@
+#pragma once
+
 #include <jni.h>
+#include <android/log.h>
+#include <string.h>
 
 #ifndef DEBUGMODE
 #define DEBUGMODE 0
 #endif
-#define NULL 0
 
 static JavaVM* adsJavaVm;
 
@@ -64,3 +67,7 @@ private:
 	bool	m_detached;
 	JNIEnv*	m_env;
 };
+
+#define JAVA_ATTACH_CURRENT_THREAD() \
+	UnityAdsDalvikAttachThreadScoped jni_env(__FUNCTION__)
+	
