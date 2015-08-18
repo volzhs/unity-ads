@@ -424,6 +424,10 @@ static UnityAds *sharedUnityAdsInstance = nil;
 	UAAssert([NSThread isMainThread]);
 	UALOG_DEBUG(@"");
   
+  if([[UnityAdsCampaignManager sharedInstance] getViewableCampaigns].count == 0) {
+    [self refreshAds];
+  } 
+  
   if (self.delegate != nil && [self.delegate respondsToSelector:@selector(unityAdsDidHide)])
 		[self.delegate unityAdsDidHide];
 }
