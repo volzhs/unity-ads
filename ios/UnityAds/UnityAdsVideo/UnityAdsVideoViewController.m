@@ -161,6 +161,10 @@
   return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+  [self showMuteButton];
+}
+
 - (NSUInteger)supportedInterfaceOrientations {
   return UIInterfaceOrientationMaskAll;
 }
@@ -409,13 +413,14 @@
     self.muteButton.selected = self.isMuted;
   }
   
+  [self.videoOverlayView addSubview:self.muteButton];
+  [self.videoOverlayView bringSubviewToFront:self.muteButton];
+  
   [self showMuteButton];
 }
 
 - (void)showMuteButton {
   [self.muteButton setFrame:CGRectMake(0.0f, self.view.bounds.size.height - self.muteButton.bounds.size.height + 16, self.muteButton.frame.size.width, self.muteButton.frame.size.height)];
-  [self.videoOverlayView addSubview:self.muteButton];
-  [self.videoOverlayView bringSubviewToFront:self.muteButton];
 }
 
 - (void)muteVideoButtonPressed:(id)sender {
