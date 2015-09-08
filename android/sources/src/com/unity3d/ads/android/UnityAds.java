@@ -470,6 +470,14 @@ public class UnityAds implements IUnityAdsWebDataListener {
 			UnityAdsDeviceLog.info("Initializing Unity Ads version " + UnityAdsConstants.UNITY_ADS_VERSION + " with gameId " + gameId);
 		}
 
+		int videoLayoutId = activity.getResources().getIdentifier("unityads_view_video_play", "layout", activity.getPackageName());
+		if(videoLayoutId == 0) {
+			UnityAdsDeviceLog.error("Unity Ads layout resources not found, check that you have properly merged Unity Ads resource files in your project");
+			return;
+		} else {
+			UnityAdsDeviceLog.debug("Unity Ads layout resources ok");
+		}
+
 		try {
 			Class<?> unityAdsWebBridge = Class.forName("com.unity3d.ads.android.webapp.UnityAdsWebBridge");
 			@SuppressWarnings({"unused", "UnusedAssignment"})
