@@ -11,6 +11,7 @@ cd $prefix
 ios_repo="ios"
 ios_build="unknown"
 
+android_root="android"
 android_repo="android/sources"
 android_build="unknown"
 
@@ -56,9 +57,11 @@ echo "Building iOS project (build $ios_build)"
 
 echo "Building Android project (build $android_build)"
 if [ $1 == '--debug' ]; then
-  (cd $android_repo && make clean && make debug && cp -rp build/. $prefix/temp/Assets/Plugins/Android/unityads ; cp -rp build/. $android_sdk_dir ; cd build/. ; zip -9 -r -y $android_sdk_zip .)
+  (cd $android_repo && make clean && make debug && cp -rp build/. $prefix/temp/Assets/Plugins/Android/unityads ; cp -rp build/. $android_sdk_dir/project ; cd build/. ; zip -9 -r -y $android_sdk_zip .)
+  (cd $android_root && ./gradlew clean assembleRelease && cp sources/build/outputs/aar/sources-release.aar $android_sdk_dir/unity-ads.aar)
 else
-  (cd $android_repo && make clean && make release && cp -rp build/. $prefix/temp/Assets/Plugins/Android/unityads ; cp -rp build/. $android_sdk_dir ; cd build/. ; zip -9 -r -y $android_sdk_zip .)
+  (cd $android_repo && make clean && make release && cp -rp build/. $prefix/temp/Assets/Plugins/Android/unityads ; cp -rp build/. $android_sdk_dir/project ; cd build/. ; zip -9 -r -y $android_sdk_zip .)
+  (cd $android_root && ./gradlew clean assembleDebug && cp sources/build/outputs/aar/sources-debug.aar $android_sdk_dir/unity-ads.aar)
 fi
 
 rm -rf temp
