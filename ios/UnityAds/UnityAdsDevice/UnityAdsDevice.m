@@ -258,7 +258,7 @@ int main(int argc, char *argv[]);
     }
   }
 
-  return NO;
+  return NSProcessInfo.processInfo.environment[@"SIMULATOR_DEVICE_NAME"] != nil;
 }
 
 + (NSString *)analyticsMachineName {
