@@ -12,7 +12,7 @@ public class UnityAdsConstants {
 	 */
 
 	/* Unity Ads */
-	public static final String UNITY_ADS_VERSION = "1501";
+	public static final String UNITY_ADS_VERSION = "1502";
 	public static final String UNITY_ADS_REQUEST_METHOD_POST = "POST";
 	public static final String UNITY_ADS_REQUEST_METHOD_GET = "GET";
 
