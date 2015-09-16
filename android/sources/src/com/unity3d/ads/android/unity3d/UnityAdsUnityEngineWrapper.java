@@ -14,7 +14,6 @@ import com.unity3d.ads.android.zone.UnityAdsZoneManager;
 
 import java.util.HashMap;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsUnityEngineWrapper implements IUnityAdsListener {
   private static Boolean _initialized = false;
