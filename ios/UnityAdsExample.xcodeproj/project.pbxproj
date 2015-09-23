@@ -395,7 +395,7 @@
 				INFOPLIST_FILE = "UnityAdsExample/UnityAdsExample-Info.plist";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.test.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -424,7 +424,7 @@
 					"-weak_library",
 					/usr/lib/libSystem.B.dylib,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.test.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -498,7 +498,7 @@
 					"-weak_library",
 					/usr/lib/libSystem.B.dylib,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.test.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
