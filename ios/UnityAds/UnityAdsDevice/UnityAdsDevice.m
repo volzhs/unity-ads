@@ -372,9 +372,12 @@ static NSString* currentConnectionString = @"none";
     [[self reachabilityCondition] signal];
     [[self reachabilityCondition] unlock];
     
-    SCNetworkReachabilitySetCallback(reachabilityRef, NULL, NULL);
-    SCNetworkReachabilitySetDispatchQueue(reachabilityRef, NULL);
-    reachabilityRef = NULL;
+    if(reachabilityRef != NULL) {
+      SCNetworkReachabilitySetCallback(reachabilityRef, NULL, NULL);
+      SCNetworkReachabilitySetDispatchQueue(reachabilityRef, NULL);
+      CFRelease(reachabilityRef);
+      reachabilityRef = NULL;
+    }
   };
 
   SCNetworkReachabilityContext context = {
