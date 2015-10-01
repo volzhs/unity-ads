@@ -137,8 +137,8 @@ public class UnityAdsMainView extends RelativeLayout {
 							public void run() {
 								if (!UnityAdsProperties.isAdsReadySent() && UnityAds.getListener() != null) {
 									UnityAdsDeviceLog.debug("Unity Ads ready.");
-									UnityAds.getListener().onFetchCompleted();
 									UnityAdsProperties.setAdsReadySent(true);
+									UnityAds.getListener().onFetchCompleted();
 								}
 							}
 						});
