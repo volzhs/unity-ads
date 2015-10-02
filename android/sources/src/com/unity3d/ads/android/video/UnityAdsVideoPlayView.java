@@ -255,7 +255,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		_bufferingText = (TextView)_layout.findViewById(R.id.unityAdsVideoBufferingText);
 		_countDownText = (LinearLayout)_layout.findViewById(R.id.unityAdsVideoCountDown);
 		_timeLeftInSecondsText = (TextView)_layout.findViewById(R.id.unityAdsVideoTimeLeftText);
-		_timeLeftInSecondsText.setText(R.string.default_video_length_text);
+		_timeLeftInSecondsText.setText(R.string.unityads_default_video_length_text);
 		_skipTextView = (TextView)_layout.findViewById(R.id.unityAdsVideoSkipText);
 		_muteButton = new UnityAdsMuteVideoButton(getContext());
 		_muteButton.setLayout((RelativeLayout) _layout.findViewById(R.id.unityAdsAudioToggleView));
@@ -320,7 +320,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 		}
 
 		if (_skipTextView != null) {
-			_skipTextView.setText(R.string.skip_video_text);
+			_skipTextView.setText(R.string.unityads_skip_video_text);
 		}
 
 		if (_skipTextView != null) {
@@ -339,7 +339,7 @@ public class UnityAdsVideoPlayView extends RelativeLayout {
 			_skipTextView = (TextView) _layout.findViewById(R.id.unityAdsVideoSkipText);
 		}
 
-		_skipTextView.setText(getResources().getString(R.string.skip_video_prefix) + " " + skipTimeSeconds + " " + getResources().getString(R.string.skip_video_suffix));
+		_skipTextView.setText(getResources().getString(R.string.unityads_skip_video_prefix) + " " + skipTimeSeconds + " " + getResources().getString(R.string.unityads_skip_video_suffix));
 	}
 
 	private void updateTimeLeftText () {
