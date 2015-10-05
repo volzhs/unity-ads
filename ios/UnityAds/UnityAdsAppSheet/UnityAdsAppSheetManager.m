@@ -11,6 +11,7 @@
 #import "UnityAdsCampaignManager.h"
 #import "UnityAdsAnalyticsUploader.h"
 #import "UnityAdsDevice.h"
+#import "UnityAdsConstants.h"
 
 @implementation CustomStoreProductViewController
 
@@ -112,13 +113,30 @@ static UnityAdsAppSheetManager *sharedAppSheetManager = nil;
     }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+      // SKStoreProductViewControllerDelegate could never call a callback. Let's set a timeout for this operation
+      __block BOOL isCallbackCalled = NO;
+      int loadProductTimeout = 5;
+      
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(loadProductTimeout * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (!isCallbackCalled) {
+          isCallbackCalled = YES;
+          UALOG_DEBUG(@"loadProductWithParameters timeout for params: %@", productParams);
+          completionBlock(NO, [NSError errorWithDomain:kUnityAdsErrorDomain
+                                                  code:kUnityAdsErrorTimeout
+                                              userInfo:nil]);
+        }
+      });
+      
       [storeController loadProductWithParameters:productParams completionBlock:^(BOOL result, NSError *error) {
-        completionBlock(result, error);
-        dispatch_async(dispatch_get_main_queue(), ^{
-          if(result) {
-            [targetViewController presentViewController:storeController animated:YES completion:nil];
-          }
-        });
+        if (!isCallbackCalled) {
+          isCallbackCalled = YES;
+          completionBlock(result, error);
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if(result) {
+              [targetViewController presentViewController:storeController animated:YES completion:nil];
+            }
+          });
+        }
       }];
     });
   }

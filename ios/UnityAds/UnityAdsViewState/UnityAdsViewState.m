@@ -73,7 +73,13 @@
   
   if (iTunesId != nil && !bypassAppSheet && [UnityAdsAppSheetManager canOpenStoreProductViewController]) {
     UALOG_DEBUG(@"Opening Appstore in AppSheet: %@", iTunesId);
-    [self openAppSheetWithId:iTunesId toViewController:targetViewController];
+    [self openAppSheetWithId:iTunesId toViewController:targetViewController withCompletionBlock:^(BOOL result, NSError *error) {
+      if (error)
+      {
+        UALOG_DEBUG(@"Error %@ opening AppSheet. Opening Appstore with clickUrl instead", error);
+        [self openAppStoreWithUrl:clickUrl];
+      }
+    }];
   }
   else if (clickUrl != nil) {
     UALOG_DEBUG(@"Opening Appstore with clickUrl: %@", clickUrl);
@@ -81,7 +87,7 @@
   }
 }
 
-- (void)openAppSheetWithId:(NSString *)iTunesId toViewController:(UIViewController *)targetViewController {
+- (void)openAppSheetWithId:(NSString *)iTunesId toViewController:(UIViewController *)targetViewController withCompletionBlock:(void (^)(BOOL result, NSError *error))completionBlock {
   [self applyOptions:@{kUnityAdsNativeEventShowSpinner:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyLoading}}];
   id storeController = [[UnityAdsAppSheetManager sharedInstance] getAppSheetController:iTunesId];
   if(storeController != nil) {
@@ -92,10 +98,12 @@
       if (campaign != nil) {
         [[UnityAdsAnalyticsUploader sharedInstance] sendOpenAppStoreRequest:campaign];
       }
+      completionBlock(YES,nil);
     });
   } else {
     [[UnityAdsAppSheetManager sharedInstance] openAppSheetWithId:iTunesId toViewController:targetViewController withCompletionBlock:^(BOOL result, NSError *error) {
       [self applyOptions:@{kUnityAdsNativeEventHideSpinner:@{kUnityAdsTextKeyKey:kUnityAdsTextKeyLoading}}];
+      dispatch_async(dispatch_get_main_queue(), ^{ completionBlock(result,error); });
     }];
   }
 }
