@@ -206,6 +206,10 @@ NSString * const kUnityAdsZoneMuteVideoSoundsKey = @"muteVideoSounds";
 NSString * const kUnityAdsZoneUseDeviceOrientationForVideoKey = @"useDeviceOrientationForVideo";
 NSString * const kUnityAdsZoneAllowVideoSkipInSecondsKey = @"allowVideoSkipInSeconds";
 
+/* Errors */
+NSString * const kUnityAdsErrorDomain = @"com.unity.unityads";
+int const kUnityAdsErrorTimeout = -1;
+
 @implementation UnityAdsConstants
 
 @end

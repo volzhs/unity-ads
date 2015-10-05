@@ -217,6 +217,11 @@ extern NSString * const kUnityAdsZoneMuteVideoSoundsKey;
 extern NSString * const kUnityAdsZoneUseDeviceOrientationForVideoKey;
 extern NSString * const kUnityAdsZoneAllowVideoSkipInSecondsKey;
 
+/* Errors */
+
+extern NSString * const kUnityAdsErrorDomain;
+extern int const kUnityAdsErrorTimeout;
+
 @interface UnityAdsConstants : NSObject
 
 @end
