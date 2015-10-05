@@ -192,7 +192,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = UnityAds;
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Unity Technologies";
 			};
 			buildConfigurationList = 78ED794315C66FC6007C5BD5 /* Build configuration list for PBXProject "UnityAdsExample" */;
@@ -302,8 +302,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -324,10 +326,10 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
+				TARGET_armv7 = 6.0;
+				TARGET_armv7s = 6.0;
+				TARGET_i386 = 6.0;
+				TARGET_x86_64 = 6.0;
 			};
 			name = Debug;
 		};
@@ -352,6 +354,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "OS_OBJECT_USE_OBJC=0";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -367,10 +370,10 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
+				TARGET_armv7 = 6.0;
+				TARGET_armv7s = 6.0;
+				TARGET_i386 = 6.0;
+				TARGET_x86_64 = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -392,6 +395,7 @@
 				INFOPLIST_FILE = "UnityAdsExample/UnityAdsExample-Info.plist";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -420,6 +424,7 @@
 					"-weak_library",
 					/usr/lib/libSystem.B.dylib,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -449,6 +454,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "OS_OBJECT_USE_OBJC=0";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -464,10 +470,10 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
+				TARGET_armv7 = 6.0;
+				TARGET_armv7s = 6.0;
+				TARGET_i386 = 6.0;
+				TARGET_x86_64 = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = "Ad Hoc Distribution";
@@ -492,6 +498,7 @@
 					"-weak_library",
 					/usr/lib/libSystem.B.dylib,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

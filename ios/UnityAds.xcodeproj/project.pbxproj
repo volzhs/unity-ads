@@ -683,8 +683,8 @@
 		CC1588FD150789ED00B3D188 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastTestingUpgradeCheck = 0600;
-				LastUpgradeCheck = 0600;
+				LastTestingUpgradeCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Unity Technologies";
 			};
 			buildConfigurationList = CC158900150789ED00B3D188 /* Build configuration list for PBXProject "UnityAds" */;
@@ -940,8 +940,6 @@
 		99FE3C2217E87E1500845E0B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -961,13 +959,8 @@
 				);
 				INFOPLIST_FILE = "UnityAdsTests/UnityAdsTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
-				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -975,8 +968,6 @@
 		99FE3C2317E87E1500845E0B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -991,12 +982,8 @@
 				GCC_PREFIX_HEADER = "UnityAdsTests/UnityAdsTests-Prefix.pch";
 				INFOPLIST_FILE = "UnityAdsTests/UnityAdsTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
@@ -1010,14 +997,17 @@
 				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
 				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
+				BITCODE_GENERATION_MODE = bitcode;
 				BUILD_DIR = "$(SRCROOT)/build";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SDKROOT)/Developer/Library/Frameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1029,14 +1019,16 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HIDE_BITCODE_SYMBOLS = NO;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
+				TARGET_armv7 = 6.0;
+				TARGET_armv7s = 6.0;
+				TARGET_i386 = 6.0;
+				TARGET_x86_64 = 6.0;
 			};
 			name = Test;
 		};
@@ -1044,10 +1036,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_$(XCODE_VERSION_MAJOR))";
-				ARCHS_0400 = "$(ARCHS_STANDARD_32_BIT)";
-				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
-				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
 				CONTENTS_FOLDER_PATH = "$(WRAPPER_NAME)/Versions/$(FRAMEWORK_VERSION)";
 				DEAD_CODE_STRIPPING = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1062,21 +1050,15 @@
 					"TEST=1",
 					"OS_OBJECT_USE_OBJC=0",
 				);
-				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "UnityAds/UnityAds-Info.plist";
 				INFOPLIST_PATH = "$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Info.plist";
 				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
 				LINK_WITH_STANDARD_LIBRARIES = NO;
 				MACH_O_TYPE = mh_object;
-				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				UNLOCALIZED_RESOURCES_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Resources";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -1086,12 +1068,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_$(XCODE_VERSION_MAJOR))";
-				ARCHS_0400 = "$(ARCHS_STANDARD_32_BIT)";
-				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
-				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -1107,16 +1083,10 @@
 				INFOPLIST_FILE = "UnityAds/UnityAdsBundle/UnityAdsBundle-Info.plist";
 				INSTALL_PATH = "";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
-				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = UnityAds;
-				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Test;
@@ -1125,12 +1095,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_$(XCODE_VERSION_MAJOR))";
-				ARCHS_0400 = "$(ARCHS_STANDARD_32_BIT)";
-				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
-				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -1152,13 +1116,8 @@
 				);
 				INFOPLIST_FILE = "UnityAdsTests/UnityAdsTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
-				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Test;
@@ -1172,6 +1131,7 @@
 				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
 				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
+				BITCODE_GENERATION_MODE = bitcode;
 				BUILD_DIR = "$(SRCROOT)/build";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -1182,10 +1142,13 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SDKROOT)/Developer/Library/Frameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1199,14 +1162,16 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				HIDE_BITCODE_SYMBOLS = NO;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
+				TARGET_armv7 = 6.0;
+				TARGET_armv7s = 6.0;
+				TARGET_i386 = 6.0;
+				TARGET_x86_64 = 6.0;
 			};
 			name = Debug;
 		};
@@ -1219,6 +1184,7 @@
 				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
 				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
+				BITCODE_GENERATION_MODE = bitcode;
 				BUILD_DIR = "$(SRCROOT)/build";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -1229,9 +1195,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SDKROOT)/Developer/Library/Frameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "OS_OBJECT_USE_OBJC=0";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1240,14 +1208,16 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HIDE_BITCODE_SYMBOLS = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
+				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
+				TARGET_armv7 = 6.0;
+				TARGET_armv7s = 6.0;
+				TARGET_i386 = 6.0;
+				TARGET_x86_64 = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1256,10 +1226,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_$(XCODE_VERSION_MAJOR))";
-				ARCHS_0400 = "$(ARCHS_STANDARD_32_BIT)";
-				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
-				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
 				CONTENTS_FOLDER_PATH = "$(WRAPPER_NAME)/Versions/$(FRAMEWORK_VERSION)";
 				DEAD_CODE_STRIPPING = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1267,21 +1233,15 @@
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnityAds/UnityAds-Prefix.pch";
-				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "UnityAds/UnityAds-Info.plist";
 				INFOPLIST_PATH = "$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Info.plist";
 				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
 				LINK_WITH_STANDARD_LIBRARIES = NO;
 				MACH_O_TYPE = mh_object;
-				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				UNLOCALIZED_RESOURCES_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Resources";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -1291,10 +1251,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_$(XCODE_VERSION_MAJOR))";
-				ARCHS_0400 = "$(ARCHS_STANDARD_32_BIT)";
-				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
-				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
 				CONTENTS_FOLDER_PATH = "$(WRAPPER_NAME)/Versions/$(FRAMEWORK_VERSION)";
 				DEAD_CODE_STRIPPING = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1302,20 +1258,15 @@
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnityAds/UnityAds-Prefix.pch";
-				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "UnityAds/UnityAds-Info.plist";
 				INFOPLIST_PATH = "$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Info.plist";
 				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
 				LINK_WITH_STANDARD_LIBRARIES = NO;
 				MACH_O_TYPE = mh_object;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				UNLOCALIZED_RESOURCES_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Resources";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -1325,12 +1276,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_$(XCODE_VERSION_MAJOR))";
-				ARCHS_0400 = "$(ARCHS_STANDARD_32_BIT)";
-				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
-				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -1346,16 +1291,10 @@
 				INFOPLIST_FILE = "UnityAds/UnityAdsBundle/UnityAdsBundle-Info.plist";
 				INSTALL_PATH = "";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
-				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = UnityAds;
-				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -1364,12 +1303,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_$(XCODE_VERSION_MAJOR))";
-				ARCHS_0400 = "$(ARCHS_STANDARD_32_BIT)";
-				ARCHS_0500 = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				ARCHS_0600 = "$(ARCHS_STANDARD) armv7s";
-				ARCHS_0700 = "$(ARCHS_STANDARD) armv7s";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -1385,16 +1318,10 @@
 				INFOPLIST_FILE = "UnityAds/UnityAdsBundle/UnityAdsBundle-Info.plist";
 				INSTALL_PATH = "";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(TARGET_$(CURRENT_ARCH))";
-				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.unity3d.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = UnityAds;
-				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TARGET_arm64 = 7.0;
-				TARGET_armv7 = 6.1;
-				TARGET_armv7s = 6.1;
-				TARGET_i386 = 6.1;
-				TARGET_x86_64 = 6.1;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
