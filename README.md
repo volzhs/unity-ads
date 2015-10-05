@@ -8,7 +8,7 @@ which are available from the separate release repository at https://github.com/A
 
 Unity Ads SDK is licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html)
 
-In any issues, please file in a ticket with us by emailing support@applifier.zendesk.com
+In any issues, please file in a ticket with us by emailing unityads-support@unity3d.com
 
 Unity Ads SDK Release Notes
 ===========================
