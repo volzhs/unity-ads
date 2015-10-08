@@ -1,6 +1,7 @@
 package com.unity3d.ads.android.webapp;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -20,7 +21,6 @@ import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1044,18 +1044,18 @@ public class UnityAdsWebData {
 					UnityAdsDeviceLog.debug("Total urlLoaders that have started running: " + _totalLoadersHaveRun);
 					UnityAdsDeviceLog.debug("Reading data from: " + _url.toString() + " Content-length: " + _downloadLength);
 
-					ByteArrayBuffer baf = new ByteArrayBuffer(1024 * 20);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					int current;
 
 					while ((current = _binput.read()) != -1) {
 						total++;
-						baf.append((byte)current);
-						
+						baos.write(current);
+
 						if (isCancelled())
 							return null;
 					}
 
-					_urlData = new String(baf.toByteArray());
+					_urlData = new String(baos.toByteArray());
 					UnityAdsDeviceLog.debug("Read total of: " + total);
 				}
 				catch (Exception e) {
