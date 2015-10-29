@@ -60,22 +60,30 @@
   if ([self.delegate respondsToSelector:@selector(cacheOperationStarted:)])
     [self.delegate cacheOperationStarted:self];
   
+  NSFileManager* fileManager = [NSFileManager defaultManager];
+  
   NSTimeInterval cachingDuration = 0.0;
   
   NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.filePath error:nil];
   long long size = [attributes fileSize];
   if (size != self.expectedFileSize) {
     BOOL isDir = NO;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:self.filePath]) {
-      [[NSFileManager defaultManager] removeItemAtPath:self.filePath error:nil];
+    
+    if ([fileManager fileExistsAtPath:self.filePath]) {
+      [fileManager removeItemAtPath:self.filePath error:nil];
     }
-    if (![[NSFileManager defaultManager] fileExistsAtPath:self.directoryPath isDirectory:&isDir]) {
-      [[NSFileManager defaultManager] createDirectoryAtPath:self.directoryPath
-                                withIntermediateDirectories:YES
-                                                 attributes:nil
-                                                      error:nil];
+    
+    if (![fileManager fileExistsAtPath:self.directoryPath isDirectory:&isDir]) {
+      [fileManager createDirectoryAtPath:self.directoryPath
+                   withIntermediateDirectories:YES
+                   attributes:nil
+                   error:nil];
     }
-    [[NSFileManager defaultManager] createFileAtPath:self.filePath contents:nil attributes:nil];
+    [fileManager setAttributes:@{NSFileProtectionKey: NSFileProtectionNone} ofItemAtPath:self.directoryPath error:nil];
+    
+    [fileManager createFileAtPath:self.filePath contents:nil attributes:nil];
+    [fileManager setAttributes:@{NSFileProtectionKey: NSFileProtectionNone} ofItemAtPath:self.filePath error:nil];
+    
     _fileHandle = [NSFileHandle fileHandleForWritingAtPath:self.filePath];
     NSURLRequest * request = [NSURLRequest requestWithURL:self.downloadURL];
     
@@ -98,7 +106,7 @@
   [_fileHandle closeFile];
   _fileHandle = nil;
   
-  attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.filePath error:nil];
+  attributes = [fileManager attributesOfItemAtPath:self.filePath error:nil];
   size = [attributes fileSize];
 
   if(cachingDuration > 0.0) {
