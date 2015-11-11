@@ -86,14 +86,6 @@
   }
 }
 
-- (void)waitForReachabilityCheck {
-  NSCondition* condition = [UnityAdsDevice reachabilityCondition];
-  [condition lock];
-  [UnityAdsDevice launchReachabilityCheck];
-  [condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:5.0]];
-  [condition unlock];
-}
-
 - (void)initCampaignManager {
 	UAAssert(![NSThread isMainThread]);
 	UALOG_DEBUG(@"");
@@ -103,7 +95,7 @@
 
 - (void)refreshCampaignManager {
 	UAAssert(![NSThread isMainThread]);
-  [self waitForReachabilityCheck];
+  [UnityAdsDevice updateConnectionType];
 	[[UnityAdsProperties sharedInstance] refreshCampaignQueryString];
 	[[UnityAdsCampaignManager sharedInstance] updateCampaigns];
 }

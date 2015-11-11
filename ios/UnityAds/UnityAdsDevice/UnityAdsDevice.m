@@ -322,18 +322,10 @@ static NSString* cellularConnectionString = @"cellular";
 static NSString* noneConnectionString = @"none";
 static NSString* currentConnectionString = @"none";
 
-+ (NSCondition*)reachabilityCondition {
-  static NSCondition* reachabilityCondition = nil;
-  if(reachabilityCondition == nil) {
-    reachabilityCondition = [NSCondition new];
-  }
-  return reachabilityCondition;
-}
-
-+ (void)launchReachabilityCheck {
-  __block SCNetworkReachabilityRef reachabilityRef = NULL;
-  
-  void (^callbackBlock)(SCNetworkReachabilityFlags) = ^(SCNetworkReachabilityFlags flags) {    
++ (void)updateConnectionType {
+  SCNetworkReachabilityRef reachabilityRef = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [@"unity3d.com" UTF8String]);
+  SCNetworkReachabilityFlags flags;
+  if(SCNetworkReachabilityGetFlags(reachabilityRef, &flags)) {
     NSString* connectionString = noneConnectionString;
     
     if ((flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0) {
@@ -367,36 +359,11 @@ static NSString* currentConnectionString = @"none";
       connectionString = noneConnectionString;
     }
     
-    [[self reachabilityCondition] lock];
-    currentConnectionString = connectionString;
-    [[self reachabilityCondition] signal];
-    [[self reachabilityCondition] unlock];
-    
-    if(reachabilityRef != NULL) {
-      SCNetworkReachabilitySetCallback(reachabilityRef, NULL, NULL);
-      SCNetworkReachabilitySetDispatchQueue(reachabilityRef, NULL);
-      CFRelease(reachabilityRef);
-      reachabilityRef = NULL;
-    }
-  };
-
-  SCNetworkReachabilityContext context = {
-    .version = 0,
-    .info = (void *)CFBridgingRetain(callbackBlock),
-    .release = CFRelease
-  };
-
-  reachabilityRef = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [@"unity3d.com" UTF8String]);
-  if (SCNetworkReachabilitySetCallback(reachabilityRef, UnityAdsReachabilityCallback, &context)){
-    if (!SCNetworkReachabilitySetDispatchQueue(reachabilityRef, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) ){
-      SCNetworkReachabilitySetCallback(reachabilityRef, NULL, NULL);
+    @synchronized(currentConnectionString) {
+      currentConnectionString = connectionString;
     }
   }
-}
-
-static void UnityAdsReachabilityCallback(SCNetworkReachabilityRef __unused ref, SCNetworkConnectionFlags flags, void* info) {
-  void (^callbackBlock)(SCNetworkReachabilityFlags) = (__bridge id)info;
-  callbackBlock(flags);
+  CFRelease(reachabilityRef);
 }
 
 + (NSString*)currentConnectionType {
