@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class UnityAdsWebView extends WebView {
@@ -63,7 +64,7 @@ public class UnityAdsWebView extends WebView {
 			if (data != null)
 				dataString = data.toString();
 
-			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
+			String javascriptString = String.format(Locale.US, "%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_CHANGE_VIEW, view, dataString);
 			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 			UnityAdsDeviceLog.debug("Send change view to WebApp: " + javascriptString);
 
@@ -102,7 +103,7 @@ public class UnityAdsWebView extends WebView {
 			if (data != null)
 				dataString = data.toString();
 
-			String javascriptString = String.format("%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
+			String javascriptString = String.format(Locale.US, "%s%s(\"%s\", %s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_HANDLE_NATIVE_EVENT, eventType, dataString);
 			UnityAdsDeviceLog.debug("Send native event to WebApp: " + javascriptString);
 			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(javascriptString, this));
 		}
@@ -150,7 +151,7 @@ public class UnityAdsWebView extends WebView {
 				return;
 			}
 
-			String initString = String.format("%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
+			String initString = String.format(Locale.US, "%s%s(%s);", UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_PREFIX, UnityAdsConstants.UNITY_ADS_WEBVIEW_JS_INIT, initData.toString());
 			UnityAdsDeviceLog.debug("Initializing WebView with JS call: " + initString);
 			UnityAdsUtils.runOnUiThread(new UnityAdsJavascriptRunner(initString, this));
 		}

@@ -2,6 +2,8 @@ package com.unity3d.ads.android;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Locale;
+
 import android.util.Log;
 
 public class UnityAdsDeviceLog {
@@ -70,7 +72,7 @@ public class UnityAdsDeviceLog {
 
 	@SuppressWarnings({"unused"})
 	public static void info(String format, Object... args) {
-		info(String.format(format, args));
+		info(String.format(Locale.US, format, args));
 	}
 
 	public static void debug(String message) {
@@ -91,7 +93,7 @@ public class UnityAdsDeviceLog {
 
 	@SuppressWarnings("unused")
 	public static void debug(String format, Object... args) {
-		debug(String.format(format, args));
+		debug(String.format(Locale.US, format, args));
 	}
 
 	public static void warning(String message) {
@@ -100,7 +102,7 @@ public class UnityAdsDeviceLog {
 
 	@SuppressWarnings({"unused"})
 	public static void warning(String format, Object... args) {
-		warning(String.format(format, args));
+		warning(String.format(Locale.US, format, args));
 	}
 
 	public static void error(String message) {
@@ -109,7 +111,7 @@ public class UnityAdsDeviceLog {
 
 	@SuppressWarnings("unused")
 	public static void error(String format, Object... args) {
-		error(String.format(format, args));
+		error(String.format(Locale.US, format, args));
 	}
 
 	private static void write(UnityAdsLogLevel level, String message) {

@@ -3,6 +3,7 @@ package com.unity3d.ads.android.unity3d;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import android.app.Activity;
 
@@ -193,7 +194,7 @@ public class UnityAdsUnityWrapper implements IUnityAdsListener {
 	}
 
     public String getRewardItemDetailsKeys () {
-    	return String.format("%s;%s", UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY, UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY);
+    	return String.format(Locale.US, "%s;%s", UnityAds.UNITY_ADS_REWARDITEM_NAME_KEY, UnityAds.UNITY_ADS_REWARDITEM_PICTURE_KEY);
     }
 
 	public void setLogLevel(int logLevel) {
