@@ -105,11 +105,11 @@ public class UnityAdsWebData {
 
 		@SuppressLint("DefaultLocale")
 		public static UnityAdsRequestType getValueOf (String value) {
-			if (VideoPlan.toString().equals(value.toLowerCase()))
+			if (VideoPlan.toString().equals(value.toLowerCase(Locale.US)))
 				return VideoPlan;
-			else if (VideoViewed.toString().equals(value.toLowerCase()))
+			else if (VideoViewed.toString().equals(value.toLowerCase(Locale.US)))
 				return VideoViewed;
-			else if (Unsent.toString().equals(value.toLowerCase()))
+			else if (Unsent.toString().equals(value.toLowerCase(Locale.US)))
 				return Unsent;
 
 			return null;
@@ -248,7 +248,7 @@ public class UnityAdsWebData {
 
 				if(advertisingId != null) {
 					queryParams = String.format(Locale.US, "%s&%s=%d", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY, UnityAdsDevice.isLimitAdTrackingEnabled() ? 0 : 1);
-					String advertisingIdMd5 = UnityAdsUtils.Md5(advertisingId).toLowerCase();
+					String advertisingIdMd5 = UnityAdsUtils.Md5(advertisingId).toLowerCase(Locale.US);
 					queryParams = String.format(Locale.US, "%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY, URLEncoder.encode(advertisingIdMd5, "UTF-8"));
 					queryParams = String.format(Locale.US, "%s&%s=%s", queryParams, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY, URLEncoder.encode(advertisingId, "UTF-8"));
 				}
@@ -802,7 +802,7 @@ public class UnityAdsWebData {
 					JSONObject appEntry = whitelistArray.getJSONObject(i);
 
 					if(appEntry.has("game") && appEntry.has("id")) {
-						parsedWhitelist.put(appEntry.getString("game").toUpperCase(), appEntry.getString("id"));
+						parsedWhitelist.put(appEntry.getString("game").toUpperCase(Locale.US), appEntry.getString("id"));
 					}
 				} catch(JSONException e) {
 					// Continue to next array item if there were errors during parsing

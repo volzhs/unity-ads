@@ -70,7 +70,7 @@ public class UnityAdsProperties {
 			if(advertisingId != null) {
 				queryString = String.format(Locale.US, "%s&%s=%d", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_TRACKINGENABLED_KEY, UnityAdsDevice.isLimitAdTrackingEnabled() ? 0 : 1);
 
-				String advertisingIdMd5 = UnityAdsUtils.Md5(advertisingId).toLowerCase();
+				String advertisingIdMd5 = UnityAdsUtils.Md5(advertisingId).toLowerCase(Locale.US);
 				queryString = String.format(Locale.US, "%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_ADVERTISINGTRACKINGID_KEY, URLEncoder.encode(advertisingIdMd5, "UTF-8"));
 				queryString = String.format(Locale.US, "%s&%s=%s", queryString, UnityAdsConstants.UNITY_ADS_INIT_QUERYPARAM_RAWADVERTISINGTRACKINGID_KEY, URLEncoder.encode(advertisingId, "UTF-8"));
 			}

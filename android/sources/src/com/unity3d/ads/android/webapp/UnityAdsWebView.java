@@ -121,7 +121,7 @@ public class UnityAdsWebView extends WebView {
 
 				if (advertisingId != null) {
 					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_TRACKINGENABLED_KEY, UnityAdsDevice.isLimitAdTrackingEnabled() ? 0 : 1);
-					String advertisingIdMd5 = UnityAdsUtils.Md5(advertisingId).toLowerCase();
+					String advertisingIdMd5 = UnityAdsUtils.Md5(advertisingId).toLowerCase(Locale.US);
 					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_ADVERTISINGTRACKINGID_KEY, advertisingIdMd5);
 					initData.put(UnityAdsConstants.UNITY_ADS_WEBVIEW_DATAPARAM_RAWADVERTISINGTRACKINGID_KEY, advertisingId);
 				}
