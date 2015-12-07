@@ -1,5 +1,6 @@
 package com.unity3d.ads.android;
 
+import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -480,8 +481,25 @@ public class UnityAds implements IUnityAdsWebDataListener {
 
 		try {
 			Class<?> unityAdsWebBridge = Class.forName("com.unity3d.ads.android.webapp.UnityAdsWebBridge");
-			@SuppressWarnings({"unused", "UnusedAssignment"})
 			Method handleWebEvent = unityAdsWebBridge.getMethod("handleWebEvent", String.class, String.class);
+			Annotation[] annotations = handleWebEvent.getAnnotations();
+
+			boolean annotationMissing = true;
+			if(annotations != null) {
+				for(Annotation a : annotations) {
+					Class<?> annotationClass = a.annotationType();
+					if(annotationClass != null && annotationClass.isAnnotation() && annotationClass.getName().equals("android.webkit.JavascriptInterface")) {
+						annotationMissing = false;
+						break;
+					}
+				}
+			}
+
+			if(annotationMissing) {
+				UnityAdsDeviceLog.error("UnityAds ProGuard check fail: com.unity3d.ads.android.webapp.handleWebEvent lacks android.webkit.JavascriptInterface annotation");
+				return;
+			}
+
 			UnityAdsDeviceLog.debug("UnityAds ProGuard check OK");
 		} catch (ClassNotFoundException e) {
 			UnityAdsDeviceLog.error("UnityAds ProGuard check fail: com.unity3d.ads.android.webapp.UnityAdsWebBridge class not found, check ProGuard settings");
