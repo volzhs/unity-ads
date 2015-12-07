@@ -19,6 +19,7 @@ import com.unity3d.ads.android.properties.UnityAdsProperties;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Locale;
 import java.util.Map;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -44,7 +45,7 @@ public class UnityAdsDevice {
 
 			if(md5hashed) {
 				androidID = UnityAdsUtils.Md5(androidID);
-				androidID = androidID.toLowerCase();
+				androidID = androidID.toLowerCase(Locale.US);
 			}
 		}
 		catch (Exception e) {

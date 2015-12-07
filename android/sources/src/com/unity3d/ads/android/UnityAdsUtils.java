@@ -10,6 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
+
 import javax.security.auth.x500.X500Principal;
 
 import android.annotation.SuppressLint;
@@ -105,7 +107,7 @@ public class UnityAdsUtils {
 			mOutput += Integer.toHexString(b);
 		}
 		// hex string to uppercase
-		return mOutput.toUpperCase();
+		return mOutput.toUpperCase(Locale.US);
 	}
 
 	@SuppressWarnings("SameParameterValue")
