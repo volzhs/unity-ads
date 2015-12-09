@@ -453,15 +453,18 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		if (_instance != null || _initialized) return;
 
 		if (gameId == null || gameId.length() == 0) {
-			throw new IllegalArgumentException("gameId is empty");
+			UnityAdsDeviceLog.error("Unity Ads init failed: gameId is empty");
+			return;
 		} else {
 			try {
 				int gameIdInteger = Integer.parseInt(gameId);
 				if (gameIdInteger <= 0) {
-					throw new IllegalArgumentException("gameId is invalid");
+					UnityAdsDeviceLog.error("Unity Ads init failed: gameId is invalid");
+					return;
 				}
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("gameId does not parse as an integer");
+				UnityAdsDeviceLog.error("Unity Ads init failed: gameId does not parse as an integer");
+				return;
 			}
 		}
 
