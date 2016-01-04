@@ -485,22 +485,26 @@ public class UnityAds implements IUnityAdsWebDataListener {
 		try {
 			Class<?> unityAdsWebBridge = Class.forName("com.unity3d.ads.android.webapp.UnityAdsWebBridge");
 			Method handleWebEvent = unityAdsWebBridge.getMethod("handleWebEvent", String.class, String.class);
-			Annotation[] annotations = handleWebEvent.getAnnotations();
 
-			boolean annotationMissing = true;
-			if(annotations != null) {
-				for(Annotation a : annotations) {
-					Class<?> annotationClass = a.annotationType();
-					if(annotationClass != null && annotationClass.isAnnotation() && annotationClass.getName().equals("android.webkit.JavascriptInterface")) {
-						annotationMissing = false;
-						break;
+			// JavascriptInterface annotation was added in API level 17
+			if(Build.VERSION.SDK_INT >= 17) {
+				Annotation[] annotations = handleWebEvent.getAnnotations();
+
+				boolean annotationMissing = true;
+				if (annotations != null) {
+					for (Annotation a : annotations) {
+						Class<?> annotationClass = a.annotationType();
+						if (annotationClass != null && annotationClass.isAnnotation() && annotationClass.getName().equals("android.webkit.JavascriptInterface")) {
+							annotationMissing = false;
+							break;
+						}
 					}
 				}
-			}
 
-			if(annotationMissing) {
-				UnityAdsDeviceLog.error("UnityAds ProGuard check fail: com.unity3d.ads.android.webapp.handleWebEvent lacks android.webkit.JavascriptInterface annotation");
-				return;
+				if (annotationMissing) {
+					UnityAdsDeviceLog.error("UnityAds ProGuard check fail: com.unity3d.ads.android.webapp.handleWebEvent lacks android.webkit.JavascriptInterface annotation");
+					return;
+				}
 			}
 
 			UnityAdsDeviceLog.debug("UnityAds ProGuard check OK");
