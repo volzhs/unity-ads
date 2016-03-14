@@ -154,6 +154,9 @@ public class UnityAdsMainView extends RelativeLayout {
 
 			@Override
 			public void onLaunchIntent(JSONObject data) { }
+
+			@Override
+			public void onSetBrandSkipStatus(JSONObject data) { }
 		}));
 	}
 	

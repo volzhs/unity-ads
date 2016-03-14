@@ -186,6 +186,7 @@ public class UnityAds implements IUnityAdsWebDataListener {
 
 				UnityAdsDeviceLog.info("Launching ad from \"" + currentZone.getZoneName() + "\", options: " + currentZone.getZoneOptions().toString());
 				UnityAdsProperties.SELECTED_CAMPAIGN_CACHED = false;
+				UnityAdsProperties.SELECTED_CAMPAIGN_BRAND_SKIP_STATUS = true;
 				startFullscreenActivity();
 				return true;
 			} else {

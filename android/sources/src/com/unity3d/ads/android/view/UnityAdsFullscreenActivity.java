@@ -83,6 +83,11 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 
 		UnityAdsViewUtils.removeViewFromParent(UnityAdsMainView.webview);
 
+		if(UnityAdsProperties.SELECTED_CAMPAIGN != null && UnityAdsProperties.SELECTED_CAMPAIGN.isBrandAd()) {
+			UnityAdsDeviceLog.debug("Delivering brand ad video complete callback with skip status " + UnityAdsProperties.SELECTED_CAMPAIGN_BRAND_SKIP_STATUS);
+			UnityAds.getListener().onVideoCompleted(null, UnityAdsProperties.SELECTED_CAMPAIGN_BRAND_SKIP_STATUS);
+		}
+
 		if(getMainView() != null) {
 			UnityAdsViewUtils.removeViewFromParent(getMainView());
 
@@ -94,8 +99,9 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 			getMainView().videoplayerview = null;
 		}
 
-		if (UnityAds.getListener() != null)
+		if (UnityAds.getListener() != null) {
 			UnityAds.getListener().onHide();
+		}
 
 		// Refresh campaigns or cache next video
 		if (!UnityAdsWebData.refreshCampaignsIfNeeded()) {
@@ -542,6 +548,18 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		}
 	}
 
+	@Override
+	public void onSetBrandSkipStatus(JSONObject data) {
+		try {
+			if(data.has("brandAdSkipStatus")) {
+				UnityAdsDeviceLog.debug("Setting brand ad skip status to " + data.getBoolean("brandAdSkipStatus"));
+				UnityAdsProperties.SELECTED_CAMPAIGN_BRAND_SKIP_STATUS = data.getBoolean("brandAdSkipStatus");
+			}
+		} catch(Exception e) {
+			UnityAdsDeviceLog.error("Exception while setting brand skip status: " + e.getMessage());
+		}
+	}
+
 	/* VIDEO PLAYBACK */
 
 	@SuppressWarnings("SameParameterValue")
@@ -680,7 +698,9 @@ public class UnityAdsFullscreenActivity extends Activity implements IUnityAdsWeb
 		if (UnityAds.getListener() != null && UnityAdsProperties.SELECTED_CAMPAIGN != null && !UnityAdsProperties.SELECTED_CAMPAIGN.isViewed()) {
 			UnityAdsDeviceLog.info("Unity Ads video completed");
 			UnityAdsProperties.SELECTED_CAMPAIGN.setCampaignStatus(UnityAdsCampaign.UnityAdsCampaignStatus.VIEWED);
-			UnityAds.getListener().onVideoCompleted(getRewardItemKey(), false);
+			if(!UnityAdsProperties.SELECTED_CAMPAIGN.isBrandAd()) {
+				UnityAds.getListener().onVideoCompleted(getRewardItemKey(), false);
+			}
 		}
 	}
 
