@@ -108,8 +108,8 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
   UALOG_DEBUG(@"Gotevent: %@ withData: %@", type, data);
   
   if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo] || [type isEqualToString:kUnityAdsWebViewAPINavigateTo] || [type isEqualToString:kUnityAdsWebViewAPIAppStore])
-	{
-		if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
+  {
+    if ([type isEqualToString:kUnityAdsWebViewAPIPlayVideo]) {
       if ([data objectForKey:kUnityAdsWebViewEventDataCampaignIdKey] != nil) {
         if ([[[UnityAdsMainViewController sharedInstance] getCurrentViewState] getStateType] != kUnityAdsViewStateTypeVideoPlayer &&
             ![[UnityAdsMainViewController sharedInstance] isClosing]) {
@@ -133,7 +133,7 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
       }    
 		}
 	}
-	else if ([type isEqualToString:kUnityAdsWebViewAPIClose]) {
+  else if ([type isEqualToString:kUnityAdsWebViewAPIClose]) {
     if ([[[UnityAdsMainViewController sharedInstance] getCurrentViewState] getStateType] != kUnityAdsViewStateTypeVideoPlayer &&
         ![[UnityAdsMainViewController sharedInstance] isClosing]) {
       [[UnityAdsMainViewController sharedInstance] closeAds:YES withAnimations:YES withOptions:nil];
@@ -141,14 +141,21 @@ static UnityAdsWebAppController *sharedWebAppController = nil;
     else {
       UALOG_DEBUG(@"Preventing sending close from WebView: %i, %i", [[UnityAdsMainViewController sharedInstance] isClosing], [[[UnityAdsMainViewController sharedInstance] getCurrentViewState] getStateType]);
     }
-	}
-	else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete]) {
+  }
+  else if ([type isEqualToString:kUnityAdsWebViewAPIInitComplete]) {
     self.webViewInitialized = YES;
     
     if (self.delegate != nil) {
       [self.delegate webAppReady];
     }
-	}
+  }
+  else if ([type isEqualToString:kUnityAdsWebViewAPISetBrandSkipStatus]) {
+    if ([data objectForKey:kUnityAdsWebViewDataParamBrandAdSkipStatus] != nil) {
+      bool skipStatus = [[data objectForKey:kUnityAdsWebViewDataParamBrandAdSkipStatus]boolValue];
+      UALOG_DEBUG(@"Setting brand ad skip status to %d", skipStatus);
+      [[UnityAdsProperties sharedInstance] setSelectedCampaignBrandSkipStatus:skipStatus];
+    }
+  }
 }
 
 - (void)runJavascriptDependingOnPlatform:(NSString *)javaScriptString {
