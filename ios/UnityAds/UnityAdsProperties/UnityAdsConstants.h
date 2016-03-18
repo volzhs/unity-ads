@@ -40,6 +40,7 @@ extern NSString * const kUnityAdsWebViewAPIDeveloperOptions;
 extern NSString * const kUnityAdsWebViewAPIAppStore;
 extern NSString * const kUnityAdsWebViewAPIActionVideoStartedPlaying;
 extern NSString * const kUnityAdsWebViewAPIActionVideoPlaybackError;
+extern NSString * const kUnityAdsWebViewAPISetBrandSkipStatus;
 
 extern NSString * const kUnityAdsWebViewViewTypeCompleted;
 extern NSString * const kUnityAdsWebViewViewTypeStart;
@@ -58,6 +59,7 @@ extern NSString * const kUnityAdsWebViewDataParamIosVersionKey;
 extern NSString * const kUnityAdsWebViewDataParamZoneKey;
 extern NSString * const kUnityAdsWebViewDataParamZonesKey;
 extern NSString * const kUnityAdsWebViewDataParamUnityVersionKey;
+extern NSString * const kUnityAdsWebViewDataParamBrandAdSkipStatus;
 
 extern NSString * const kUnityAdsWebViewEventDataCampaignIdKey;
 extern NSString * const kUnityAdsWebViewEventDataRewatchKey;
@@ -114,6 +116,7 @@ extern NSString * const kUnityAdsCampaignExpectedFileSize;
 extern NSString * const kUnityAdsCampaignGameIconKey;
 extern NSString * const kUnityAdsCampaignAllowVideoSkipKey;
 extern NSString * const kUnityAdsCampaignAllowStreamingKey;
+extern NSString * const kUnityAdsCampaignBrandAdKey;
 
 /* Reward Item JSON Properties */
 
