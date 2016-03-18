@@ -30,6 +30,7 @@ public class UnityAdsProperties {
 	public static WeakReference<Activity> CURRENT_ACTIVITY = null;
 	public static UnityAdsCampaign SELECTED_CAMPAIGN = null;
 	public static Boolean SELECTED_CAMPAIGN_CACHED = false;
+	public static Boolean SELECTED_CAMPAIGN_BRAND_SKIP_STATUS = true;
 	public static int CAMPAIGN_REFRESH_VIEWS_COUNT = 0;
 	public static int CAMPAIGN_REFRESH_VIEWS_MAX = 0;
 	public static int CAMPAIGN_REFRESH_SECONDS = 0;

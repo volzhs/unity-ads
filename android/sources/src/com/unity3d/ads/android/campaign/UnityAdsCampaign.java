@@ -211,6 +211,17 @@ public class UnityAdsCampaign {
 		return null;
 	}
 
+	public Boolean isBrandAd() {
+		if (checkDataIntegrity()) {
+			try {
+				return _campaignJson.has(UnityAdsConstants.UNITY_ADS_CAMPAIGN_BRAND_AD_KEY);
+			}
+			catch (Exception e) { }
+		}
+
+		return false;
+	}
+
 	public UnityAdsCampaignStatus getCampaignStatus () {
 		return _campaignStatus;
 	}
