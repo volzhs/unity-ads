@@ -94,6 +94,7 @@ static UnityAdsZoneManager *sharedZoneManager = nil;
     return true;
   } else {
     self._currentZone = nil;
+    NSLog(@"Unity Ads could could not set zone ID: ( %@ ) is not a valid zone", zoneId);
     return false;
   }
 }
