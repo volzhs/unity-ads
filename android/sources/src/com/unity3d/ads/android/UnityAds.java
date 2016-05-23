@@ -468,13 +468,13 @@ public class UnityAds implements IUnityAdsWebDataListener {
 				return;
 			}
 		}
-
+/*
 		if (UnityAdsProperties.UNITY_VERSION != null && UnityAdsProperties.UNITY_VERSION.length() > 0) {
 			UnityAdsDeviceLog.info("Initializing Unity Ads version " + UnityAdsConstants.UNITY_ADS_VERSION + " (Unity + " + UnityAdsProperties.UNITY_VERSION + ") with gameId " + gameId);
 		} else {
 			UnityAdsDeviceLog.info("Initializing Unity Ads version " + UnityAdsConstants.UNITY_ADS_VERSION + " with gameId " + gameId);
 		}
-
+*/
 		int videoLayoutId = activity.getResources().getIdentifier("unityads_view_video_play", "layout", activity.getPackageName());
 		if(videoLayoutId == 0) {
 			UnityAdsDeviceLog.error("Unity Ads layout resources not found, check that you have properly merged Unity Ads resource files in your project");
